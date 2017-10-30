@@ -6,4 +6,7 @@
 -->
 <full-backup-content>
 
+    <!-- Login tokens -->
+    <include domain="file" path="login_tokens.json" />
+
 </full-backup-content>
