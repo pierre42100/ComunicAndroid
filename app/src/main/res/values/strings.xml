@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Comunic</string>
+    <string name="activity_login_header">Login</string>
+    <string name="activity_login_email_hint">Email address</string>
+    <string name="activity_login_password_hint">Password</string>
+    <string name="activity_login_submit_form">Login</string>
 </resources>

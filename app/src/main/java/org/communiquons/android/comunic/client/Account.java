@@ -46,17 +46,8 @@ class Account {
         mContext = context;
         utils = new Utilities(context);
 
-        //Initializate tokens array
+        //Initialize tokens array
         tokens = new ArrayList<>();
-
-        //Debug test
-        /*ArrayList<String> tokens = new ArrayList<>();
-        tokens.add("cXNkZjVxNnM1NGRmNTRxczZkNGZxc2RmNAo");
-        tokens.add("cXNkZjVxNnM1cXM4ZDdmODdxczhkZ3FzZGp");
-        save_new_tokens(tokens);
-        Log.v("Account", utils.file_get_content(tokFilename));
-
-        Log.v("Account", "You are signed in: " + (signed_in() ? "Yes" : "No"));*/
     }
 
     /**
