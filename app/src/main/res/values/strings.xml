@@ -4,4 +4,6 @@
     <string name="activity_login_email_hint">Email address</string>
     <string name="activity_login_password_hint">Password</string>
     <string name="activity_login_submit_form">Login</string>
+    <string name="activity_login_err_invalid_password">The password is invalid!</string>
+    <string name="activity_login_err_invalid_email">The email specified is invalid !</string>
 </resources>

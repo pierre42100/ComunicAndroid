@@ -1,7 +1,9 @@
 package org.communiquons.android.comunic.client;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -90,5 +92,15 @@ class Utilities {
 
         //Success
         return true;
+    }
+
+    /**
+     * Check whether a specified email address is valid or not
+     *
+     * @param mail The E-Mail address to check
+     * @return True if the mail is valid / false else
+     */
+    boolean isValidMail(CharSequence mail){
+        return !TextUtils.isEmpty(mail) && Patterns.EMAIL_ADDRESS.matcher(mail).matches();
     }
 }
