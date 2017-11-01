@@ -9,4 +9,5 @@
     <string name="activity_login_err_invalid_credentials">The connexion couldn\'t be etablished. Please check your credentials !</string>
     <string name="err_no_internet_connection">No Internet connexion !</string>
     <string name="activity_login_err_server_response">The server sent an unexcepted response…</string>
+    <string name="main_menu_logout">Sign out</string>
 </resources>
