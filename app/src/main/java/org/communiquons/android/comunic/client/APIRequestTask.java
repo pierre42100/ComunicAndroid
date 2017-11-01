@@ -1,5 +1,8 @@
 package org.communiquons.android.comunic.client;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 
 import org.json.JSONObject;
@@ -20,7 +23,6 @@ import java.net.URL;
  *
  * Created by pierre on 10/31/17.
  */
-//TODO Create APIResponse class
 abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Void, APIResponse> {
 
     /**
@@ -83,18 +85,15 @@ abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Void, APIR
 
 
             //Send request parameters
-            OutputStream out = conn.getOutputStream();
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, "UTF-8");
-            BufferedWriter writer = new BufferedWriter(outputStreamWriter);
-            String parameters_encoded = parameters.get_parameters_encoded();
-            writer.write(parameters_encoded);
+            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+            BufferedWriter writer = new BufferedWriter (new OutputStreamWriter(out, "UTF-8"));
+            writer.write(parameters.get_parameters_encoded());
             writer.flush();
             writer.close();
             out.close();
 
             //Connect to the server
             conn.connect();
-
 
             //Get response code
             result.setResponse_code(conn.getResponseCode());
@@ -116,10 +115,24 @@ abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Void, APIR
 
     // Reads an InputStream and converts it to a String.
     private String readIt(InputStream stream, int len) throws IOException {
-        Reader reader = null;
-        reader = new InputStreamReader(stream, "UTF-8");
+        Reader reader = new InputStreamReader(stream, "UTF-8");
         char[] buffer = new char[len];
         reader.read(buffer);
         return new String(buffer);
+    }
+
+    /**
+     * Determine it is possible or not to connect to the API now
+     *
+     * @param context The context used to perform the test
+     * @return True if a network connection is available
+     */
+    static boolean isAPIavailable(Context context){
+        ConnectivityManager connMgr = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
     }
 }

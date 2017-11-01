@@ -110,7 +110,7 @@ class Account {
      * @param toks The array containing the tokens
      * @return False in case of failure
      */
-    private boolean save_new_tokens(ArrayList<String> toks){
+    boolean save_new_tokens(ArrayList<String> toks){
 
         //Create tokens array
         JSONArray tokens = new JSONArray();
