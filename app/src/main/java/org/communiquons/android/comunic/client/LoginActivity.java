@@ -2,9 +2,14 @@ package org.communiquons.android.comunic.client;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -44,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         EditText login_mail = (EditText) findViewById(R.id.email_field);
         EditText login_password = (EditText) findViewById(R.id.password_field);
 
+
         int stop = 0;
 
         //Check password
@@ -64,6 +70,37 @@ public class LoginActivity extends AppCompatActivity {
         if(stop != 0)
             return;
 
+        open_loading_state(true);
 
+        //Perform a request on the API to check user credentials and get login tokens
+        APIRequestParameters params = new APIRequestParameters("user/connectUSER");
+        params.addParameter("userMail", ""+login_mail.getText());
+        params.addParameter("userPassword", ""+login_password.getText());
+
+        //Create Request
+        new APIRequestTask(){
+            @Override
+            protected void onPostExecute(APIResponse result) {
+
+                open_loading_state(false);
+
+
+
+            }
+        }.execute(params);
+    }
+
+    /**
+     * Switch between loading state and ready state for the login form
+     *
+     * @param show_progress Specify wether a progress bar should be shown or not
+     */
+    void open_loading_state(boolean show_progress){
+        //Grab elements
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        ScrollView login_form = (ScrollView) findViewById(R.id.login_form);
+
+        progressBar.setVisibility(show_progress ? View.VISIBLE : View.GONE);
+        login_form.setVisibility(show_progress ? View.GONE : View.VISIBLE);
     }
 }

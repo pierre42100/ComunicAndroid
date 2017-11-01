@@ -14,9 +14,10 @@ android {
     buildTypes {
 
         debug {
+            //Connexion to the internal API of Comunic
             buildConfigField "String", "api_url", "\"http://devweb.local/comunic/api/\""
-            buildConfigField "String", "api_service_name", "testService"
-            buildConfigField "String", "api_service_token", "testPasswd"
+            buildConfigField "String", "api_service_name", "\"testService\""
+            buildConfigField "String", "api_service_token", "\"testPasswd\""
         }
 
         release {

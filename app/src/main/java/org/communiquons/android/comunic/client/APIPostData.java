@@ -51,7 +51,7 @@ class APIPostData {
         }
 
         //Return result
-        return encoded_key + "&" + encoded_value;
+        return encoded_key + "=" + encoded_value;
     }
 
 }

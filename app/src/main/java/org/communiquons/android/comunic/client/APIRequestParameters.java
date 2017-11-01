@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by pierre on 10/31/17.
  */
 
-class APIParameters {
+class APIRequestParameters {
 
     /**
      * Parameters of the request
@@ -25,7 +25,7 @@ class APIParameters {
      *
      * @param uri The request URI on the server
      */
-    APIParameters(String uri){
+    APIRequestParameters(String uri){
         //Save request URI
         request_uri = uri;
 
@@ -43,4 +43,34 @@ class APIParameters {
         parameters.add(new APIPostData(name, value));
     }
 
+    /**
+     * Retrieve request URI
+     *
+     * @return The request URI
+     */
+    String getRequest_uri() {
+        return request_uri;
+    }
+
+    /**
+     * Return all the request parameters as a string ready to be passed to the request output
+     * stream.
+     *
+     * @return A string
+     */
+    String get_parameters_encoded(){
+
+        //Return string
+        String result = "";
+
+        //Process loop
+        for(int i = 0; i < parameters.size(); i++){
+
+            //Make sure to separate parameters
+            result += (i > 0 ? "&" : "");
+            result += parameters.get(i).get_encoded();
+        }
+
+        return result;
+    }
 }
