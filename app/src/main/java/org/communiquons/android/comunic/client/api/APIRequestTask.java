@@ -1,10 +1,11 @@
-package org.communiquons.android.comunic.client;
+package org.communiquons.android.comunic.client.api;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 
+import org.communiquons.android.comunic.client.BuildConfig;
 import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
@@ -23,7 +24,7 @@ import java.net.URL;
  *
  * Created by pierre on 10/31/17.
  */
-abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Void, APIResponse> {
+public abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Void, APIResponse> {
 
     /**
      * Background task
@@ -127,7 +128,7 @@ abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Void, APIR
      * @param context The context used to perform the test
      * @return True if a network connection is available
      */
-    static boolean isAPIavailable(Context context){
+    public static boolean isAPIavailable(Context context){
         ConnectivityManager connMgr = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
 

@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client;
+package org.communiquons.android.comunic.client.api;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,7 +9,7 @@ import org.json.JSONObject;
  * Created by pierre on 10/31/17.
  */
 
-class APIResponse {
+public class APIResponse {
 
     /**
      * Reponse code

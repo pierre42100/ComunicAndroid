@@ -15,6 +15,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import org.communiquons.android.comunic.client.api.*;
+
 public class LoginActivity extends AppCompatActivity {
 
     /**

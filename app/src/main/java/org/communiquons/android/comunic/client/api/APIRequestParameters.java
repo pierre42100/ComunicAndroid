@@ -1,4 +1,6 @@
-package org.communiquons.android.comunic.client;
+package org.communiquons.android.comunic.client.api;
+
+import org.communiquons.android.comunic.client.api.APIPostData;
 
 import java.util.ArrayList;
 
@@ -8,7 +10,7 @@ import java.util.ArrayList;
  * Created by pierre on 10/31/17.
  */
 
-class APIRequestParameters {
+public class APIRequestParameters {
 
     /**
      * Parameters of the request
@@ -25,7 +27,7 @@ class APIRequestParameters {
      *
      * @param uri The request URI on the server
      */
-    APIRequestParameters(String uri){
+    public APIRequestParameters(String uri){
         //Save request URI
         request_uri = uri;
 
@@ -39,7 +41,7 @@ class APIRequestParameters {
      * @param name The name of the new key
      * @param value The value of the new key
      */
-    void addParameter(String name, String value){
+    public void addParameter(String name, String value){
         parameters.add(new APIPostData(name, value));
     }
 
