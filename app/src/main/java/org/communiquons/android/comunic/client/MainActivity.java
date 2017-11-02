@@ -11,6 +11,12 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.api.APIRequestTask;
 
+
+/**
+ * Main activity of the application
+ *
+ * @author Pierre HUBERT
+ */
 public class MainActivity extends AppCompatActivity {
 
     /**

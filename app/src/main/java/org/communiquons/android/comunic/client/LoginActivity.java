@@ -17,6 +17,12 @@ import java.util.ArrayList;
 
 import org.communiquons.android.comunic.client.api.*;
 
+/**
+ * Login activity of the application
+ *
+ * @author Pierre HUBERT
+ */
+
 public class LoginActivity extends AppCompatActivity {
 
     /**

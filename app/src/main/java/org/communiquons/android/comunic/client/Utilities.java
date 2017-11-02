@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 /**
  * Application utilities
  *
+ * @author Pierre HUBERT
  * Created by pierre on 10/29/17.
  */
 

@@ -6,6 +6,7 @@ import org.json.JSONObject;
 /**
  * Store and serve the response of an API request
  *
+ * @author Pierre HUBERT
  * Created by pierre on 10/31/17.
  */
 

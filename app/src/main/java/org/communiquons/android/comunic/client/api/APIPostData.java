@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 /**
  * This class stores on parameter for a POST request
  *
+ * @author Pierre HUBERT
  * Created by pierre on 10/31/17.
  */
 

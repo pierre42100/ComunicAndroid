@@ -5,8 +5,9 @@ import org.communiquons.android.comunic.client.api.APIPostData;
 import java.util.ArrayList;
 
 /**
- * This class handles the setup of the parametres required to setup an API request
+ * This class handles the setup of the parameters required to setup an API request
  *
+ * @author Pierre HUBERT
  * Created by pierre on 10/31/17.
  */
 

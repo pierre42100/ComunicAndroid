@@ -12,6 +12,9 @@ import java.util.Objects;
 /**
  * Comunic account class
  *
+ * This class stores the account tokens
+ *
+ * @author Pierre HUBERT
  * Created by pierre on 10/29/17.
  */
 

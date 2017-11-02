@@ -22,6 +22,12 @@ import java.net.URL;
 /**
  * Perform an API request on the server
  *
+ * API requests are made on a separate Thread using AsyncTask.
+ *
+ * The method requesting an API request has to implement the onPostExecute method in order to be
+ * able to have a personalized data process
+ *
+ * @author Pierre HUBERT
  * Created by pierre on 10/31/17.
  */
 public abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Void, APIResponse> {
