@@ -15,7 +15,7 @@ public class UserInfo {
     private int id;
     private String firstName;
     private String lastName;
-    private String imageURL;
+    private String accountImageURL;
 
     /**
      * Set the ID of the user
@@ -85,8 +85,8 @@ public class UserInfo {
      *
      * @param imageURL The URL of the image
      */
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setAccountImageURL(String imageURL) {
+        this.accountImageURL = imageURL;
     }
 
     /**
@@ -94,7 +94,7 @@ public class UserInfo {
      *
      * @return The image URL of the account of the user
      */
-    public String getImageURL() {
-        return imageURL;
+    public String getAcountImageURL() {
+        return accountImageURL;
     }
 }

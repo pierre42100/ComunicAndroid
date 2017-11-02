@@ -1,5 +1,6 @@
 package org.communiquons.android.comunic.client.data.UsersInfo;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -68,6 +69,107 @@ public class UsersInfosDbHelper {
         //Close cursor
         c.close();
 
+        //Close the database
+        db.close();
+
         return number_entries > 0;
+    }
+
+    /**
+     * Insert a user in the database
+     *
+     * @param user The user to insert in the database
+     * @return -1 in case of failure / the id of the new entry else
+     */
+    public int insert(UserInfo user){
+
+        //Get a database with write access
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        //Prepare the insertion
+        ContentValues newValues = new ContentValues();
+        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_ID, user.getId());
+        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_FIRSTNAME, user.getFirstName());
+        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_LASTNAME, user.getLastName());
+        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_ACCOUNT_IMAGE, user.getAcountImageURL());
+
+        //Insert it
+        long newRowId = db.insert(UsersInfoSchema.TABLE_NAME, null, newValues);
+
+        //Close the database
+        db.close();
+
+        return (int) newRowId;
+    }
+
+    /**
+     * Get a user from the database
+     *
+     * @param userID The ID of the user to retrieve
+     * @return UserInfo about requested user / null in case of filaure
+     */
+    public UserInfo get(int userID){
+
+        UserInfo result;
+
+        //Open database for access
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        //Prepare the request on the database
+        String[] requestedFields = {
+                UsersInfoSchema.COLUMN_NAME_USER_ID,
+                UsersInfoSchema.COLUMN_NAME_USER_FIRSTNAME,
+                UsersInfoSchema.COLUMN_NAME_USER_LASTNAME,
+                UsersInfoSchema.COLUMN_NAME_USER_ACCOUNT_IMAGE
+        };
+
+        //Set the conditions of the request
+        String selection = UsersInfoSchema.COLUMN_NAME_USER_ID + " = ?";
+        String[] selectionArgs = { ""+userID };
+
+        //Sort order
+        String sortOrder = UsersInfoSchema._ID;
+
+        //Perform the request
+        Cursor c = db.query(
+                UsersInfoSchema.TABLE_NAME,
+                requestedFields,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+
+        //Check for errors
+        if(c.getCount() < 1)
+            result = null;
+        else {
+
+            //Initialize User object
+            result = new UserInfo();
+
+            c.moveToFirst();
+
+            //Extract the information and record them
+            result.setId(
+                    c.getInt(
+                        c.getColumnIndexOrThrow(
+                                UsersInfoSchema.COLUMN_NAME_USER_ID
+                        )
+                    )
+            );
+
+
+            //TODO : finish extraction
+        }
+
+        //Close the cursor
+        c.close();
+
+        //Close the database
+        db.close();
+
+        return result;
     }
 }
