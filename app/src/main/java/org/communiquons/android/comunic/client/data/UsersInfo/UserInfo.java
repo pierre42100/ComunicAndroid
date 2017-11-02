@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.data;
+package org.communiquons.android.comunic.client.data.UsersInfo;
 
 /**
  * This class contains the informations about a single user

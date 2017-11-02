@@ -19,7 +19,7 @@ public final class DatabaseContract {
     public static final String DATABASE_NAME = "database.db";
 
     /* Users info table */
-    public static abstract class UsersInfo implements BaseColumns {
+    public static abstract class UsersInfoSchema implements BaseColumns {
         public static final String TABLE_NAME = "users_info";
 
         public static final String COLUMN_NAME_USER_ID = "user_id";

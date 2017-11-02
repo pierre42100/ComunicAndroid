@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import org.communiquons.android.comunic.client.data.DatabaseContract.UsersInfo;
+import org.communiquons.android.comunic.client.data.DatabaseContract.UsersInfoSchema;
 
 /**
  * Database helper. This file handles the creation / upgrade of the local database
@@ -26,16 +26,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Creation and deletion of the users info table
      */
     private static final String SQL_CREATE_USERS_INFOS_TABLE =
-            "CREATE TABLE " + UsersInfo.TABLE_NAME + " (" +
-                    UsersInfo._ID + " INTEGER PRIMARY KEY," +
-                    UsersInfo.COLUMN_NAME_USER_ID + INTEGER_TYPE + COMMA_SEP +
-                    UsersInfo.COLUMN_NAME_USER_FIRSTNAME + TEXT_TYPE + COMMA_SEP +
-                    UsersInfo.COLUMN_NAME_USER_LASTNAME + TEXT_TYPE + COMMA_SEP +
-                    UsersInfo.COLUMN_NAME_USER_ACCOUNT_IMAGE + TEXT_TYPE
+            "CREATE TABLE " + UsersInfoSchema.TABLE_NAME + " (" +
+                    UsersInfoSchema._ID + " INTEGER PRIMARY KEY," +
+                    UsersInfoSchema.COLUMN_NAME_USER_ID + INTEGER_TYPE + COMMA_SEP +
+                    UsersInfoSchema.COLUMN_NAME_USER_FIRSTNAME + TEXT_TYPE + COMMA_SEP +
+                    UsersInfoSchema.COLUMN_NAME_USER_LASTNAME + TEXT_TYPE + COMMA_SEP +
+                    UsersInfoSchema.COLUMN_NAME_USER_ACCOUNT_IMAGE + TEXT_TYPE
             + " )";
 
     private static final String SQL_DELETE_USERS_INFOS_TABLE = "DROP TABLE IF EXISTS " +
-            UsersInfo.TABLE_NAME;
+            UsersInfoSchema.TABLE_NAME;
 
 
 
