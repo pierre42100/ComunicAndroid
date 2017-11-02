@@ -67,6 +67,14 @@ class Account {
     }
 
     /**
+     * Sign out user
+     * @return True in case of success / false else
+     */
+    boolean sign_out(){
+        return remove_login_tokens();
+    }
+
+    /**
      * Try to load tokens in tokens array
      *
      * @return False in case of failure

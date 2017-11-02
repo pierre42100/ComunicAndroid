@@ -10,4 +10,8 @@
     <string name="err_no_internet_connection">No Internet connexion !</string>
     <string name="activity_login_err_server_response">The server sent an unexcepted response…</string>
     <string name="main_menu_logout">Sign out</string>
+    <string name="popup_signout_title">Sign out</string>
+    <string name="popup_signout_message">Are you sure do you want to sign out ?</string>
+    <string name="popup_signout_confirm_button">Sign out</string>
+    <string name="popup_signout_cancel_button">Cancel</string>
 </resources>
