@@ -59,11 +59,30 @@ public class GetUsersInfos {
     }
 
     /**
+     * Get and return informations about a user
+     *
+     * @param id The ID of the user to get the informations
+     * @param callback What to do once we got the response
+     */
+    public void get(int id, getUserInfosCallback callback){
+
+        //Check if the user is already present in the database or not
+        if(!udbHelper.exists(id))
+            //Perform a request on the server
+        getOnServer(id, callback);
+
+        //Else we can retrieve user informations from the local database
+        callback.callback(udbHelper.get(id));
+
+    }
+
+    /**
      * Get and return the informations about a user on the server
      *
      * @param id The ID of the user to get informations from
+     * @param callback What to do once the request is done
      */
-    public void get(final int id, final getUserInfosCallback callback){
+    private void getOnServer(final int id, final getUserInfosCallback callback){
 
         //Perform a request on the API server
         //Setup the request
@@ -89,7 +108,7 @@ public class GetUsersInfos {
                         userInfos = parse_user_json(userObject);
                     }
 
-                    //Save user in the local database in case of success
+                    //Save user information in the local database in case of success
                     if(userInfos != null)
                         udbHelper.insertOrUpdate(userInfos);
 

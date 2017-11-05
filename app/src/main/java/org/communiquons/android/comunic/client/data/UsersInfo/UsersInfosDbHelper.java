@@ -16,7 +16,7 @@ import org.communiquons.android.comunic.client.data.DatabaseHelper;
  * Created by pierre on 11/2/17.
  */
 
-public class UsersInfosDbHelper {
+class UsersInfosDbHelper {
 
     /**
      * Database helper
@@ -28,7 +28,7 @@ public class UsersInfosDbHelper {
      *
      * @param dbHelper Database helper object
      */
-    public UsersInfosDbHelper(DatabaseHelper dbHelper){
+    UsersInfosDbHelper(DatabaseHelper dbHelper){
         this.dbHelper = dbHelper;
     }
 
@@ -56,7 +56,7 @@ public class UsersInfosDbHelper {
      * @param userID The user to research on the database
      * @return boolean True if the user exists / false else
      */
-    public boolean exists(int userID){
+    boolean exists(int userID){
 
         //Get the database
         SQLiteDatabase db = dbHelper.getReadableDatabase();
