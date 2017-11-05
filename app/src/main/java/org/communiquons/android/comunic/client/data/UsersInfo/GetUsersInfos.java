@@ -19,9 +19,9 @@ import org.json.JSONObject;
 public class GetUsersInfos {
 
     /**
-     * Database helper
+     * User informations database helper
      */
-    private DatabaseHelper dbHelper = null;
+    private UsersInfosDbHelper udbHelper = null;
 
     /**
      * Operations context
@@ -40,7 +40,7 @@ public class GetUsersInfos {
         this.context = context;
 
         //Save database helper object
-        this.dbHelper = dbHelper;
+        this.udbHelper = new UsersInfosDbHelper(dbHelper);
 
     }
 
@@ -59,7 +59,7 @@ public class GetUsersInfos {
     }
 
     /**
-     * Get and return the informations about a user
+     * Get and return the informations about a user on the server
      *
      * @param id The ID of the user to get informations from
      */
@@ -88,6 +88,10 @@ public class GetUsersInfos {
                         //Parse user informations
                         userInfos = parse_user_json(userObject);
                     }
+
+                    //Save user in the local database in case of success
+                    if(userInfos != null)
+                        udbHelper.insertOrUpdate(userInfos);
 
                 } catch (JSONException e){
                     e.printStackTrace();

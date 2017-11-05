@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         account = new Account(this);
 
         //DEVELOPMENT : Try to get information about a user over the network
-        GetUsersInfos uInfos = new GetUsersInfos(this, null);
+        GetUsersInfos uInfos = new GetUsersInfos(this, new DatabaseHelper(this));
         
         //Get infos... about me! :)
         final int uID = 1;

@@ -33,6 +33,24 @@ public class UsersInfosDbHelper {
     }
 
     /**
+     * Insert or update a user entry
+     * * Insertion if the user isn't already present in the database
+     * * Update if the user is already present in the database
+     *
+     * @param userInfo The user insert or update
+     * @return True for a success / false else
+     */
+    boolean insertOrUpdate(UserInfo userInfo){
+
+        //Check if the user is already present in the database or not
+        if(!exists(userInfo.getId()))
+            return insert(userInfo) > 0;
+        else
+            return update(userInfo);
+
+    }
+
+    /**
      * Check wether a user is present in the database or not
      *
      * @param userID The user to research on the database
@@ -81,7 +99,7 @@ public class UsersInfosDbHelper {
      * @param user The user to insert in the database
      * @return -1 in case of failure / the id of the new entry else
      */
-    public int insert(UserInfo user){
+    private int insert(UserInfo user){
 
         //Get a database with write access
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -193,6 +211,38 @@ public class UsersInfosDbHelper {
         int result = db.delete(UsersInfoSchema.TABLE_NAME, condition, conditionArgs);
 
         //Close database
+        db.close();
+
+        return result > 0;
+    }
+
+    /**
+     * Update a user entry
+     *
+     * @param userInfo New informations about the user
+     * @return True if the operation seems to be a success / false else
+     */
+    private boolean update(UserInfo userInfo){
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        //Prepare the request
+        //Set the new values
+        ContentValues newValues = new ContentValues();
+        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_FIRSTNAME, userInfo.getFirstName());
+        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_LASTNAME, userInfo.getLastName());
+        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_ACCOUNT_IMAGE, userInfo.getAcountImageURL());
+
+        //Set the condition
+        String conditions = UsersInfoSchema.COLUMN_NAME_USER_ID + " = ?";
+        String[] conditionArgs = {
+                ""+userInfo.getId()
+        };
+
+
+        //Perform the request
+        int result = db.update(UsersInfoSchema.TABLE_NAME, newValues, conditions, conditionArgs);
+
         db.close();
 
         return result > 0;
