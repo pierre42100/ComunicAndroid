@@ -1,5 +1,7 @@
 package org.communiquons.android.comunic.client.api;
 
+import android.content.Context;
+
 import org.communiquons.android.comunic.client.api.APIPostData;
 
 import java.util.ArrayList;
@@ -14,6 +16,11 @@ import java.util.ArrayList;
 public class APIRequestParameters {
 
     /**
+     * The context of the request
+     */
+    private Context context;
+
+    /**
      * Parameters of the request
      */
     private ArrayList<APIPostData> parameters;
@@ -26,13 +33,18 @@ public class APIRequestParameters {
     /**
      * The class constructor
      *
+     * @param context The context of the request
      * @param uri The request URI on the server
      */
-    public APIRequestParameters(String uri){
+    public APIRequestParameters(Context context, String uri){
+
+        //Save the context
+        this.context = context;
+
         //Save request URI
         request_uri = uri;
 
-        //Intializate parametres array
+        //Intialize parameters array
         parameters = new ArrayList<>();
     }
 
@@ -75,5 +87,14 @@ public class APIRequestParameters {
         }
 
         return result;
+    }
+
+    /**
+     * Get the context of the request
+     *
+     * @return The context of the request
+     */
+    public Context getContext() {
+        return context;
     }
 }

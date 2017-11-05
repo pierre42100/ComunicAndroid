@@ -10,6 +10,10 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.api.APIRequestTask;
+import org.communiquons.android.comunic.client.data.Account;
+import org.communiquons.android.comunic.client.data.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersInfos;
+import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 
 
 /**
@@ -36,6 +40,21 @@ public class MainActivity extends AppCompatActivity {
 
         //Initialize account object
         account = new Account(this);
+
+        //DEVELOPMENT : Try to get information about a user over the network
+        GetUsersInfos uInfos = new GetUsersInfos(this, null);
+        
+        //Get infos... about me!
+        int uID = 1;
+        uInfos.get(uID, new GetUsersInfos.getUserInfosCallback() {
+            @Override
+            public void callback(UserInfo info) {
+                if(info == null)
+                    Toast.makeText(MainActivity.this, "Failure !", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(MainActivity.this, "Success !", Toast.LENGTH_SHORT).show();
+            }
+        }); 
     }
 
     @Override

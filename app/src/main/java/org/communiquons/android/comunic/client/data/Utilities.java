@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client;
+package org.communiquons.android.comunic.client.data;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
  * Created by pierre on 10/29/17.
  */
 
-class Utilities {
+public class Utilities {
 
     /**
      * Application context
@@ -27,7 +27,7 @@ class Utilities {
      *
      * @param context Context of the application
      */
-    Utilities(Context context){
+    public Utilities(Context context){
         mContext = context;
     }
 
@@ -101,7 +101,7 @@ class Utilities {
      * @param mail The E-Mail address to check
      * @return True if the mail is valid / false else
      */
-    boolean isValidMail(CharSequence mail){
+    public boolean isValidMail(CharSequence mail){
         return !TextUtils.isEmpty(mail) && Patterns.EMAIL_ADDRESS.matcher(mail).matches();
     }
 }

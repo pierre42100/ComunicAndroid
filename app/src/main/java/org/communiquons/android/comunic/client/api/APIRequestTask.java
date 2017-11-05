@@ -4,9 +4,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.util.Log;
 
+import org.communiquons.android.comunic.client.data.Account;
 import org.communiquons.android.comunic.client.BuildConfig;
-import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
@@ -18,6 +19,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Perform an API request on the server
@@ -33,11 +35,11 @@ import java.net.URL;
 public abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Void, APIResponse> {
 
     /**
-     * Background task
+     * API request in a Background task
      *
      * Warning: This method support only one request per object
      *
-     * @param params Parametres required to perform the API request
+     * @param params Parameters required to perform the API request
      * @return JSONObject The result of the request
      */
     @Override
@@ -45,6 +47,7 @@ public abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Voi
 
         try {
             //Perform the API request
+            addLoginTokens(params[0]);
             return downloadUrl(params[0]);
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,5 +144,29 @@ public abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Voi
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    /**
+     * Add the login tokens to an API request object
+     */
+    private void addLoginTokens(APIRequestParameters params){
+
+        //Create account object
+        Account account = new Account(params.getContext());
+
+        //Check if user is signed in or not
+        if(!account.signed_in())
+            return; //Do nothing
+
+        //Get login tokens
+        ArrayList<String> tokens = account.getLoginTokens();
+
+        if(tokens.size() < 2)
+            return; //Not enough tokens
+
+        //Add them to the request
+        params.addParameter("userToken1", tokens.get(0));
+        params.addParameter("userToken2", tokens.get(1));
+
     }
 }

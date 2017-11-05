@@ -10,6 +10,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.communiquons.android.comunic.client.data.Account;
+import org.communiquons.android.comunic.client.data.Utilities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -97,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //Perform a request on the API to check user credentials and get login tokens
-        APIRequestParameters params = new APIRequestParameters("user/connectUSER");
+        APIRequestParameters params = new APIRequestParameters(this, "user/connectUSER");
         params.addParameter("userMail", ""+login_mail.getText());
         params.addParameter("userPassword", ""+login_password.getText());
 

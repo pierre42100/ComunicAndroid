@@ -8,7 +8,7 @@ import org.communiquons.android.comunic.client.data.DatabaseContract.UsersInfoSc
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 
 /**
- * Users informations helpers
+ * Users information helpers
  *
  * Makes the interface between the UsersInfo object and the SQLite object
  *
@@ -152,16 +152,17 @@ public class UsersInfosDbHelper {
             c.moveToFirst();
 
             //Extract the information and record them
-            result.setId(
-                    c.getInt(
-                        c.getColumnIndexOrThrow(
-                                UsersInfoSchema.COLUMN_NAME_USER_ID
-                        )
-                    )
-            );
+            result.setId(c.getInt(c.getColumnIndexOrThrow(
+                                UsersInfoSchema.COLUMN_NAME_USER_ID)));
 
+            result.setFirstName(c.getString(c.getColumnIndexOrThrow(
+                    UsersInfoSchema.COLUMN_NAME_USER_FIRSTNAME)));
 
-            //TODO : finish extraction
+            result.setLastName(c.getString(c.getColumnIndexOrThrow(
+                    UsersInfoSchema.COLUMN_NAME_USER_LASTNAME)));
+
+            result.setAccountImageURL(c.getString(c.getColumnIndexOrThrow(
+                    UsersInfoSchema.COLUMN_NAME_USER_ACCOUNT_IMAGE)));
         }
 
         //Close the cursor
@@ -171,5 +172,29 @@ public class UsersInfosDbHelper {
         db.close();
 
         return result;
+    }
+
+    /**
+     * Remove a user from the database (if he is present)
+     *
+     * @param userID The ID of the user to delete
+     * @return False if nothing was deleted
+     */
+    boolean delete(int userID){
+
+        //Get write access to the database
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        //Prepare the request
+        String condition = UsersInfoSchema.COLUMN_NAME_USER_ID + " = ?";
+        String[] conditionArgs = {""+userID};
+
+        //Perform the request
+        int result = db.delete(UsersInfoSchema.TABLE_NAME, condition, conditionArgs);
+
+        //Close database
+        db.close();
+
+        return result > 0;
     }
 }

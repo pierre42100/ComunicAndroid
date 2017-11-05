@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client;
+package org.communiquons.android.comunic.client.data;
 
 import android.content.Context;
 import android.util.Log;
@@ -18,7 +18,7 @@ import java.util.Objects;
  * Created by pierre on 10/29/17.
  */
 
-class Account {
+public class Account {
 
     /**
      * Utilities object
@@ -45,7 +45,7 @@ class Account {
      *
      * @param context Context of the application
      */
-    Account(Context context){
+    public Account(Context context){
         mContext = context;
         utils = new Utilities(context);
 
@@ -58,7 +58,7 @@ class Account {
      *
      * @return True if signed in
      */
-    boolean signed_in(){
+    public boolean signed_in(){
 
         //Check if tokens are already loaded
         if(tokens.size() < 1){
@@ -73,7 +73,7 @@ class Account {
      * Sign out user
      * @return True in case of success / false else
      */
-    boolean sign_out(){
+    public boolean sign_out(){
         return remove_login_tokens();
     }
 
@@ -116,12 +116,31 @@ class Account {
     }
 
     /**
+     * Get and return login tokens
+     *
+     * @return The list of tokens / null if user isn't signed in
+     */
+    public ArrayList<String> getLoginTokens(){
+
+        //Check if tokens are already loaded or not
+        if(tokens.size()< 1)
+            load_tokens();
+
+        //Check if there is still no tokens
+        if(tokens.size() < 1)
+            return null; //Nothing to be done
+
+        //Return tokens list
+        return tokens;
+    }
+
+    /**
      * Save new tokens in tokens file
      *
      * @param toks The array containing the tokens
      * @return False in case of failure
      */
-    boolean save_new_tokens(ArrayList<String> toks){
+    public boolean save_new_tokens(ArrayList<String> toks){
 
         //Create tokens array
         JSONArray tokens = new JSONArray();
