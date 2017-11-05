@@ -4,9 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import org.communiquons.android.comunic.client.data.Account;
+import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.BuildConfig;
 
 import java.io.BufferedOutputStream;

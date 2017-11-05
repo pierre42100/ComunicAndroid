@@ -10,7 +10,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.communiquons.android.comunic.client.data.Account;
+import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.data.Utilities;
 import org.json.JSONException;
 import org.json.JSONObject;

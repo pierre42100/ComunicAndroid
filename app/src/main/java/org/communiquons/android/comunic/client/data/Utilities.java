@@ -37,7 +37,7 @@ public class Utilities {
      * @param filename the name of the file to get
      * @return The content of the file
      */
-    String file_get_content(String filename){
+    public String file_get_content(String filename){
 
         FileInputStream fileInputStream;
 
@@ -77,7 +77,7 @@ public class Utilities {
      * @param content The new content of the file
      * @return FALSE in case of failure
      */
-    boolean file_put_contents(String filename, String content){
+    public boolean file_put_contents(String filename, String content){
 
         FileOutputStream fileOutputStream;
 
