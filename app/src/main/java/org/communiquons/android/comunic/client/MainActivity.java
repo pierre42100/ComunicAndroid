@@ -44,15 +44,16 @@ public class MainActivity extends AppCompatActivity {
         //DEVELOPMENT : Try to get information about a user over the network
         GetUsersInfos uInfos = new GetUsersInfos(this, null);
         
-        //Get infos... about me!
-        int uID = 1;
+        //Get infos... about me! :)
+        final int uID = 1;
         uInfos.get(uID, new GetUsersInfos.getUserInfosCallback() {
             @Override
             public void callback(UserInfo info) {
                 if(info == null)
                     Toast.makeText(MainActivity.this, "Failure !", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(MainActivity.this, "Success !", Toast.LENGTH_SHORT).show();
+                else {
+                    Toast.makeText(MainActivity.this, uID + " is " + info.getFullName() + "!", Toast.LENGTH_SHORT).show();
+                }
             }
         }); 
     }

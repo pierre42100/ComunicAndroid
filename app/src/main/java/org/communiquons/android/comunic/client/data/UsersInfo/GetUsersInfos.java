@@ -6,6 +6,8 @@ import org.communiquons.android.comunic.client.api.APIRequestParameters;
 import org.communiquons.android.comunic.client.api.APIRequestTask;
 import org.communiquons.android.comunic.client.api.APIResponse;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This class handles informations requests about user informations
@@ -61,10 +63,9 @@ public class GetUsersInfos {
      *
      * @param id The ID of the user to get informations from
      */
-    public void get(int id, getUserInfosCallback callback){
+    public void get(final int id, final getUserInfosCallback callback){
 
         //Perform a request on the API server
-
         //Setup the request
         APIRequestParameters requestParameters = new APIRequestParameters(context, "user/getInfos");
         requestParameters.addParameter("userID", ""+id);
@@ -75,11 +76,62 @@ public class GetUsersInfos {
             @Override
             protected void onPostExecute(APIResponse result) {
 
+                UserInfo userInfos = null;
 
+                try {
+
+                    //Try to extract user informations
+                    JSONObject userObject = result.getJSONObject().getJSONObject(""+id);
+
+                    //Continue only if we could extract required informations
+                    if (userObject != null) {
+                        //Parse user informations
+                        userInfos = parse_user_json(userObject);
+                    }
+
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+                //Go to the next function
+                callback.callback(userInfos);
 
             }
 
         }.execute(requestParameters);
+
+    }
+
+    /**
+     * Parse a JSON object into a user object
+     *
+     * @param userObject Informations about the user in an object
+     * @return User object in case of success, null else
+     */
+    private UserInfo parse_user_json(JSONObject userObject){
+
+        //Check if the JSON object passed is null or not
+        if(userObject == null)
+            return null; //Failure
+
+        UserInfo userInfos = new UserInfo();
+
+        //Try to retrieve user informations
+        try {
+
+            //Retrieve all user informations
+            userInfos.setId(userObject.getInt("userID"));
+            userInfos.setFirstName(userObject.getString("firstName"));
+            userInfos.setLastName(userObject.getString("lastName"));
+            userInfos.setAccountImageURL(userObject.getString("accountImage"));
+
+        } catch (JSONException e){
+            e.printStackTrace();
+            return null;
+        }
+
+        //Return result
+        return userInfos;
 
     }
 

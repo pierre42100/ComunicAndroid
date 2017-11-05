@@ -148,6 +148,8 @@ public abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Voi
 
     /**
      * Add the login tokens to an API request object
+     *
+     * @param params The parameters of the request to update
      */
     private void addLoginTokens(APIRequestParameters params){
 
