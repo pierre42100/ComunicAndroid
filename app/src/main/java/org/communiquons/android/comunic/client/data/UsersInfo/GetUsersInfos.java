@@ -66,13 +66,19 @@ public class GetUsersInfos {
      */
     public void get(int id, getUserInfosCallback callback){
 
+        //Check if the ID is positive, error else
+        if(id < 1){
+            callback.callback(null); //This is an error
+        }
+
         //Check if the user is already present in the database or not
         if(!udbHelper.exists(id))
             //Perform a request on the server
-        getOnServer(id, callback);
+            getOnServer(id, callback);
 
         //Else we can retrieve user informations from the local database
-        callback.callback(udbHelper.get(id));
+        else
+            callback.callback(udbHelper.get(id));
 
     }
 
@@ -98,19 +104,28 @@ public class GetUsersInfos {
                 UserInfo userInfos = null;
 
                 try {
+                    if(result != null) {
 
-                    //Try to extract user informations
-                    JSONObject userObject = result.getJSONObject().getJSONObject(""+id);
+                        //Try to extract user informations
+                        JSONObject userObjectContainer = result.getJSONObject();
 
-                    //Continue only if we could extract required informations
-                    if (userObject != null) {
-                        //Parse user informations
-                        userInfos = parse_user_json(userObject);
+                        if (userObjectContainer != null) {
+
+                            //Extract user object
+                            JSONObject userObject = userObjectContainer.getJSONObject("" + id);
+
+                            //Continue only if we could extract required informations
+                            if (userObject != null) {
+                                //Parse user informations
+                                userInfos = parse_user_json(userObject);
+                            }
+
+                            //Save user information in the local database in case of success
+                            if (userInfos != null)
+                                udbHelper.insertOrUpdate(userInfos);
+                        }
+
                     }
-
-                    //Save user information in the local database in case of success
-                    if(userInfos != null)
-                        udbHelper.insertOrUpdate(userInfos);
 
                 } catch (JSONException e){
                     e.printStackTrace();

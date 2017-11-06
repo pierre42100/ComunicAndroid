@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.api.APIRequestTask;
 import org.communiquons.android.comunic.client.data.Account.Account;
+import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersInfos;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
@@ -24,9 +25,14 @@ import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * Acount object
+     * Account object
      */
-    Account account;
+    private Account account;
+
+    /**
+     * Account utils object
+     */
+    private AccountUtils aUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +44,15 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.err_no_internet_connection, Toast.LENGTH_SHORT).show();
         }
 
-        //Initialize account object
+        //Initialize account objects
         account = new Account(this);
+        aUtils = new AccountUtils(this);
 
         //DEVELOPMENT : Try to get information about a user over the network
         GetUsersInfos uInfos = new GetUsersInfos(this, new DatabaseHelper(this));
         
         //Get infos... about me! :)
-        final int uID = 1;
+        final int uID = aUtils.get_current_user_id();
         uInfos.get(uID, new GetUsersInfos.getUserInfosCallback() {
             @Override
             public void callback(UserInfo info) {

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.data.Account.Account;
+import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.Utilities;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +33,11 @@ public class LoginActivity extends AppCompatActivity {
      */
     private Utilities utils;
 
+    /**
+     * Account utilities object
+     */
+    private AccountUtils aUtils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +45,9 @@ public class LoginActivity extends AppCompatActivity {
 
         //Create utilities object
         utils = new Utilities(this);
+
+        //Create account utilities object
+        aUtils = new AccountUtils(this);
 
         //Check for connectivity
         if(!APIRequestTask.isAPIavailable(this)){
@@ -163,9 +172,23 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        //Redirect to the main activity
-        Intent redirect = new Intent(this, MainActivity.class);
-        startActivity(redirect);
+        //Refresh current user ID
+        aUtils.refresh_current_user_id(new AccountUtils.onceRefreshedUserID(){
+            @Override
+            public void callback(boolean success) {
+
+                //Check if it is a success or a failure
+                if(!success){
+                    show_err_server_response();
+                }
+                else {
+                    //Redirect to the main activity
+                    Intent redirect = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(redirect);
+                }
+
+            }
+        });
 
     }
 
