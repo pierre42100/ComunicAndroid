@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main_bottom_navigation_friends_list"
+        android:title="@string/navigation_bottom_friends_item"
+        android:icon="@drawable/ic_menu_allfriends"
+        />
+
+    <item
+        android:id="@+id/main_bottom_navigation_me_view"
+        android:title="@string/navigation_bottom_me_item"
+        android:icon="@drawable/ic_menu_home"
+        />
+
+</menu>

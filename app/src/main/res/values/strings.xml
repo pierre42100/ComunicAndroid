@@ -14,4 +14,6 @@
     <string name="popup_signout_message">Are you sure do you want to sign out ?</string>
     <string name="popup_signout_confirm_button">Sign out</string>
     <string name="popup_signout_cancel_button">Cancel</string>
+    <string name="navigation_bottom_friends_item">Friends</string>
+    <string name="navigation_bottom_me_item">Me</string>
 </resources>

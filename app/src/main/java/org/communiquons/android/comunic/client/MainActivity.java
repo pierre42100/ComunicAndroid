@@ -1,22 +1,23 @@
 package org.communiquons.android.comunic.client;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.api.APIRequestTask;
 import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
-import org.communiquons.android.comunic.client.data.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.ImageLoadTask;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersInfos;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
+import org.communiquons.android.comunic.client.fragments.FriendsListFragment;
+import org.communiquons.android.comunic.client.fragments.UserInfosFragment;
 
 
 /**
@@ -41,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Enable bottom navigation menu
+        init_bottom_menu();
+
         //Check for connectivity
         if(!APIRequestTask.isAPIavailable(this)){
             Toast.makeText(this, R.string.err_no_internet_connection, Toast.LENGTH_SHORT).show();
@@ -48,28 +52,11 @@ public class MainActivity extends AppCompatActivity {
 
         //Initialize account objects
         account = new Account(this);
-        aUtils = new AccountUtils(this);
 
-        //DEVELOPMENT : Try to get information about a user over the network
-        GetUsersInfos uInfos = new GetUsersInfos(this, new DatabaseHelper(this));
-        final ImageView imageView = (ImageView) findViewById(R.id.test_img);
-        
-        //Get infos... about me! :)
-        final int uID = aUtils.get_current_user_id();
-        uInfos.get(uID, new GetUsersInfos.getUserInfosCallback() {
-            @Override
-            public void callback(UserInfo info) {
-                if(info == null)
-                    Toast.makeText(MainActivity.this, "Failure !", Toast.LENGTH_SHORT).show();
-                else {
-                    Toast.makeText(MainActivity.this, uID + " is " + info.getFullName() + "!", Toast.LENGTH_SHORT).show();
-
-                    new ImageLoadTask(MainActivity.this, info.getAcountImageURL(), imageView).execute();
-
-
-                }
-            }
-        }); 
+        //If it is the first time the application is launched, started the user friends tab
+        if(savedInstanceState == null){
+            openFriendsFragment();
+        }
     }
 
     @Override
@@ -84,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Menu creation
+     * Top menu creation
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,6 +93,37 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
 
+    }
+
+    /**
+     * Bottom menu creation
+     */
+    void init_bottom_menu(){
+        BottomNavigationView navigation =
+                (BottomNavigationView) findViewById(R.id.main_bottom_navigation);
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                //Check which option was selected
+                switch (item.getItemId()) {
+
+                    //If the user clicked to show the friends list
+                    case R.id.main_bottom_navigation_friends_list:
+                        openFriendsFragment();
+                        return true;
+
+                    //If the user choosed to show informations about him
+                    case R.id.main_bottom_navigation_me_view:
+                        openUserInfosFragment();
+                        return true;
+
+                }
+
+                //Selected element not found
+                return false;
+            }
+        });
     }
 
     /**
@@ -138,5 +156,29 @@ public class MainActivity extends AppCompatActivity {
 
                 //Show popup
                 .create().show();
+    }
+
+    /**
+     * Open the friends list fragment
+     */
+    void openFriendsFragment(){
+
+        FriendsListFragment friendsListFragment = new FriendsListFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, friendsListFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+    }
+
+    /**
+     * Open the user information fragment
+     */
+    void openUserInfosFragment(){
+        UserInfosFragment userInfosFragment = new UserInfosFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, userInfosFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
