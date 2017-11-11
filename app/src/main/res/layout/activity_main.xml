@@ -15,4 +15,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/test_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_width="100dp"
+        tools:layout_height="100dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
 </android.support.constraint.ConstraintLayout>

@@ -7,6 +7,13 @@ import android.util.Patterns;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
+import java.security.MessageDigest;
 
 /**
  * Application utilities
@@ -103,5 +110,78 @@ public class Utilities {
      */
     public boolean isValidMail(CharSequence mail){
         return !TextUtils.isEmpty(mail) && Patterns.EMAIL_ADDRESS.matcher(mail).matches();
+    }
+
+    /**
+     * Generate the SHA-1 summary of a given string
+     *
+     * @param source The source string
+     * @return The SHA-1 encoded string
+     */
+    public static String sha1(String source){
+
+        String sha1;
+
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(source.getBytes("UTF-8"));
+            sha1 = byteToHex(crypt.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        } catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+            return null;
+        }
+
+        return sha1;
+
+    }
+
+    /**
+     * Convert an array of bytes into a string
+     *
+     * @param bList The list of bytes
+     * @return The result string
+     */
+    private static String byteToHex(byte[] bList){
+
+        Formatter formatter = new Formatter();
+
+        for(byte b : bList){
+            formatter.format("%02x", b);
+        }
+
+        String result = formatter.toString();
+        formatter.close();
+        return result;
+
+    }
+
+    /**
+     * Transfer all the data coming from an InputStream to an Output Stream
+     *
+     * @param is The Input stream
+     * @param os The output stream
+     * @return The number of byte transfered
+     */
+    public static int InputToOutputStream(InputStream is, OutputStream os){
+
+        int count = 0;
+
+        try {
+            int b = is.read();
+            while (b != -1){
+                os.write(b);
+                count++;
+                b = is.read();
+            }
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return count;
     }
 }

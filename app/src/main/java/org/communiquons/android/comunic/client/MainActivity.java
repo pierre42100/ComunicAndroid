@@ -7,12 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.api.APIRequestTask;
 import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.ImageLoadTask;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersInfos;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         //DEVELOPMENT : Try to get information about a user over the network
         GetUsersInfos uInfos = new GetUsersInfos(this, new DatabaseHelper(this));
+        final ImageView imageView = (ImageView) findViewById(R.id.test_img);
         
         //Get infos... about me! :)
         final int uID = aUtils.get_current_user_id();
@@ -60,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Failure !", Toast.LENGTH_SHORT).show();
                 else {
                     Toast.makeText(MainActivity.this, uID + " is " + info.getFullName() + "!", Toast.LENGTH_SHORT).show();
+
+                    new ImageLoadTask(MainActivity.this, info.getAcountImageURL(), imageView).execute();
+
+
                 }
             }
         }); 
