@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,12 +58,9 @@ public class UserInfosFragment extends Fragment {
 
         //Retrieve user informations in order to display them
         int user_id = new AccountUtils(mContext).get_current_user_id();
-        new GetUsersInfos(user_id, mContext, dbHelper){
+        new GetUsersInfos(mContext, dbHelper).get(user_id, new GetUsersInfos.getUserInfosCallback() {
             @Override
-            protected void onPostExecute(UserInfo info) {
-
-                if(info != null)
-                    return;
+            public void callback(UserInfo info) {
 
                 //Set the name of the user
                 userNameView.setText(info.getFullName());
@@ -72,7 +68,7 @@ public class UserInfosFragment extends Fragment {
                 //Get and show the user account image
                 new ImageLoadTask(mContext, info.getAcountImageURL(), imageView).execute();
             }
-        }.execute();
+        });
 
         return result;
     }
