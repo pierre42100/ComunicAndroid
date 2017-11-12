@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.UsersInfo;
 
 import android.content.Context;
+import android.util.ArrayMap;
 
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
 import org.communiquons.android.comunic.client.api.APIRequestTask;
@@ -8,6 +9,8 @@ import org.communiquons.android.comunic.client.api.APIResponse;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * This class handles informations requests about user informations
@@ -59,6 +62,19 @@ public class GetUsersInfos {
     }
 
     /**
+     * This interface must be implemented to perform an API request
+     */
+    public interface getMultipleUserInfosCallback{
+
+        /**
+         * Callback function called when we got informations about user
+         *
+         * @param info Information about the user
+         */
+        void callback(ArrayMap<Integer, UserInfo> info);
+    }
+
+    /**
      * Get and return informations about a user
      *
      * @param id The ID of the user to get the informations
@@ -80,6 +96,39 @@ public class GetUsersInfos {
         else
             callback.callback(udbHelper.get(id));
 
+    }
+
+    /**
+     * Get informations about multiple users
+     *
+     * @param IDs The ID of the user to get
+     * @param callback The result once we got all the users
+     */
+    public void getMultiple(ArrayList<Integer> IDs, getMultipleUserInfosCallback callback){
+
+        //Initializate variables
+        ArrayList<Integer> usersToGet = new ArrayList<>();
+        ArrayMap<Integer, UserInfo> usersInfo = new ArrayMap<>();
+
+        //Process each given user to check if they are available locally or not
+        for(Integer id : IDs){
+            //Check if the user exist or not
+            if(!udbHelper.exists(id))
+                usersToGet.add(id);
+            else {
+                //Get and save user informations
+                usersInfo.put(id, udbHelper.get(id));
+            }
+        }
+
+        //Check if there are user informations to get on the server
+        if(usersToGet.size() > 0){
+            getMultipleOnServer(usersToGet, usersInfo, callback);
+        }
+        else {
+            //Call the callback now with the cached user informations
+            callback.callback(usersInfo);
+        }
     }
 
     /**
@@ -133,6 +182,79 @@ public class GetUsersInfos {
 
                 //Go to the next function
                 callback.callback(userInfos);
+
+            }
+
+        }.execute(requestParameters);
+
+    }
+
+    /**
+     * Get and return the informations about mutliple users on the server
+     *
+     * @param IDs The ID of the user to get informations from
+     * @param uInfos Informations about the other users (users that were already available in the db)
+     * @param callback What to do once the request is done
+     */
+    private void getMultipleOnServer(final ArrayList<Integer> IDs, final ArrayMap<Integer, UserInfo> uInfos,
+                                     final getMultipleUserInfosCallback callback){
+
+        //Determine IDs list
+        String IDs_list = "";
+        for(int id : IDs){
+            IDs_list += id + ",";
+        }
+
+        //Perform a request on the API server
+        //Setup the request
+        APIRequestParameters requestParameters = new APIRequestParameters(context, "user/getInfosMultiple");
+        requestParameters.addParameter("usersID", IDs_list);
+
+        //Do it.
+        new APIRequestTask(){
+
+            @Override
+            protected void onPostExecute(APIResponse result) {
+
+                try {
+                    if(result != null) {
+
+                        //Try to extract user informations
+                        JSONObject userObjectContainer = result.getJSONObject();
+
+                        if (userObjectContainer != null) {
+
+                            //Process each user ID
+                            for(int userID : IDs) {
+
+                                UserInfo userInfos = null;
+
+                                //Extract user object
+                                JSONObject userObject = userObjectContainer.getJSONObject(""+userID);
+
+                                //Continue only if we could extract required informations
+                                if (userObject != null) {
+                                    //Parse user informations
+                                    userInfos = parse_user_json(userObject);
+                                }
+
+                                //Save user information in the local database in case of success
+                                if (userInfos != null)
+                                    udbHelper.insertOrUpdate(userInfos);
+
+                                //Add the user to the list
+                                uInfos.put(userID, userInfos);
+                            }
+                        }
+
+                    }
+
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+                //Perform callback action
+                callback.callback(uInfos);
 
             }
 
