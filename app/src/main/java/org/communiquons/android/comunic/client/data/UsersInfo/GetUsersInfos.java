@@ -1,6 +1,8 @@
 package org.communiquons.android.comunic.client.data.UsersInfo;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
 import org.communiquons.android.comunic.client.api.APIRequestTask;
@@ -9,6 +11,8 @@ import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * This class handles informations requests about user informations
  *
@@ -16,7 +20,7 @@ import org.json.JSONObject;
  * Created by pierre on 11/5/17.
  */
 
-public class GetUsersInfos {
+public abstract class GetUsersInfos extends AsyncTask<Void, Void, UserInfo> {
 
     /**
      * User informations database helper
@@ -29,12 +33,21 @@ public class GetUsersInfos {
     private Context context;
 
     /**
+     * UserID to retrieve
+     */
+    private int id;
+
+    /**
      * Public constructor
      *
+     * @param id The ID of the user to get the information about
      * @param context The context of the application
      * @param dbHelper Database helper object
      */
-    public GetUsersInfos(Context context, DatabaseHelper dbHelper){
+    public GetUsersInfos(int id, Context context, DatabaseHelper dbHelper){
+
+        //Save user ID
+        this.id = id;
 
         //Save context
         this.context = context;
@@ -45,50 +58,38 @@ public class GetUsersInfos {
     }
 
     /**
-     * This interface must be implemented to perform an API request
+     * Each script must implement specifically what will be done once the request is done
+     *
+     * @param info Informations about the user / null in case of failure
      */
-    public interface getUserInfosCallback{
-
-        /**
-         * Callback function called when we got informations about user
-         *
-         * @param info Information about the user
-         */
-        void callback(UserInfo info);
-
-    }
+    @Override
+    abstract protected void onPostExecute(UserInfo info);
 
     /**
-     * Get and return informations about a user
-     *
-     * @param id The ID of the user to get the informations
-     * @param callback What to do once we got the response
+     * Get and return information about a user
      */
-    public void get(int id, getUserInfosCallback callback){
+    @Override
+    protected UserInfo doInBackground(Void... params) {
 
         //Check if the ID is positive, error else
-        if(id < 1){
-            callback.callback(null); //This is an error
-        }
+        if(id < 1)
+            return null;
 
         //Check if the user is already present in the database or not
         if(!udbHelper.exists(id))
             //Perform a request on the server
-            getOnServer(id, callback);
-
-        //Else we can retrieve user informations from the local database
+            return getOnServer(id);
         else
-            callback.callback(udbHelper.get(id));
-
+            //Return the cached values about the user
+            return udbHelper.get(id);
     }
 
     /**
      * Get and return the informations about a user on the server
      *
      * @param id The ID of the user to get informations from
-     * @param callback What to do once the request is done
      */
-    private void getOnServer(final int id, final getUserInfosCallback callback){
+    private UserInfo getOnServer(int id){
 
         //Perform a request on the API server
         //Setup the request
@@ -96,48 +97,58 @@ public class GetUsersInfos {
         requestParameters.addParameter("userID", ""+id);
 
         //Do it.
-        new APIRequestTask(){
+        APIRequestTask req = new APIRequestTask(){
 
             @Override
             protected void onPostExecute(APIResponse result) {
-
-                UserInfo userInfos = null;
-
-                try {
-                    if(result != null) {
-
-                        //Try to extract user informations
-                        JSONObject userObjectContainer = result.getJSONObject();
-
-                        if (userObjectContainer != null) {
-
-                            //Extract user object
-                            JSONObject userObject = userObjectContainer.getJSONObject("" + id);
-
-                            //Continue only if we could extract required informations
-                            if (userObject != null) {
-                                //Parse user informations
-                                userInfos = parse_user_json(userObject);
-                            }
-
-                            //Save user information in the local database in case of success
-                            if (userInfos != null)
-                                udbHelper.insertOrUpdate(userInfos);
-                        }
-
-                    }
-
-                } catch (JSONException e){
-                    e.printStackTrace();
-                }
-
-                //Go to the next function
-                callback.callback(userInfos);
-
+                //Nothing
             }
 
-        }.execute(requestParameters);
+        };
+        req.execute(requestParameters);
 
+        //Get the result and process it when it becomes available
+        try {
+            APIResponse result = req.get();
+            UserInfo userInfos = null;
+            Log.v("GetUsersInfos", "test2 test test");
+
+            try {
+                if(result != null) {
+
+                    //Try to extract user informations
+                    JSONObject userObjectContainer = result.getJSONObject();
+
+                    if (userObjectContainer != null) {
+
+                        //Extract user object
+                        JSONObject userObject = userObjectContainer.getJSONObject("" + id);
+
+                        //Continue only if we could extract required informations
+                        if (userObject != null) {
+                            //Parse user informations
+                            userInfos = parse_user_json(userObject);
+                        }
+
+                        //Save user information in the local database in case of success
+                        if (userInfos != null)
+                            udbHelper.insertOrUpdate(userInfos);
+                    }
+
+                }
+
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+
+            return userInfos;
+
+        } catch (Exception e){
+            e.printStackTrace();
+
+            //Failure
+            return null;
+        }
     }
 
     /**
