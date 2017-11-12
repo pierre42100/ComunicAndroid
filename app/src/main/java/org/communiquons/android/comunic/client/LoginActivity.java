@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         aUtils = new AccountUtils(this);
 
         //Check for connectivity
-        if(!APIRequestTask.isAPIavailable(this)){
+        if(!APIRequest.isAPIavailable(this)){
             Toast.makeText(this, R.string.err_no_internet_connection, Toast.LENGTH_SHORT).show();
         }
 
@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         //Check internet connection
-        if(!APIRequestTask.isAPIavailable(this)){
+        if(!APIRequest.isAPIavailable(this)){
             show_form_error(getString(R.string.err_no_internet_connection));
             stop = 1;
         }

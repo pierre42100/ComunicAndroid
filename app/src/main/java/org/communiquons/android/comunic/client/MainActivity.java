@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestTask;
 import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
@@ -40,15 +41,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //Enable bottom navigation menu
-        init_bottom_menu();
-
-        //Check for connectivity
-        if(!APIRequestTask.isAPIavailable(this)){
-            Toast.makeText(this, R.string.err_no_internet_connection, Toast.LENGTH_SHORT).show();
-        }
 
         //Initialize account objects
         account = new Account(this);
@@ -57,6 +49,18 @@ public class MainActivity extends AppCompatActivity {
         if(!account.signed_in()){
             //Open the login activity
             startActivity(new Intent(this, LoginActivity.class));
+            return;
+        }
+
+        //Set the content of the activity
+        setContentView(R.layout.activity_main);
+
+        //Enable bottom navigation menu
+        init_bottom_menu();
+
+        //Check for connectivity
+        if(!APIRequest.isAPIavailable(this)){
+            Toast.makeText(this, R.string.err_no_internet_connection, Toast.LENGTH_SHORT).show();
         }
 
         //If it is the first time the application is launched, started the user friends tab
