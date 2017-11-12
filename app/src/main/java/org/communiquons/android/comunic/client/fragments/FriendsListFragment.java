@@ -23,6 +23,9 @@ public class FriendsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //Retain the fragment
+        setRetainInstance(true);
+
         //Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_friendslist, container, false);
 

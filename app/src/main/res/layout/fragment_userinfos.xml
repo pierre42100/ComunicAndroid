@@ -1,11 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello from informations fragment !"/>
+        android:orientation="horizontal"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/fragments_userinfos_account_image"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:contentDescription="User account image"
+            android:src="@drawable/default_account_image"/>
+
+        <TextView
+            android:id="@+id/fragments_userinfos_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="6dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            tools:text="Full user name"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -53,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
         //Initialize account objects
         account = new Account(this);
 
+        //Check if user is signed in or not
+        if(!account.signed_in()){
+            //Open the login activity
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+
         //If it is the first time the application is launched, started the user friends tab
         if(savedInstanceState == null){
             openFriendsFragment();
