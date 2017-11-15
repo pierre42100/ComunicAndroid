@@ -1,5 +1,6 @@
 package org.communiquons.android.comunic.client.api;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,6 +75,30 @@ public class APIResponse {
         //Try to decode JSON object
         try {
             response = new JSONObject(this.response);
+        } catch (JSONException e) {
+            //In case of failure
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+    /**
+     * Get the response as a JSON array
+     *
+     * Might be required in some case
+     *
+     * Warning ! Take care : use getJSONArray or getJSONObject in an adapted way to the response
+     *
+     * @return The response as JSON object. False in case of failure
+     */
+    public JSONArray getJSONArray(){
+
+        JSONArray response = null;
+
+        //Try to decode JSON object
+        try {
+            response = new JSONArray(this.response);
         } catch (JSONException e) {
             //In case of failure
             e.printStackTrace();

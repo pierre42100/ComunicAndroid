@@ -14,6 +14,8 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersInfos;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
+import org.communiquons.android.comunic.client.data.friendsList.Friend;
+import org.communiquons.android.comunic.client.data.friendsList.GetFriendsListTask;
 
 import java.util.ArrayList;
 
@@ -43,27 +45,29 @@ public class FriendsListFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        final ArrayList<Integer> list = new ArrayList<>();
-        list.add(2);
-        list.add(3);
-        new GetUsersInfos(getActivity(), new DatabaseHelper(getActivity())).getMultiple(list, new GetUsersInfos.getMultipleUserInfosCallback() {
+        //Refresh the friends list
+        refresh_friend_list();
+    }
+
+    /**
+     * Refresh the friend list
+     */
+    void refresh_friend_list(){
+        new GetFriendsListTask(getActivity().getApplicationContext()){
+
             @Override
-            public void callback(ArrayMap<Integer, UserInfo> info) {
-                Log.v("FriendsListFragment", "User infos callback");
-                if(info == null)
-                    Toast.makeText(getActivity(), "Failure", Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(getActivity(), "Success", Toast.LENGTH_LONG).show();
+            protected void onPostExecute(ArrayList<Friend> friendsList) {
 
-                for(int ID : list){
-                    UserInfo infos = info.get(ID);
-
-                    if(infos == null)
-                        Log.e("FriendsListFragment", "Error with user infos for ID " + ID);
-                    else
-                        Log.v("FriendsListFragment", ID + " is " + infos.getFullName() + " !");
+                //Display informations in the console
+                for(Friend friend : friendsList){
+                    Log.v("FriendsListFragment", "Friend: " + friend.getId() + " " +
+                            (friend.isAccepted() ? 1 : 0 ) + " " + (friend.isFollowing() ? 1 : 0) +
+                                    " " + friend.getLast_activity() + " "
+                            );
                 }
+
             }
-        });
+
+        }.execute();
     }
 }

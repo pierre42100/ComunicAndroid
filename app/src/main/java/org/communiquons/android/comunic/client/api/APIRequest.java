@@ -3,11 +3,14 @@ package org.communiquons.android.comunic.client.api;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.data.Account.Account;
+import org.communiquons.android.comunic.client.data.Utilities;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,7 +87,7 @@ public class APIRequest {
             result.setResponse_code(conn.getResponseCode());
 
             is = conn.getInputStream();
-            String response = readIt(is, 5000);
+            String response = readIt(is);
             result.setResponse(response);
 
             conn.disconnect();
@@ -99,11 +102,18 @@ public class APIRequest {
     }
 
     // Reads an InputStream and converts it to a String.
-    private String readIt(InputStream stream, int len) throws IOException {
-        Reader reader = new InputStreamReader(stream, "UTF-8");
-        char[] buffer = new char[len];
-        reader.read(buffer);
-        return new String(buffer);
+    private String readIt(InputStream stream) throws IOException {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+        StringBuilder out = new StringBuilder();
+        String line;
+        while((line = reader.readLine()) != null){
+            out.append(line);
+        }
+        reader.close();
+
+        return out.toString();
+
     }
 
     /**
