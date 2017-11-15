@@ -16,4 +16,6 @@
     <string name="popup_signout_cancel_button">Cancel</string>
     <string name="navigation_bottom_friends_item">Friends</string>
     <string name="navigation_bottom_me_item">Me</string>
+    <string name="fragment_friendslist_err_refresh">Couldn\'t refresh friends list !</string>
+    <string name="fragment_friendslist_err_get_userinfos">Couldn\'t get information about your friends!</string>
 </resources>
