@@ -53,6 +53,7 @@ public class FriendsAdapter extends ArrayAdapter<FriendUser> {
 
         //Update user account image
         ImageView user_image = listItemView.findViewById(R.id.fragment_friendslist_item_accountimage);
+        user_image.setImageDrawable(getContext().getDrawable(R.drawable.default_account_image));
         ImageLoadManager.load(getContext(), friendUser.getUserInfo().getAcountImageURL(), user_image);
 
         //Update user name
