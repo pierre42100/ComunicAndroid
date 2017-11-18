@@ -1,7 +1,6 @@
 package org.communiquons.android.comunic.client.data.friendsList;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,9 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
-import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadTask;
+import org.communiquons.android.comunic.client.data.Utilities;
 
 import java.util.ArrayList;
 
@@ -58,7 +58,27 @@ public class FriendsAdapter extends ArrayAdapter<FriendUser> {
 
         //Update user name
         TextView user_name = listItemView.findViewById(R.id.fragment_friendslist_item_fullname);
-        user_name.setText(friendUser.getUserInfo().getFullName());
+        user_name.setText(Utilities.prepareStringTextView(friendUser.getUserInfo().getFullName()));
+
+        //Update user status
+        boolean signed_in = friendUser.getFriend().signed_in();
+        TextView statusView = listItemView.findViewById(R.id.fragment_friendslist_item_status);
+
+        //Set the text
+        statusView.setText(signed_in ?
+                getContext().getText(R.string.user_status_online) :
+                getContext().getText(R.string.user_status_offline)
+        );
+
+        //Set the color
+        int status_color = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            status_color = getContext().getResources().getColor(signed_in ? R.color.holo_green_dark : R.color.darker_gray, null);
+        }
+        else {
+            status_color = getContext().getResources().getColor(signed_in ? R.color.holo_green_dark : R.color.darker_gray);
+        }
+        statusView.setTextColor(status_color);
 
         return listItemView;
     }

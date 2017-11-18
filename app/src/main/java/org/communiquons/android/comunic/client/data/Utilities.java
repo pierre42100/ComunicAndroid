@@ -1,6 +1,8 @@
 package org.communiquons.android.comunic.client.data;
 
 import android.content.Context;
+import android.os.Build;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -13,6 +15,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.Formatter;
 
 /**
@@ -183,5 +186,29 @@ public class Utilities {
         }
 
         return count;
+    }
+
+    /**
+     * Prepare a string sent through the API to be shown in a TextView element
+     *
+     * @param input The string to prepare
+     * @return The string ready to be shown
+     */
+    public static String prepareStringTextView(String input){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(input, Html.FROM_HTML_SEPARATOR_LINE_BREAK_PARAGRAPH).toString();
+        }
+        else
+            return Html.fromHtml(input).toString();
+    }
+
+    /**
+     * Get current timestamp
+     *
+     * @return The current timestamp
+     */
+    public static int time(){
+        Date date = new Date();
+        return (int) Math.ceil(date.getTime()/1000);
     }
 }

@@ -18,4 +18,6 @@
     <string name="navigation_bottom_me_item">Me</string>
     <string name="fragment_friendslist_err_refresh">Couldn\'t refresh friends list !</string>
     <string name="fragment_friendslist_err_get_userinfos">Couldn\'t get information about your friends!</string>
+    <string name="user_status_online">Online</string>
+    <string name="user_status_offline">Offline</string>
 </resources>

@@ -1,5 +1,7 @@
 package org.communiquons.android.comunic.client.data.friendsList;
 
+import org.communiquons.android.comunic.client.data.Utilities;
+
 /**
  * Friend object
  *
@@ -8,6 +10,11 @@ package org.communiquons.android.comunic.client.data.friendsList;
  */
 
 public class Friend {
+
+    /**
+     * The minimal time of activity required to consider a user as signed in
+     */
+    private static final int USER_INACTIVE_AFTER = 35;
 
     /**
      * The ID of the friend
@@ -104,5 +111,14 @@ public class Friend {
      */
     public int getLast_activity() {
         return last_activity;
+    }
+
+    /**
+     * Determine whether user is signed in or not
+     *
+     * @return True if user is signed in / false else
+     */
+    public boolean signed_in(){
+        return (Utilities.time()-USER_INACTIVE_AFTER) < last_activity;
     }
 }
