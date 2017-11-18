@@ -14,7 +14,7 @@ import android.widget.TextView;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.ImageLoadTask;
+import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadTask;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersInfos;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 

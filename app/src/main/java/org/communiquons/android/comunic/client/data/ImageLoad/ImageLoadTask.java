@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.data;
+package org.communiquons.android.comunic.client.data.ImageLoad;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.ImageView;
+
+import org.communiquons.android.comunic.client.data.Utilities;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,10 +25,13 @@ import java.net.URL;
 /**
  * Web image loader and renderer
  *
+ * Warning : Using ImageLoadTask is a quite bad idea to load multiple images,
+ * ImageLoad class should be preferred
+ *
  * @author Pierre HUBERT
  * Created by pierre on 11/8/17.
  */
-
+@Deprecated
 public class ImageLoadTask extends AsyncTask<Void, Void, Void> {
 
     /**
@@ -43,11 +48,6 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Void> {
      * The context of execution of the request
      */
     private Context mContext;
-
-    /**
-     * The main folder in the cache directory that stores the file
-     */
-    private final String IMAGE_CACHE_DIRECTORY = "img_cache/";
 
     /**
      * Image file object
@@ -80,12 +80,12 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... param) {
 
         //Determine the file name for the view
-        String filename = get_file_name(url);
+        String filename = ImageLoadUtils.get_file_name(url);
         if (filename == null) {
             Log.e("ImageLoadTask", "Couldn't generate file storage name !");
             return null; //An error occured
         }
-        String full_filename = IMAGE_CACHE_DIRECTORY + filename;
+        String full_filename = ImageLoadUtils.IMAGE_CACHE_DIRECTORY + filename;
 
         //Try to open the file
         img_file = new File(mContext.getCacheDir(), full_filename);
@@ -177,24 +177,13 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Void> {
         return true;
     }
 
-
-    /**
-     * Get the file name, based on the URL name
-     *
-     * @param url The URL of the file
-     * @return The name of the file, composed of characters that can be used in filename
-     */
-    private String get_file_name(String url){
-        return Utilities.sha1(url);
-    }
-
     /**
      * Create cache images files parent directory if it does not exist
      *
      * @return True in case of success
      */
     private boolean create_parent_directory(){
-        File parent = new File(mContext.getCacheDir(), IMAGE_CACHE_DIRECTORY);
+        File parent = new File(mContext.getCacheDir(), ImageLoadUtils.IMAGE_CACHE_DIRECTORY);
 
         //Check if parent directory already exists
         if(parent.exists())

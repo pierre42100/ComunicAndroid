@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.friendsList;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,7 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.ImageLoadTask;
+import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
+import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadTask;
 
 import java.util.ArrayList;
 
@@ -51,8 +53,7 @@ public class FriendsAdapter extends ArrayAdapter<FriendUser> {
 
         //Update user account image
         ImageView user_image = listItemView.findViewById(R.id.fragment_friendslist_item_accountimage);
-        new ImageLoadTask(getContext(), friendUser.getUserInfo().getAcountImageURL(), user_image)
-            .execute();
+        ImageLoadManager.load(getContext(), friendUser.getUserInfo().getAcountImageURL(), user_image);
 
         //Update user name
         TextView user_name = listItemView.findViewById(R.id.fragment_friendslist_item_fullname);
