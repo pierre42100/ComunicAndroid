@@ -1,7 +1,6 @@
 package org.communiquons.android.comunic.client;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,9 +13,10 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.api.APIRequest;
-import org.communiquons.android.comunic.client.api.APIRequestTask;
 import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
+import org.communiquons.android.comunic.client.data.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.friendsList.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.fragments.FriendsListFragment;
 import org.communiquons.android.comunic.client.fragments.UserInfosFragment;
 
@@ -37,6 +37,16 @@ public class MainActivity extends AppCompatActivity {
      * Account utils object
      */
     private AccountUtils aUtils;
+
+    /**
+     * Friends list refresh thread
+     */
+    private Thread friendsListRefreshThread;
+
+    /**
+     * Database helper
+     */
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +73,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.err_no_internet_connection, Toast.LENGTH_SHORT).show();
         }
 
-        //If it is the first time the application is launched, started the user friends tab
+        //Initialize DatabaseHelper
+        dbHelper = new DatabaseHelper(getApplicationContext());
+
+        //If it is the first time the application is launched, start the user friends tab
         if(savedInstanceState == null){
             openFriendsFragment();
         }
@@ -77,7 +90,22 @@ public class MainActivity extends AppCompatActivity {
         if(!account.signed_in()){
             //Open the login activity
             startActivity(new Intent(this, LoginActivity.class));
+            return;
         }
+
+        //Refresh friends list through a thread
+        friendsListRefreshThread = new Thread(
+                new FriendRefreshLoopRunnable(getApplicationContext(), dbHelper));
+        friendsListRefreshThread.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        //Stop the friends list refresh thread
+        if(friendsListRefreshThread != null)
+            friendsListRefreshThread.interrupt();
     }
 
     /**

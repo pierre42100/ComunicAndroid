@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.friendsList;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
@@ -38,6 +39,7 @@ class GetFriendsList {
      *
      * @return The list of friend of the user
      */
+    @Nullable
     ArrayList<Friend> get(){
 
         //Prepare the API request

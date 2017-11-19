@@ -3,6 +3,8 @@ package org.communiquons.android.comunic.client.data.friendsList;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import org.communiquons.android.comunic.client.data.DatabaseHelper;
+
 import java.util.ArrayList;
 
 /**
@@ -17,15 +19,15 @@ public abstract class GetFriendsListTask extends AsyncTask<Void, Void, ArrayList
     /**
      * The context of the task
      */
-    private Context mContext;
+    private DatabaseHelper dbHelper;
 
     /**
      * Public constructor to the class
      *
-     * @param context the context of execution of the refresh task
+     * @param dbHelper Database helper
      */
-    public GetFriendsListTask(Context context){
-        mContext = context;
+    public GetFriendsListTask(DatabaseHelper dbHelper){
+        this.dbHelper = dbHelper;
     }
 
     /**
@@ -47,6 +49,6 @@ public abstract class GetFriendsListTask extends AsyncTask<Void, Void, ArrayList
     @Override
     protected ArrayList<Friend> doInBackground(Void... params) {
         //Create the GetFriendList object and use it to fetch the list
-        return new GetFriendsList(mContext).get();
+        return new FriendsListDbHelper(dbHelper).get_list();
     }
 }

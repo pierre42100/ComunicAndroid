@@ -83,7 +83,7 @@ public class FriendsListFragment extends Fragment {
         //Display loading bar
         display_progress_bar(true);
 
-        new GetFriendsListTask(getActivity().getApplicationContext()){
+        new GetFriendsListTask(mDbHelper){
 
             @Override
             protected void onPostExecute(ArrayList<Friend> friendsList) {
