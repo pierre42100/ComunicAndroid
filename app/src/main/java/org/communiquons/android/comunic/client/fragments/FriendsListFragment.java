@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -40,6 +42,11 @@ import java.util.ArrayList;
 public class FriendsListFragment extends Fragment {
 
     /**
+     * Debug tag
+     */
+    private String TAG = "FriendsListFragment";
+
+    /**
      * The root view of the fragment
      */
     View rootView;
@@ -63,6 +70,11 @@ public class FriendsListFragment extends Fragment {
      * Friend list operations object
      */
     FriendsList flist;
+
+    /**
+     * Friend adapter
+     */
+    private FriendsAdapter fAdapter;
 
     @Nullable
     @Override
@@ -156,9 +168,9 @@ public class FriendsListFragment extends Fragment {
         this.friendsList = friendsList;
 
         //Set the adapter
-        FriendsAdapter friendsAdapter = new FriendsAdapter(getActivity(), friendsList);
+        fAdapter = new FriendsAdapter(this, getActivity(), friendsList);
         ListView listView = rootView.findViewById(R.id.fragment_friendslist_listview);
-        listView.setAdapter(friendsAdapter);
+        listView.setAdapter(fAdapter);
 
         //Register the view for the context menu
         registerForContextMenu(listView);
@@ -207,17 +219,53 @@ public class FriendsListFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                //Delete the friend from the list
-                flist.remove(friendsList.get(pos).getFriend());
+                //Get the friend to delete
+                final Friend toDelete = friendsList.get(pos).getFriend();
 
-                //Refresh the current friend list
-                refresh_friend_list();
+                //Apply new list version
+                friendsList.remove(pos);
+                fAdapter.notifyDataSetChanged();
+
+                //Remove the friend list on a parallel thread
+                new AsyncTask<Integer, Void, Void>(){
+                    @Override
+                    protected Void doInBackground(Integer[] params) {
+
+                        //Delete the friend from the list
+                        flist.remove(toDelete);
+
+                        return null;
+                    }
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, pos);
             }
         });
         builder.setNegativeButton(R.string.popup_deletefriend_button_cancel, null);
         builder.show();
 
 
+    }
+
+    /**
+     * Accept friendship request
+     *
+     * @param pos The position of the friend accepting the request
+     */
+    public void acceptRequest(int pos){
+
+        //Get the Friend object
+        Friend targetFriend = friendsList.get(pos).getFriend();
+
+        //Mark the friend as accepted
+        targetFriend.setAccepted(true);
+
+        //Accept the request on a separate thread
+        new AsyncTask<Friend, Void, Void>(){
+            @Override
+            protected Void doInBackground(Friend... params) {
+                flist.respondRequest(params[0], true);
+                return null;
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, targetFriend);
     }
 
     /**

@@ -25,4 +25,6 @@
     <string name="popup_deletefriend_message">Are you sure do you want to remove this friend from your friend list ? You will have to make a new friendship request to get this friend back !</string>
     <string name="popup_deletefriend_button_confirm">Delete</string>
     <string name="popup_deletefriend_button_cancel">Cancel</string>
+    <string name="action_friends_accept_request">Accept</string>
+    <string name="user_image_description">User Image Account</string>
 </resources>

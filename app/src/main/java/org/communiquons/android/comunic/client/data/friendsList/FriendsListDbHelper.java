@@ -143,11 +143,7 @@ public class FriendsListDbHelper {
         String nullColumnHack = null;
 
         //Set the values
-        ContentValues values = new ContentValues();
-        values.put(FriendsListSchema.COLUMN_NAME_FRIEND_ID, friend.getId());
-        values.put(FriendsListSchema.COLUMN_NAME_FRIEND_ACCEPTED, friend.isAccepted() ? 1 : 0);
-        values.put(FriendsListSchema.COLUMN_NAME_FRIEND_FOLLOWING, friend.isFollowing() ? 1 : 0);
-        values.put(FriendsListSchema.COLUMN_NAME_FRIEND_LAST_ACTIVITY, friend.getLast_activity());
+        ContentValues values = createContentValue(friend);
 
         //Perform the query
         return db.insert(table_name, nullColumnHack, values) > -1;
@@ -174,5 +170,71 @@ public class FriendsListDbHelper {
         db.close();
 
         return result;
+    }
+
+    /**
+     * Remove a friend from the list
+     *
+     * @param friend The friend to delete
+     */
+    boolean delete_friend(Friend friend){
+
+        //Get access to the database
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        //Prepare the request
+        String table_name = FriendsListSchema.TABLE_NAME;
+        String whereClause = FriendsListSchema.COLUMN_NAME_FRIEND_ID + " = ?";
+        String[] whereValues = {""+friend.getId()};
+
+        int result = db.delete(table_name, whereClause, whereValues);
+
+        //Close access to the database
+        db.close();
+
+        return result > 0;
+    }
+
+    /**
+     * Update a specified user in the database with specified information
+     *
+     * @param friend The friend to update on the databse
+     * @return The result of the operation
+     */
+    boolean update_friend(Friend friend){
+
+        //Get access to the database
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        //Prepare the request
+        String table = FriendsListSchema.TABLE_NAME;
+        ContentValues values = createContentValue(friend);
+        String whereClause = FriendsListSchema.COLUMN_NAME_FRIEND_ID + " = ?";
+        String[] whereArgs = {""+friend.getId()};
+
+        //Perform it
+        int result = db.update(table, values, whereClause, whereArgs);
+
+        //Close access to the database
+        db.close();
+
+        return result > 0;
+    }
+
+    /**
+     * Create a full content value based on user informations in order to make operation on
+     * the database easier
+     *
+     * @param friend The friend which will be turned into a contentvalue
+     * @return The generated content value
+     */
+    private ContentValues createContentValue(Friend friend){
+        ContentValues values = new ContentValues();
+        values.put(FriendsListSchema.COLUMN_NAME_FRIEND_ID, friend.getId());
+        values.put(FriendsListSchema.COLUMN_NAME_FRIEND_ACCEPTED, friend.isAccepted() ? 1 : 0);
+        values.put(FriendsListSchema.COLUMN_NAME_FRIEND_FOLLOWING, friend.isFollowing() ? 1 : 0);
+        values.put(FriendsListSchema.COLUMN_NAME_FRIEND_LAST_ACTIVITY, friend.getLast_activity());
+
+        return values;
     }
 }

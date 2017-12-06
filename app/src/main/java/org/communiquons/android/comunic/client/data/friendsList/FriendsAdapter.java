@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
 import org.communiquons.android.comunic.client.data.Utilities;
+import org.communiquons.android.comunic.client.fragments.FriendsListFragment;
 
 import java.util.ArrayList;
 
@@ -26,20 +28,27 @@ import java.util.ArrayList;
 
 public class FriendsAdapter extends ArrayAdapter<FriendUser> {
 
+    /**
+     * The fragment creating the adapter
+     */
+    private FriendsListFragment mFLfragment;
 
     /**
      * Class constructor
      *
+     * @param friendsListFragment Friends list fragment object
      * @param context The context of execution of the application
      * @param friendsList The list of friends to display (with user information)
      */
-    public FriendsAdapter(Activity context, ArrayList<FriendUser> friendsList){
+    public FriendsAdapter(FriendsListFragment friendsListFragment,
+                          Activity context, ArrayList<FriendUser> friendsList){
         super(context, 0, friendsList);
+        mFLfragment = friendsListFragment;
     }
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View listItemView = convertView;
 
         //Check if the view has to be created
@@ -71,7 +80,7 @@ public class FriendsAdapter extends ArrayAdapter<FriendUser> {
         );
 
         //Set the color
-        int status_color = 0;
+        int status_color;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             status_color = getContext().getResources().getColor(signed_in ? R.color.holo_green_dark : R.color.darker_gray, null);
         }
@@ -79,6 +88,36 @@ public class FriendsAdapter extends ArrayAdapter<FriendUser> {
             status_color = getContext().getResources().getColor(signed_in ? R.color.holo_green_dark : R.color.darker_gray);
         }
         statusView.setTextColor(status_color);
+
+        //Action button
+        Button action = listItemView.findViewById(R.id.fragment_friendslist_item_action);
+
+        //Define the action of the accept request button
+        if(!friendUser.getFriend().isAccepted()){
+
+            //Update the button
+            action.setVisibility(View.VISIBLE);
+            action.setText(R.string.action_friends_accept_request);
+
+            //Make the button lives
+            action.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //Hide the view
+                    v.setVisibility(View.GONE);
+
+                    mFLfragment.acceptRequest(position);
+                }
+            });
+
+        }
+        else {
+
+            //Remove button actions and hide it
+            action.setVisibility(View.GONE);
+            action.setOnClickListener(null);
+        }
 
         return listItemView;
     }
