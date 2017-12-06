@@ -17,6 +17,7 @@ import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.friendsList.FriendRefreshLoopRunnable;
+import org.communiquons.android.comunic.client.fragments.ConversationsListFragment;
 import org.communiquons.android.comunic.client.fragments.FriendsListFragment;
 import org.communiquons.android.comunic.client.fragments.UserInfosFragment;
 
@@ -151,9 +152,14 @@ public class MainActivity extends AppCompatActivity {
                         openFriendsFragment();
                         return true;
 
-                    //If the user choosed to show informations about him
+                    //If the user chose to show information about him
                     case R.id.main_bottom_navigation_me_view:
                         openUserInfosFragment();
+                        return true;
+
+                    //If the user wants to switch to the conversation fragment
+                    case R.id.main_bottom_navigation_conversations:
+                        openConversationsListFragment();
                         return true;
 
                 }
@@ -216,6 +222,17 @@ public class MainActivity extends AppCompatActivity {
         UserInfosFragment userInfosFragment = new UserInfosFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, userInfosFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    /**
+     * Open the conversation list fragment
+     */
+    void openConversationsListFragment(){
+        ConversationsListFragment conversationsListFragment = new ConversationsListFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, conversationsListFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
