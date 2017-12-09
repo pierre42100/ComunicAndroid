@@ -97,7 +97,7 @@ public class FriendsAdapter extends ArrayAdapter<FriendUser> {
 
             //Update the button
             action.setVisibility(View.VISIBLE);
-            action.setText(R.string.action_friends_accept_request);
+            action.setText(R.string.action_friends_respond_request);
 
             //Make the button lives
             action.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +107,7 @@ public class FriendsAdapter extends ArrayAdapter<FriendUser> {
                     //Hide the view
                     v.setVisibility(View.GONE);
 
-                    mFLfragment.acceptRequest(position);
+                    mFLfragment.showPopupRequestResponse(position);
                 }
             });
 

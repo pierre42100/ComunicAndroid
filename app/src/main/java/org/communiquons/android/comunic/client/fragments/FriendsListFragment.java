@@ -246,23 +246,61 @@ public class FriendsListFragment extends Fragment {
     }
 
     /**
-     * Accept friendship request
+     * Show a popup to offer the user to respond to a friendship request
      *
-     * @param pos The position of the friend accepting the request
+     * @param pos The position of the friend in the list
      */
-    public void acceptRequest(int pos){
+    public void showPopupRequestResponse(final int pos){
+
+        new AlertDialog.Builder(getActivity())
+
+                .setTitle(R.string.popup_respond_friendship_request_title)
+                .setMessage(R.string.popup_respond_friendship_request_message)
+
+                .setNegativeButton(R.string.action_friends_deny_request, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        respondRequest(pos, false);
+                    }
+                })
+
+                .setPositiveButton(R.string.action_friends_accept_request, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        respondRequest(pos, true);
+                    }
+                })
+
+                .show();
+
+    }
+
+    /**
+     * Respond to a friendship request
+     *
+     * @param pos The position of the friend respond the request
+     * @param accept Specify wether the user accepted the request or not
+     */
+    private void respondRequest(int pos, final boolean accept){
 
         //Get the Friend object
         Friend targetFriend = friendsList.get(pos).getFriend();
 
-        //Mark the friend as accepted
-        targetFriend.setAccepted(true);
+        if(accept)
+            //Mark the friend as accepted
+            targetFriend.setAccepted(true);
+        else
+            //Remove the friend from the list
+            friendsList.remove(pos);
+
+        //Inform the adapter the list has changed
+        fAdapter.notifyDataSetChanged();
 
         //Accept the request on a separate thread
         new AsyncTask<Friend, Void, Void>(){
             @Override
             protected Void doInBackground(Friend... params) {
-                flist.respondRequest(params[0], true);
+                flist.respondRequest(params[0], accept);
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, targetFriend);

@@ -73,8 +73,13 @@ public class FriendsList {
             new APIRequest().exec(reqParams);
 
             //Update the friend in the local database
-            friend.setAccepted(accept);
-            fdbHelper.update_friend(friend);
+            if(accept) {
+                friend.setAccepted(accept);
+                fdbHelper.update_friend(friend);
+            }
+            else {
+                fdbHelper.delete_friend(friend);
+            }
 
         } catch(Exception e){
             Log.e(TAG, "Couldn't respond to friendship request !");

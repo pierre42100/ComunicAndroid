@@ -28,4 +28,9 @@
     <string name="action_friends_accept_request">Accept</string>
     <string name="user_image_description">User Image Account</string>
     <string name="navigation_bottom_conversations_item">Conversations</string>
+    <string name="fragment_conversationslist_create_button">Create a new conversation</string>
+    <string name="action_friends_respond_request">Respond request</string>
+    <string name="action_friends_deny_request">Deny</string>
+    <string name="popup_respond_friendship_request_title">Respond to the request</string>
+    <string name="popup_respond_friendship_request_message">Do you want to accept or deny  this friendship request ?</string>
 </resources>
