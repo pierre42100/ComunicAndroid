@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
@@ -16,6 +17,7 @@ import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.conversations.ConversationsListAdapter;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 
 import java.util.ArrayList;
@@ -51,6 +53,16 @@ public class ConversationsListFragment extends Fragment {
      */
     private ConversationsListHelper conversationsListHelper;
 
+    /**
+     * Conversations ListView
+     */
+    private ListView conversationsListView;
+
+    /**
+     * Conversation list adapter
+     */
+    private ConversationsListAdapter conversationsListAdapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -69,6 +81,9 @@ public class ConversationsListFragment extends Fragment {
 
         //Create the conversation list helper
         conversationsListHelper = new ConversationsListHelper(getActivity());
+
+        //Get the conversation target list view
+        conversationsListView = view.findViewById(R.id.fragment_conversationslist_list);
 
         //Get the list of conversations
         new AsyncTask<Void, Void, ArrayList<ConversationsInfo>>(){
@@ -188,8 +203,13 @@ public class ConversationsListFragment extends Fragment {
             return;
         }
 
-        for(ConversationsInfo info : list){
-            Log.v(TAG, "Conversation " + info.getID() + " : " + info.getDisplayName());
-        }
+        //Save the list
+        convList = list;
+
+        //Create the adapter
+        conversationsListAdapter = new ConversationsListAdapter(getActivity(), convList);
+
+        //Attach it to the view
+        conversationsListView.setAdapter(conversationsListAdapter);
     }
 }
