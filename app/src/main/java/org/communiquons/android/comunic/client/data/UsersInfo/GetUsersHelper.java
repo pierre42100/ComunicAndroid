@@ -101,7 +101,7 @@ public class GetUsersHelper {
             }
         }
 
-        //If we got there, an error occured
+        //If we got there, an error occurred
         Log.e(TAG, "Couldn't get information about a single user !");
         return null;
 

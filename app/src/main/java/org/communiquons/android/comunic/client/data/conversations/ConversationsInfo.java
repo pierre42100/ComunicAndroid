@@ -52,7 +52,7 @@ public class ConversationsInfo {
      *
      * @param ID_owner The ID of the owner of the conversation
      */
-    public void setID_owner(int ID_owner) {
+    void setID_owner(int ID_owner) {
         this.ID_owner = ID_owner;
     }
 
@@ -70,7 +70,7 @@ public class ConversationsInfo {
      *
      * @param last_active The timestamp of the last activity of the conversation
      */
-    public void setLast_active(int last_active) {
+    void setLast_active(int last_active) {
         this.last_active = last_active;
     }
 
@@ -88,7 +88,7 @@ public class ConversationsInfo {
      *
      * @param name The name of the conversation
      */
-    public void setName(@Nullable  String name) {
+    public void setName(@Nullable String name) {
 
         //Check the validity of the name
         if(name == "false" || name == "null" || name == null)
@@ -112,7 +112,7 @@ public class ConversationsInfo {
      * @return True if the conversation has a name / false else
      */
     public boolean hasName(){
-        return name == null;
+        return name != null;
     }
 
     /**
@@ -122,7 +122,7 @@ public class ConversationsInfo {
      *
      * @param following True if the user is following the conversation
      */
-    public void setFollowing(boolean following) {
+    void setFollowing(boolean following) {
         this.following = following;
     }
 
@@ -140,7 +140,7 @@ public class ConversationsInfo {
      *
      * @param saw_last_message True if the user has seen the last message of the conversation
      */
-    public void setSaw_last_message(boolean saw_last_message) {
+    void setSaw_last_message(boolean saw_last_message) {
         this.saw_last_message = saw_last_message;
     }
 
@@ -167,7 +167,7 @@ public class ConversationsInfo {
      *
      * @param id The ID of the member to add
      */
-    public void addMember(Integer id){
+    void addMember(Integer id){
         if(members == null)
             members = new ArrayList<>();
 

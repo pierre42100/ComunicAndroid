@@ -44,6 +44,7 @@ public class ConversationsListHelper {
      *
      * @return The list of conversations
      */
+    @Nullable
     public ArrayList<ConversationsInfo> download(){
 
         ArrayList<ConversationsInfo> list = new ArrayList<>();
