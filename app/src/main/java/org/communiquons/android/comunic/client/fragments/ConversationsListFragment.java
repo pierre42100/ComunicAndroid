@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,26 +55,65 @@ public class ConversationsListFragment extends Fragment {
         conversationsListHelper = new ConversationsListHelper(getActivity());
 
         //Get the list of conversations
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, ArrayList<ConversationsInfo>>(){
             @Override
-            protected Void doInBackground(Void... params) {
+            protected ArrayList<ConversationsInfo> doInBackground(Void... params) {
 
                 //Get the list of conversations
-                convList = conversationsListHelper.download();
+                return conversationsListHelper.download();
 
-                return null;
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-
-                for(ConversationsInfo conv : convList){
-                    Log.v(TAG, "Conversation "+conv.getID()+": " + conv.getName() + " / " +
-                            conv.countMembers() + " members / Owner: " + conv.getID_owner());
-                }
+            protected void onPostExecute(ArrayList<ConversationsInfo> list) {
+                process_conversations_list(list);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+    }
+
+    /**
+     * Process the conversation list
+     *
+     * @param list The list of conversations
+     */
+    public void process_conversations_list(ArrayList<ConversationsInfo> list){
+
+        //Check if got the list
+        if(list == null){
+            Toast.makeText(getActivity(), R.string.fragment_conversationslist_err_get_list,
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //Process the list of conversation
+        ArrayList<Integer> usersToGet = new ArrayList<>();
+        ArrayList<ConversationsInfo> convToUpdate = new ArrayList<>();
+        for(ConversationsInfo conv : list){
+
+            //Set the displayed names of the conversation
+            if(conv.hasName()){
+                //Use the name of the conversation if available
+                conv.setDisplayName(conv.getName());
+            }
+            else {
+
+                //Add the first users of the conversations to the users for which we need info
+                for(int i = 0; i < 2; i++){
+
+                    if(conv.getMembers().size() <= i)
+                        break;
+
+                    usersToGet.add(conv.getMembers().get(i));
+
+                }
+
+                convToUpdate.add(conv);
+            }
+
+        }
+
 
 
     }

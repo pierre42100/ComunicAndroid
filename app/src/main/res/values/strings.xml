@@ -33,4 +33,5 @@
     <string name="action_friends_deny_request">Deny</string>
     <string name="popup_respond_friendship_request_title">Respond to the request</string>
     <string name="popup_respond_friendship_request_message">Do you want to accept or deny  this friendship request ?</string>
+    <string name="fragment_conversationslist_err_get_list">An error occurred while retrieving conversations list !</string>
 </resources>

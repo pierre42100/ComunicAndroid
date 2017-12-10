@@ -139,7 +139,7 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Void> {
     private boolean download_image(){
 
         //Create cache parent directory
-        if(!create_parent_directory())
+        if(!ImageLoadUtils.create_parent_directory(mContext))
             return false;
 
         try {
@@ -175,28 +175,5 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Void> {
         }
 
         return true;
-    }
-
-    /**
-     * Create cache images files parent directory if it does not exist
-     *
-     * @return True in case of success
-     */
-    private boolean create_parent_directory(){
-        File parent = new File(mContext.getCacheDir(), ImageLoadUtils.IMAGE_CACHE_DIRECTORY);
-
-        //Check if parent directory already exists
-        if(parent.exists())
-            return true;
-
-
-        //Try to create directories
-        boolean success = parent.mkdirs();
-
-        //Return error if required
-        if(!success)
-            Log.e("ImageLoadTask", "Couldn't create cache parent directory !");
-
-        return success;
     }
 }

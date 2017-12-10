@@ -69,6 +69,9 @@ class ImageLoadRunnable implements Runnable {
     @Override
     public void run() {
 
+        //Create the parent directory if required
+        ImageLoadUtils.create_parent_directory(mContext);
+
         //Determine the filename for the requested URL
         String filename = ImageLoadUtils.IMAGE_CACHE_DIRECTORY + ImageLoadUtils.get_file_name(url);
 
@@ -122,7 +125,7 @@ class ImageLoadRunnable implements Runnable {
     }
 
     /**
-     * Once the image was downloaded (if it wasn't already) load the image into a bitmpa object
+     * Once the image was downloaded (if it wasn't already) load the image into a bitmap object
      * The apply to the final image view
      */
     private void load_image(){

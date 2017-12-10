@@ -1,5 +1,7 @@
 package org.communiquons.android.comunic.client.data.conversations;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 
 /**
@@ -17,17 +19,22 @@ public class ConversationsInfo {
     private int ID;
     private int ID_owner;
     private int last_active;
-    private String name;
+    private String name = null;
     private boolean following;
     private boolean saw_last_message;
     private ArrayList<Integer> members;
+
+    /**
+     * Additional values used to display conversation information
+     */
+    private String displayName = null;
 
     /**
      * Set the ID of the conversation
      *
      * @param ID The ID of the conversation
      */
-    public void setID(int ID) {
+    void setID(int ID) {
         this.ID = ID;
     }
 
@@ -81,8 +88,13 @@ public class ConversationsInfo {
      *
      * @param name The name of the conversation
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(@Nullable  String name) {
+
+        //Check the validity of the name
+        if(name == "false" || name == "null" || name == null)
+            this.name = null;
+        else
+            this.name = name;
     }
 
     /**
@@ -92,6 +104,15 @@ public class ConversationsInfo {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Check if the conversation has a name or not
+     *
+     * @return True if the conversation has a name / false else
+     */
+    public boolean hasName(){
+        return name == null;
     }
 
     /**
@@ -170,5 +191,35 @@ public class ConversationsInfo {
      */
     public ArrayList<Integer> getMembers() {
         return members;
+    }
+
+
+
+
+    /**
+     * Set the displayed name of the conversation
+     *
+     * @param displayName The displayed name of the conversation
+     */
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    /**
+     * Get the displayed name of the conversation
+     *
+     * @return The displayed name of the conversation
+     */
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    /**
+     * Check if the conversation has a display name or not
+     *
+     * @return true If the conversation has a display name
+     */
+    public boolean hasDisplayName(){
+        return displayName == null;
     }
 }

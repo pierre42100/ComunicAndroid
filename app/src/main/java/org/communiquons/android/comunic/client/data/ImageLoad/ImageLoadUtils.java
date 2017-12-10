@@ -1,6 +1,11 @@
 package org.communiquons.android.comunic.client.data.ImageLoad;
 
+import android.content.Context;
+import android.util.Log;
+
 import org.communiquons.android.comunic.client.data.Utilities;
+
+import java.io.File;
 
 /**
  * Image loading utilities
@@ -10,6 +15,11 @@ import org.communiquons.android.comunic.client.data.Utilities;
  */
 
 class ImageLoadUtils {
+
+    /**
+     * Debug tag
+     */
+    private static final String TAG = "ImageLoadUtils";
 
     /**
      * The main folder in the cache directory that stores the file
@@ -24,6 +34,30 @@ class ImageLoadUtils {
      */
     static String get_file_name(String url){
         return Utilities.sha1(url);
+    }
+
+    /**
+     * Create cache images files parent directory if it does not exist
+     *
+     * @param context Context of execution
+     * @return True in case of success
+     */
+    static boolean create_parent_directory(Context context){
+        File parent = new File(context.getCacheDir(), IMAGE_CACHE_DIRECTORY);
+
+        //Check if parent directory already exists
+        if(parent.exists())
+            return true;
+
+
+        //Try to create directories
+        boolean success = parent.mkdirs();
+
+        //Return error if required
+        if(!success)
+            Log.e(TAG, "Couldn't create cache parent directory !");
+
+        return success;
     }
 
 }
