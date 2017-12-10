@@ -211,4 +211,17 @@ public class Utilities {
         Date date = new Date();
         return (int) Math.ceil(date.getTime()/1000);
     }
+
+    /**
+     * Transform an amount of seconds into a string like "3min" or "10hours"s
+     *
+     * @param time The Time to convert
+     * @return Generated string
+     */
+    public String timeToString(int time){
+        //TODO : implement seconds to string function
+        return null;
+    }
+
+
 }

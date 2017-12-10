@@ -1,6 +1,8 @@
 package org.communiquons.android.comunic.client.data.conversations;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -63,6 +65,29 @@ public class ConversationsListAdapter extends ArrayAdapter<ConversationsInfo> {
         TextView conversationName = convertView
                 .findViewById(R.id.fragment_conversationslist_item_name);
         conversationName.setText(infos.getDisplayName());
+
+        //Retrieve colors
+        int blue, grey;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            grey = getContext().getResources().getColor(R.color.darker_darker_gray,
+                    getContext().getTheme());
+            blue = getContext().getResources().getColor(R.color.dark_blue, getContext().getTheme());
+        } else {
+            grey = getContext().getResources().getColor(R.color.darker_darker_gray);
+            blue = getContext().getResources().getColor(R.color.dark_blue);
+        }
+
+
+        //Check whether the conversation has new messages or not and update conversation name color
+        conversationName.setTextColor(infos.hasSaw_last_message() ? grey : blue);
+
+
+        //Update the number of members of the conversation
+        TextView number_members = convertView
+                .findViewById(R.id.fragment_conversationslist_item_number_members);
+        String members_text = String.format(getContext().getResources()
+                .getString(R.string.conversations_members_number), infos.countMembers());
+        number_members.setText(members_text);
 
         return convertView;
 

@@ -34,4 +34,14 @@
     <string name="popup_respond_friendship_request_title">Respond to the request</string>
     <string name="popup_respond_friendship_request_message">Do you want to accept or deny  this friendship request ?</string>
     <string name="fragment_conversationslist_err_get_list">An error occurred while retrieving conversations list !</string>
+    <string name="conversations_members_number">%d members</string>
+    <string name="date_now">now</string>
+    <string name="date_seconds">seconds</string>
+    <string name="date_minutes">minutes</string>
+    <string name="date_min">min</string>
+    <string name="date_sec">sec</string>
+    <string name="date_h">h</string>
+    <string name="date_m">m</string>
+    <string name="date_s">s</string>
+    <string name="date_hours">date_hours</string>
 </resources>

@@ -1,14 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    android:orientation="horizontal"
+    android:paddingBottom="8dp"
+    android:paddingEnd="8dp"
+    android:paddingStart="8dp"
+    android:paddingTop="8dp">
 
-    <TextView
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Conversation name -->
+        <TextView
         android:id="@+id/fragment_conversationslist_item_name"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:text="Conversation name"/>
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="Conversation name" />
+
+            <!-- Number of members -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/fragment_conversations_list_icon_width"
+                    android:layout_height="@dimen/fragment_conversations_list_icon_height"
+                    android:src="@drawable/ic_menu_allfriends" />
+
+                <TextView
+                    android:id="@+id/fragment_conversationslist_item_number_members"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    tools:text="x Members" />
+
+            </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="@dimen/fragment_conversations_list_icon_width"
+            android:layout_height="@dimen/fragment_conversations_list_icon_height"
+            android:src="@android:drawable/ic_menu_my_calendar"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="1min" />
+
+    </LinearLayout>
 
 </LinearLayout>

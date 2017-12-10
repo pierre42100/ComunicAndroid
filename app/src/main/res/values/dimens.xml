@@ -3,5 +3,7 @@
     <dimen name="account_image_default_width">64dp</dimen>
     <dimen name="account_image_default_height">64dp</dimen>
 
-
+    <!-- Dimensions for the conversation list -->
+    <dimen name="fragment_conversations_list_icon_width">20dp</dimen>
+    <dimen name="fragment_conversations_list_icon_height">20dp</dimen>
 </resources>
