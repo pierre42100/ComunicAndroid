@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.Utilities;
 
 import java.util.ArrayList;
 import java.util.zip.Inflater;
@@ -29,6 +30,8 @@ import static android.R.id.list;
 
 public class ConversationsListAdapter extends ArrayAdapter<ConversationsInfo> {
 
+    private Utilities utils;
+
     /**
      * Class constructor
      *
@@ -37,6 +40,8 @@ public class ConversationsListAdapter extends ArrayAdapter<ConversationsInfo> {
      */
     public ConversationsListAdapter(Context context, ArrayList<ConversationsInfo> list){
         super(context, 0, list);
+
+        utils = new Utilities(context);
     }
 
 
@@ -88,6 +93,13 @@ public class ConversationsListAdapter extends ArrayAdapter<ConversationsInfo> {
         String members_text = String.format(getContext().getResources()
                 .getString(R.string.conversations_members_number), infos.countMembers());
         number_members.setText(members_text);
+
+
+
+        //Update the last activity time of the conversation
+        TextView last_activity = convertView.
+                findViewById(R.id.fragment_conversationslist_item_lastactive);
+        last_activity.setText(utils.timeToString(Utilities.time() - infos.getLast_active()));
 
         return convertView;
 

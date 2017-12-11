@@ -40,6 +40,12 @@
     <string name="date_minutes">minutes</string>
     <string name="date_min">min</string>
     <string name="date_sec">sec</string>
+    <string name="date_day">day</string>
+    <string name="date_days">days</string>
+    <string name="date_month">month</string>
+    <string name="date_months">months</string>
+    <string name="date_year">year</string>
+    <string name="date_years">years</string>
     <string name="date_h">h</string>
     <string name="date_m">m</string>
     <string name="date_s">s</string>

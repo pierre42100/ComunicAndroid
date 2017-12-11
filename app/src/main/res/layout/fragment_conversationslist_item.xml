@@ -56,6 +56,7 @@
             android:src="@android:drawable/ic_menu_my_calendar"/>
 
         <TextView
+            android:id="@+id/fragment_conversationslist_item_lastactive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="1min" />
