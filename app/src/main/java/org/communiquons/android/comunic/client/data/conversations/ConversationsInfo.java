@@ -193,7 +193,40 @@ public class ConversationsInfo {
         return members;
     }
 
+    /**
+     * Get the list of members as a string
+     *
+     * @return The list of members as a string
+     */
+    public String getMembersString() {
+        if(members == null)
+            return "";
 
+        String result = "";
+
+        for(int member : members){
+            result += member + ",";
+        }
+
+        return result;
+    }
+
+    /**
+     * Set the list of members from a string generated using {@link #getMembersString()}
+     *
+     * @param input The input string
+     */
+    public void parseMembersString(String input){
+
+        members = new ArrayList<>();
+
+        String[] membersStr = input.split(",");
+
+        for(String member : membersStr){
+            members.add(Integer.decode(member));
+        }
+
+    }
 
 
     /**

@@ -8,6 +8,7 @@ import android.util.Log;
 import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
 import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,12 +32,39 @@ public class ConversationsListHelper {
     private Context mContext;
 
     /**
+     * Conversations list database helper
+     */
+    private ConversationsListDbHelper convDBHelper;
+
+    /**
      * The constructor of the class
      *
      * @param context The context of execution of the application
+     * @param dbHelper Database helper
      */
-    public ConversationsListHelper(Context context){
+    public ConversationsListHelper(Context context, DatabaseHelper dbHelper){
         mContext = context;
+        convDBHelper = new ConversationsListDbHelper(dbHelper);
+    }
+
+    /**
+     * Get the list of conversation or null in case of failure
+     *
+     * @return The list of conversations
+     */
+    @Nullable
+    public ArrayList<ConversationsInfo> get(){
+
+        //Download a new list of conversations
+        ArrayList<ConversationsInfo> list = download();
+
+        if(list != null){
+            //Save the list
+            convDBHelper.update_list(list);
+        }
+
+        //Return the list
+        return list;
     }
 
     /**
@@ -45,7 +73,7 @@ public class ConversationsListHelper {
      * @return The list of conversations
      */
     @Nullable
-    public ArrayList<ConversationsInfo> download(){
+    private ArrayList<ConversationsInfo> download(){
 
         ArrayList<ConversationsInfo> list = new ArrayList<>();
 

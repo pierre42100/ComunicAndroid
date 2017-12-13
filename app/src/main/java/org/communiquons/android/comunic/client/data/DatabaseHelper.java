@@ -68,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     ConversationsListSchema.COLUMN_NAME_CONVERSATION_NAME + TEXT_TYPE + COMMA_SEP +
                     ConversationsListSchema.COLUMN_NAME_CONVERSATION_FOLLOWING + INTEGER_TYPE + COMMA_SEP +
                     ConversationsListSchema.COLUMN_NAME_CONVERSATION_SAW_LAST_MESSAGES + INTEGER_TYPE + COMMA_SEP +
-                    ConversationsListSchema.COLUMN_NAME_CONVERSATION_MEMBERS + TEXT_TYPE + COMMA_SEP +
+                    ConversationsListSchema.COLUMN_NAME_CONVERSATION_MEMBERS + TEXT_TYPE +
             " )";
 
     private static final String SQL_DELETE_CONVERSATIONS_LIST_TABLE = "DROP TABLE IF EXISTS " +
