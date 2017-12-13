@@ -50,4 +50,5 @@
     <string name="date_m">m</string>
     <string name="date_s">s</string>
     <string name="date_hours">date_hours</string>
+    <string name="err_get_user_info">Couldn\'t get user information !</string>
 </resources>

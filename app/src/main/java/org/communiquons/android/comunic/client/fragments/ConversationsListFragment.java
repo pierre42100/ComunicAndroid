@@ -80,7 +80,7 @@ public class ConversationsListFragment extends Fragment {
         userHelper = new GetUsersHelper(getActivity(), dbHelper);
 
         //Create the conversation list helper
-        conversationsListHelper = new ConversationsListHelper(getActivity());
+        conversationsListHelper = new ConversationsListHelper(getActivity(), dbHelper);
 
         //Get the conversation target list view
         conversationsListView = view.findViewById(R.id.fragment_conversationslist_list);
@@ -91,7 +91,7 @@ public class ConversationsListFragment extends Fragment {
             protected ArrayList<ConversationsInfo> doInBackground(Void... params) {
 
                 //Get the list of conversations
-                ArrayList<ConversationsInfo> list = conversationsListHelper.download();
+                ArrayList<ConversationsInfo> list = conversationsListHelper.get();
                 process_conversations_list(list);
                 return list;
 

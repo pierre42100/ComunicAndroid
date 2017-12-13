@@ -80,6 +80,14 @@ public class FriendsListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_friendslist, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        rootView = view;
 
         //Save application context
         mContext = getActivity().getApplicationContext();
@@ -92,10 +100,6 @@ public class FriendsListFragment extends Fragment {
 
         //Retain the fragment
         //setRetainInstance(true);
-
-        //Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_friendslist, container, false);
-        return rootView;
 
     }
 
