@@ -15,8 +15,8 @@ public final class DatabaseContract {
     public DatabaseContract(){}
 
     /* Database basic information */
-    public static final int DATABASE_VERSION = 2;
-    public static final String DATABASE_NAME = "database.db";
+    static final int DATABASE_VERSION = 3;
+    static final String DATABASE_NAME = "database.db";
 
     /* Users info table */
     public static abstract class UsersInfoSchema implements BaseColumns {
@@ -38,6 +38,19 @@ public final class DatabaseContract {
         public static final String COLUMN_NAME_FRIEND_FOLLOWING = "following";
         public static final String COLUMN_NAME_FRIEND_LAST_ACTIVITY = "last_activity";
 
+    }
+
+    /* Conversations list table */
+    public static abstract class ConversationsListSchema implements BaseColumns {
+        public static final String TABLE_NAME = "conversations_list";
+
+        public static final String COLUMN_NAME_CONVERSATION_ID = "conversation_id";
+        public static final String COLUMN_NAME_CONVERSATION_ID_OWNER = "id_owner";
+        public static final String COLUMN_NAME_CONVERSATION_LAST_ACTIVE = "last_active";
+        public static final String COLUMN_NAME_CONVERSATION_NAME = "name";
+        public static final String COLUMN_NAME_CONVERSATION_FOLLOWING = "following";
+        public static final String COLUMN_NAME_CONVERSATION_SAW_LAST_MESSAGES = "saw_last_message";
+        public static final String COLUMN_NAME_CONVERSATION_MEMBERS = "members";
     }
 
 }

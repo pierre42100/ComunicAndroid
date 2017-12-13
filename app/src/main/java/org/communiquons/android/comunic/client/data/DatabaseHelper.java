@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import org.communiquons.android.comunic.client.data.DatabaseContract.FriendsListSchema;
 import org.communiquons.android.comunic.client.data.DatabaseContract.UsersInfoSchema;
+import org.communiquons.android.comunic.client.data.DatabaseContract.ConversationsListSchema;
 
 /**
  * Database helper. This file handles the creation / upgrade of the local database
@@ -54,6 +55,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_FRIENDS_LIST_TABLE = "DROP TABLE IF EXISTS " +
             FriendsListSchema.TABLE_NAME;
 
+
+    /**
+     * Creation and deletion of the conversations list table
+     */
+    private static final String SQL_CREATE_CONVERSATIONS_LIST_TABLE =
+            "CREATE TABLE " + ConversationsListSchema.TABLE_NAME + " (" +
+                    ConversationsListSchema._ID + " INTEGER PRIMARY KEY," +
+                    ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID + INTEGER_TYPE + COMMA_SEP +
+                    ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID_OWNER + INTEGER_TYPE + COMMA_SEP +
+                    ConversationsListSchema.COLUMN_NAME_CONVERSATION_LAST_ACTIVE + INTEGER_TYPE + COMMA_SEP +
+                    ConversationsListSchema.COLUMN_NAME_CONVERSATION_NAME + TEXT_TYPE + COMMA_SEP +
+                    ConversationsListSchema.COLUMN_NAME_CONVERSATION_FOLLOWING + INTEGER_TYPE + COMMA_SEP +
+                    ConversationsListSchema.COLUMN_NAME_CONVERSATION_SAW_LAST_MESSAGES + INTEGER_TYPE + COMMA_SEP +
+                    ConversationsListSchema.COLUMN_NAME_CONVERSATION_MEMBERS + TEXT_TYPE + COMMA_SEP +
+            " )";
+
+    private static final String SQL_DELETE_CONVERSATIONS_LIST_TABLE = "DROP TABLE IF EXISTS " +
+            ConversationsListSchema.TABLE_NAME;
+
+
     /**
      * Public constructor
      * @param context The context where the database is used
@@ -63,27 +84,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Handles database creation
-     * @param db The database
+     * Initialize the database
+     *
+     * @param db Database object
      */
-    @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void init_db(SQLiteDatabase db){
+
         //Create user informations table
         db.execSQL(SQL_CREATE_USERS_INFOS_TABLE);
 
         //Create friends list table
         db.execSQL(SQL_CREATE_FRIENDS_LIST_TABLE);
+
+        //Create conversations list table
+        db.execSQL(SQL_CREATE_CONVERSATIONS_LIST_TABLE);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    /**
+     * Clear the whole content of the database
+     *
+     * @param db The database
+     */
+    public void clear_db(SQLiteDatabase db){
         //Delete users informations table
         db.execSQL(SQL_DELETE_USERS_INFOS_TABLE);
 
         //Delete friends list table
         db.execSQL(SQL_DELETE_FRIENDS_LIST_TABLE);
 
-        //Perform creation table
+        //Delete conversations list table
+        db.execSQL(SQL_DELETE_CONVERSATIONS_LIST_TABLE);
+    }
+
+    /**
+     * Handles database creation
+     * @param db The database
+     */
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        init_db(db);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        //Clear the database
+        clear_db(db);
+
+        //Perform tables creation
         onCreate(db);
     }
 
