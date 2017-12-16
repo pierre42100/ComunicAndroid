@@ -1,6 +1,8 @@
 package org.communiquons.android.comunic.client.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,6 +22,8 @@ import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListAdapter;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
+import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper
+        .openConversationListener;
 
 import java.util.ArrayList;
 
@@ -31,7 +36,7 @@ import java.util.ArrayList;
  * Created by pierre on 12/6/17.
  */
 
-public class ConversationsListFragment extends Fragment {
+public class ConversationsListFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     /**
      * Debug tag
@@ -57,6 +62,11 @@ public class ConversationsListFragment extends Fragment {
      * Conversations ListView
      */
     private ListView conversationsListView;
+
+    /**
+     * Conversation opener
+     */
+    private openConversationListener openConvListener;
 
     /**
      * Conversation list adapter
@@ -103,11 +113,19 @@ public class ConversationsListFragment extends Fragment {
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-
+        //Set the open conversation listener
+        try {
+            openConvListener = (openConversationListener) getActivity();
+        } catch (ClassCastException e){
+            throw new ClassCastException(getActivity().toString() +
+                    " must implement OpenConversationListener");
+        }
     }
 
     /**
      * Process the conversation list
+     *
+     * This method must be called on a separate thread
      *
      * @param list The list of conversations
      */
@@ -211,5 +229,23 @@ public class ConversationsListFragment extends Fragment {
 
         //Attach it to the view
         conversationsListView.setAdapter(conversationsListAdapter);
+
+        conversationsListView.setOnItemClickListener(this);
+    }
+
+    /**
+     * Handles the click on a conversation to open it
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        //Get the clicked conversation
+        ConversationsInfo conv = convList.get(position);
+
+        //Open the specified conversation
+        openConvListener.openConversation(conv.getID());
+
     }
 }

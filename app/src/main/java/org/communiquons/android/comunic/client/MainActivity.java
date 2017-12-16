@@ -16,7 +16,9 @@ import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.friendsList.FriendRefreshLoopRunnable;
+import org.communiquons.android.comunic.client.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.fragments.ConversationsListFragment;
 import org.communiquons.android.comunic.client.fragments.FriendsListFragment;
 import org.communiquons.android.comunic.client.fragments.UserInfosFragment;
@@ -27,7 +29,8 @@ import org.communiquons.android.comunic.client.fragments.UserInfosFragment;
  *
  * @author Pierre HUBERT
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements ConversationsListHelper.openConversationListener {
 
     /**
      * Account object
@@ -235,5 +238,29 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.main_fragment, conversationsListFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    /**
+     * Open a conversation
+     *
+     * @param id The ID of the conversation to open
+     */
+    @Override
+    public void openConversation(int id) {
+
+        //Set the arguments for the conversation
+        Bundle args = new Bundle();
+        args.putInt(ConversationFragment.ARG_CONVERSATION_ID ,id);
+
+        //Create the fragment
+        ConversationFragment conversationFragment = new ConversationFragment();
+        conversationFragment.setArguments(args);
+
+        //Display it
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, conversationFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
     }
 }

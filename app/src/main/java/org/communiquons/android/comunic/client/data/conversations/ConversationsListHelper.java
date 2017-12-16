@@ -137,4 +137,20 @@ public class ConversationsListHelper {
         return info;
     }
 
+    /**
+     * Handles the opening of a conversation
+     *
+     * This interface should be implemented in all the activity that should handle such action
+     */
+    public interface openConversationListener {
+
+        /**
+         * Open the conversation specified by its ID
+         *
+         * @param id The ID of the conversation to open
+         */
+        void openConversation(int id);
+
+    }
+
 }
