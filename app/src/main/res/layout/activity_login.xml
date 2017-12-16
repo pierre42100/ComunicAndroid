@@ -31,14 +31,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Error message -->
+            <!-- Error content -->
             <TextView
                 android:id="@+id/login_error_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textColor="#FF2222"
-                tools:text="Error message"
+                tools:text="Error content"
                 android:visibility="gone"/>
 
             <!-- Email field -->

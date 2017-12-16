@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import org.communiquons.android.comunic.client.data.DatabaseContract.FriendsListSchema;
 import org.communiquons.android.comunic.client.data.DatabaseContract.UsersInfoSchema;
 import org.communiquons.android.comunic.client.data.DatabaseContract.ConversationsListSchema;
+import org.communiquons.android.comunic.client.data.DatabaseContract.ConversationsMessagesSchema;
 
 /**
  * Database helper. This file handles the creation / upgrade of the local database
@@ -76,6 +77,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     /**
+     * Creation and deletion of the conversation messages table
+     */
+    private static final String SQL_CREATE_CONVERSATION_MESSAGES_TABLE =
+            "CREATE TABLE " + ConversationsMessagesSchema.TABLE_NAME + " (" +
+                    ConversationsMessagesSchema._ID + " INTEGER PRIMARY KEY," +
+                    ConversationsMessagesSchema.COLUMN_NAME_MESSAGE_ID + INTEGER_TYPE + COMMA_SEP +
+                    ConversationsMessagesSchema.COLUMN_NAME_CONVERSATION_ID + INTEGER_TYPE + COMMA_SEP +
+                    ConversationsMessagesSchema.COLUMN_NAME_USER_ID + INTEGER_TYPE + COMMA_SEP +
+                    ConversationsMessagesSchema.COLUMN_NAME_IMAGE_PATH + TEXT_TYPE + COMMA_SEP +
+                    ConversationsMessagesSchema.COLUMN_NAME_MESSAGE + TEXT_TYPE + COMMA_SEP +
+                    ConversationsMessagesSchema.COLUMN_NAME_TIME_INSERT + INTEGER_TYPE +
+            " )";
+
+    private static final String SQL_DELETE_CONVERSATION_MESSAGES_TABLE = "DROP TABLE IF EXISTS " +
+            ConversationsMessagesSchema.TABLE_NAME;
+
+
+    /**
      * Public constructor
      * @param context The context where the database is used
      */
@@ -98,6 +117,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         //Create conversations list table
         db.execSQL(SQL_CREATE_CONVERSATIONS_LIST_TABLE);
+
+        //Create messages list table
+        db.execSQL(SQL_CREATE_CONVERSATION_MESSAGES_TABLE);
     }
 
     /**
@@ -114,6 +136,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         //Delete conversations list table
         db.execSQL(SQL_DELETE_CONVERSATIONS_LIST_TABLE);
+
+        //Delete conversations messages table
+        db.execSQL(SQL_DELETE_CONVERSATION_MESSAGES_TABLE);
     }
 
     /**
