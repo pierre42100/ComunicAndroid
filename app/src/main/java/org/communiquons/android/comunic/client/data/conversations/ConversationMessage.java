@@ -1,5 +1,6 @@
 package org.communiquons.android.comunic.client.data.conversations;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.Objects;
@@ -46,7 +47,7 @@ public class ConversationMessage {
      *
      * @param conversation_id The ID of the conversation
      */
-    public void setConversation_id(int conversation_id) {
+    void setConversation_id(int conversation_id) {
         this.conversation_id = conversation_id;
     }
 
@@ -64,7 +65,7 @@ public class ConversationMessage {
      *
      * @param user_id The ID of the user
      */
-    public void setUser_id(int user_id) {
+    void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 
@@ -100,6 +101,19 @@ public class ConversationMessage {
     }
 
     /**
+     * Get the path of the image associated with the content
+     *
+     * Warning ! if no image path were specified, "null" will be returned, but as a string instead
+     * of an empty pointer
+     *
+     * @return The path of the image
+     */
+    @NonNull
+    public String getImagePathNotNull() {
+        return image_path != null ? image_path : "null";
+    }
+
+    /**
      * Set the content of the message
      *
      * @param content The content of the content
@@ -122,7 +136,7 @@ public class ConversationMessage {
      *
      * @param time_insert The time of insertion of the message
      */
-    public void setTime_insert(int time_insert) {
+    void setTime_insert(int time_insert) {
         this.time_insert = time_insert;
     }
 
