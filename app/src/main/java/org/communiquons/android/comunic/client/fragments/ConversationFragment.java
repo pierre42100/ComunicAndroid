@@ -2,6 +2,7 @@ package org.communiquons.android.comunic.client.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,8 @@ import java.util.ArrayList;
  * Created by pierre on 12/16/17.
  */
 
-public class ConversationFragment extends Fragment {
+public class ConversationFragment extends Fragment
+        implements ConversationRefreshRunnable.onMessagesChangeListener {
 
     /**
      * Debug tag
@@ -98,7 +100,7 @@ public class ConversationFragment extends Fragment {
         super.onResume();
 
         refreshRunnable = new ConversationRefreshRunnable(conversation_id, last_message_id,
-                convMessHelper);
+                convMessHelper, getActivity(), this);
 
         //Create and start the thread
         new Thread(refreshRunnable).start();
@@ -109,5 +111,22 @@ public class ConversationFragment extends Fragment {
         super.onPause();
 
         refreshRunnable.quitSafely();
+    }
+
+    @Override
+    public void onNoMessage() {
+
+    }
+
+    @Override
+    public void onAddMessage(@NonNull ArrayList<ConversationMessage> messages) {
+
+    }
+
+    @Override
+    public void onLoadError() {
+        //Display a toast
+        Toast.makeText(getActivity(), R.string.fragment_conversation_err_load_message,
+                Toast.LENGTH_SHORT).show();
     }
 }

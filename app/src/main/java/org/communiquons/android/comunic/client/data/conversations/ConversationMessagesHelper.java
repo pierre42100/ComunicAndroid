@@ -53,9 +53,9 @@ public class ConversationMessagesHelper {
      * Get the latest messages of a conversation
      *
      * @param conversation_id The ID of the conversation to refresh
-     * @return The ID of the last message available in the database
+     * @return TRUE in case of success / FALSE else
      */
-    int refresh_conversation(int conversation_id){
+    boolean refresh_conversation(int conversation_id){
 
         //Get the ID of the last message available in the database
         int last_message_id = getLastIDFromDb(conversation_id);
@@ -66,7 +66,7 @@ public class ConversationMessagesHelper {
         //Check for errors
         if(new_messages == null){
             //An error occurred
-            return -1;
+            return false;
         }
 
         //Add the new messages to the database (if any)
@@ -75,7 +75,7 @@ public class ConversationMessagesHelper {
         }
 
         //Get the last message ID from database again
-        return getLastIDFromDb(conversation_id);
+        return true;
     }
 
     /**
@@ -99,7 +99,7 @@ public class ConversationMessagesHelper {
      * @param conversation_id Target conversation
      * @return The ID of the last message available in the database or 0 in case of failure
      */
-    private int getLastIDFromDb(int conversation_id){
+    int getLastIDFromDb(int conversation_id){
 
         //Get the id of the last message available in the database
         ConversationMessage last_message = mDbHelper.getLast(conversation_id);
