@@ -91,9 +91,10 @@ public class ConversationRefreshRunnable implements Runnable {
         /**
          * Add new messages to a previous list of messages
          *
+         * @param lastID The ID of the latest message downloaded from server
          * @param messages The new messagess
          */
-        void onAddMessage(@NonNull ArrayList<ConversationMessage> messages);
+        void onAddMessage(int lastID, @NonNull ArrayList<ConversationMessage> messages);
 
         /**
          * This method is called when there is not any message in the conversation
@@ -116,6 +117,7 @@ public class ConversationRefreshRunnable implements Runnable {
         Log.v(TAG, "Started conversation refresh runnable.");
 
         synchronized (object) {
+
             //Loop that execute indefinitely until the fragment is stopped
             while (!quit) {
 
@@ -135,7 +137,7 @@ public class ConversationRefreshRunnable implements Runnable {
                 }
 
                 //Get the ID of the last message available in the local database
-                int lastMessageInDb = convMessHelper.getLastIDFromDb(conversation_id);
+                final int lastMessageInDb = convMessHelper.getLastIDFromDb(conversation_id);
 
                 //If the last message in the database is newer than the last message already read
                 if (lastMessageInDb > last_message_id) {
@@ -166,7 +168,7 @@ public class ConversationRefreshRunnable implements Runnable {
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                listener.onAddMessage(newMessages);
+                                listener.onAddMessage(lastMessageInDb, newMessages);
                             }
 
 

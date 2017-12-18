@@ -7,11 +7,13 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessage;
+import org.communiquons.android.comunic.client.data.conversations.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationRefreshRunnable;
 
@@ -50,9 +52,9 @@ public class ConversationFragment extends Fragment
     private int last_message_id = 0;
 
     /**
-     * The list of messages
+     * The list of messages of the conversation
      */
-    private ArrayList<ConversationMessage> messagesList;
+    private ArrayList<ConversationMessage> messagesList = new ArrayList<>();
 
     /**
      * Conversation refresh runnable
@@ -63,6 +65,11 @@ public class ConversationFragment extends Fragment
      * Conversation messages helper
      */
     private ConversationMessagesHelper convMessHelper;
+
+    /**
+     * Conversation messages adapter
+     */
+    private ConversationMessageAdapter convMessAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,6 +100,13 @@ public class ConversationFragment extends Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //Conversation messages listView
+        ListView convMessListView = view.findViewById(R.id.fragment_conversation_messageslist);
+
+        convMessAdapter = new ConversationMessageAdapter(getActivity(), messagesList);
+        convMessListView.setAdapter(convMessAdapter);
+
     }
 
     @Override
@@ -119,8 +133,16 @@ public class ConversationFragment extends Fragment
     }
 
     @Override
-    public void onAddMessage(@NonNull ArrayList<ConversationMessage> messages) {
+    public void onAddMessage(int lastID, @NonNull ArrayList<ConversationMessage> newMessages) {
 
+        //Add the messages to the the main list of messages
+        for(ConversationMessage message : newMessages){
+            messagesList.add(message);
+        }
+
+        convMessAdapter.notifyDataSetChanged();
+
+        last_message_id = lastID;
     }
 
     @Override
