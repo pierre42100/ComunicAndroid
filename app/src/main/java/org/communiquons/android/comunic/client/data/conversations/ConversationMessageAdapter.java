@@ -32,14 +32,6 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
     private static final String TAG = "ConversationMessageAdap";
 
     /**
-     * Possible colors for the message
-     */
-    private int usercolorText;
-    private int usercolorBackground;
-    private int otherusercolorText;
-    private int otherusercolorBackground;
-
-    /**
      * The ID of the current user
      */
     private int userID;
@@ -58,26 +50,6 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
         //Set user ID
         this.userID = userID;
 
-        //Get the color codes
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            usercolorText = getContext().getResources().
-                    getColor(R.color.conversation_user_messages_textColor, getContext().getTheme());
-            usercolorBackground = getContext().getResources().
-                    getColor(R.color.conversation_user_messages_background, getContext().getTheme());
-            otherusercolorText = getContext().getResources().
-                    getColor(R.color.conversation_otheruser_messages_textColor, getContext().getTheme());
-            otherusercolorBackground = getContext().getResources().
-                    getColor(R.color.conversation_otheruser_messages_background, getContext().getTheme());
-        } else {
-            usercolorText = getContext().getResources().
-                    getColor(R.color.conversation_user_messages_textColor);
-            usercolorBackground = getContext().getResources().
-                    getColor(R.color.conversation_user_messages_background);
-            otherusercolorText = getContext().getResources().
-                    getColor(R.color.conversation_otheruser_messages_textColor);
-            otherusercolorBackground = getContext().getResources().
-                    getColor(R.color.conversation_otheruser_messages_background);
-        }
     }
 
 
@@ -95,41 +67,51 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
         ConversationMessage message = getItem(position);
         assert message != null;
 
+        /*
+            Get the view of the messages
+
+            Update the general layout of the message
+         */
+        TextView contentView;
+        ImageView accountImage;
+        if(message.getUser_id() == userID){
+
+            //Message appears on the right
+            convertView.findViewById(R.id.fragment_conversation_message_left).
+                    setVisibility(View.GONE);
+
+            contentView = convertView.
+                    findViewById(R.id.fragment_conversation_message_item_content_right);
+
+            accountImage = convertView.
+                    findViewById(R.id.fragment_conversation_message_item_accountimage_right);
+        }
+        else {
+
+            //Message appears on the left
+            convertView.findViewById(R.id.fragment_conversation_message_right).
+                    setVisibility(View.GONE);
+
+            contentView = convertView.
+                    findViewById(R.id.fragment_conversation_message_item_content);
+
+            accountImage = convertView.
+                    findViewById(R.id.fragment_conversation_message_item_accountimage);
+        }
 
 
         /*
             Update message content
          */
         //Set the text of the message
-        TextView contentView = convertView.
-                findViewById(R.id.fragment_conversation_message_item_content);
         contentView.setText(message.getContent());
-
-        //Set the color of the message
-        Log.v(TAG, "User ID : " + message.getUser_id() + " current: " + userID);
-        if(message.getUser_id() == userID) {
-            contentView.setTextColor(usercolorText);
-            contentView.setBackgroundColor(usercolorBackground);
-        }
-        else {
-            contentView.setTextColor(otherusercolorText);
-            contentView.setBackgroundColor(otherusercolorBackground);
-        }
 
 
         /*
             Update account image
          */
-        //Get the image of the message
-        ImageView accountImage = convertView.
-                findViewById(R.id.fragment_conversation_message_item_accountimage);
 
-        if(message.getUser_id() == userID){
-            accountImage.setVisibility(View.GONE);
-        }
-        else {
-            accountImage.setVisibility(View.VISIBLE);
-        }
+
 
         return convertView;
     }
