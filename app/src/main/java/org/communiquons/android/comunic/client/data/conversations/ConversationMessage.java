@@ -127,9 +127,8 @@ public class ConversationMessage {
      *
      * @return The content
      */
-    @NonNull
     public String getContent() {
-        return content != null ? content : "";
+        return content;
     }
 
     /**

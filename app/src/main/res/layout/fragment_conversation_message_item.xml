@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp">
+
+    <LinearLayout
+        android:id="@+id/fragment_conversation_message_left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="1dp">
+
+        <ImageView
+            android:id="@+id/fragment_conversation_message_item_accountimage"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/default_account_image" />
+
+        <TextView
+            android:id="@+id/fragment_conversation_message_item_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/conversation_otheruser_messages_background"
+            android:padding="5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            tools:text="A message"
+            android:layout_gravity="center"
+            android:textColor="@color/conversation_otheruser_messages_textColor"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fragment_conversation_message_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:padding="1dp">
+
+        <TextView
+            android:id="@+id/fragment_conversation_message_item_content_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/conversation_user_messages_background"
+            android:padding="5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            tools:text="A message"
+            android:layout_gravity="center"
+            android:textColor="@color/conversation_user_messages_textColor"/>
+
+        <ImageView
+            android:id="@+id/fragment_conversation_message_item_accountimage_right"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+
+            android:layout_marginStart="5dp"
+            android:src="@drawable/default_account_image" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

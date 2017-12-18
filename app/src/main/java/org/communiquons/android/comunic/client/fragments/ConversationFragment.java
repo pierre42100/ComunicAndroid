@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessage;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessageAdapter;
@@ -104,7 +105,8 @@ public class ConversationFragment extends Fragment
         //Conversation messages listView
         ListView convMessListView = view.findViewById(R.id.fragment_conversation_messageslist);
 
-        convMessAdapter = new ConversationMessageAdapter(getActivity(), messagesList);
+        int userID = new AccountUtils(getActivity()).get_current_user_id();
+        convMessAdapter = new ConversationMessageAdapter(getActivity(), messagesList, userID);
         convMessListView.setAdapter(convMessAdapter);
 
     }
