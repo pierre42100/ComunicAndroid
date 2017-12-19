@@ -1,9 +1,11 @@
 package org.communiquons.android.comunic.client.fragments;
 
 import android.app.Fragment;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +15,14 @@ import android.widget.Toast;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessage;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationRefreshRunnable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -58,6 +63,11 @@ public class ConversationFragment extends Fragment
     private ArrayList<ConversationMessage> messagesList = new ArrayList<>();
 
     /**
+     * Informations about the users of the conversation
+     */
+    private ArrayMap<Integer, UserInfo> users = new ArrayMap<>();
+
+    /**
      * Conversation refresh runnable
      */
     private ConversationRefreshRunnable refreshRunnable;
@@ -72,6 +82,11 @@ public class ConversationFragment extends Fragment
      */
     private ConversationMessageAdapter convMessAdapter;
 
+    /**
+     * Get user helper
+     */
+    private GetUsersHelper getUsersHelper;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +99,9 @@ public class ConversationFragment extends Fragment
 
         //Get the conversation ID
         conversation_id = getArguments().getInt(ARG_CONVERSATION_ID);
+
+        //Get user helper
+        getUsersHelper = new GetUsersHelper(getActivity(), dbHelper);
 
         if(conversation_id < 1){
             throw new RuntimeException(TAG + " requires a valid conversation ID when created !");
@@ -105,8 +123,14 @@ public class ConversationFragment extends Fragment
         //Conversation messages listView
         ListView convMessListView = view.findViewById(R.id.fragment_conversation_messageslist);
 
+        //Need user ID
         int userID = new AccountUtils(getActivity()).get_current_user_id();
-        convMessAdapter = new ConversationMessageAdapter(getActivity(), messagesList, userID);
+
+        //Create the adapter
+        convMessAdapter = new ConversationMessageAdapter(getActivity(),
+                messagesList, userID, users);
+
+        //Apply adapter
         convMessListView.setAdapter(convMessAdapter);
 
     }
@@ -137,14 +161,34 @@ public class ConversationFragment extends Fragment
     @Override
     public void onAddMessage(int lastID, @NonNull ArrayList<ConversationMessage> newMessages) {
 
+        final ArrayList<Integer> usersToFetch = new ArrayList<>();
+
         //Add the messages to the the main list of messages
         for(ConversationMessage message : newMessages){
             messagesList.add(message);
+
+            if(!users.containsKey(message.getUser_id()))
+                usersToFetch.add(message.getUser_id());
         }
 
         convMessAdapter.notifyDataSetChanged();
-
         last_message_id = lastID;
+
+        //Fetch user information if required
+        if(usersToFetch.size() > 0){
+            new AsyncTask<Void, Void, ArrayMap<Integer, UserInfo>>(){
+                @Override
+                protected ArrayMap<Integer, UserInfo> doInBackground(Void... params) {
+                    //Get the users list
+                    return getUsersHelper.getMultiple(usersToFetch);
+                }
+
+                @Override
+                protected void onPostExecute(ArrayMap<Integer, UserInfo> usersInfo) {
+                    onGotUserInfo(usersInfo);
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     @Override
@@ -152,5 +196,29 @@ public class ConversationFragment extends Fragment
         //Display a toast
         Toast.makeText(getActivity(), R.string.fragment_conversation_err_load_message,
                 Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * This method is called when we get informations about users
+     *
+     * @param info Informations about the user
+     */
+    public void onGotUserInfo(@Nullable ArrayMap<Integer, UserInfo> info ){
+
+        //Check for errors
+        if(info == null){
+            //This is a failure
+            return;
+        }
+
+        //Process the list of users
+        for(UserInfo user : info.values()){
+            if(user != null){
+                users.put(user.getId(), user);
+            }
+        }
+
+        //Inform about dataset update
+        convMessAdapter.notifyDataSetChanged();
     }
 }

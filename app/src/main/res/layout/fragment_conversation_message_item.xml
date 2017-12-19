@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="5dp"
+    android:orientation="vertical"
     android:paddingBottom="5dp"
+    android:paddingEnd="5dp"
     android:paddingStart="5dp"
-    android:paddingEnd="5dp">
+    android:paddingTop="5dp">
 
-    <LinearLayout
+    <!-- Messages on the left -->
+    <RelativeLayout
         android:id="@+id/fragment_conversation_message_left"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,8 +18,8 @@
 
         <ImageView
             android:id="@+id/fragment_conversation_message_item_accountimage"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
             android:layout_gravity="center"
             android:layout_marginEnd="5dp"
             android:src="@drawable/default_account_image" />
@@ -27,46 +28,47 @@
             android:id="@+id/fragment_conversation_message_item_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_toEndOf="@id/fragment_conversation_message_item_accountimage"
             android:background="@color/conversation_otheruser_messages_background"
             android:padding="5dp"
-            android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            tools:text="A message"
-            android:layout_gravity="center"
-            android:textColor="@color/conversation_otheruser_messages_textColor"/>
+            android:paddingStart="15dp"
+            android:textColor="@color/conversation_otheruser_messages_textColor"
+            tools:text="A message"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
+    <!-- Messages on the right -->
+    <RelativeLayout
         android:id="@+id/fragment_conversation_message_right"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
         android:padding="1dp">
+
+        <ImageView
+            android:id="@+id/fragment_conversation_message_item_accountimage_right"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="end"
+            android:layout_marginStart="5dp"
+            android:src="@drawable/default_account_image" />
 
         <TextView
             android:id="@+id/fragment_conversation_message_item_content_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_toStartOf="@id/fragment_conversation_message_item_accountimage_right"
             android:background="@color/conversation_user_messages_background"
             android:padding="5dp"
-            android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            tools:text="A message"
-            android:layout_gravity="center"
-            android:textColor="@color/conversation_user_messages_textColor"/>
-
-        <ImageView
-            android:id="@+id/fragment_conversation_message_item_accountimage_right"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-
-            android:layout_marginStart="5dp"
-            android:src="@drawable/default_account_image" />
-
-    </LinearLayout>
+            android:paddingStart="15dp"
+            android:textColor="@color/conversation_user_messages_textColor"
+            tools:text="A message"/>
 
 
+    </RelativeLayout>
 
 </LinearLayout>

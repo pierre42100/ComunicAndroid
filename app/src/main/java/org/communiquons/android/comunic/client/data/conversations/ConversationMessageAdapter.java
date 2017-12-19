@@ -1,11 +1,9 @@
 package org.communiquons.android.comunic.client.data.conversations;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.Gravity;
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
+import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 
 import java.util.ArrayList;
 
@@ -37,6 +37,11 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
     private int userID;
 
     /**
+     * Information about users
+     */
+    private ArrayMap<Integer, UserInfo> usersInfo;
+
+    /**
      * Public class constructor
      *
      * @param context The context of execution of the application
@@ -44,11 +49,14 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
      * @param userID The ID of the current user
      */
     public ConversationMessageAdapter(Context context, ArrayList<ConversationMessage> list,
-                                      int userID){
+                                      int userID, ArrayMap<Integer, UserInfo> usersInfo){
         super(context, 0, list);
 
         //Set user ID
         this.userID = userID;
+
+        //Set user information list
+        this.usersInfo = usersInfo;
 
     }
 
@@ -99,6 +107,14 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
                     findViewById(R.id.fragment_conversation_message_item_accountimage);
         }
 
+        /*
+            Check for user information
+         */
+        UserInfo user = null;
+        if(usersInfo.containsKey(message.getUser_id())){
+            user = usersInfo.get(message.getUser_id());
+        }
+
 
         /*
             Update message content
@@ -110,7 +126,17 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
         /*
             Update account image
          */
+        //Cancel any load pending operation
+        ImageLoadManager.remove(accountImage);
 
+        //Set the default image
+        accountImage.setImageResource(R.drawable.default_account_image);
+
+        //Check if we can load a specific image
+        if(user != null) {
+            String imageURL = user.getAcountImageURL();
+            ImageLoadManager.load(getContext(), imageURL, accountImage);
+        }
 
 
         return convertView;
