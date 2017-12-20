@@ -73,6 +73,11 @@ public class ConversationFragment extends Fragment
     private ConversationRefreshRunnable refreshRunnable;
 
     /**
+     * Converstion message listView
+     */
+    private ListView convMessListView;
+
+    /**
      * Conversation messages helper
      */
     private ConversationMessagesHelper convMessHelper;
@@ -121,7 +126,7 @@ public class ConversationFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         //Conversation messages listView
-        ListView convMessListView = view.findViewById(R.id.fragment_conversation_messageslist);
+        convMessListView = view.findViewById(R.id.fragment_conversation_messageslist);
 
         //Need user ID
         int userID = new AccountUtils(getActivity()).get_current_user_id();

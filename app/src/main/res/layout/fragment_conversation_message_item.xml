@@ -34,7 +34,8 @@
                 android:layout_height="26dp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="5dp"
-                android:src="@drawable/default_account_image" />
+                android:src="@drawable/default_account_image"
+                android:contentDescription="@string/user_image_description"/>
 
             <TextView
                 android:id="@+id/fragment_conversation_message_item_content"
@@ -42,11 +43,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_toEndOf="@id/fragment_conversation_message_item_accountimage"
-                android:background="@color/conversation_otheruser_messages_background"
                 android:padding="5dp"
                 android:paddingEnd="15dp"
                 android:paddingStart="15dp"
                 android:textColor="@color/conversation_otheruser_messages_textColor"
+                android:background="@drawable/fragment_conversation_message_otheruser_bg"
                 tools:text="A message" />
 
         </RelativeLayout>
@@ -67,6 +68,7 @@
             android:layout_alignParentEnd="true"
             android:layout_gravity="end"
             android:layout_marginStart="5dp"
+            android:contentDescription="@string/user_image_description"
             android:src="@drawable/default_account_image" />
 
         <TextView
@@ -75,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_toStartOf="@id/fragment_conversation_message_item_accountimage_right"
-            android:background="@color/conversation_user_messages_background"
+            android:background="@drawable/fragment_conversation_message_currentuser_bg"
             android:padding="5dp"
             android:paddingEnd="15dp"
             android:paddingStart="15dp"
