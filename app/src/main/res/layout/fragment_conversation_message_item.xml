@@ -23,7 +23,6 @@
             tools:text="User name" />
 
         <RelativeLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="1dp">
@@ -34,21 +33,40 @@
                 android:layout_height="26dp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="5dp"
-                android:src="@drawable/default_account_image"
-                android:contentDescription="@string/user_image_description"/>
+                android:contentDescription="@string/user_image_description"
+                android:src="@drawable/default_account_image"/>
 
-            <TextView
-                android:id="@+id/fragment_conversation_message_item_content"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_toEndOf="@id/fragment_conversation_message_item_accountimage"
-                android:padding="5dp"
-                android:paddingEnd="15dp"
-                android:paddingStart="15dp"
-                android:textColor="@color/conversation_otheruser_messages_textColor"
                 android:background="@drawable/fragment_conversation_message_otheruser_bg"
-                tools:text="A message" />
+                android:orientation="vertical"
+                android:paddingBottom="5dp"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp">
+
+                <TextView
+                    android:id="@+id/fragment_conversation_message_item_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="5dp"
+                    android:textColor="@color/conversation_otheruser_messages_textColor"
+                    tools:text="A message" />
+
+                <ImageView
+                    android:id="@+id/fragment_conversation_message_item_messageimage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/fragment_conversation_message_image"
+                    tools:background="@android:color/black"
+                    tools:layout_height="40dp"
+                    tools:layout_width="40dp"/>
+            </LinearLayout>
+
+
 
         </RelativeLayout>
 
@@ -71,18 +89,38 @@
             android:contentDescription="@string/user_image_description"
             android:src="@drawable/default_account_image" />
 
-        <TextView
-            android:id="@+id/fragment_conversation_message_item_content_right"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_toStartOf="@id/fragment_conversation_message_item_accountimage_right"
             android:background="@drawable/fragment_conversation_message_currentuser_bg"
-            android:padding="5dp"
+            android:orientation="vertical"
+            android:paddingBottom="5dp"
             android:paddingEnd="15dp"
-            android:paddingStart="15dp"
-            android:textColor="@color/conversation_user_messages_textColor"
-            tools:text="A message" />
+            android:paddingStart="15dp">
+
+            <TextView
+                android:id="@+id/fragment_conversation_message_item_content_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:textColor="@color/conversation_user_messages_textColor"
+                tools:text="A message" />
+
+            <ImageView
+                android:id="@+id/fragment_conversation_message_item_messageimage_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/fragment_conversation_message_image"
+                tools:background="@android:color/black"
+                tools:layout_height="40dp"
+                tools:layout_width="40dp"/>
+
+
+        </LinearLayout>
+
 
     </RelativeLayout>
 

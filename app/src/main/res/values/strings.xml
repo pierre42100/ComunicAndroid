@@ -52,4 +52,5 @@
     <string name="date_hours">date_hours</string>
     <string name="err_get_user_info">Couldn\'t get user information !</string>
     <string name="fragment_conversation_err_load_message">Could not load messages!</string>
+    <string name="fragment_conversation_message_image">Conversation message image</string>
 </resources>

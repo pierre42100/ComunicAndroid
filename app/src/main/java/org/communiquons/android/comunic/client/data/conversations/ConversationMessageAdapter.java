@@ -88,8 +88,9 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
             Update the general layout of the message
          */
         TextView contentView;
-        ImageView accountImage;
-        TextView userName;
+        ImageView messageImageView;
+        ImageView accountImageView;
+        TextView userNameView;
         if(message.getUser_id() == userID){
 
             //Message appears on the right
@@ -101,10 +102,14 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
             contentView = convertView.
                     findViewById(R.id.fragment_conversation_message_item_content_right);
 
-            accountImage = convertView.
+            messageImageView = convertView.
+                    findViewById(R.id.fragment_conversation_message_item_messageimage_right);
+
+            accountImageView = convertView.
                     findViewById(R.id.fragment_conversation_message_item_accountimage_right);
 
-            userName = null;
+
+            userNameView = null;
         }
         else {
 
@@ -117,10 +122,13 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
             contentView = convertView.
                     findViewById(R.id.fragment_conversation_message_item_content);
 
-            accountImage = convertView.
+            messageImageView = convertView.
+                    findViewById(R.id.fragment_conversation_message_item_messageimage);
+
+            accountImageView = convertView.
                     findViewById(R.id.fragment_conversation_message_item_accountimage);
 
-            userName = convertView.findViewById(R.id.fragment_conversation_message_item_username);
+            userNameView = convertView.findViewById(R.id.fragment_conversation_message_item_username);
         }
 
         /*
@@ -140,21 +148,36 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
 
 
         /*
+            Update message image
+         */
+        if(message.hasImage()){
+            //Load the image
+            ImageLoadManager.remove(messageImageView);
+            ImageLoadManager.load(getContext(), message.getImage_path(), messageImageView);
+
+            //Make the image visible
+            messageImageView.setVisibility(View.VISIBLE);
+        }
+        else {
+            messageImageView.setVisibility(View.GONE);
+        }
+
+        /*
             Update user name
          */
-        if(userName != null){
+        if(userNameView != null){
 
             if(user != null){
                 //Set the name of the user
-                userName.setText(user.getFullName());
-                userName.setVisibility(View.VISIBLE);
+                userNameView.setText(user.getFullName());
+                userNameView.setVisibility(View.VISIBLE);
             }
             else
-                userName.setVisibility(View.GONE);
+                userNameView.setVisibility(View.GONE);
 
             if(previousMessage != null){
                 if (message.getUser_id() == previousMessage.getUser_id()){
-                    userName.setVisibility(View.GONE);
+                    userNameView.setVisibility(View.GONE);
                 }
             }
 
@@ -164,22 +187,22 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
             Update account image
          */
         //Cancel any load pending operation
-        ImageLoadManager.remove(accountImage);
+        ImageLoadManager.remove(accountImageView);
 
         //Set the default image
-        accountImage.setImageResource(R.drawable.default_account_image);
-        accountImage.setVisibility(View.VISIBLE);
+        accountImageView.setImageResource(R.drawable.default_account_image);
+        accountImageView.setVisibility(View.VISIBLE);
 
         //Check if we can load a specific image
         if(user != null) {
             String imageURL = user.getAcountImageURL();
-            ImageLoadManager.load(getContext(), imageURL, accountImage);
+            ImageLoadManager.load(getContext(), imageURL, accountImageView);
         }
 
         //Hide user image if not required
         if(previousMessage != null){
             if (message.getUser_id() == previousMessage.getUser_id()){
-                accountImage.setVisibility(View.INVISIBLE);
+                accountImageView.setVisibility(View.INVISIBLE);
             }
         }
 

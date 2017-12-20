@@ -101,6 +101,15 @@ public class ConversationMessage {
     }
 
     /**
+     * Check whether the message has an associated image or not
+     *
+     * @return TRUE if the message has an associated image / FALSE else
+     */
+    public boolean hasImage(){
+        return image_path != null;
+    }
+
+    /**
      * Get the path of the image associated with the content
      *
      * Warning ! if no image path were specified, "null" will be returned, but as a string instead
