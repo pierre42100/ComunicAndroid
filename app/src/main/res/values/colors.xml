@@ -14,4 +14,7 @@
     <color name="conversation_user_messages_textColor">#FFFFFF</color>
     <color name="conversation_otheruser_messages_background">#D8D8D8</color>
     <color name="conversation_otheruser_messages_textColor">#000000</color>
+
+    <!-- Conversations footer -->
+    <color name="conversation_footer_bg">#8c9eff</color>
 </resources>

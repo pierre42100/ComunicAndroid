@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Messages -->
     <ListView
         android:id="@+id/fragment_conversation_messageslist"
         android:layout_width="match_parent"
@@ -12,5 +13,27 @@
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll"
         />
+
+    <!-- Send messages form -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/conversation_footer_bg">
+
+        <EditText
+            android:id="@+id/fragment_conversation_newmessage_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="@string/fragment_conversation_new_message_placeholder"/>
+
+        <ImageButton
+            android:id="@+id/fragment_conversation_newmessage_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_send"
+            android:contentDescription="@string/conversation_message_send"/>
+
+    </LinearLayout>
 
 </LinearLayout>

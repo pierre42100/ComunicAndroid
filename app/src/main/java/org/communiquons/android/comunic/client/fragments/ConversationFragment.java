@@ -9,6 +9,8 @@ import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,7 +24,6 @@ import org.communiquons.android.comunic.client.data.conversations.ConversationMe
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationRefreshRunnable;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -88,6 +89,16 @@ public class ConversationFragment extends Fragment
     private ConversationMessageAdapter convMessAdapter;
 
     /**
+     * Conversation new message content
+     */
+    private EditText new_message_content;
+
+    /**
+     * Conversation new message send button
+     */
+    private ImageButton send_button;
+
+    /**
      * Get user helper
      */
     private GetUsersHelper getUsersHelper;
@@ -138,6 +149,16 @@ public class ConversationFragment extends Fragment
         //Apply adapter
         convMessListView.setAdapter(convMessAdapter);
 
+        //Get new messages input fields
+        new_message_content = view.findViewById(R.id.fragment_conversation_newmessage_content);
+        send_button = view.findViewById(R.id.fragment_conversation_newmessage_send);
+
+        send_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                send_message();
+            }
+        });
     }
 
     @Override
@@ -225,5 +246,61 @@ public class ConversationFragment extends Fragment
 
         //Inform about dataset update
         convMessAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * This method is called when the user click on the "send_message" button
+     */
+    private void send_message(){
+
+        //Check message length
+        if(new_message_content.length() < 3){
+            Toast.makeText(getActivity(), R.string.conversation_message_err_too_short,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Hide the send button
+        send_button.setVisibility(View.INVISIBLE);
+
+        //Get the message content
+        final String message_content = new_message_content.getText()+"";
+
+        //Send the message
+        new AsyncTask<Void, Void, Boolean>(){
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return convMessHelper.sendMessage(conversation_id, message_content);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                send_callback(success);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * This method is called in response to a post message request
+     *
+     * @param success Specify wether the message was successfully posted or not
+     */
+    private void send_callback(boolean success){
+
+        //Check for error
+        if(!success){
+            Toast.makeText(getActivity(), R.string.conversation_message_err_send,
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        //Remove previous message in case of succes
+        if(success){
+            new_message_content.setText("");
+        }
+
+        //Make the "send" button available again
+        send_button.setVisibility(View.VISIBLE);
+
     }
 }

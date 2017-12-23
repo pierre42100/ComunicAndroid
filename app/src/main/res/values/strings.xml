@@ -53,4 +53,8 @@
     <string name="err_get_user_info">Couldn\'t get user information !</string>
     <string name="fragment_conversation_err_load_message">Could not load messages!</string>
     <string name="fragment_conversation_message_image">Conversation message image</string>
+    <string name="conversation_message_send">Send</string>
+    <string name="conversation_message_err_too_short">The length of the message is too short !</string>
+    <string name="conversation_message_err_send">The message could not be sent! Please check your message and try again…</string>
+    <string name="fragment_conversation_new_message_placeholder">New message…</string>
 </resources>

@@ -79,6 +79,30 @@ public class ConversationMessagesHelper {
     }
 
     /**
+     * Send a new message to the conversation
+     *
+     * @param convID Target conversation ID
+     * @param message The message to send
+     * @return true in case of success / false else
+     */
+    public boolean sendMessage(int convID, String message){
+
+        //Make an API request
+        APIRequestParameters params = new APIRequestParameters(mContext,
+                "conversations/sendMessage");
+        params.addParameter("conversationID", ""+convID);
+        params.addParameter("message", message);
+
+        try {
+            new APIRequest().exec(params);
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Fetch messages from the database
      *
      * @param conv Conversation ID
