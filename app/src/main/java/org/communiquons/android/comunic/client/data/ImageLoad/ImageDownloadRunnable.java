@@ -1,5 +1,8 @@
 package org.communiquons.android.comunic.client.data.ImageLoad;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import org.communiquons.android.comunic.client.data.Utilities;
 
 import java.io.File;
@@ -57,8 +60,9 @@ class ImageDownloadRunnable implements Runnable {
             //Get input stream
             InputStream is = conn.getInputStream();
 
-            //Transfer bytes
-            Utilities.InputToOutputStream(is, os);
+            //Process image
+            Bitmap image =BitmapFactory.decodeStream(is);
+            image.compress(Bitmap.CompressFormat.PNG, 100, os);
 
             os.close();
             is.close();
