@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -148,26 +147,26 @@ public class FriendsListFragment extends Fragment {
                 }
 
                 new GetUsersInfos(mContext, mDbHelper).
-                    getMultiple(FriendsUtils.getFriendsIDs(friendsList), new GetUsersInfos.getMultipleUserInfosCallback() {
-                        @Override
-                        public void callback(ArrayMap<Integer, UserInfo> info) {
-                            //Check for errors
-                            if (info == null) {
-                                Toast.makeText(mContext, R.string.fragment_friendslist_err_get_userinfos,
-                                        Toast.LENGTH_SHORT).show();
-                                return;
+                        getMultiple(FriendsUtils.getFriendsIDs(friendsList), new GetUsersInfos.getMultipleUserInfosCallback() {
+                            @Override
+                            public void callback(ArrayMap<Integer, UserInfo> info) {
+                                //Check for errors
+                                if (info == null) {
+                                    Toast.makeText(mContext, R.string.fragment_friendslist_err_get_userinfos,
+                                            Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                //Merge the user informations list and friends List into FriendInfo list
+                                ArrayList<FriendUser> friendsUserList = FriendsUtils.merge_friends_user_infos_list(
+                                        friendsList,
+                                        info
+                                );
+
+                                //Refresh friends list
+                                apply_friends_list(friendsUserList);
                             }
-
-                            //Merge the user informations list and friends List into FriendInfo list
-                            ArrayList<FriendUser> friendsUserList = FriendsUtils.merge_friends_user_infos_list(
-                                    friendsList,
-                                    info
-                            );
-
-                            //Refresh friends list
-                            apply_friends_list(friendsUserList);
-                        }
-                    });
+                        });
 
             }
 
@@ -231,7 +230,7 @@ public class FriendsListFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.popup_deletefriend_title)
                 .setMessage(R.string.popup_deletefriend_message);
-        
+
         builder.setPositiveButton(R.string.popup_deletefriend_button_confirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

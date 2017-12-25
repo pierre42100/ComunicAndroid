@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.MainActivity;
@@ -74,6 +75,11 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
      */
     private ConversationsListAdapter conversationsListAdapter;
 
+    /**
+     * Loading progress bar
+     */
+    private ProgressBar progressBar;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -95,6 +101,9 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
 
         //Get the conversation target list view
         conversationsListView = view.findViewById(R.id.fragment_conversationslist_list);
+
+        //Get progress bar wheel
+        progressBar = view.findViewById(R.id.fragment_conversationslist_progressbar);
 
         //Get the list of conversations
         new AsyncTask<Void, Void, ArrayList<ConversationsInfo>>(){
@@ -243,7 +252,11 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
         //Attach it to the view
         conversationsListView.setAdapter(conversationsListAdapter);
 
+        //Add click listener
         conversationsListView.setOnItemClickListener(this);
+
+        //Remove progress bar
+        display_progress_bar(false);
     }
 
     /**
@@ -260,5 +273,14 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
         //Open the specified conversation
         openConvListener.openConversation(conv.getID());
 
+    }
+
+    /**
+     * Display (or hide) the progress bar
+     *
+     * @param show Set wether the progress bar should be shown or not
+     */
+    private void display_progress_bar(boolean show){
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 }
