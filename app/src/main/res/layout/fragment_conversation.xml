@@ -28,9 +28,17 @@
             android:hint="@string/fragment_conversation_new_message_placeholder"/>
 
         <ImageButton
+            android:id="@+id/fragment_conversation_newmessage_pickimage"
+            android:layout_width="@dimen/fragment_conversation_buttons_width"
+            android:layout_height="@dimen/fragment_conversation_buttons_height"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/conversation_message_add_image"/>
+
+        <ImageButton
             android:id="@+id/fragment_conversation_newmessage_send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/fragment_conversation_buttons_width"
+            android:layout_height="@dimen/fragment_conversation_buttons_height"
             android:src="@android:drawable/ic_menu_send"
             android:contentDescription="@string/conversation_message_send"/>
 

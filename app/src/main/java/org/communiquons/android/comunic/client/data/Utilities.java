@@ -2,18 +2,24 @@ package org.communiquons.android.comunic.client.data;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
 
 import org.communiquons.android.comunic.client.R;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -192,6 +198,48 @@ public class Utilities {
     }
 
     /**
+     * Read an InputStream into a string
+     *
+     * @param is The input stream
+     * @return The string
+     */
+    public static String isToString(InputStream is){
+
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+
+            while((line = bufferedReader.readLine()) != null){
+                stringBuilder.append(line);
+            }
+            bufferedReader.close();
+
+            //Return the result
+            return stringBuilder.toString();
+
+        } catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Convert a Bitmap into a base64-encoded string
+     *
+     * @param bitmap The bitmap to convert
+     * @return Encoded string
+     */
+    public static String bitmapToBase64(@NonNull Bitmap bitmap){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+
+    /**
      * Prepare a string sent through the API to be shown in a TextView element
      *
      * @param input The string to prepare
@@ -264,6 +312,5 @@ public class Utilities {
             return years + res.getString(years > 1 ? R.string.date_years : R.string.date_year);
         }
     }
-
 
 }

@@ -83,15 +83,20 @@ public class ConversationMessagesHelper {
      *
      * @param convID Target conversation ID
      * @param message The message to send
+     * @param image Base64 encoded image to include with the message (can be null)
      * @return true in case of success / false else
      */
-    public boolean sendMessage(int convID, String message){
+    public boolean sendMessage(int convID, String message, @Nullable String image){
 
         //Make an API request
         APIRequestParameters params = new APIRequestParameters(mContext,
                 "conversations/sendMessage");
         params.addParameter("conversationID", ""+convID);
         params.addParameter("message", message);
+
+        //Include image (if any)
+        if(image != null)
+            params.addParameter("image", "data:image/png;base64," + image);
 
         try {
             new APIRequest().exec(params);

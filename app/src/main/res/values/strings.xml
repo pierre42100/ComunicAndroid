@@ -32,7 +32,7 @@
     <string name="action_friends_respond_request">Respond request</string>
     <string name="action_friends_deny_request">Deny</string>
     <string name="popup_respond_friendship_request_title">Respond to the request</string>
-    <string name="popup_respond_friendship_request_message">Do you want to accept or deny  this friendship request ?</string>
+    <string name="popup_respond_friendship_request_message">Do you want to accept or deny this friendship request ?</string>
     <string name="fragment_conversationslist_err_get_list">An error occurred while retrieving conversations list !</string>
     <string name="conversations_members_number">%d members</string>
     <string name="date_now">now</string>
@@ -54,7 +54,12 @@
     <string name="fragment_conversation_err_load_message">Could not load messages!</string>
     <string name="fragment_conversation_message_image">Conversation message image</string>
     <string name="conversation_message_send">Send</string>
-    <string name="conversation_message_err_too_short">The length of the message is too short !</string>
+    <string name="conversation_message_err_too_short">The message is too short !</string>
     <string name="conversation_message_err_send">The message could not be sent! Please check your message and try again…</string>
     <string name="fragment_conversation_new_message_placeholder">New message…</string>
+    <string name="conversation_message_add_image">Add an image</string>
+    <string name="conversation_message_remove_image_popup_title">Remove image</string>
+    <string name="conversation_message_remove_image_popup_message">Do you want to remove selected image ?</string>
+    <string name="conversation_message_remove_image_popup_confirm">Yes</string>
+    <string name="conversation_message_remove_image_popup_cancel">No</string>
 </resources>

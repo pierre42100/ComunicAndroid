@@ -1,6 +1,12 @@
 package org.communiquons.android.comunic.client.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,12 +25,17 @@ import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
+import org.communiquons.android.comunic.client.data.Utilities;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessage;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationRefreshRunnable;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Conversation fragment
@@ -37,6 +48,11 @@ import java.util.ArrayList;
 
 public class ConversationFragment extends Fragment
         implements ConversationRefreshRunnable.onMessagesChangeListener {
+
+    /**
+     * Pick image request number
+     */
+    public static final int PICK_PHOTO = 1;
 
     /**
      * Debug tag
@@ -99,6 +115,16 @@ public class ConversationFragment extends Fragment
     private ImageButton send_button;
 
     /**
+     * Conversation add image button
+     */
+    private ImageButton pick_image_button;
+
+    /**
+     * New message selected image
+     */
+    private Bitmap new_message_bitmap = null;
+
+    /**
      * Get user helper
      */
     private GetUsersHelper getUsersHelper;
@@ -123,6 +149,19 @@ public class ConversationFragment extends Fragment
             throw new RuntimeException(TAG + " requires a valid conversation ID when created !");
         }
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+
+            //If the response if for the photos
+            case PICK_PHOTO :
+                pick_image_callback(resultCode, data);
+                break;
+        }
     }
 
     @Nullable
@@ -151,12 +190,29 @@ public class ConversationFragment extends Fragment
 
         //Get new messages input fields
         new_message_content = view.findViewById(R.id.fragment_conversation_newmessage_content);
+        pick_image_button = view.findViewById(R.id.fragment_conversation_newmessage_pickimage);
         send_button = view.findViewById(R.id.fragment_conversation_newmessage_send);
 
+        //Make send button lives
         send_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 send_message();
+            }
+        });
+
+        //Make pick image button lives
+        pick_image_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pick_image();
+            }
+        });
+        pick_image_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                confirm_remove_picked_image();
+                return true;
             }
         });
     }
@@ -249,12 +305,85 @@ public class ConversationFragment extends Fragment
     }
 
     /**
+     * This method is called when the user request to add an image to a message
+     */
+    private void pick_image(){
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, PICK_PHOTO);
+    }
+
+    /**
+     * This method is called to confirm to remove a previously picked image
+     */
+    private void confirm_remove_picked_image(){
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.conversation_message_remove_image_popup_title)
+                .setMessage(R.string.conversation_message_remove_image_popup_message)
+
+                .setNegativeButton(R.string.conversation_message_remove_image_popup_cancel, null)
+
+                .setPositiveButton(R.string.conversation_message_remove_image_popup_confirm,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        remove_picked_image();
+                    }
+                })
+
+                .show();
+    }
+
+    /**
+     * Handles image picker callback
+     *
+     * @param resultCode The result code of the request
+     * @param data The data passed with the intent
+     */
+    private void pick_image_callback(int resultCode, Intent data){
+        //Continue in case of success
+        if(resultCode == RESULT_OK){
+            try {
+
+                Uri imageUri = data.getData();
+                InputStream imageStream = getActivity().getContentResolver()
+                        .openInputStream(imageUri);
+                new_message_bitmap = BitmapFactory.decodeStream(imageStream);
+
+                //Append image
+                pick_image_button.setImageBitmap(new_message_bitmap);
+
+
+            } catch (FileNotFoundException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Remove a previously picked image in the new message form
+     */
+    private void remove_picked_image(){
+
+        //Clean bitmap
+        if(new_message_bitmap != null){
+            new_message_bitmap.recycle();
+            new_message_bitmap = null;
+        }
+
+        //Reset image button
+        pick_image_button.setImageBitmap(null);
+        pick_image_button.setImageDrawable(getActivity().getResources().
+                getDrawable(android.R.drawable.ic_menu_gallery, getActivity().getTheme()));
+    }
+
+    /**
      * This method is called when the user click on the "send_message" button
      */
     private void send_message(){
 
         //Check message length
-        if(new_message_content.length() < 3){
+        if(new_message_content.length() < 3 && new_message_bitmap == null){
             Toast.makeText(getActivity(), R.string.conversation_message_err_too_short,
                     Toast.LENGTH_SHORT).show();
             return;
@@ -271,7 +400,9 @@ public class ConversationFragment extends Fragment
 
             @Override
             protected Boolean doInBackground(Void... params) {
-                return convMessHelper.sendMessage(conversation_id, message_content);
+                String message_image = new_message_bitmap == null ?
+                        null : Utilities.bitmapToBase64(new_message_bitmap);
+                return convMessHelper.sendMessage(conversation_id, message_content, message_image);
             }
 
             @Override
@@ -294,9 +425,12 @@ public class ConversationFragment extends Fragment
                     Toast.LENGTH_SHORT).show();
         }
 
-        //Remove previous message in case of succes
+        //Remove previous message in case of success
         if(success){
             new_message_content.setText("");
+
+            //Remove image
+            remove_picked_image();
         }
 
         //Make the "send" button available again
