@@ -1,6 +1,6 @@
 package org.communiquons.android.comunic.client.data.friendsList;
 
-import org.communiquons.android.comunic.client.data.Utilities;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 /**
  * Friend object

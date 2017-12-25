@@ -11,10 +11,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
-import org.communiquons.android.comunic.client.data.Utilities;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.fragments.FriendsListFragment;
 
 import java.util.ArrayList;

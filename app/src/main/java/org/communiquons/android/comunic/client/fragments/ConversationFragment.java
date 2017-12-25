@@ -26,11 +26,11 @@ import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
-import org.communiquons.android.comunic.client.data.Utilities;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessage;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationRefreshRunnable;
+import org.communiquons.android.comunic.client.data.utils.BitmapUtils;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -411,8 +411,13 @@ public class ConversationFragment extends Fragment
 
             @Override
             protected Boolean doInBackground(Void... params) {
-                String message_image = new_message_bitmap == null ?
-                        null : Utilities.bitmapToBase64(new_message_bitmap);
+                String message_image = null;
+
+                //Reduce Bitmap and convert it to a base64-encoded string
+                if(new_message_bitmap != null)
+                        message_image = BitmapUtils.bitmapToBase64(
+                                BitmapUtils.reduceBitmap(new_message_bitmap, 1199, 1199));
+
                 return convMessHelper.sendMessage(conversation_id, message_content, message_image);
             }
 

@@ -3,13 +3,11 @@ package org.communiquons.android.comunic.client.data.ImageLoad;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.ImageView;
 
-import org.communiquons.android.comunic.client.data.Utilities;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**

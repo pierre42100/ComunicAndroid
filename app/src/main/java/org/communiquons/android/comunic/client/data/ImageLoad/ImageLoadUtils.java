@@ -3,7 +3,7 @@ package org.communiquons.android.comunic.client.data.ImageLoad;
 import android.content.Context;
 import android.util.Log;
 
-import org.communiquons.android.comunic.client.data.Utilities;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 import java.io.File;
 

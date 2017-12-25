@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
-import org.communiquons.android.comunic.client.data.Utilities;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.json.JSONException;
 import org.json.JSONObject;
 

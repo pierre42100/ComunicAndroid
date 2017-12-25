@@ -3,8 +3,6 @@ package org.communiquons.android.comunic.client.data.ImageLoad;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import org.communiquons.android.comunic.client.data.Utilities;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;

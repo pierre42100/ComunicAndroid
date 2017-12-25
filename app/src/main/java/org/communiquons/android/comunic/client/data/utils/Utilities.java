@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.data;
+package org.communiquons.android.comunic.client.data.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -222,20 +222,6 @@ public class Utilities {
             e.printStackTrace();
             return null;
         }
-    }
-
-    /**
-     * Convert a Bitmap into a base64-encoded string
-     *
-     * @param bitmap The bitmap to convert
-     * @return Encoded string
-     */
-    public static String bitmapToBase64(@NonNull Bitmap bitmap){
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
 

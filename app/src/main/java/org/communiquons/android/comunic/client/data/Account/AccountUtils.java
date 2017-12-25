@@ -5,8 +5,7 @@ import android.content.Context;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
 import org.communiquons.android.comunic.client.api.APIRequestTask;
 import org.communiquons.android.comunic.client.api.APIResponse;
-import org.communiquons.android.comunic.client.data.Utilities;
-import org.json.JSONException;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.json.JSONObject;
 
 /**

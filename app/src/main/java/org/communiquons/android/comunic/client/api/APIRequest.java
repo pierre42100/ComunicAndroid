@@ -3,11 +3,9 @@ package org.communiquons.android.comunic.client.api;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.data.Account.Account;
-import org.communiquons.android.comunic.client.data.Utilities;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -17,7 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;

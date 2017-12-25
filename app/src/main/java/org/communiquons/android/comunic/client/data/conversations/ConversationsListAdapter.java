@@ -1,7 +1,6 @@
 package org.communiquons.android.comunic.client.data.conversations;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,12 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.Utilities;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
-
-import static android.R.id.list;
 
 /**
  * Conversations adapter
