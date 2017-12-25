@@ -42,6 +42,11 @@
             android:src="@android:drawable/ic_menu_send"
             android:contentDescription="@string/conversation_message_send"/>
 
+        <ProgressBar
+            android:id="@+id/fragment_conversation_newmessage_loading"
+            android:layout_width="@dimen/fragment_conversation_buttons_width"
+            android:layout_height="@dimen/fragment_conversation_buttons_height" />
+
     </LinearLayout>
 
 </LinearLayout>

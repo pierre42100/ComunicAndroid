@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
@@ -115,6 +116,11 @@ public class ConversationFragment extends Fragment
     private ImageButton send_button;
 
     /**
+     * Conversation new message progress bar
+     */
+    private ProgressBar new_message_progress_bar;
+
+    /**
      * Conversation add image button
      */
     private ImageButton pick_image_button;
@@ -192,6 +198,7 @@ public class ConversationFragment extends Fragment
         new_message_content = view.findViewById(R.id.fragment_conversation_newmessage_content);
         pick_image_button = view.findViewById(R.id.fragment_conversation_newmessage_pickimage);
         send_button = view.findViewById(R.id.fragment_conversation_newmessage_send);
+        new_message_progress_bar = view.findViewById(R.id.fragment_conversation_newmessage_loading);
 
         //Make send button lives
         send_button.setOnClickListener(new View.OnClickListener() {
@@ -215,6 +222,9 @@ public class ConversationFragment extends Fragment
                 return true;
             }
         });
+
+        //Hide new message sending wheel
+        new_message_progress_bar.setVisibility(View.GONE);
     }
 
     @Override
@@ -390,7 +400,8 @@ public class ConversationFragment extends Fragment
         }
 
         //Hide the send button
-        send_button.setVisibility(View.INVISIBLE);
+        send_button.setVisibility(View.GONE);
+        new_message_progress_bar.setVisibility(View.VISIBLE);
 
         //Get the message content
         final String message_content = new_message_content.getText()+"";
@@ -435,6 +446,7 @@ public class ConversationFragment extends Fragment
 
         //Make the "send" button available again
         send_button.setVisibility(View.VISIBLE);
+        new_message_progress_bar.setVisibility(View.GONE);
 
     }
 }
