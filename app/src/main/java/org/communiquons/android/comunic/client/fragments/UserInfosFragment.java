@@ -83,4 +83,12 @@ public class UserInfosFragment extends Fragment {
         });
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        //Update the title
+        getActivity().setTitle(R.string.fragment_userinfos_title);
+    }
 }

@@ -62,4 +62,7 @@
     <string name="conversation_message_remove_image_popup_message">Do you want to remove selected image ?</string>
     <string name="conversation_message_remove_image_popup_confirm">Yes</string>
     <string name="conversation_message_remove_image_popup_cancel">No</string>
+    <string name="fragment_friendslist_title">Friends</string>
+    <string name="fragment_conversationslist_title">Conversations</string>
+    <string name="fragment_userinfos_title">About me</string>
 </resources>

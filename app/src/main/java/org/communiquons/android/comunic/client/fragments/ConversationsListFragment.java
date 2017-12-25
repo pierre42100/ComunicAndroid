@@ -122,6 +122,13 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getActivity().setTitle(R.string.fragment_conversationslist_title);
+    }
+
     /**
      * Process the conversation list
      *

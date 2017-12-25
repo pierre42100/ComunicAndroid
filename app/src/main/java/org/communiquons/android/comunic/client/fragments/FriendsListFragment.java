@@ -104,6 +104,14 @@ public class FriendsListFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        //Update the title of the application
+        getActivity().setTitle(R.string.fragment_friendslist_title);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
 
