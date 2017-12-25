@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import org.communiquons.android.comunic.client.MainActivity;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
@@ -236,6 +237,10 @@ public class ConversationFragment extends Fragment
 
         //Create and start the thread
         new Thread(refreshRunnable).start();
+
+        //Update the bottom navigation menu
+        ((MainActivity) getActivity())
+                .setSelectedNavigationItem(R.id.main_bottom_navigation_conversations);
     }
 
     @Override

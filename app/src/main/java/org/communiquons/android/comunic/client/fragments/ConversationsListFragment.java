@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.communiquons.android.comunic.client.MainActivity;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
@@ -126,7 +127,12 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
     public void onResume() {
         super.onResume();
 
+        //Update activity title
         getActivity().setTitle(R.string.fragment_conversationslist_title);
+
+        //Update the bottom navigation menu
+        ((MainActivity) getActivity())
+                .setSelectedNavigationItem(R.id.main_bottom_navigation_conversations);
     }
 
     /**

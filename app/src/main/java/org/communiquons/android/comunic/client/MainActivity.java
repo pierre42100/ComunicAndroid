@@ -52,6 +52,11 @@ public class MainActivity extends AppCompatActivity
      */
     private DatabaseHelper dbHelper;
 
+    /**
+     * Bottom navigation view
+     */
+    private BottomNavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,9 +146,8 @@ public class MainActivity extends AppCompatActivity
      * Bottom menu creation
      */
     void init_bottom_menu(){
-        BottomNavigationView navigation =
-                (BottomNavigationView) findViewById(R.id.main_bottom_navigation);
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        navigationView = (BottomNavigationView) findViewById(R.id.main_bottom_navigation);
+        navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -171,6 +175,15 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
         });
+    }
+
+    /**
+     * Set the currently selected item in the bottom navigation view
+     *
+     * @param item The ID of the item
+     */
+    public void setSelectedNavigationItem(int item){
+        navigationView.getMenu().findItem(item).setChecked(true);
     }
 
     /**

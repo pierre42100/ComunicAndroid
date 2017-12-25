@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.communiquons.android.comunic.client.MainActivity;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
@@ -59,8 +60,8 @@ public class UserInfosFragment extends Fragment {
             dbHelper = new DatabaseHelper(mContext);
 
         //Get required views
-        final ImageView imageView = (ImageView) view.findViewById(R.id.fragments_userinfos_account_image);
-        final TextView userNameView = (TextView) view.findViewById(R.id.fragments_userinfos_user_name);
+        final ImageView imageView = view.findViewById(R.id.fragments_userinfos_account_image);
+        final TextView userNameView = view.findViewById(R.id.fragments_userinfos_user_name);
 
         //Retrieve user informations in order to display them
         int user_id = new AccountUtils(mContext).get_current_user_id();
@@ -90,5 +91,9 @@ public class UserInfosFragment extends Fragment {
 
         //Update the title
         getActivity().setTitle(R.string.fragment_userinfos_title);
+
+        //Update the bottom navigation menu
+        ((MainActivity) getActivity())
+                .setSelectedNavigationItem(R.id.main_bottom_navigation_me_view);
     }
 }

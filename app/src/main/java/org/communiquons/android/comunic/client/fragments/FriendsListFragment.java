@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.communiquons.android.comunic.client.MainActivity;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersInfos;
@@ -109,6 +110,10 @@ public class FriendsListFragment extends Fragment {
 
         //Update the title of the application
         getActivity().setTitle(R.string.fragment_friendslist_title);
+
+        //Update the bottom navigation menu
+        ((MainActivity) getActivity())
+                .setSelectedNavigationItem(R.id.main_bottom_navigation_friends_list);
     }
 
     @Override
@@ -141,29 +146,29 @@ public class FriendsListFragment extends Fragment {
                             Toast.LENGTH_LONG).show();
                     return;
                 }
-                else {
-                    new GetUsersInfos(mContext, mDbHelper).
-                        getMultiple(FriendsUtils.getFriendsIDs(friendsList), new GetUsersInfos.getMultipleUserInfosCallback() {
-                            @Override
-                            public void callback(ArrayMap<Integer, UserInfo> info) {
-                                //Check for errors
-                                if (info == null) {
-                                    Toast.makeText(mContext, R.string.fragment_friendslist_err_get_userinfos,
-                                            Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
 
-                                //Merge the user informations list and friends List into FriendInfo list
-                                ArrayList<FriendUser> friendsUserList = FriendsUtils.merge_friends_user_infos_list(
-                                        friendsList,
-                                        info
-                                );
-
-                                //Refresh friends list
-                                apply_friends_list(friendsUserList);
+                new GetUsersInfos(mContext, mDbHelper).
+                    getMultiple(FriendsUtils.getFriendsIDs(friendsList), new GetUsersInfos.getMultipleUserInfosCallback() {
+                        @Override
+                        public void callback(ArrayMap<Integer, UserInfo> info) {
+                            //Check for errors
+                            if (info == null) {
+                                Toast.makeText(mContext, R.string.fragment_friendslist_err_get_userinfos,
+                                        Toast.LENGTH_SHORT).show();
+                                return;
                             }
-                        });
-                }
+
+                            //Merge the user informations list and friends List into FriendInfo list
+                            ArrayList<FriendUser> friendsUserList = FriendsUtils.merge_friends_user_infos_list(
+                                    friendsList,
+                                    info
+                            );
+
+                            //Refresh friends list
+                            apply_friends_list(friendsUserList);
+                        }
+                    });
+
             }
 
         }.execute();
