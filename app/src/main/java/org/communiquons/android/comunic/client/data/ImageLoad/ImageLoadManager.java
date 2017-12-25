@@ -47,7 +47,7 @@ public class ImageLoadManager {
      */
     public static void load(Context context, String url, ImageView imageView){
 
-        //Initializate class if required
+        //Initialize class if required
         if(!is_constructed())
             construct();
 
@@ -68,6 +68,10 @@ public class ImageLoadManager {
      * @param view The target view
      */
     public static void remove(ImageView view){
+
+        //Initialize class if required
+        if(!is_constructed())
+            construct();
 
         //Check if the view has an associated thread
         if(threads.containsKey(view)){
