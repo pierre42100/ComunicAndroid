@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.conversations;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -91,7 +92,7 @@ public class ConversationsInfo {
     public void setName(@Nullable String name) {
 
         //Check the validity of the name
-        if(name == "false" || name == "null" || name == null)
+        if(("false").equals(name) || ("null").equals(name) || name == null)
             this.name = null;
         else
             this.name = name;

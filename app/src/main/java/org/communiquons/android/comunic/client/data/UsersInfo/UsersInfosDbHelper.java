@@ -88,7 +88,7 @@ class UsersInfosDbHelper {
         c.close();
 
         //Close the database
-        db.close();
+        //db.close();
 
         return number_entries > 0;
     }
@@ -115,7 +115,7 @@ class UsersInfosDbHelper {
         long newRowId = db.insert(UsersInfoSchema.TABLE_NAME, null, newValues);
 
         //Close the database
-        db.close();
+        //db.close();
 
         return (int) newRowId;
     }
@@ -187,7 +187,7 @@ class UsersInfosDbHelper {
         c.close();
 
         //Close the database
-        db.close();
+        //db.close();
 
         return result;
     }
@@ -211,7 +211,7 @@ class UsersInfosDbHelper {
         int result = db.delete(UsersInfoSchema.TABLE_NAME, condition, conditionArgs);
 
         //Close database
-        db.close();
+        //db.close();
 
         return result > 0;
     }
@@ -243,7 +243,7 @@ class UsersInfosDbHelper {
         //Perform the request
         int result = db.update(UsersInfoSchema.TABLE_NAME, newValues, conditions, conditionArgs);
 
-        db.close();
+        //db.close();
 
         return result > 0;
     }

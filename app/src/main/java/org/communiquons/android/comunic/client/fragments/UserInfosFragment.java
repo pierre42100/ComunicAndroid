@@ -57,7 +57,7 @@ public class UserInfosFragment extends Fragment {
 
         //Open DBHelper if required
         if(dbHelper == null)
-            dbHelper = new DatabaseHelper(mContext);
+            dbHelper = DatabaseHelper.getInstance(mContext);
 
         //Get required views
         final ImageView imageView = view.findViewById(R.id.fragments_userinfos_account_image);

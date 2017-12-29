@@ -97,7 +97,7 @@ public class FriendsListDbHelper {
         c.close();
 
         //Close the access to the database
-        db.close();
+        //db.close();
 
         return friendsList;
     }
@@ -123,7 +123,7 @@ public class FriendsListDbHelper {
         }
 
         //Close the database
-        db.close();
+        //db.close();
 
         return success;
     }
@@ -167,7 +167,7 @@ public class FriendsListDbHelper {
         int result = db.delete(table_name, whereClause, whereArgs);
 
         //Close the database
-        db.close();
+        //db.close();
 
         return result;
     }
@@ -190,7 +190,7 @@ public class FriendsListDbHelper {
         int result = db.delete(table_name, whereClause, whereValues);
 
         //Close access to the database
-        db.close();
+        //db.close();
 
         return result > 0;
     }
@@ -216,7 +216,7 @@ public class FriendsListDbHelper {
         int result = db.update(table, values, whereClause, whereArgs);
 
         //Close access to the database
-        db.close();
+        //db.close();
 
         return result > 0;
     }

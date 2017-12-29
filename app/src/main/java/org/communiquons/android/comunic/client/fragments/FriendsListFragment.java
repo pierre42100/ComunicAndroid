@@ -93,7 +93,7 @@ public class FriendsListFragment extends Fragment {
         mContext = getActivity().getApplicationContext();
 
         //Create database helper
-        mDbHelper = new DatabaseHelper(mContext);
+        mDbHelper = DatabaseHelper.getInstance(mContext);
 
         //Create friendlist operation object
         flist = new FriendsList(mDbHelper, mContext);

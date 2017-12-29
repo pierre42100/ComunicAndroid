@@ -88,7 +88,7 @@ class ConversationMessagesDbHelper {
         }
 
         response.close();
-        db.close();
+        //db.close();
 
         return message;
     }
@@ -114,7 +114,7 @@ class ConversationMessagesDbHelper {
 
         }
 
-        db.close();
+        //db.close();
 
         return success;
     }
@@ -154,7 +154,7 @@ class ConversationMessagesDbHelper {
 
         //Close objects
         cur.close();
-        db.close();
+        //db.close();
 
         return list;
     }

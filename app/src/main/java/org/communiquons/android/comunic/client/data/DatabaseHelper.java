@@ -95,10 +95,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     /**
-     * Public constructor
+     * Get the current database helper instance
+     *
+     * @param context The context
+     * @return DatabaseHelper object
+     */
+    public static synchronized DatabaseHelper getInstance(Context context){
+        return new DatabaseHelper(context.getApplicationContext());
+    }
+
+    /**
+     * Private constructor
+     *
      * @param context The context where the database is used
      */
-    public DatabaseHelper(Context context){
+    private DatabaseHelper(Context context){
         super(context, DatabaseContract.DATABASE_NAME, null, DatabaseContract.DATABASE_VERSION);
     }
 

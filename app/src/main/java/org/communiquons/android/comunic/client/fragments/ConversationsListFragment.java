@@ -91,7 +91,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
         super.onViewCreated(view, savedInstanceState);
 
         //Database helper
-        DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
 
         //Instantiate the user informations helper
         userHelper = new GetUsersHelper(getActivity(), dbHelper);
@@ -240,6 +240,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
         if(list == null) {
             Toast.makeText(getActivity(), R.string.fragment_conversationslist_err_get_list,
                     Toast.LENGTH_LONG).show();
+            display_progress_bar(false);
             return;
         }
 

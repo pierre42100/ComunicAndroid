@@ -1,8 +1,11 @@
 package org.communiquons.android.comunic.client.data.conversations;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.communiquons.android.comunic.client.data.DatabaseContract.ConversationsListSchema;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
@@ -58,9 +61,53 @@ public class ConversationsListDbHelper {
                 success = false;
         }
 
-        db.close();
+        //db.close();
 
         return success;
+    }
+
+    /**
+     * Get information about a single conversation
+     *
+     * @param convID The conversation ID
+     * @return Information about the conversation (if available locally) or null in case of failure
+     */
+    @Nullable
+    ConversationsInfo getInfos(int convID){
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+        //Prepare database request
+        String table = ConversationsListSchema.TABLE_NAME;
+        String[] columns = {
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID,
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID_OWNER,
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_LAST_ACTIVE,
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_NAME,
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_FOLLOWING,
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_SAW_LAST_MESSAGES,
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_MEMBERS,
+        };
+        String selection = ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID + " = ?";
+        String[] selectionArgs = {""+convID};
+
+        //Perform database request
+        Cursor c = db.query(table, columns, selection, selectionArgs, null, null, null);
+
+        ConversationsInfo infos = null;
+
+        //Check for result
+        if(c.getCount() != 0){
+            c.moveToFirst();
+
+            //Parse result
+            infos = getConvObj(c);
+        }
+
+        c.close();
+        //db.close();
+
+        return infos;
+
     }
 
     /**
@@ -72,7 +119,7 @@ public class ConversationsListDbHelper {
         //Prepare the request
         db.delete(TABLE_NAME, null, null);
 
-        db.close();
+        //db.close();
     }
 
     /**
@@ -116,5 +163,35 @@ public class ConversationsListDbHelper {
                 info.getMembersString());
 
         return values;
+    }
+
+    /**
+     * Get the conversation object related to a current cursor position
+     *
+     * @param c The cursor
+     * @return The Generated conversation information
+     */
+    private ConversationsInfo getConvObj(Cursor c){
+
+        ConversationsInfo infos = new ConversationsInfo();
+
+        //Get the values
+        infos.setID(c.getInt(c.getColumnIndexOrThrow(
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID)));
+        infos.setID_owner(c.getInt(c.getColumnIndexOrThrow(
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID_OWNER)));
+        infos.setLast_active(c.getInt(c.getColumnIndexOrThrow(
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_LAST_ACTIVE)));
+        infos.setName(c.getString(c.getColumnIndexOrThrow(
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_NAME)));
+        infos.setFollowing(c.getInt(c.getColumnIndexOrThrow(
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_FOLLOWING)) == 1);
+        infos.setSaw_last_message(c.getInt(c.getColumnIndexOrThrow(
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_SAW_LAST_MESSAGES)) == 1);
+        infos.parseMembersString(c.getString(c.getColumnIndexOrThrow(
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_MEMBERS)));
+
+        return infos;
+
     }
 }

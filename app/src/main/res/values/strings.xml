@@ -65,4 +65,5 @@
     <string name="fragment_friendslist_title">Friends</string>
     <string name="fragment_conversationslist_title">Conversations</string>
     <string name="fragment_userinfos_title">About me</string>
+    <string name="fragement_conversation_title">Title</string>
 </resources>

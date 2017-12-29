@@ -31,6 +31,8 @@ import org.communiquons.android.comunic.client.data.conversations.ConversationMe
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationRefreshRunnable;
+import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.utils.BitmapUtils;
 
 import java.io.FileNotFoundException;
@@ -72,6 +74,11 @@ public class ConversationFragment extends Fragment
     private int conversation_id;
 
     /**
+     * Information about the conversation
+     */
+    private ConversationsInfo conversationInfo = null;
+
+    /**
      * The last available message id
      */
     private int last_message_id = 0;
@@ -100,6 +107,11 @@ public class ConversationFragment extends Fragment
      * Conversation messages helper
      */
     private ConversationMessagesHelper convMessHelper;
+
+    /**
+     * Conversation list helper
+     */
+    private ConversationsListHelper convListHelper;
 
     /**
      * Conversation messages adapter
@@ -141,10 +153,13 @@ public class ConversationFragment extends Fragment
         super.onCreate(savedInstanceState);
 
         //Database helper
-        DatabaseHelper dbHelper = new DatabaseHelper(getActivity());
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
 
         //Set conversation message helper
         convMessHelper = new ConversationMessagesHelper(getActivity(), dbHelper);
+
+        //Set conversation list helper
+        convListHelper = new ConversationsListHelper(getActivity(), dbHelper);
 
         //Get the conversation ID
         conversation_id = getArguments().getInt(ARG_CONVERSATION_ID);
@@ -155,6 +170,9 @@ public class ConversationFragment extends Fragment
         if(conversation_id < 1){
             throw new RuntimeException(TAG + " requires a valid conversation ID when created !");
         }
+
+        //Get information about the conversation
+
 
     }
 
@@ -238,9 +256,34 @@ public class ConversationFragment extends Fragment
         //Create and start the thread
         new Thread(refreshRunnable).start();
 
+        //Update conversation title
+        getActivity().setTitle(R.string.fragement_conversation_title);
+
         //Update the bottom navigation menu
         ((MainActivity) getActivity())
                 .setSelectedNavigationItem(R.id.main_bottom_navigation_conversations);
+
+        //Check for conversation information
+        if(conversationInfo == null){
+
+            //Query information about the conversation
+            new AsyncTask<Void, Void, ConversationsInfo>(){
+                @Override
+                protected ConversationsInfo doInBackground(Void... params) {
+                    ConversationsInfo infos = convListHelper.getInfosSingle(conversation_id, true);
+                    if(infos != null)
+                        infos.setDisplayName(convListHelper.getDisplayName(infos));
+                    return infos;
+                }
+
+                @Override
+                protected void onPostExecute(ConversationsInfo conversationsInfo) {
+                    onGotConversationInfos(conversationsInfo);
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        else
+            onGotConversationInfos(conversationInfo);
     }
 
     @Override
@@ -317,6 +360,21 @@ public class ConversationFragment extends Fragment
 
         //Inform about dataset update
         convMessAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * What to do once we got conversation informations
+     *
+     * @param infos Informations about the conversation
+     */
+    private void onGotConversationInfos(ConversationsInfo infos){
+
+        //Save conversation informations
+        conversationInfo = infos;
+
+        //Update the name of the conversation
+        getActivity().setTitle(infos.getDisplayName());
+
     }
 
     /**

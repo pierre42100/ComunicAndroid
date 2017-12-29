@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         //Initialize DatabaseHelper
-        dbHelper = new DatabaseHelper(getApplicationContext());
+        dbHelper = DatabaseHelper.getInstance(this);
 
         //If it is the first time the application is launched, start the user friends tab
         if(savedInstanceState == null){

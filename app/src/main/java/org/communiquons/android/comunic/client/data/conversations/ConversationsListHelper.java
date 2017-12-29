@@ -3,12 +3,15 @@ package org.communiquons.android.comunic.client.data.conversations;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.ArrayMap;
 import android.util.Log;
 
 import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
 import org.communiquons.android.comunic.client.api.APIResponse;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +40,11 @@ public class ConversationsListHelper {
     private ConversationsListDbHelper convDBHelper;
 
     /**
+     * Database helper
+     */
+    private DatabaseHelper dbHelper;
+
+    /**
      * The constructor of the class
      *
      * @param context The context of execution of the application
@@ -45,6 +53,7 @@ public class ConversationsListHelper {
     public ConversationsListHelper(Context context, DatabaseHelper dbHelper){
         mContext = context;
         convDBHelper = new ConversationsListDbHelper(dbHelper);
+        this.dbHelper = dbHelper;
     }
 
     /**
@@ -65,6 +74,73 @@ public class ConversationsListHelper {
 
         //Return the list
         return list;
+    }
+
+    /**
+     * Get information about a conversation
+     *
+     * @param convID The conversation ID
+     * @param allowDownload In case the conversation was not found locally, allow informations about
+     *                      the conversation to be fetched online
+     * @return Information about the conversation, or false in case of failure
+     */
+    @Nullable
+    public ConversationsInfo getInfosSingle(int convID, boolean allowDownload){
+
+        ConversationsInfo infos;
+
+        //Try to fetch information from the local database
+        if((infos = convDBHelper.getInfos(convID)) != null)
+            return infos;
+
+        //Check if we are not allowed to fetch informations online
+        if(!allowDownload)
+            return null;
+
+        //Get informations about the conversation online
+        return downloadSingle(convID);
+    }
+
+    /**
+     * Get the display name of a conversation
+     *
+     * @param infos Informations about a conversation
+     * @return The name of the conversation
+     */
+    public String getDisplayName(ConversationsInfo infos){
+
+        //Check if a specific name has been specified
+        if(infos.hasName())
+            return infos.getName();
+
+        //Get the list of members of the conversation
+        ArrayList<Integer> members = infos.getMembers();
+
+        //Get information about the users
+        ArrayMap<Integer, UserInfo> users =
+                new GetUsersHelper(mContext, dbHelper).getMultiple(members);
+
+        if(users == null)
+            return ""; //No name by default
+
+        String name = "";
+
+        int count = 0;
+        for(Integer id : users.keySet()){
+            if(users.get(id) != null){
+
+                if(count > 0)
+                    name += ", ";
+
+                name += users.get(id).getFullName();
+                count++;
+
+                if(count > 3)
+                    break;
+            }
+        }
+
+        return name;
     }
 
     /**
@@ -102,6 +178,35 @@ public class ConversationsListHelper {
         }
 
         return list;
+    }
+
+    /**
+     * Download informations about a single conversation online
+     *
+     * @param convID The ID of the conversation to fetch
+     * @return Informations about the conversation in case of success / null else
+     */
+    @Nullable
+    private ConversationsInfo downloadSingle(int convID){
+
+        //Perform an API request
+        APIRequestParameters params = new APIRequestParameters(mContext,
+                "conversations/getInfosOne");
+        params.addParameter("conversationID", ""+convID);
+
+        try {
+
+            APIResponse response = new APIRequest().exec(params);
+
+            JSONObject object = response.getJSONObject();
+
+            return parseConversationJSON(object);
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     /**
