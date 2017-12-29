@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.MainActivity;
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
@@ -204,12 +205,20 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
                 int count = 0;
                 for(int userID : conv.getMembers()){
 
+                    //Do not display current user name
+                    if(userID == new AccountUtils(getActivity()).get_current_user_id())
+                        continue;
+
                     if(usersInfo.containsKey(userID)){
 
                         UserInfo userInfo = usersInfo.get(userID);
 
+                        if(count > 0){
+                            conversationName += ", ";
+                        }
+
                         if(userInfo != null){
-                            conversationName += userInfo.getFullName() + ", ";
+                            conversationName += userInfo.getFullName();
                             count++;
                         }
 

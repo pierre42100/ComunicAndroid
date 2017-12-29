@@ -9,6 +9,7 @@ import android.util.Log;
 import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
 import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
@@ -127,6 +128,11 @@ public class ConversationsListHelper {
 
         int count = 0;
         for(Integer id : users.keySet()){
+
+            //Do not display current user name
+            if(id == new AccountUtils(mContext).get_current_user_id())
+                continue;
+
             if(users.get(id) != null){
 
                 if(count > 0)
