@@ -5,16 +5,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
+import org.communiquons.android.comunic.client.data.utils.UiUtils;
 
 import java.util.ArrayList;
 
@@ -87,48 +90,57 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
 
             Update the general layout of the message
          */
-        TextView contentView;
-        ImageView messageImageView;
+        //Get the views
+        LinearLayout containerView = convertView
+                .findViewById(R.id.fragment_conversation_message_item_container);
+        TextView contentView = convertView.
+                findViewById(R.id.fragment_conversation_message_item_content);
+        ImageView messageImageView = convertView.
+                findViewById(R.id.fragment_conversation_message_item_messageimage);
         ImageView accountImageView;
-        TextView userNameView;
+        TextView userNameView = convertView.
+                findViewById(R.id.fragment_conversation_message_item_username);
+
+        //Adapt the layout depending of user of the message
         if(message.getUser_id() == userID){
 
             //Message appears on the right
-            convertView.findViewById(R.id.fragment_conversation_message_left).
-                    setVisibility(View.GONE);
-            convertView.findViewById(R.id.fragment_conversation_message_right).
-                    setVisibility(View.VISIBLE);
+            ((LinearLayout)convertView).setGravity(Gravity.END);
 
-            contentView = convertView.
-                    findViewById(R.id.fragment_conversation_message_item_content_right);
+            //Message appears in blue
+            containerView.setBackground(getContext().
+                    getDrawable(R.drawable.fragment_conversation_message_currentuser_bg));
 
-            messageImageView = convertView.
-                    findViewById(R.id.fragment_conversation_message_item_messageimage_right);
-
+            //User account image appears on the right
             accountImageView = convertView.
-                    findViewById(R.id.fragment_conversation_message_item_accountimage_right);
+                    findViewById(R.id.fragment_conversation_message_item_right_account_image);
+            accountImageView.setVisibility(View.VISIBLE);
 
+            //Hide left image
+            convertView
+                    .findViewById(R.id.fragment_conversation_message_item_left_account_image)
+                    .setVisibility(View.GONE);
 
-            userNameView = null;
         }
         else {
 
-            //Message appears on the left
-            convertView.findViewById(R.id.fragment_conversation_message_right).
-                    setVisibility(View.GONE);
-            convertView.findViewById(R.id.fragment_conversation_message_left).
-                    setVisibility(View.VISIBLE);
+            //Message appears on the right
+            ((LinearLayout)convertView).setGravity(Gravity.START);
 
-            contentView = convertView.
-                    findViewById(R.id.fragment_conversation_message_item_content);
+            //Message appears in blue
+            containerView.setBackground(getContext().
+                    getDrawable(R.drawable.fragment_conversation_message_otheruser_bg));
 
-            messageImageView = convertView.
-                    findViewById(R.id.fragment_conversation_message_item_messageimage);
-
+            //User account image appears on the left
             accountImageView = convertView.
-                    findViewById(R.id.fragment_conversation_message_item_accountimage);
+                    findViewById(R.id.fragment_conversation_message_item_left_account_image);
+            accountImageView.setVisibility(View.VISIBLE);
 
-            userNameView = convertView.findViewById(R.id.fragment_conversation_message_item_username);
+            //Hide right image
+            convertView
+                    .findViewById(R.id.fragment_conversation_message_item_right_account_image)
+                    .setVisibility(View.GONE);
+
         }
 
         /*
@@ -146,6 +158,15 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
         //Set the text of the message
         contentView.setText(message.getContent());
 
+        //Change the color of the text
+        if(message.getUser_id() == userID){
+            contentView.setTextColor(UiUtils.getColor(getContext(),
+                    R.color.conversation_user_messages_textColor));
+        }
+        else {
+            contentView.setTextColor(UiUtils.getColor(getContext(),
+                    R.color.conversation_otheruser_messages_textColor));
+        }
 
         /*
             Update message image
@@ -167,13 +188,16 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
          */
         if(userNameView != null){
 
+            //Hide user name by default
+            userNameView.setVisibility(View.GONE);
+
             if(user != null){
-                //Set the name of the user
-                userNameView.setText(user.getFullName());
-                userNameView.setVisibility(View.VISIBLE);
+                if(userID != user.getId()) {
+                    //Set the name of the user
+                    userNameView.setText(user.getFullName());
+                    userNameView.setVisibility(View.VISIBLE);
+                }
             }
-            else
-                userNameView.setVisibility(View.GONE);
 
             if(previousMessage != null){
                 if (message.getUser_id() == previousMessage.getUser_id()){
@@ -197,13 +221,6 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
         if(user != null) {
             String imageURL = user.getAcountImageURL();
             ImageLoadManager.load(getContext(), imageURL, accountImageView);
-        }
-
-        //Hide user image if not required
-        if(previousMessage != null){
-            if (message.getUser_id() == previousMessage.getUser_id()){
-                accountImageView.setVisibility(View.INVISIBLE);
-            }
         }
 
 
