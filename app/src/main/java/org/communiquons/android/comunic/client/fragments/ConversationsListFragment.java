@@ -375,17 +375,22 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
      * @param convID The ID of the conversation to delete
      */
     private void delete_conversation(final int convID){
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, Boolean>(){
 
             @Override
-            protected Void doInBackground(Void... params) {
-                conversationsListHelper.delete(convID);
-                return null;
+            protected Boolean doInBackground(Void... params) {
+                return conversationsListHelper.delete(convID);
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
+            protected void onPostExecute(Boolean result) {
                 refresh_conversations_list();
+
+                //Display a toast if an error occurred
+                if(!result)
+                    Toast.makeText(getActivity(),
+                            R.string.fragment_conversationslist_err_del_conversation,
+                            Toast.LENGTH_SHORT).show();
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
