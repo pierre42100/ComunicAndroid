@@ -99,6 +99,11 @@ public class ConversationFragment extends Fragment
     private ConversationRefreshRunnable refreshRunnable;
 
     /**
+     * Fragment main progress bar
+     */
+    private ProgressBar main_progress_bar;
+
+    /**
      * Converstion message listView
      */
     private ListView convMessListView;
@@ -200,6 +205,10 @@ public class ConversationFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Main progress bar
+        main_progress_bar = view.findViewById(R.id.fragment_conversation_progressbar);
+        display_main_progress_bar(true);
+
         //Conversation messages listView
         convMessListView = view.findViewById(R.id.fragment_conversation_messageslist);
 
@@ -296,10 +305,16 @@ public class ConversationFragment extends Fragment
     @Override
     public void onNoMessage() {
 
+        //Hide main progress bar
+        display_main_progress_bar(false);
+
     }
 
     @Override
     public void onAddMessage(int lastID, @NonNull ArrayList<ConversationMessage> newMessages) {
+
+        //Remove main progress bar
+        display_main_progress_bar(false);
 
         final ArrayList<Integer> usersToFetch = new ArrayList<>();
 
@@ -524,5 +539,14 @@ public class ConversationFragment extends Fragment
         send_button.setVisibility(View.VISIBLE);
         new_message_progress_bar.setVisibility(View.GONE);
 
+    }
+
+    /**
+     * Update the visibility status of the main progress bar of the fragment
+     *
+     * @param visible True to make the progress bar visible
+     */
+    private void display_main_progress_bar(boolean visible){
+        main_progress_bar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }
