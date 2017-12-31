@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.MainActivity;
@@ -34,6 +35,7 @@ import org.communiquons.android.comunic.client.data.conversations.ConversationRe
 import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.utils.BitmapUtils;
+import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -102,6 +104,11 @@ public class ConversationFragment extends Fragment
      * Fragment main progress bar
      */
     private ProgressBar main_progress_bar;
+
+    /**
+     * No message yet notice
+     */
+    private TextView no_msg_notice;
 
     /**
      * Converstion message listView
@@ -176,9 +183,6 @@ public class ConversationFragment extends Fragment
             throw new RuntimeException(TAG + " requires a valid conversation ID when created !");
         }
 
-        //Get information about the conversation
-
-
     }
 
     @Override
@@ -208,6 +212,10 @@ public class ConversationFragment extends Fragment
         //Main progress bar
         main_progress_bar = view.findViewById(R.id.fragment_conversation_progressbar);
         display_main_progress_bar(true);
+
+        //No message notice
+        no_msg_notice = view.findViewById(R.id.fragment_conversation_noMsgYet);
+        display_not_msg_notice(false);
 
         //Conversation messages listView
         convMessListView = view.findViewById(R.id.fragment_conversation_messageslist);
@@ -308,13 +316,17 @@ public class ConversationFragment extends Fragment
         //Hide main progress bar
         display_main_progress_bar(false);
 
+        //Display no message notice
+        display_not_msg_notice(true);
+
     }
 
     @Override
     public void onAddMessage(int lastID, @NonNull ArrayList<ConversationMessage> newMessages) {
 
-        //Remove main progress bar
+        //Remove main progress bar and no message notice
         display_main_progress_bar(false);
+        display_not_msg_notice(false);
 
         final ArrayList<Integer> usersToFetch = new ArrayList<>();
 
@@ -548,5 +560,14 @@ public class ConversationFragment extends Fragment
      */
     private void display_main_progress_bar(boolean visible){
         main_progress_bar.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    /**
+     * Update the visibility status of the "no message notice"
+     *
+     * @param visible True to make the progress bar visible
+     */
+    private void display_not_msg_notice(boolean visible){
+        no_msg_notice.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }

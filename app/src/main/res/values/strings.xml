@@ -73,4 +73,5 @@
     <string name="popup_deleteconversation_confirm">Delete</string>
     <string name="popup_deleteconversation_cancel">Cancel</string>
     <string name="fragment_conversationslist_err_del_conversation">Could not delete conversation !</string>
+    <string name="fragment_conversation_no_msg">No message yet.</string>
 </resources>
