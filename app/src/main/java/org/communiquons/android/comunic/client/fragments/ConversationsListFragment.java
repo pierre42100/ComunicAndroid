@@ -111,23 +111,8 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
         //Get progress bar wheel
         progressBar = view.findViewById(R.id.fragment_conversationslist_progressbar);
 
-        //Get the list of conversations
-        new AsyncTask<Void, Void, ArrayList<ConversationsInfo>>(){
-            @Override
-            protected ArrayList<ConversationsInfo> doInBackground(Void... params) {
-
-                //Get the list of conversations
-                ArrayList<ConversationsInfo> list = conversationsListHelper.get();
-                process_conversations_list(list);
-                return list;
-
-            }
-
-            @Override
-            protected void onPostExecute(ArrayList<ConversationsInfo> list) {
-                display_conversations_list(list);
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        //Refresh conversations list
+        refresh_conversations_list();
 
         //Set the open conversation listener
         try {
@@ -151,13 +136,41 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
     }
 
     /**
+     * Refresh the list of conversations
+     */
+    private void refresh_conversations_list(){
+
+        //Display loading wheel
+        progressBar.setVisibility(View.VISIBLE);
+
+        //Get the list of conversations
+        new AsyncTask<Void, Void, ArrayList<ConversationsInfo>>(){
+            @Override
+            protected ArrayList<ConversationsInfo> doInBackground(Void... params) {
+
+                //Get the list of conversations
+                ArrayList<ConversationsInfo> list = conversationsListHelper.get();
+                process_conversations_list(list);
+                return list;
+
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<ConversationsInfo> list) {
+                display_conversations_list(list);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    /**
      * Process the conversation list
      *
      * This method must be called on a separate thread
      *
      * @param list The list of conversations
      */
-    public void process_conversations_list(ArrayList<ConversationsInfo> list){
+    private void process_conversations_list(ArrayList<ConversationsInfo> list){
 
         //Check if got the list
         if(list == null){
@@ -361,7 +374,19 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
      *
      * @param convID The ID of the conversation to delete
      */
-    private void delete_conversation(int convID){
-        Toast.makeText(getActivity(), "Delete conversation: " + convID, Toast.LENGTH_SHORT).show();
+    private void delete_conversation(final int convID){
+        new AsyncTask<Void, Void, Void>(){
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                conversationsListHelper.delete(convID);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                refresh_conversations_list();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }

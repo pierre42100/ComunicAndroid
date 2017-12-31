@@ -72,4 +72,5 @@
     <string name="popup_deleteconversation_messsage">Are you sure do you want to remove this conversation ? All the messages you posted will be deleted. If you are the owner of the conversation, all the messages will be removed.</string>
     <string name="popup_deleteconversation_confirm">Delete</string>
     <string name="popup_deleteconversation_cancel">Cancel</string>
+    <string name="fragment_conversationslist_err_del_conversation">Could not delete conversation !</string>
 </resources>

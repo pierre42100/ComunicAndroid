@@ -156,6 +156,28 @@ public class ConversationsListHelper {
     }
 
     /**
+     * Delete a conversation specified by its ID
+     *
+     * @param convID The ID of the conversation to delete
+     * @return True in case of success / false else
+     */
+    public boolean delete(int convID){
+
+        //Delete the conversation on the API
+        APIRequestParameters params = new APIRequestParameters(mContext, "conversations/delete");
+        params.addParameter("conversationID", ""+convID);
+
+        try {
+            new APIRequest().exec(params);
+        } catch (Exception e){
+            return false;
+        }
+
+        //Success
+        return true;
+    }
+
+    /**
      * Get online (download) the list of all the conversations
      *
      * @return The list of conversations
