@@ -117,9 +117,15 @@ public class ConversationsListHelper {
         //Get the list of members of the conversation
         ArrayList<Integer> members = infos.getMembers();
 
+        //Get the ID of the three first members
+        ArrayList<Integer> membersToGet = new ArrayList<>();
+        for(int ID : members){
+            membersToGet.add(ID);
+        }
+
         //Get information about the users
         ArrayMap<Integer, UserInfo> users =
-                new GetUsersHelper(mContext, dbHelper).getMultiple(members);
+                new GetUsersHelper(mContext, dbHelper).getMultiple(membersToGet);
 
         if(users == null)
             return ""; //No name by default
