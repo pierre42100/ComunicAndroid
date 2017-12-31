@@ -257,7 +257,7 @@ public class ConversationFragment extends Fragment
         new Thread(refreshRunnable).start();
 
         //Update conversation title
-        getActivity().setTitle(R.string.fragement_conversation_title);
+        getActivity().setTitle(R.string.fragment_conversation_title);
 
         //Update the bottom navigation menu
         ((MainActivity) getActivity())
@@ -368,6 +368,14 @@ public class ConversationFragment extends Fragment
      * @param infos Informations about the conversation
      */
     private void onGotConversationInfos(ConversationsInfo infos){
+
+        //Check for errors
+        if(infos == null){
+            Toast.makeText(getActivity(), R.string.fragment_conversation_err_getconvinfos,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
 
         //Save conversation informations
         conversationInfo = infos;

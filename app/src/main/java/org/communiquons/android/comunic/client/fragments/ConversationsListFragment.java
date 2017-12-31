@@ -1,14 +1,19 @@
 package org.communiquons.android.comunic.client.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -265,8 +270,42 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
         //Add click listener
         conversationsListView.setOnItemClickListener(this);
 
+        conversationsListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                MenuInflater inflater = getActivity().getMenuInflater();
+                inflater.inflate(R.menu.menu_fragment_conserationslist_item, menu);
+            }
+        });
+
         //Remove progress bar
         display_progress_bar(false);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        //Fetch source item
+        AdapterView.AdapterContextMenuInfo src
+                = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        //Get conversation ID
+        int convID = convList.size() > src.position ? convList.get(src.position).getID() : -1;
+
+        if(convID != -1) {
+
+            //Check which action was chosen
+            switch (item.getItemId()) {
+
+                case R.id.menu_fragment_conversationslist_item_delete:
+                    confirmDeleteConversation(convID);
+                    return true;
+
+            }
+
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     /**
@@ -292,5 +331,37 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
      */
     private void display_progress_bar(boolean show){
         progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    /**
+     * Display a popup window to ask user to confirm the deletion of a conversation
+     *
+     * @param convID The ID of the conversation to delete
+     */
+    private void confirmDeleteConversation(final int convID){
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.popup_deleteconversation_title)
+                .setMessage(R.string.popup_deleteconversation_messsage)
+                .setNegativeButton(R.string.popup_deleteconversation_cancel, null)
+
+                .setPositiveButton(R.string.popup_deleteconversation_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        delete_conversation(convID);
+                    }
+                })
+
+                .show();
+
+    }
+
+    /**
+     * Delete a conversation
+     *
+     * @param convID The ID of the conversation to delete
+     */
+    private void delete_conversation(int convID){
+        Toast.makeText(getActivity(), "Delete conversation: " + convID, Toast.LENGTH_SHORT).show();
     }
 }
