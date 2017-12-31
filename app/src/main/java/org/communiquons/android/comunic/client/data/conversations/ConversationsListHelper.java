@@ -119,8 +119,14 @@ public class ConversationsListHelper {
 
         //Get the ID of the three first members
         ArrayList<Integer> membersToGet = new ArrayList<>();
+        int num = 0;
         for(int ID : members){
             membersToGet.add(ID);
+
+            num++;
+
+            if(num > 3)
+                break;
         }
 
         //Get information about the users
