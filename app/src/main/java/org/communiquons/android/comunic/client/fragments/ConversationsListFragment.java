@@ -1,9 +1,7 @@
 package org.communiquons.android.comunic.client.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,8 +28,8 @@ import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListAdapter;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
-import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper
-        .openConversationListener;
+import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper.openConversationListener;
+import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper.updateConversationListener;
 
 import java.util.ArrayList;
 
@@ -77,6 +75,11 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
     private openConversationListener openConvListener;
 
     /**
+     * Conversation updater
+     */
+    private updateConversationListener updateConversationListener;
+
+    /**
      * Conversation list adapter
      */
     private ConversationsListAdapter conversationsListAdapter;
@@ -114,13 +117,23 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
         //Refresh conversations list
         refresh_conversations_list();
 
-        //Set the open conversation listener
+        //Set the open and update conversation listener
         try {
             openConvListener = (openConversationListener) getActivity();
+            updateConversationListener = (updateConversationListener) getActivity();
         } catch (ClassCastException e){
             throw new ClassCastException(getActivity().toString() +
-                    " must implement OpenConversationListener");
+                    " must implement OpenConversationListener and updateConversationListener");
         }
+
+        //Set create conversation button listener
+        view.findViewById(R.id.fragment_conversationslist_create)
+                .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateConversationListener.createConversation();
+            }
+        });
     }
 
     @Override
@@ -287,7 +300,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                 MenuInflater inflater = getActivity().getMenuInflater();
-                inflater.inflate(R.menu.menu_fragment_conserationslist_item, menu);
+                inflater.inflate(R.menu.menu_fragment_conversationslist_item, menu);
             }
         });
 

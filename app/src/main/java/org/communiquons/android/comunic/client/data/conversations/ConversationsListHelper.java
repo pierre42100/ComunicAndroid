@@ -298,4 +298,22 @@ public class ConversationsListHelper {
 
     }
 
+    /**
+     * Handles the creation and / or the update of a conversation
+     */
+    public interface updateConversationListener {
+
+        /**
+         * This method is called when a user wants to create a new conversation
+         */
+        void createConversation();
+
+        /**
+         * This method is called when the user want to open a conversation
+         *
+         * @param convID The ID of the conversation to open
+         */
+        void updateConversation(int convID);
+    }
+
 }

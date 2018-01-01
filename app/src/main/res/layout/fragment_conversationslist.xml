@@ -23,8 +23,9 @@
 
     <!-- Create new conversations button -->
     <Button
+        android:id="@+id/fragment_conversationslist_create"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/fragment_conversationslist_create_button"
-        android:enabled="false" /><!-- Not available yet -->
+        android:enabled="true" />
 </LinearLayout>

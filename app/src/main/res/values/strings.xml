@@ -74,4 +74,9 @@
     <string name="popup_deleteconversation_cancel">Cancel</string>
     <string name="fragment_conversationslist_err_del_conversation">Could not delete conversation !</string>
     <string name="fragment_conversation_no_msg">No message yet.</string>
+    <string name="fragment_update_conversation_title_create">Create a conversation</string>
+    <string name="fragment_update_conversation_name_placeholder">Conversation name</string>
+    <string name="fragment_update_conversation_button_create">Create</string>
+    <string name="fragment_update_conversation_follow">Follow the conversation</string>
+    <string name="fragment_update_conversation_addmember">Add a member</string>
 </resources>

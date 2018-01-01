@@ -21,6 +21,7 @@ import org.communiquons.android.comunic.client.data.friendsList.FriendRefreshLoo
 import org.communiquons.android.comunic.client.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.fragments.ConversationsListFragment;
 import org.communiquons.android.comunic.client.fragments.FriendsListFragment;
+import org.communiquons.android.comunic.client.fragments.UpdateConversationFragment;
 import org.communiquons.android.comunic.client.fragments.UserInfosFragment;
 
 
@@ -30,7 +31,8 @@ import org.communiquons.android.comunic.client.fragments.UserInfosFragment;
  * @author Pierre HUBERT
  */
 public class MainActivity extends AppCompatActivity
-        implements ConversationsListHelper.openConversationListener {
+        implements ConversationsListHelper.openConversationListener,
+        ConversationsListHelper.updateConversationListener {
 
     /**
      * Account object
@@ -275,5 +277,27 @@ public class MainActivity extends AppCompatActivity
         transaction.addToBackStack(null);
         transaction.commit();
 
+    }
+
+    @Override
+    public void createConversation() {
+        updateConversation(0);
+    }
+
+    @Override
+    public void updateConversation(int convID) {
+
+        //Set the arguments of the fragment
+        Bundle args = new Bundle();
+
+        //Create the fragment
+        UpdateConversationFragment updateConversationFragment = new UpdateConversationFragment();
+        updateConversationFragment.setArguments(args);
+
+        //Display the fragment
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, updateConversationFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
