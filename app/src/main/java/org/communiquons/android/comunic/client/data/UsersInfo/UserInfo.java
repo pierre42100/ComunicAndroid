@@ -1,5 +1,7 @@
 package org.communiquons.android.comunic.client.data.UsersInfo;
 
+import org.communiquons.android.comunic.client.data.utils.Utilities;
+
 /**
  * This class contains the informations about a single user
  *
@@ -78,6 +80,15 @@ public class UserInfo {
      */
     public String getFullName(){
         return firstName + " " + lastName;
+    }
+
+    /**
+     * Get the full name of the user ready to be shown
+     *
+     * @return The full name of the user
+     */
+    public String getDisplayFullName(){
+        return Utilities.prepareStringTextView(getFullName());
     }
 
     /**

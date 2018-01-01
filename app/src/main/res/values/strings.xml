@@ -79,4 +79,7 @@
     <string name="fragment_update_conversation_button_create">Create</string>
     <string name="fragment_update_conversation_follow">Follow the conversation</string>
     <string name="fragment_update_conversation_addmember">Add a member</string>
+    <string name="activity_searchuser_title">Search user</string>
+    <string name="activity_searchuser_text_placeholder">User name</string>
+    <string name="err_search_user">Could not search user !</string>
 </resources>

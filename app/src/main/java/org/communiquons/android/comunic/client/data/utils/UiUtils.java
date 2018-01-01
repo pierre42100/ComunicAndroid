@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.utils;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 /**
@@ -27,5 +28,15 @@ public class UiUtils {
         else {
             return context.getResources().getColor(color_id);
         }
+    }
+
+    /**
+     * Get a drawable from ressources
+     *
+     * @param context The context of the application
+     * @param drawable_id The ID of the drawable to get
+     */
+    public static Drawable getDrawable(Context context, int drawable_id){
+        return context.getResources().getDrawable(drawable_id, context.getTheme());
     }
 }

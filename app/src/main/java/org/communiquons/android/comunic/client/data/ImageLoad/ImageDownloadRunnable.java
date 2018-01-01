@@ -59,7 +59,7 @@ class ImageDownloadRunnable implements Runnable {
             InputStream is = conn.getInputStream();
 
             //Process image
-            Bitmap image =BitmapFactory.decodeStream(is);
+            Bitmap image = BitmapFactory.decodeStream(is);
             image.compress(Bitmap.CompressFormat.PNG, 100, os);
 
             os.close();

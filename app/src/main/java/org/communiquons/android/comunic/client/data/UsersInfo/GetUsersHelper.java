@@ -10,6 +10,7 @@ import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
 import org.communiquons.android.comunic.client.api.APIResponse;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -155,6 +156,57 @@ public class GetUsersHelper {
         return usersInfo;
     }
 
+    /**
+     * Search for user from online source
+     *
+     * @param query The query string
+     * @return A list of users / false in case of failure
+     */
+    @Nullable
+    public ArrayMap<Integer, UserInfo> search_users(String query){
+
+        //Fetch users online
+        ArrayList<Integer> usersID = search_users_online(query);
+
+        //Check for errors
+        if(usersID == null)
+            return null;
+
+        return getMultiple(usersID);
+
+    }
+
+    /**
+     * Search for users on the API
+     *
+     * @param query The query of the research
+     * @return The ID of the corresponding users / false in case of failure
+     */
+    @Nullable
+    private ArrayList<Integer> search_users_online(String query){
+
+        //Make an API request
+        APIRequestParameters params = new APIRequestParameters(mContext, "search/user");
+        params.addParameter("query", query);
+
+        try {
+
+            //Get and extract the response
+            APIResponse response = new APIRequest().exec(params);
+            JSONArray array = response.getJSONArray();
+
+            //Make response
+            ArrayList<Integer> IDs = new ArrayList<>();
+            for(int i = 0; i < array.length(); i++){
+                IDs.add(array.getInt(i));
+            }
+            return IDs;
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     /**
      * Get and return the information about multiple users from the server

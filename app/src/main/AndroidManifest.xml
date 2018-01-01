@@ -2,11 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.communiquons.android.comunic.client">
 
-    <!-- Internet access is required to access the API -->
+    <!-- Internet access is required to access the API and download medias -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-
 
     <application
         android:allowBackup="true"
@@ -16,6 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!-- Main activity of the application -->
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,8 +23,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity"
-            android:label="@string/activity_login_header"></activity>
+
+        <!-- Login activity -->
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/activity_login_header" />
+
+        <!-- Search user activity -->
+        <activity
+            android:name=".SearchUserActivity"
+            android:label="@string/activity_searchuser_title"/>
+
     </application>
 
 </manifest>
