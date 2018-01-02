@@ -1,5 +1,7 @@
 package org.communiquons.android.comunic.client;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +9,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.ArrayMap;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -19,7 +23,7 @@ import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import java.util.ArrayList;
 
 public class SearchUserActivity extends AppCompatActivity 
-        implements TextWatcher{
+        implements TextWatcher, AdapterView.OnItemClickListener{
 
     /**
      * Debug tag
@@ -65,6 +69,22 @@ public class SearchUserActivity extends AppCompatActivity
 
         //Set on key listener
         searchField.addTextChangedListener(this);
+
+        resultListView.setOnItemClickListener(this);
+    }
+
+    /**
+     * This function is called when we got a response to send
+     *
+     * @param userID The ID of the user
+     */
+    private void onGotUserID(int userID){
+
+        Intent data = new Intent("org.communiquons.android.RESULT");
+        data.setData(Uri.parse("?userID=" + userID));
+        setResult(RESULT_OK, data);
+        finish();
+
     }
 
     @Override
@@ -82,6 +102,16 @@ public class SearchUserActivity extends AppCompatActivity
         newSearch(""+searchField.getText());
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        //Get ID
+        int userID = resultArray.get(position).getId();
+
+        //This is the result
+        onGotUserID(userID);
+    }
+
     /**
      * Perform a new search on the server
      *
@@ -96,7 +126,7 @@ public class SearchUserActivity extends AppCompatActivity
         new AsyncTask<String, Void, ArrayMap<Integer, UserInfo>>(){
             @Override
             protected ArrayMap<Integer, UserInfo> doInBackground(String... params) {
-                return getUsersHelper.search_users(params[0]);
+                return getUsersHelper.search_users(params[0], 10);
             }
 
             @Override

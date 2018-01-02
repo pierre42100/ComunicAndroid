@@ -160,13 +160,14 @@ public class GetUsersHelper {
      * Search for user from online source
      *
      * @param query The query string
+     * @param limit The maximum number of results
      * @return A list of users / false in case of failure
      */
     @Nullable
-    public ArrayMap<Integer, UserInfo> search_users(String query){
+    public ArrayMap<Integer, UserInfo> search_users(String query, int limit){
 
         //Fetch users online
-        ArrayList<Integer> usersID = search_users_online(query);
+        ArrayList<Integer> usersID = search_users_online(query, limit);
 
         //Check for errors
         if(usersID == null)
@@ -180,14 +181,16 @@ public class GetUsersHelper {
      * Search for users on the API
      *
      * @param query The query of the research
+     * @param limit The maximum number of results
      * @return The ID of the corresponding users / false in case of failure
      */
     @Nullable
-    private ArrayList<Integer> search_users_online(String query){
+    private ArrayList<Integer> search_users_online(String query, int limit){
 
         //Make an API request
         APIRequestParameters params = new APIRequestParameters(mContext, "search/user");
         params.addParameter("query", query);
+        params.addParameter("searchLimit", ""+limit);
 
         try {
 
