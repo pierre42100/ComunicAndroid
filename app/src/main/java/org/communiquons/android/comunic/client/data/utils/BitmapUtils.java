@@ -1,11 +1,12 @@
 package org.communiquons.android.comunic.client.data.utils;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 /**
  * Bitmap utilities
@@ -57,5 +58,58 @@ public class BitmapUtils {
 
         //Scale and return bitmap
         return Bitmap.createScaledBitmap(bitmap, newW, newH, true);
+    }
+
+    /**
+     * Open a resized format of an image to avoid OOM Fatal error
+     *
+     * @param file The file to open
+     * @param reqWidth The required width
+     * @param reqHeight The required height
+     */
+    public static Bitmap openResized(@NonNull File file, int reqWidth, int reqHeight){
+
+        //Get the size of the image
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+
+        //Calculate the reduction ratio
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        //Decode Bitmap with new parametres
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+    }
+
+    /**
+     * Calculate the in sample size
+     *
+     * @param options The Options of the Bitmap Factory that already contains the with and the
+     *                height of the image
+     * @param reqW The required width
+     * @param reqH The required Height
+     * @return The reduction ratio required for the image
+     */
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqW, int reqH){
+
+        //Raw the width and the height of the image
+        int width = options.outWidth;
+        int height = options.outHeight;
+        int inSampleSize = 1;
+
+        //Check if the image has to be resized
+        if(height > reqH || width > reqW){
+
+            int halfHeight = height / 2;
+            int halfWidth = width / 2;
+
+            while((halfHeight / inSampleSize) >= reqH && (halfWidth / inSampleSize) >= reqW)
+                inSampleSize *= 2;
+
+        }
+
+        return inSampleSize;
+
     }
 }

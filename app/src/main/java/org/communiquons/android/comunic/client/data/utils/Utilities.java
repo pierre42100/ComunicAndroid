@@ -2,19 +2,15 @@ package org.communiquons.android.comunic.client.data.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
 
 import org.communiquons.android.comunic.client.R;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -176,25 +172,20 @@ public class Utilities {
      *
      * @param is The Input stream
      * @param os The output stream
-     * @return The number of byte transfered
      */
-    public static int InputToOutputStream(InputStream is, OutputStream os){
+    public static void InputToOutputStream(InputStream is, OutputStream os){
 
-        int count = 0;
+        int read = 0;
+        byte[] bytes = new byte[2048];
 
         try {
-            int b = is.read();
-            while (b != -1){
-                os.write(b);
-                count++;
-                b = is.read();
+            while ((read = is.read(bytes)) != -1){
+                os.write(bytes, 0, read);
             }
 
         } catch (IOException e){
             e.printStackTrace();
         }
-
-        return count;
     }
 
     /**

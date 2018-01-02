@@ -1,7 +1,10 @@
 package org.communiquons.android.comunic.client.data.ImageLoad;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.util.Log;
+
+import org.communiquons.android.comunic.client.data.utils.BitmapUtils;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,6 +21,11 @@ import java.net.URL;
  */
 
 class ImageDownloadRunnable implements Runnable {
+
+    /**
+     * Debug tag
+     */
+    private static final String TAG = "ImageDownloadRunnable";
 
     private String url;
     private File dest;
@@ -55,16 +63,33 @@ class ImageDownloadRunnable implements Runnable {
 
             conn.connect();
 
+            //Get image size
+            long img_size = Long.decode(conn.getHeaderField("Content-Length"));
+
             //Get input stream
             InputStream is = conn.getInputStream();
 
-            //Process image
-            Bitmap image = BitmapFactory.decodeStream(is);
-            image.compress(Bitmap.CompressFormat.PNG, 100, os);
+            //Log action
+            Log.v(TAG, "Downloading image (size: "+img_size+") at " + url);
 
-            os.close();
+            //Big images have to written byte per byte
+            Utilities.InputToOutputStream(is, os);
+
+            //Close streams and disconnect
             is.close();
+            os.close();
             conn.disconnect();
+
+            //Reduce image size
+            Bitmap bitmap = BitmapUtils.openResized(dest, 500, 500);
+
+            //Write the new bitmap to the file
+            os = new FileOutputStream(dest, false);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+            os.close();
+
+            //Free memory
+            bitmap.recycle();
 
         } catch (Exception e) {
             e.printStackTrace();

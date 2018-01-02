@@ -23,6 +23,11 @@ import java.io.FileInputStream;
 class ImageLoadRunnable implements Runnable {
 
     /**
+     * Debug tag
+     */
+    private static final String TAG = "ImageLoadRunnable";
+
+    /**
      * An array map with all the pending images associated with their URLs
      */
     private static ArrayMap<String, Thread> pendingOperation = null;
@@ -136,6 +141,9 @@ class ImageLoadRunnable implements Runnable {
             return;
         }
 
+        //Log action
+        Log.v(TAG, "Load image downloaded from " + url);
+
         try {
             //Load the image
             FileInputStream is = new FileInputStream(file);
@@ -146,7 +154,7 @@ class ImageLoadRunnable implements Runnable {
             if(bitmap == null){
                 //Return error
                 Log.e("ImageLoadManagerRunnabl", "Image file could not be read, therefore it was" +
-                        "deleted");
+                        " deleted");
 
                 //Delete file
                 file.delete();
