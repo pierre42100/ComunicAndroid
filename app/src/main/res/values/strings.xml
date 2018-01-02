@@ -84,4 +84,6 @@
     <string name="err_search_user">Could not search user !</string>
     <string name="err_add_member_double">This user is already a member of the conversation!</string>
     <string name="err_get_users_info">Could not get information about users !</string>
+    <string name="err_conversation_need_members">Please add at least one member to the conversation !</string>
+    <string name="err_conversation_create">Could not create conversation !</string>
 </resources>

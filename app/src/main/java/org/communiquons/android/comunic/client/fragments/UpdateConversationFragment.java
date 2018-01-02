@@ -24,6 +24,7 @@ import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.UsersInfo.UsersAsysncInfoAdapter;
+import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 
 import java.util.ArrayList;
 
@@ -96,6 +97,16 @@ public class UpdateConversationFragment extends Fragment {
      */
     private GetUsersHelper usersHelper;
 
+    /**
+     * Conversations list helper
+     */
+    private ConversationsListHelper convListHelper;
+
+    /**
+     * Conversation opener
+     */
+    private ConversationsListHelper.openConversationListener convOpener;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +116,17 @@ public class UpdateConversationFragment extends Fragment {
 
         //Get User helper
         usersHelper = new GetUsersHelper(getActivity(), dbHelper);
+
+        //Get conversation list helper
+        convListHelper = new ConversationsListHelper(getActivity(), dbHelper);
+
+        //Get conversation opener
+        try {
+            convOpener = (ConversationsListHelper.openConversationListener) getActivity();
+        } catch (ClassCastException e){
+            throw new RuntimeException(getActivity().getClass().getName() + " must implement the" +
+                    " ConversationsListHelper.openConversationListener interface !");
+        }
     }
 
     @Nullable
@@ -130,6 +152,14 @@ public class UpdateConversationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 requestAddMember();
+            }
+        });
+
+        //Make submit button lives
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submit_form();
             }
         });
 
@@ -262,11 +292,81 @@ public class UpdateConversationFragment extends Fragment {
     }
 
     /**
+     * Submit creation form
+     */
+    private void submit_form(){
+
+        //Check there is at least on member to the conversation
+        if(membersID.size() == 0){
+            Toast.makeText(getActivity(), R.string.err_conversation_need_members,
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        //Get the values
+        final String name = ""+nameView.getText();
+        final boolean following = followCheckbox.isChecked();
+
+        //Block the form
+        set_form_blocked(true);
+        set_progressbar_visibility(true);
+
+        //Create the task in the background
+        new AsyncTask<Void, Void, Integer>(){
+
+            @Override
+            protected Integer doInBackground(Void... params) {
+                return convListHelper.create(name, following, membersID);
+            }
+
+            @Override
+            protected void onPostExecute(Integer integer) {
+                if(getActivity() != null)
+                    creationCallback(integer);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * This method is called once the conversation has been created (or not)
+     *
+     * @param convID The ID of the target conversation
+     */
+    private void creationCallback(@Nullable Integer convID){
+
+        //Check for errors
+        if(convID == null){
+            Toast.makeText(getActivity(), R.string.err_conversation_create,
+                    Toast.LENGTH_SHORT).show();
+
+            //Release form
+            set_form_blocked(false);
+            set_progressbar_visibility(false);
+
+            return;
+        }
+
+        //Open conversation
+        convOpener.openConversation(convID);
+    }
+
+    /**
      * Update progressbar visibility
      *
      * @param visible TRUE to make the progressbar visible
      */
     private void set_progressbar_visibility(boolean visible){
         progressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    /**
+     * Make the fields of the form read only or read and write
+     *
+     * @param blocked Specify whether the fields should be blocked or not
+     */
+    private void set_form_blocked(boolean blocked){
+        nameView.setEnabled(!blocked);
+        submitButton.setEnabled(!blocked);
+        addMember.setEnabled(!blocked);
+        followCheckbox.setEnabled(!blocked);
     }
 }

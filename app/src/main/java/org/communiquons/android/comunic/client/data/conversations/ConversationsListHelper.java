@@ -184,6 +184,43 @@ public class ConversationsListHelper {
     }
 
     /**
+     * Create a new conversation
+     *
+     * @param name The name of the conversation
+     * @param follow True to make the user follow the conversation
+     * @param members The members of the conversation
+     * @return The ID of the created conversation / null in case of failure
+     */
+    @Nullable
+    public Integer create(String name, boolean follow, ArrayList<Integer> members){
+
+        //Turn the list of members into a string
+        String members_str = "";
+        for(int id : members){
+            members_str += id + ",";
+        }
+
+        //Make an API request
+        APIRequestParameters params = new APIRequestParameters(mContext, "conversations/create");
+        params.addParameter("name", name.equals("") ? "false" : name);
+        params.addParameter("follow", follow ? "true" : "false");
+        params.addParameter("users", members_str);
+
+        //Perform the request
+        try {
+            APIResponse response = new APIRequest().exec(params);
+
+            //Get conversation ID
+            JSONObject obj = response.getJSONObject();
+            return obj.getInt("conversationID");
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Get online (download) the list of all the conversations
      *
      * @return The list of conversations
