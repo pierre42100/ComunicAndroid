@@ -109,6 +109,26 @@ public class GetUsersHelper {
     }
 
     /**
+     * Get the list of missing users ID in a set of users informations
+     *
+     * @param IDs The reference IDs list
+     * @param usersInfo Informations about the users
+     * @return
+     */
+    public static ArrayList<Integer> get_missing_ids(@NonNull ArrayList<Integer> IDs,
+                                                     @NonNull ArrayMap<Integer, UserInfo> usersInfo){
+        ArrayList<Integer> missingIds = new ArrayList<>();
+
+        //Process the list of IDs
+        for(int user_id : IDs){
+            if(!usersInfo.containsKey(user_id))
+                missingIds.add(user_id);
+        }
+
+        return missingIds;
+    }
+
+    /**
      * Get information about multiple users from the database or from the server
      *
      * @param IDs The ID of teh users to get

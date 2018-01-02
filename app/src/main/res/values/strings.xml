@@ -82,4 +82,6 @@
     <string name="activity_searchuser_title">Search user</string>
     <string name="activity_searchuser_text_placeholder">User name</string>
     <string name="err_search_user">Could not search user !</string>
+    <string name="err_add_member_double">This user is already a member of the conversation!</string>
+    <string name="err_get_users_info">Could not get information about users !</string>
 </resources>
