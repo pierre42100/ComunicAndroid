@@ -170,7 +170,8 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
 
             @Override
             protected void onPostExecute(ArrayList<ConversationsInfo> list) {
-                display_conversations_list(list);
+                if(getActivity() != null)
+                    display_conversations_list(list);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
