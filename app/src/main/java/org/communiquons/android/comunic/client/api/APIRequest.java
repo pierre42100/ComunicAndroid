@@ -45,7 +45,8 @@ public class APIRequest {
      */
     public APIResponse exec(APIRequestParameters parameters) throws Exception{
 
-        //Add login tokens
+        //Add API and login tokens
+        addAPItokens(parameters);
         addLoginTokens(parameters);
 
         APIResponse result = new APIResponse();
@@ -111,6 +112,16 @@ public class APIRequest {
 
         return out.toString();
 
+    }
+
+    /**
+     * Add the API client tokens to API request object
+     *
+     * @param params The request parametres to update
+     */
+    private void addAPItokens(APIRequestParameters params){
+        params.addParameter("serviceName", BuildConfig.api_service_name);
+        params.addParameter("serviceToken", BuildConfig.api_service_token);
     }
 
     /**
