@@ -1,11 +1,17 @@
 package org.communiquons.android.comunic.client.data.friendsList;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
+import org.communiquons.android.comunic.client.api.APIResponse;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Friends list functions
@@ -16,7 +22,7 @@ import org.communiquons.android.comunic.client.data.DatabaseHelper;
  * Created by pierre on 11/19/17.
  */
 
-public class FriendsList {
+public class FriendsListHelper {
 
     //Debug tag
     private static final String TAG = "FriendsList";
@@ -25,14 +31,85 @@ public class FriendsList {
     private Context mContext;
 
     /**
+     * Public constructor
+     *
+     * @param context The context of the application
+     */
+    public FriendsListHelper(Context context){
+        this.fdbHelper = new FriendsListDbHelper(DatabaseHelper.getInstance(context));
+        this.mContext = context;
+    }
+
+    /**
      * Public application constructor
      *
      * @param dbHelper Database helper
-     * @param mContext the context of the application
+     * @param context the context of the application
      */
-    public FriendsList(DatabaseHelper dbHelper, Context mContext){
+    public FriendsListHelper(DatabaseHelper dbHelper, Context context){
         this.fdbHelper = new FriendsListDbHelper(dbHelper);
-        this.mContext = mContext;
+        this.mContext = context;
+    }
+
+    /**
+     * Get and return the friends list
+     *
+     * @return The list of firned
+     */
+    public ArrayList<Friend> get(){
+        return fdbHelper.get_list();
+    }
+
+    /**
+     * Download a new version of the friends list
+     *
+     * @return The list of friend of the user
+     */
+    @Nullable
+    ArrayList<Friend> download(){
+
+        //Prepare the API request
+        APIRequestParameters params = new APIRequestParameters(mContext, "friends/getList");
+
+        //Prepare the result
+        ArrayList<Friend> friends = new ArrayList<>();
+
+        try {
+
+            //Perform the request and retrieve the response
+            APIResponse response = new APIRequest().exec(params);
+            JSONArray friendsList = response.getJSONArray();
+
+            if(friendsList == null)
+                return null;
+
+            //Process JSON array
+            for(int i = 0; i < friendsList.length(); i++){
+
+                //Try to extract JSON object containing informations
+                JSONObject friendship_infos = friendsList.getJSONObject(i);
+
+                //Save informations about the friend in the friend object
+                Friend friend = new Friend();
+
+                //Set friend informations
+                friend.setId(friendship_infos.getInt("ID_friend"));
+                friend.setAccepted(friendship_infos.getInt("accepted") == 1);
+                friend.setFollowing(friendship_infos.getInt("ID_friend") == 1);
+                friend.setLast_activity(friendship_infos.getInt("time_last_activity"));
+
+                //Add the friend to the list
+                friends.add(friend);
+
+            }
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+        return friends;
     }
 
     /**

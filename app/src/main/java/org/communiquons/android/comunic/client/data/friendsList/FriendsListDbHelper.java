@@ -96,9 +96,6 @@ public class FriendsListDbHelper {
         //Close cursor
         c.close();
 
-        //Close the access to the database
-        //db.close();
-
         return friendsList;
     }
 

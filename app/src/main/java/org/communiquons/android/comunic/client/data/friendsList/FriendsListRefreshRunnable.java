@@ -41,11 +41,11 @@ class FriendsListRefreshRunnable implements Runnable {
     @Override
     public void run() {
 
-        GetFriendsList getFriendsList = new GetFriendsList(mContext);
+        FriendsListHelper friendsListHelper = new FriendsListHelper(mContext);
         FriendsListDbHelper friendsDBHelper = new FriendsListDbHelper(dbHelper);
 
         //Get the latest version of the list
-        ArrayList<Friend> friendsList = getFriendsList.get();
+        ArrayList<Friend> friendsList = friendsListHelper.download();
 
         //Save it (only in case of success)
         if(friendsList != null)

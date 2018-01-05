@@ -31,6 +31,7 @@ import java.util.ArrayList;
  * @author Pierre HUBERT
  * Created by pierre on 10/31/17.
  */
+@Deprecated
 public abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Void, APIResponse> {
 
     /**

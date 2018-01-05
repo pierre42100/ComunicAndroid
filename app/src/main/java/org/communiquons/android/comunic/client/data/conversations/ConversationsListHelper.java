@@ -391,6 +391,13 @@ public class ConversationsListHelper {
          */
         void openConversation(int id);
 
+        /**
+         * Open a private conversation with the specified user ID
+         *
+         * @param userID The ID with who to start a private conversation
+         */
+        void openPrivateConversation(int userID);
+
     }
 
     /**

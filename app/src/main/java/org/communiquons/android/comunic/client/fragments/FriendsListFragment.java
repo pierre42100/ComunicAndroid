@@ -21,14 +21,14 @@ import android.widget.Toast;
 import org.communiquons.android.comunic.client.MainActivity;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersInfos;
+import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
+import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.friendsList.Friend;
 import org.communiquons.android.comunic.client.data.friendsList.FriendUser;
 import org.communiquons.android.comunic.client.data.friendsList.FriendsAdapter;
-import org.communiquons.android.comunic.client.data.friendsList.FriendsList;
+import org.communiquons.android.comunic.client.data.friendsList.FriendsListHelper;
 import org.communiquons.android.comunic.client.data.friendsList.FriendsUtils;
-import org.communiquons.android.comunic.client.data.friendsList.GetFriendsListTask;
 
 import java.util.ArrayList;
 
@@ -49,32 +49,59 @@ public class FriendsListFragment extends Fragment {
     /**
      * The root view of the fragment
      */
-    View rootView;
+    private View rootView;
 
     /**
      * Application context
      */
-    Context mContext;
+    private Context mContext;
 
     /**
      * Database helper
      */
-    DatabaseHelper mDbHelper;
+    private DatabaseHelper mDbHelper;
+
+    /**
+     * Get user helper
+     */
+    private GetUsersHelper usersHelper;
 
     /**
      * The current list of friends
      */
-    ArrayList<FriendUser> friendsList;
+    private ArrayList<FriendUser> friendsList;
 
     /**
      * Friend list operations object
      */
-    FriendsList flist;
+    private FriendsListHelper flistHelper;
+
+    /**
+     * Conversation opener
+     */
+    private ConversationsListHelper.openConversationListener convOpener;
 
     /**
      * Friend adapter
      */
     private FriendsAdapter fAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //Save application context
+        mContext = getActivity().getApplicationContext();
+
+        //Create database helper
+        mDbHelper = DatabaseHelper.getInstance(mContext);
+
+        //Create friendlist operation object
+        flistHelper = new FriendsListHelper(mDbHelper, mContext);
+
+        //Create get user helper
+        usersHelper = new GetUsersHelper(mContext, mDbHelper);
+    }
 
     @Nullable
     @Override
@@ -88,15 +115,6 @@ public class FriendsListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rootView = view;
-
-        //Save application context
-        mContext = getActivity().getApplicationContext();
-
-        //Create database helper
-        mDbHelper = DatabaseHelper.getInstance(mContext);
-
-        //Create friendlist operation object
-        flist = new FriendsList(mDbHelper, mContext);
 
         //Retain the fragment
         //setRetainInstance(true);
@@ -113,11 +131,6 @@ public class FriendsListFragment extends Fragment {
         //Update the bottom navigation menu
         ((MainActivity) getActivity())
                 .setSelectedNavigationItem(R.id.main_bottom_navigation_friends_list);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
 
         //Refresh the friends list
         refresh_friend_list();
@@ -131,46 +144,36 @@ public class FriendsListFragment extends Fragment {
         //Display loading bar
         display_progress_bar(true);
 
-        new GetFriendsListTask(mDbHelper){
+        new AsyncTask<Void, Void, ArrayList<FriendUser>>(){
 
             @Override
-            protected void onPostExecute(final ArrayList<Friend> friendsList) {
+            protected ArrayList<FriendUser> doInBackground(Void... params) {
 
-                //Remote progress bar
-                display_progress_bar(false);
+                //Fetch the list of friends
+                ArrayList<Friend> friendsList = flistHelper.get();
 
                 //Check for errors
-                if(friendsList == null){
-                    Toast.makeText(mContext, R.string.fragment_friendslist_err_refresh,
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
+                if(friendsList == null)
+                    return null;
 
-                new GetUsersInfos(mContext, mDbHelper).
-                        getMultiple(FriendsUtils.getFriendsIDs(friendsList), new GetUsersInfos.getMultipleUserInfosCallback() {
-                            @Override
-                            public void callback(ArrayMap<Integer, UserInfo> info) {
-                                //Check for errors
-                                if (info == null) {
-                                    Toast.makeText(mContext, R.string.fragment_friendslist_err_get_userinfos,
-                                            Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
+                //Get user infos
+                ArrayMap<Integer, UserInfo> userInfos = usersHelper.getMultiple(
+                        FriendsUtils.getFriendsIDs(friendsList));
 
-                                //Merge the user informations list and friends List into FriendInfo list
-                                ArrayList<FriendUser> friendsUserList = FriendsUtils.merge_friends_user_infos_list(
-                                        friendsList,
-                                        info
-                                );
+                //Check for errors
+                if(userInfos == null)
+                    return null;
 
-                                //Refresh friends list
-                                apply_friends_list(friendsUserList);
-                            }
-                        });
+                //Merge friend and user and return result
+                return FriendsUtils.merge_friends_user_infos_list(friendsList, userInfos);
 
             }
 
-        }.execute();
+            @Override
+            protected void onPostExecute(ArrayList<FriendUser> friendUsers) {
+                apply_friends_list(friendUsers);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
@@ -178,7 +181,18 @@ public class FriendsListFragment extends Fragment {
      *
      * @param friendsList The friends list to apply
      */
-    private void apply_friends_list(final ArrayList<FriendUser> friendsList){
+    private void apply_friends_list(@Nullable ArrayList<FriendUser> friendsList){
+
+        //Remove progress bar
+        display_progress_bar(false);
+
+        //Check for errors
+        if(friendsList == null){
+            Toast.makeText(mContext, R.string.fragment_friendslist_err_refresh,
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
 
         //Save the list of friends
         this.friendsList = friendsList;
@@ -211,6 +225,7 @@ public class FriendsListFragment extends Fragment {
 
         switch (item.getItemId()){
 
+            //To delete the friend
             case R.id.menu_fragment_friendslist_delete_friend:
                 delete_friend(friendPos);
                 return true;
@@ -248,7 +263,7 @@ public class FriendsListFragment extends Fragment {
                     protected Void doInBackground(Integer[] params) {
 
                         //Delete the friend from the list
-                        flist.remove(toDelete);
+                        flistHelper.remove(toDelete);
 
                         return null;
                     }
@@ -316,7 +331,7 @@ public class FriendsListFragment extends Fragment {
         new AsyncTask<Friend, Void, Void>(){
             @Override
             protected Void doInBackground(Friend... params) {
-                flist.respondRequest(params[0], accept);
+                flistHelper.respondRequest(params[0], accept);
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, targetFriend);

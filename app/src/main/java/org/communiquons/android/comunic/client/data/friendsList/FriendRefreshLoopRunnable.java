@@ -12,7 +12,7 @@ import org.communiquons.android.comunic.client.data.DatabaseHelper;
  * list.
  *
  * However, it launches periodically another thread, FriendsListRefreshRunnable, which is never
- * killed, in order not to get errors.
+ * killed, in order not to download errors.
  *
  * @author Pierre HUBERT
  * Created by pierre on 11/19/17.
@@ -31,7 +31,7 @@ public class FriendRefreshLoopRunnable implements Runnable {
     }
 
     /**
-     * Perpetual loop that only stops when it get killed
+     * Perpetual loop that only stops when it download killed
      */
     @Override
     public void run() {
