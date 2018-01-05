@@ -7,9 +7,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -166,7 +170,22 @@ public class UpdateConversationFragment extends Fragment {
         //Initialize the form
         init_form();
 
+        //Set members list context menu
+        membersList.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v,
+                                            ContextMenu.ContextMenuInfo menuInfo) {
+
+                //Create menu
+                MenuInflater menuInflater = getActivity().getMenuInflater();
+                menuInflater.inflate(R.menu.menu_fragment_update_conversation_memberslist, menu);
+
+            }
+        });
+
+
     }
+
 
     @Override
     public void onResume() {
@@ -289,6 +308,31 @@ public class UpdateConversationFragment extends Fragment {
 
         //Notify data set update
         membersAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Handles the context menu actions of the friends list
+     *
+     * @param item The selected item
+     * @return TRUE if the action was handled, false else
+     */
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        //Get the selected opition
+        int option = item.getItemId();
+
+        //Check if we have to remove a member of the conversation
+        if(option == R.id.update_conversationmembers_delete){
+
+            //Remove the member from the list
+            membersID.remove(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position);
+            membersAdapter.notifyDataSetChanged();
+
+            return true;
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     /**

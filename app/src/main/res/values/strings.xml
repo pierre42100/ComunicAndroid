@@ -86,4 +86,5 @@
     <string name="err_get_users_info">Could not get information about users !</string>
     <string name="err_conversation_need_members">Please add at least one member to the conversation !</string>
     <string name="err_conversation_create">Could not create conversation !</string>
+    <string name="fragment_update_conversation_members_menu_delete">Remove</string>
 </resources>
