@@ -136,4 +136,14 @@ public class AccountUtils {
         }
     }
 
+    /**
+     * Get the current user ID quickly
+     *
+     * @param context The context of execution of the application
+     * @return The ID of the current user or -1 in case of failure
+     */
+    public static int getID(Context context){
+        return new AccountUtils(context).get_current_user_id();
+    }
+
 }

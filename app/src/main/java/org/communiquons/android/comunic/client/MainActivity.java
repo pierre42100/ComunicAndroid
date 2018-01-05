@@ -289,6 +289,7 @@ public class MainActivity extends AppCompatActivity
 
         //Set the arguments of the fragment
         Bundle args = new Bundle();
+        args.putInt(UpdateConversationFragment.ARG_CONVERSATION_ID, convID);
 
         //Create the fragment
         UpdateConversationFragment updateConversationFragment = new UpdateConversationFragment();

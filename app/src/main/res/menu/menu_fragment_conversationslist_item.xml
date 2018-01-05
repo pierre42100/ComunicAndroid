@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Update the conversation -->
+    <item
+        android:id="@+id/menu_fragment_conversationslist_item_update"
+        android:title="@string/action_conversation_update" />
+
+    <!-- Delete the conversation -->
     <item
         android:id="@+id/menu_fragment_conversationslist_item_delete"
         android:title="@string/action_conversation_delete" />

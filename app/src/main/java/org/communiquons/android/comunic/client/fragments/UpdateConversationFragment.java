@@ -24,10 +24,12 @@ import android.widget.Toast;
 import org.communiquons.android.comunic.client.MainActivity;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.SearchUserActivity;
+import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.UsersInfo.UsersAsysncInfoAdapter;
+import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 
 import java.util.ArrayList;
@@ -47,9 +49,39 @@ public class UpdateConversationFragment extends Fragment {
     private static final String TAG = "UpdateConversationFragment";
 
     /**
+     * The conversation ID argument
+     */
+    public static final String ARG_CONVERSATION_ID = "conversation_id";
+
+    /**
      * Find user ID intent
      */
     public static final int FIND_USER_ID_INTENT = 0;
+
+    /**
+     * Action : create a conversation
+     */
+    private static final int ACTION_CREATE_CONVERSATION = 0;
+
+    /**
+     * Action : update a conversation
+     */
+    private static final int ACTION_UPDATE_CONVERSATION = 1;
+
+    /**
+     * Current action of the fragment
+     */
+    private int current_action = ACTION_CREATE_CONVERSATION;
+
+    /**
+     * Target conversation ID
+     */
+    private int conversation_id = 0;
+
+    /**
+     * Specify whether the user is the owner of the conversation or not
+     */
+    private boolean conversation_owner = true;
 
     /**
      * The name of the conversation
@@ -111,6 +143,21 @@ public class UpdateConversationFragment extends Fragment {
      */
     private ConversationsListHelper.openConversationListener convOpener;
 
+    /**
+     * Conversation members list context menu
+     */
+    View.OnCreateContextMenuListener membersListContext = new View.OnCreateContextMenuListener() {
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v,
+                ContextMenu.ContextMenuInfo menuInfo) {
+
+            //Create menu
+            MenuInflater menuInflater = getActivity().getMenuInflater();
+            menuInflater.inflate(R.menu.menu_fragment_update_conversation_memberslist, menu);
+
+        }
+    };
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,17 +218,7 @@ public class UpdateConversationFragment extends Fragment {
         init_form();
 
         //Set members list context menu
-        membersList.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v,
-                                            ContextMenu.ContextMenuInfo menuInfo) {
-
-                //Create menu
-                MenuInflater menuInflater = getActivity().getMenuInflater();
-                menuInflater.inflate(R.menu.menu_fragment_update_conversation_memberslist, menu);
-
-            }
-        });
+        membersList.setOnCreateContextMenuListener(membersListContext);
 
 
     }
@@ -192,9 +229,14 @@ public class UpdateConversationFragment extends Fragment {
         super.onResume();
 
         //Update title and dock
-        getActivity().setTitle(R.string.fragment_update_conversation_title_create);
         ((MainActivity) getActivity()).setSelectedNavigationItem(
                 R.id.main_bottom_navigation_conversations);
+
+        //Set the adapted title
+        if(current_action == ACTION_CREATE_CONVERSATION)
+            getActivity().setTitle(R.string.fragment_update_conversation_title_create);
+        else
+            getActivity().setTitle(R.string.fragment_update_conversation_title_update);
     }
 
     /**
@@ -229,14 +271,92 @@ public class UpdateConversationFragment extends Fragment {
      */
     private void init_form(){
 
-        //Hide progress bar
-        set_progressbar_visibility(false);
-
         //Initialize the list of members
         membersID = new ArrayList<>();
         membersInfo = new ArrayMap<>();
         membersAdapter = new UsersAsysncInfoAdapter(getActivity(), membersID, membersInfo);
         membersList.setAdapter(membersAdapter);
+
+        //Check if we have to create or to update a conversation
+        conversation_id = getArguments().getInt(ARG_CONVERSATION_ID, 0);
+
+        //Check if we have to create a conversation
+        if(conversation_id == 0) {
+
+            //Hide progress bar
+            set_progressbar_visibility(false);
+
+            //Set action
+            current_action = ACTION_CREATE_CONVERSATION;
+
+            //Update submit button text
+            submitButton.setText(R.string.fragment_update_conversation_button_create);
+        }
+
+        //Check if we have to update a conversation
+        else {
+
+            //Lock the form
+            set_form_blocked(true);
+
+            //Set action
+            current_action = ACTION_UPDATE_CONVERSATION;
+
+            //Update submit button text
+            submitButton.setText(R.string.fragment_update_conversation_button_update);
+
+            //Get informations about the conversation
+            new AsyncTask<Integer, Void, ConversationsInfo>(){
+
+                @Override
+                protected ConversationsInfo doInBackground(Integer... params) {
+                    return convListHelper.getInfosSingle(params[0], true);
+                }
+
+                @Override
+                protected void onPostExecute(ConversationsInfo conversationsInfo) {
+                    onGotConversationInfos(conversationsInfo);
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, conversation_id);
+        }
+
+    }
+
+    /**
+     * This method is called when we received information about a conversation
+     *
+     * @param infos Informations about a conversation, or null in case of failure
+     */
+    private void onGotConversationInfos(@Nullable ConversationsInfo infos){
+
+        //Check if the activity has been destroyed
+        if(getActivity() == null)
+            return;
+
+        //Check for errors
+        if(infos == null){
+            Toast.makeText(getActivity(), R.string.err_get_conversation_info,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Check if the user is the owner of the conversation or not
+        conversation_owner = AccountUtils.getID(getActivity()) == infos.getID_owner();
+
+        //Update the values
+        nameView.setText(infos.getName());
+        followCheckbox.setChecked(infos.isFollowing());
+        membersID.addAll(infos.getMembers());
+
+        //Notify members adapter and refresh users informations
+        membersAdapter.notifyDataSetChanged();
+        refresh_members_information();
+
+        //Remove progress bar
+        set_progressbar_visibility(false);
+
+        //Unlock form fields
+        set_form_blocked(false);
     }
 
     /**
@@ -354,20 +474,46 @@ public class UpdateConversationFragment extends Fragment {
         set_form_blocked(true);
         set_progressbar_visibility(true);
 
-        //Create the task in the background
-        new AsyncTask<Void, Void, Integer>(){
+        //Create the conversation if required
+        if(current_action == ACTION_CREATE_CONVERSATION) {
 
-            @Override
-            protected Integer doInBackground(Void... params) {
-                return convListHelper.create(name, following, membersID);
-            }
+            //Create the conversation in the background
+            new AsyncTask<Void, Void, Integer>() {
 
-            @Override
-            protected void onPostExecute(Integer integer) {
-                if(getActivity() != null)
-                    creationCallback(integer);
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                @Override
+                protected Integer doInBackground(Void... params) {
+                    return convListHelper.create(name, following, membersID);
+                }
+
+                @Override
+                protected void onPostExecute(Integer integer) {
+                    if (getActivity() != null)
+                        creationCallback(integer);
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+        //Update the conversation if required
+        if(current_action == ACTION_UPDATE_CONVERSATION){
+
+            new AsyncTask<Void, Void, Boolean>(){
+                @Override
+                protected Boolean doInBackground(Void... params) {
+
+                    //Check if the current user is the owner of the conversation or not
+                    if(conversation_owner)
+                        return convListHelper.update(conversation_id, name, membersID, following);
+                    else
+                        return convListHelper.update(conversation_id, following);
+                }
+
+                @Override
+                protected void onPostExecute(Boolean result) {
+                    updateCallback(result);
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        }
     }
 
     /**
@@ -394,6 +540,32 @@ public class UpdateConversationFragment extends Fragment {
     }
 
     /**
+     * This method is called once the update request on the server has been made
+     *
+     * @param result The result of the operation
+     */
+    private void updateCallback(boolean result){
+
+        if(getActivity() == null)
+            return;
+
+        //Handle errors
+        if(!result){
+            Toast.makeText(getActivity(), R.string.err_conversation_update,
+                    Toast.LENGTH_SHORT).show();
+
+            //Release form
+            set_form_blocked(false);
+            set_progressbar_visibility(false);
+
+            return;
+        }
+
+        //Open conversation
+        convOpener.openConversation(conversation_id);
+    }
+
+    /**
      * Update progressbar visibility
      *
      * @param visible TRUE to make the progressbar visible
@@ -408,9 +580,12 @@ public class UpdateConversationFragment extends Fragment {
      * @param blocked Specify whether the fields should be blocked or not
      */
     private void set_form_blocked(boolean blocked){
-        nameView.setEnabled(!blocked);
+        nameView.setEnabled(!blocked && conversation_owner);
         submitButton.setEnabled(!blocked);
-        addMember.setEnabled(!blocked);
+        addMember.setEnabled(!blocked && conversation_owner);
         followCheckbox.setEnabled(!blocked);
+
+        membersList.setOnCreateContextMenuListener(
+                !blocked && conversation_owner ? membersListContext : null);
     }
 }

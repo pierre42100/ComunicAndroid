@@ -111,6 +111,23 @@ public class ConversationsListDbHelper {
     }
 
     /**
+     * Delete a single conversation from the database
+     *
+     * @param convID The ID of the conversation to delete
+     */
+    void delete(int convID){
+
+        //Get writeable access to the database
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        //Perform a request on the database
+        String condition = ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID + " = ?";
+        String[] values = {""+convID};
+        db.delete(ConversationsListSchema.TABLE_NAME, condition, values);
+
+    }
+
+    /**
      * Delete all the list of conversations
      */
     private void delete_all(){

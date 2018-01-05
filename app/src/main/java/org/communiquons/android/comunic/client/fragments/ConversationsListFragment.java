@@ -324,10 +324,15 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
             //Check which action was chosen
             switch (item.getItemId()) {
 
+                //To delete the conversation
                 case R.id.menu_fragment_conversationslist_item_delete:
                     confirmDeleteConversation(convID);
                     return true;
 
+                //To udpate the conversation
+                case R.id.menu_fragment_conversationslist_item_update:
+                    updateConversationListener.updateConversation(convID);
+                    return true;
             }
 
         }

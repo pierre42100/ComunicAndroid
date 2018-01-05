@@ -13,6 +13,7 @@ import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
+import org.communiquons.android.comunic.client.data.utils.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -218,6 +219,63 @@ public class ConversationsListHelper {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Update a conversation
+     *
+     * @param convID The ID of the conversation to update
+     * @param following Specify wether the user would like to follow or not the conversation
+     * @return True for a success / False else
+     */
+    public boolean update(int convID, boolean following){
+        return update(convID, null, null, following);
+    }
+
+    /**
+     * Update a conversation
+     *
+     * @param convID The ID of the conversation
+     * @param name The name of the conversation
+     * @param members The list of members of the conversation
+     * @param following True to follow the conversation / false else
+     * @return True for a success / false for a failure
+     */
+    public boolean update(int convID, @Nullable String name,
+                          @Nullable ArrayList<Integer> members, boolean following){
+
+        //Prepare a request on the database
+        APIRequestParameters params = new APIRequestParameters(mContext,
+                "conversations/updateSettings");
+        params.addParameter("conversationID", ""+convID);
+
+        //Add the name (if any)
+        if(name != null)
+            params.addParameter("name", name.equals("") ? "false" : name);
+
+        //Add the members (if any)
+        if(members != null)
+            params.addParameter("members", ArrayUtils.int_array_to_string(members, ","));
+
+        //Add following state
+        params.addParameter("following", following ? "true" : "false");
+
+        //Perform the request
+        try {
+
+            //Try to perform the request
+            new APIRequest().exec(params);
+
+            //Delete the conversation from the local database to force it to be refreshed
+            //on next load
+            convDBHelper.delete(convID);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     /**

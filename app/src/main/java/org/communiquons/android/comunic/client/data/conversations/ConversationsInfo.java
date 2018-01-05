@@ -3,6 +3,8 @@ package org.communiquons.android.comunic.client.data.conversations;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.communiquons.android.comunic.client.data.utils.ArrayUtils;
+
 import java.util.ArrayList;
 
 /**
@@ -203,13 +205,7 @@ public class ConversationsInfo {
         if(members == null)
             return "";
 
-        String result = "";
-
-        for(int member : members){
-            result += member + ",";
-        }
-
-        return result;
+        return ArrayUtils.int_array_to_string(members, ",");
     }
 
     /**
