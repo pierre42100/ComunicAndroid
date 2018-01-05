@@ -23,6 +23,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            //Connexion to the web API of Comunic
+            buildConfigField "String", "api_url", "\"https://api.communiquons.org/\""
+            buildConfigField "String", "api_service_name", "\"ComunicAndroid\""
+            buildConfigField "String", "api_service_token", "\"cWHlmMS5A1\""
         }
     }
 }
