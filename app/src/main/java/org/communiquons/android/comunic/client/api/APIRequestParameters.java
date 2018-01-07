@@ -59,6 +59,26 @@ public class APIRequestParameters {
     }
 
     /**
+     * Add a new parameter to the request
+     *
+     * @param name The name of the new key
+     * @param value The value of the new key (int)
+     */
+    public void addParameter(String name, int value){
+        this.addParameter(name, ""+value);
+    }
+
+    /**
+     * Add a new parameter to the request
+     *
+     * @param name The name of the new key
+     * @param value The value of the new key (boolean)
+     */
+    public void addParameter(String name, boolean value){
+        this.addParameter(name, value ? "true" : "false");
+    }
+
+    /**
      * Retrieve request URI
      *
      * @return The request URI
