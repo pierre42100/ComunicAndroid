@@ -92,4 +92,7 @@
     <string name="fragment_update_conversation_members_menu_delete">Remove</string>
     <string name="err_get_conversation_info">Could not get information about the conversation !</string>
     <string name="err_conversation_update">Could not update conversation !</string>
+    <string name="action_friends_start_private_conversation">Private conversation</string>
+    <string name="err_get_private_conversation">Could not get a private conversation !</string>
+    <string name="dialog_loading_msg">Loading…</string>
 </resources>

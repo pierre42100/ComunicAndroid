@@ -104,6 +104,49 @@ public class ConversationsListHelper {
     }
 
     /**
+     * Search and return the ID of a private conversation with a specified user
+     *
+     * @param userID The ID of the target user
+     * @param allowCreate If set to true, then if the server does not find any matching conversation,
+     *                    it will automatically create a new one
+     * @return The ID of the conversation or null in case of failure
+     */
+    @Nullable
+    public Integer getPrivate(int userID, boolean allowCreate){
+
+        //Prepare an API request
+        APIRequestParameters params = new APIRequestParameters(mContext,
+                "conversations/getPrivate");
+        params.addParameter("otherUser", userID);
+        params.addParameter("allowCreate", allowCreate);
+
+        //Try to perform request
+        try {
+            APIResponse response = new APIRequest().exec(params);
+            JSONObject object = response.getJSONObject();
+
+            //Check for conversations ID
+            if(!object.has("conversationsID"))
+                return null;
+
+            //Get conversations ID
+            JSONArray conversations = object.getJSONArray("conversationsID");
+
+            //Check if the array is empty
+            if(conversations.length() == 0)
+                return null;
+            else
+                return conversations.getInt(0);
+        }
+
+        //Catch errors
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Get the display name of a conversation
      *
      * @param infos Informations about a conversation

@@ -1,8 +1,11 @@
 package org.communiquons.android.comunic.client.data.utils;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+
+import org.communiquons.android.comunic.client.R;
 
 /**
  * User Interface utilities
@@ -39,4 +42,23 @@ public class UiUtils {
     public static Drawable getDrawable(Context context, int drawable_id){
         return context.getResources().getDrawable(drawable_id, context.getTheme());
     }
+
+    /**
+     * Create and display a loading dialog
+     *
+     * Use dismiss() to close this dialog
+     *
+     * @param context The context of the application
+     * @return The created alert dialog
+     */
+    public static AlertDialog create_loading_dialog(Context context){
+
+        //Create alert dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setView(R.layout.dialog_loading);
+
+        //Display the dialog
+        return builder.show();
+    }
+
 }

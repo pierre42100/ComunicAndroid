@@ -101,6 +101,16 @@ public class FriendsListFragment extends Fragment {
 
         //Create get user helper
         usersHelper = new GetUsersHelper(mContext, mDbHelper);
+
+        //Cast activity to convOpener
+        try {
+            convOpener = (ConversationsListHelper.openConversationListener) getActivity();
+        } catch (ClassCastException e){
+            e.printStackTrace();
+
+            throw new RuntimeException(getActivity().getClass().getName() + " must implement" +
+                    "ConversationsListHelper.openConversationListener !");
+        }
     }
 
     @Nullable
@@ -224,6 +234,11 @@ public class FriendsListFragment extends Fragment {
         int friendPos = info.position;
 
         switch (item.getItemId()){
+
+            //To open a private conversation with the friend
+            case R.id.menu_fragment_friendslist_private_conversation:
+                convOpener.openPrivateConversation(friendsList.get(friendPos).getFriend().getId());
+                return true;
 
             //To delete the friend
             case R.id.menu_fragment_friendslist_delete_friend:

@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -18,6 +21,7 @@ import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.friendsList.FriendRefreshLoopRunnable;
+import org.communiquons.android.comunic.client.data.utils.UiUtils;
 import org.communiquons.android.comunic.client.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.fragments.ConversationsListFragment;
 import org.communiquons.android.comunic.client.fragments.FriendsListFragment;
@@ -33,6 +37,11 @@ import org.communiquons.android.comunic.client.fragments.UserInfosFragment;
 public class MainActivity extends AppCompatActivity
         implements ConversationsListHelper.openConversationListener,
         ConversationsListHelper.updateConversationListener {
+
+    /**
+     * Debug tag
+     */
+    private static final String TAG = "MainActivity";
 
     /**
      * Account object
@@ -53,6 +62,11 @@ public class MainActivity extends AppCompatActivity
      * Database helper
      */
     private DatabaseHelper dbHelper;
+
+    /**
+     * Conversations list helper
+     */
+    private ConversationsListHelper conversationsListHelper;
 
     /**
      * Bottom navigation view
@@ -86,6 +100,9 @@ public class MainActivity extends AppCompatActivity
 
         //Initialize DatabaseHelper
         dbHelper = DatabaseHelper.getInstance(this);
+
+        //Intialize conversation list helper
+        conversationsListHelper = new ConversationsListHelper(this, dbHelper);
 
         //If it is the first time the application is launched, start the user friends tab
         if(savedInstanceState == null){
@@ -277,6 +294,37 @@ public class MainActivity extends AppCompatActivity
         transaction.addToBackStack(null);
         transaction.commit();
 
+    }
+
+    @Override
+    public void openPrivateConversation(int userID) {
+        //Log action
+        Log.v(TAG, "Open private conversation with user ID " + userID);
+
+        //Create a loading dialog
+        final AlertDialog dialog = UiUtils.create_loading_dialog(this);
+
+        //Get conversation ID in the background
+        new AsyncTask<Integer, Void, Integer>(){
+
+            @Override
+            protected Integer doInBackground(Integer... params) {
+                return conversationsListHelper.getPrivate(params[0], true);
+            }
+
+            @Override
+            protected void onPostExecute(@Nullable Integer integer) {
+
+                //Close loading dialog
+                dialog.dismiss();
+
+                if(integer != null)
+                    openConversation(integer);
+                else
+                    Toast.makeText(MainActivity.this, R.string.err_get_private_conversation,
+                            Toast.LENGTH_SHORT).show();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, userID);
     }
 
     @Override
