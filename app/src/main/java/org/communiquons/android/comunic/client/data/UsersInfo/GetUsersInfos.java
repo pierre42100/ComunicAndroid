@@ -73,6 +73,7 @@ public class GetUsersInfos {
      * @param id The ID of the user to get the informations
      * @param callback What to do once we got the response
      */
+    @Deprecated
     public void get(int id, final getUserInfosCallback callback){
 
         //Check if the ID is positive, error else
@@ -100,6 +101,7 @@ public class GetUsersInfos {
      * @param IDs The ID of the user to get
      * @param callback The result once we got all the users
      */
+    @Deprecated
     public void getMultiple(final ArrayList<Integer> IDs, final getMultipleUserInfosCallback callback){
 
         new AsyncTask<Void, Void, ArrayMap<Integer, UserInfo>>(){
