@@ -95,4 +95,5 @@
     <string name="action_friends_start_private_conversation">Private conversation</string>
     <string name="err_get_private_conversation">Could not get a private conversation !</string>
     <string name="dialog_loading_msg">Loading…</string>
+    <string name="navigation_bottom_user_item">User</string>
 </resources>

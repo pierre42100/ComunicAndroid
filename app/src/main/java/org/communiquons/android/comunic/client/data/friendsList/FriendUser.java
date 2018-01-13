@@ -66,4 +66,14 @@ public class FriendUser {
     public void setFriend(Friend friend) {
         this.friend = friend;
     }
+
+
+    /***
+     * Get the ID of the user
+     *
+     * @return The id of the user
+     */
+    public int get_user_id(){
+        return userInfo.getId();
+    }
 }

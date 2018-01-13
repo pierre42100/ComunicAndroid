@@ -19,6 +19,7 @@ import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.friendsList.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
@@ -37,7 +38,8 @@ import org.communiquons.android.comunic.client.fragments.UserPageFragment;
  */
 public class MainActivity extends AppCompatActivity
         implements ConversationsListHelper.openConversationListener,
-        ConversationsListHelper.updateConversationListener {
+        ConversationsListHelper.updateConversationListener,
+        GetUsersHelper.onOpenUsersPageListener {
 
     /**
      * Debug tag
@@ -272,7 +274,8 @@ public class MainActivity extends AppCompatActivity
      *
      * @param userID The ID of the user to open
      */
-    void openUserPage(int userID){
+    @Override
+    public void openUserPage(int userID){
 
         //Prepare arguments
         Bundle args = new Bundle();

@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.communiquons.android.comunic.client.MainActivity;
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
 import org.communiquons.android.comunic.client.data.UsersInfo.AdvancedUserInfo;
@@ -152,9 +154,21 @@ public class UserPageFragment extends Fragment {
         //Save user informations
         userInfo = info;
 
+        //Set activity title
+        getActivity().setTitle(userInfo.getDisplayFullName());
+
+        //Update activity menu dock
+        if(AccountUtils.getID(getActivity()) == userID)
+            ((MainActivity) getActivity()).setSelectedNavigationItem(
+                    R.id.main_bottom_navigation_me_view);
+        else
+            ((MainActivity) getActivity()).setSelectedNavigationItem(
+                    R.id.main_bottom_navigation_users_view);
+
         //Update user name and account image
         user_name.setText(userInfo.getDisplayFullName());
         ImageLoadManager.remove(user_image);
         ImageLoadManager.load(getActivity(), userInfo.getAcountImageURL(), user_image);
+
     }
 }

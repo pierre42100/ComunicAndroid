@@ -39,7 +39,8 @@ import java.util.ArrayList;
  * Created by pierre on 11/11/17.
  */
 
-public class FriendsListFragment extends Fragment {
+public class FriendsListFragment extends Fragment
+    implements AdapterView.OnItemClickListener{
 
     /**
      * Debug tag
@@ -82,6 +83,11 @@ public class FriendsListFragment extends Fragment {
     private ConversationsListHelper.openConversationListener convOpener;
 
     /**
+     * Users page opener
+     */
+    private GetUsersHelper.onOpenUsersPageListener usersPageOpener;
+
+    /**
      * Friend adapter
      */
     private FriendsAdapter fAdapter;
@@ -105,11 +111,13 @@ public class FriendsListFragment extends Fragment {
         //Cast activity to convOpener
         try {
             convOpener = (ConversationsListHelper.openConversationListener) getActivity();
+            usersPageOpener = (GetUsersHelper.onOpenUsersPageListener) getActivity();
         } catch (ClassCastException e){
             e.printStackTrace();
 
             throw new RuntimeException(getActivity().getClass().getName() + " must implement" +
-                    "ConversationsListHelper.openConversationListener !");
+                    "ConversationsListHelper.openConversationListener " +
+                    "and GetUsersHelper.onOpenUsersPageListener !");
         }
     }
 
@@ -214,6 +222,8 @@ public class FriendsListFragment extends Fragment {
 
         //Register the view for the context menu
         registerForContextMenu(listView);
+
+        listView.setOnItemClickListener(this);
     }
 
     @Override
@@ -365,5 +375,15 @@ public class FriendsListFragment extends Fragment {
         );
 
 
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        //Get clicked user ID
+        int userID = friendsList.get(position).get_user_id();
+
+        //Open user page
+        usersPageOpener.openUserPage(userID);
     }
 }
