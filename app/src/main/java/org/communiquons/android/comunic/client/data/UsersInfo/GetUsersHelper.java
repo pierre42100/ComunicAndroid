@@ -109,6 +109,34 @@ public class GetUsersHelper {
     }
 
     /**
+     * Get advanced informations about a single user
+     *
+     * @param userID The user to get information about
+     * @return Informations about the user / null in case of failure
+     */
+    @Nullable
+    public AdvancedUserInfo get_advanced_infos(int userID){
+
+        //Perform an API request
+        APIRequestParameters params = new APIRequestParameters(mContext,
+                "user/getAdvancedUserInfos");
+        params.addParameter("userID", userID);
+
+        //Perform the request
+        try {
+            APIResponse response = new APIRequest().exec(params);
+
+            //Parse user informations
+            return parse_advanced_user_json(response.getJSONObject());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    /**
      * Get the list of missing users ID in a set of users informations
      *
      * @param IDs The reference IDs list
@@ -311,15 +339,61 @@ public class GetUsersHelper {
      * @param userObject Informations about the user in an object
      * @return User object in case of success, null else
      */
+    @Nullable
     private UserInfo parse_user_json(JSONObject userObject){
 
-        //Check if the JSON object passed is null or not
+        //Check if we got a null response
         if(userObject == null)
-            return null; //Failure
+            return null;
 
-        UserInfo userInfos = new UserInfo();
+        //Parse basic user infos
+        return parse_base_user_json(new UserInfo(), userObject);
+    }
 
-        //Try to retrieve user informations
+    /**
+     * Parse advanced user informations into an object
+     *
+     * @param userObject Source JSON object
+     * @return The parse JSON object or null in case of failure
+     */
+    @Nullable
+    private AdvancedUserInfo parse_advanced_user_json(JSONObject userObject){
+
+        //Parse basic informations about the user
+        AdvancedUserInfo advancedUserInfo = (AdvancedUserInfo)
+                parse_base_user_json(new AdvancedUserInfo(), userObject);
+
+        //Check for errors
+        if(advancedUserInfo == null)
+            return null;
+
+        //Parse advanced user informations
+        try {
+
+            //Get account creation time
+            advancedUserInfo.setAccount_creation_time(userObject.getInt("account_creation_time"));
+
+
+        } catch (JSONException e){
+            e.printStackTrace();
+            return null;
+        }
+
+        //Return result
+        return advancedUserInfo;
+    }
+
+    /**
+     * Parse user basic informations into a user object
+     *
+     * @param userInfos The user informations object to fill
+     * @param userObject The source JSON object
+     * @return The filled user Infos object
+     */
+    @Nullable
+    private UserInfo parse_base_user_json(UserInfo userInfos, JSONObject userObject){
+
+        //Try to retrieve basic user informations
         try {
 
             //Retrieve all user informations

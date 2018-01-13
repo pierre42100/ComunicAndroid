@@ -27,6 +27,7 @@ import org.communiquons.android.comunic.client.fragments.ConversationsListFragme
 import org.communiquons.android.comunic.client.fragments.FriendsListFragment;
 import org.communiquons.android.comunic.client.fragments.UpdateConversationFragment;
 import org.communiquons.android.comunic.client.fragments.UserInfosFragment;
+import org.communiquons.android.comunic.client.fragments.UserPageFragment;
 
 
 /**
@@ -180,7 +181,12 @@ public class MainActivity extends AppCompatActivity
 
                     //If the user chose to show information about him
                     case R.id.main_bottom_navigation_me_view:
-                        openUserInfosFragment();
+
+                        //Old version
+                        //openUserInfosFragment();
+
+                        //New version
+                        openUserPage(AccountUtils.getID(MainActivity.this));
                         return true;
 
                     //If the user wants to switch to the conversation fragment
@@ -259,6 +265,28 @@ public class MainActivity extends AppCompatActivity
         transaction.replace(R.id.main_fragment, userInfosFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    /**
+     * Open the page of the specified user
+     *
+     * @param userID The ID of the user to open
+     */
+    void openUserPage(int userID){
+
+        //Prepare arguments
+        Bundle args = new Bundle();
+        args.putInt(UserPageFragment.ARGUMENT_USER_ID, userID);
+
+        //Create fragment
+        UserPageFragment userPageFragment = new UserPageFragment();
+        userPageFragment.setArguments(args);
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, userPageFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
     }
 
     /**
