@@ -411,4 +411,17 @@ public class GetUsersHelper {
         return userInfos;
 
     }
+
+    /**
+     * This interface is implemented on activities that can open users page
+     */
+    public interface onOpenUsersPageListener {
+
+        /**
+         * On a user page specified by its id
+         *
+         * @param userID The ID of the user to create page
+         */
+        void openUserPage(int userID);
+    }
 }
