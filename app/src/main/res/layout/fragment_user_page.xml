@@ -33,4 +33,11 @@
 
     </FrameLayout>
 
+    <!-- User posts -->
+    <ListView
+        android:id="@+id/user_posts"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
 </LinearLayout>

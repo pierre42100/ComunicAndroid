@@ -5,10 +5,12 @@ import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,9 @@ import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
 import org.communiquons.android.comunic.client.data.UsersInfo.AdvancedUserInfo;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
+import org.communiquons.android.comunic.client.data.posts.PostsHelper;
+import org.communiquons.android.comunic.client.data.posts.PostsList;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
 
 /**
@@ -48,9 +53,24 @@ public class UserPageFragment extends Fragment {
     private AdvancedUserInfo userInfo;
 
     /**
+     * User posts
+     */
+    private PostsList postsList;
+
+    /**
+     * User informations
+     */
+    private ArrayMap<Integer, UserInfo> usersInfos;
+
+    /**
      * Get user helper
      */
     private GetUsersHelper getUsersHelper;
+
+    /**
+     * Posts helper
+     */
+    private PostsHelper postsHelper;
 
     /**
      * Loading alert dialog
@@ -67,6 +87,11 @@ public class UserPageFragment extends Fragment {
      */
     private ImageView user_image;
 
+    /**
+     * Posts list view
+     */
+    private ListView postsListView;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +104,9 @@ public class UserPageFragment extends Fragment {
 
         //Create getUserHelper instance
         getUsersHelper = new GetUsersHelper(getActivity(), dbHelper);
+
+        //Create posts helper instance
+        postsHelper = new PostsHelper(getActivity());
     }
 
     @Nullable
@@ -169,6 +197,57 @@ public class UserPageFragment extends Fragment {
         user_name.setText(userInfo.getDisplayFullName());
         ImageLoadManager.remove(user_image);
         ImageLoadManager.load(getActivity(), userInfo.getAcountImageURL(), user_image);
+
+        //Load the list of posts of the user
+        load_posts();
+    }
+
+    /**
+     * Load the posts of the user
+     */
+    private void load_posts(){
+
+        new AsyncTask<Void, Void, PostsList>(){
+
+            @Override
+            protected PostsList doInBackground(Void... params) {
+                PostsList list = postsHelper.get_user(userID);
+
+                //Get the information about the users who created the posts
+                if(list != null)
+                    usersInfos = getUsersHelper.getMultiple(list.getUsersId());
+
+                return list;
+            }
+
+            @Override
+            protected void onPostExecute(PostsList posts) {
+                if(getActivity() != null)
+                    display_posts(posts);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * Display the posts of the user
+     *
+     * @param list the list of posts / null in case of failure
+     */
+    private void display_posts(@Nullable PostsList list){
+
+        //Check for errors
+        if(list == null){
+            Toast.makeText(getActivity(), R.string.err_get_user_posts, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Check we didn't get user informations
+        if(usersInfos == null){
+            Toast.makeText(getActivity(), R.string.err_get_users_info, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Toast.makeText(getActivity(), "Got posts !", Toast.LENGTH_SHORT).show();
 
     }
 }
