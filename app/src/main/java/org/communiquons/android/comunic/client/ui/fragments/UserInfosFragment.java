@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.fragments;
+package org.communiquons.android.comunic.client.ui.fragments;
 
 
 import android.app.Fragment;
@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.communiquons.android.comunic.client.MainActivity;
+import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;

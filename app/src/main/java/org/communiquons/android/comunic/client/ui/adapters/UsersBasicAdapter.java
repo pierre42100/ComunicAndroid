@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.data.UsersInfo;
+package org.communiquons.android.comunic.client.ui.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
+import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
 
 import java.util.ArrayList;

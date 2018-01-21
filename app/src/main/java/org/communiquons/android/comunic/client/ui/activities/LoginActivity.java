@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client;
+package org.communiquons.android.comunic.client.ui.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;

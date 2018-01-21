@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
 
         <!-- Main activity of the application -->
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,12 +26,12 @@
 
         <!-- Login activity -->
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.activities.LoginActivity"
             android:label="@string/activity_login_header" />
 
         <!-- Search user activity -->
         <activity
-            android:name=".SearchUserActivity"
+            android:name=".ui.activities.SearchUserActivity"
             android:label="@string/activity_searchuser_title"/>
 
     </application>

@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.fragments;
+package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -18,7 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.communiquons.android.comunic.client.MainActivity;
+import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
@@ -26,7 +26,7 @@ import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.friendsList.Friend;
 import org.communiquons.android.comunic.client.data.friendsList.FriendUser;
-import org.communiquons.android.comunic.client.data.friendsList.FriendsAdapter;
+import org.communiquons.android.comunic.client.ui.adapters.FriendsAdapter;
 import org.communiquons.android.comunic.client.data.friendsList.FriendsListHelper;
 import org.communiquons.android.comunic.client.data.friendsList.FriendsUtils;
 

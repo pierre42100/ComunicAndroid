@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.fragments;
+package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -22,20 +22,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.communiquons.android.comunic.client.MainActivity;
+import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessage;
-import org.communiquons.android.comunic.client.data.conversations.ConversationMessageAdapter;
+import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.data.conversations.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationRefreshRunnable;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.utils.BitmapUtils;
-import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;

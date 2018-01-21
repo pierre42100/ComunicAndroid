@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client;
+package org.communiquons.android.comunic.client.ui.activities;
 
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.data.Account.Account;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
@@ -23,12 +24,12 @@ import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.friendsList.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
-import org.communiquons.android.comunic.client.fragments.ConversationFragment;
-import org.communiquons.android.comunic.client.fragments.ConversationsListFragment;
-import org.communiquons.android.comunic.client.fragments.FriendsListFragment;
-import org.communiquons.android.comunic.client.fragments.UpdateConversationFragment;
-import org.communiquons.android.comunic.client.fragments.UserInfosFragment;
-import org.communiquons.android.comunic.client.fragments.UserPageFragment;
+import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
+import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
+import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
+import org.communiquons.android.comunic.client.ui.fragments.UpdateConversationFragment;
+import org.communiquons.android.comunic.client.ui.fragments.UserInfosFragment;
+import org.communiquons.android.comunic.client.ui.fragments.UserPageFragment;
 
 
 /**

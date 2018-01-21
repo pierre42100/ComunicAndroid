@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.fragments;
+package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -19,14 +19,14 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.communiquons.android.comunic.client.MainActivity;
+import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
-import org.communiquons.android.comunic.client.data.conversations.ConversationsListAdapter;
+import org.communiquons.android.comunic.client.ui.adapters.ConversationsListAdapter;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper.openConversationListener;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper.updateConversationListener;

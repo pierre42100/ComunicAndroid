@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client;
+package org.communiquons.android.comunic.client.ui.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -15,9 +15,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.UsersBasicAdapter;
+import org.communiquons.android.comunic.client.ui.adapters.UsersBasicAdapter;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 
 import java.util.ArrayList;

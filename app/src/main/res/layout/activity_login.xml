@@ -9,7 +9,7 @@
     android:layout_marginStart="16dp"
     android:layout_marginTop="16dp"
     android:orientation="vertical"
-    tools:context="org.communiquons.android.comunic.client.LoginActivity">
+    tools:context="org.communiquons.android.comunic.client.ui.activities.LoginActivity">
 
     <!-- Login loading progress -->
     <ProgressBar

@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.data.friendsList;
+package org.communiquons.android.comunic.client.ui.adapters;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -13,8 +13,9 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
+import org.communiquons.android.comunic.client.data.friendsList.FriendUser;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
-import org.communiquons.android.comunic.client.fragments.FriendsListFragment;
+import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
 
 import java.util.ArrayList;
 

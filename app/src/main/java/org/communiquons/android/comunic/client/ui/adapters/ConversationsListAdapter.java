@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.data.conversations;
+package org.communiquons.android.comunic.client.ui.adapters;
 
 import android.content.Context;
 import android.os.Build;
@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 import java.util.ArrayList;
