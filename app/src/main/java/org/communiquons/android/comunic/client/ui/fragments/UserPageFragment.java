@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.posts.PostsHelper;
 import org.communiquons.android.comunic.client.data.posts.PostsList;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.adapters.PostsAdapter;
 
 /**
  * User page fragment
@@ -36,6 +38,11 @@ import org.communiquons.android.comunic.client.data.utils.UiUtils;
  */
 
 public class UserPageFragment extends Fragment {
+
+    /**
+     * Debug tag
+     */
+    private static final String TAG = "UserPageFragment";
 
     /**
      * The name of the argument that contains user id
@@ -92,6 +99,11 @@ public class UserPageFragment extends Fragment {
      */
     private ListView postsListView;
 
+    /**
+     * Posts adapter
+     */
+    private PostsAdapter postsAdapter;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,9 +131,12 @@ public class UserPageFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Get the user
+        //Get the user views
         user_image = view.findViewById(R.id.user_account_image);
         user_name = view.findViewById(R.id.user_account_name);
+
+        //Get the posts view
+        postsListView = view.findViewById(R.id.user_posts);
     }
 
     @Override
@@ -247,7 +262,12 @@ public class UserPageFragment extends Fragment {
             return;
         }
 
-        Toast.makeText(getActivity(), "Got posts !", Toast.LENGTH_SHORT).show();
+        //Save posts posts
+        postsList = list;
+
+        //Create post adatper
+        postsAdapter = new PostsAdapter(getActivity(), list, usersInfos);
+        postsListView.setAdapter(postsAdapter);
 
     }
 }

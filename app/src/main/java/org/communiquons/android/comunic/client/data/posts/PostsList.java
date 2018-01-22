@@ -12,6 +12,11 @@ import java.util.ArrayList;
 public class PostsList extends ArrayList<Post> {
 
     /**
+     * Debug tag
+     */
+    private static final String TAG = "PostsList";
+
+    /**
      * Get the IDs of the users who created the posts
      *
      * @return The list of users of the post
@@ -24,7 +29,7 @@ public class PostsList extends ArrayList<Post> {
             int userID = post.getUserID();
 
             //Add User ID if required
-            if(ids.contains(userID))
+            if(!ids.contains(userID))
                 ids.add(userID);
         }
 

@@ -26,4 +26,15 @@
         <item name="android:paddingStart">5dp</item>
         <item name="android:paddingEnd">5dp</item>
     </style>
+
+    <!-- Posts style -->
+    <!-- Post header -->
+    <style name="PostHeader">
+        <item name="android:padding">2dp</item>
+    </style>
+
+    <!-- Post owner name -->
+    <style name="PostOwnerName">
+        <item name="android:paddingStart">10dp</item>
+    </style>
 </resources>
