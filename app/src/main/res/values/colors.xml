@@ -17,4 +17,7 @@
 
     <!-- Conversations footer -->
     <color name="conversation_footer_bg">#8c9eff</color>
+
+    <!-- Specify to users name -->
+    <color name="user_name_link">#23527c</color>
 </resources>

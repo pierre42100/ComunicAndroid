@@ -35,6 +35,13 @@
 
     <!-- Post owner name -->
     <style name="PostOwnerName">
-        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:textColor">@color/user_name_link</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Post date -->
+    <style name="PostDate">
+        <item name="android:paddingLeft">10dp</item>
     </style>
 </resources>

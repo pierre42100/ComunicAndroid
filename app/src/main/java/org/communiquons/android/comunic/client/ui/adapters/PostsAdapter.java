@@ -17,6 +17,7 @@ import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.posts.Post;
 import org.communiquons.android.comunic.client.data.posts.PostsList;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 /**
  * Posts adapter
@@ -33,6 +34,11 @@ public class PostsAdapter extends ArrayAdapter<Post>{
     private ArrayMap<Integer, UserInfo> mUsersInfos;
 
     /**
+     * Utilities object
+     */
+    private Utilities utils;
+
+    /**
      * Create the Post Adapter
      *
      * @param context The context of execution of the application
@@ -44,6 +50,9 @@ public class PostsAdapter extends ArrayAdapter<Post>{
 
         //Save the users info object
         mUsersInfos = usersInfos;
+
+        //Create utilities object
+        utils = new Utilities(getContext());
     }
 
     @NonNull
@@ -78,8 +87,9 @@ public class PostsAdapter extends ArrayAdapter<Post>{
             ImageLoadManager.load(getContext(), userInfo.getAcountImageURL(), userAccountImage);
         }
 
-
-
+        //Set post creation time
+        ((TextView) convertView.findViewById(R.id.post_creation_time)).setText(utils.
+                timeToString(Utilities.time() - post.getPost_time()));
 
         return convertView;
     }
