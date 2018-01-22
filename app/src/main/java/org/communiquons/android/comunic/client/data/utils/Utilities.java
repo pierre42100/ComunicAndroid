@@ -285,7 +285,7 @@ public class Utilities {
 
         //A several amount of years
         else {
-            int years = (int) Math.floor(31536000);
+            int years = (int) Math.floor(time / 31536000);
             return years + res.getString(years > 1 ? R.string.date_years : R.string.date_year);
         }
     }
