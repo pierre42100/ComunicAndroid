@@ -91,6 +91,9 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         ((TextView) convertView.findViewById(R.id.post_creation_time)).setText(utils.
                 timeToString(Utilities.time() - post.getPost_time()));
 
+        //Set post conent
+        ((TextView) convertView.findViewById(R.id.post_content)).setText(Utilities.prepareStringTextView(post.getContent()));
+
         return convertView;
     }
 }

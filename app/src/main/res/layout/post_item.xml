@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    style="@style/PostContener">
 
     <!-- Informations about user who created the post -->
     <LinearLayout
@@ -14,6 +15,7 @@
         <ImageView
             android:id="@+id/user_account_image"
             android:src="@drawable/default_account_image"
+            android:contentDescription="@string/user_image_description"
             android:layout_width="@dimen/account_image_default_width"
             android:layout_height="@dimen/account_image_default_height" />
 
@@ -44,6 +46,14 @@
 
 
     </LinearLayout>
+
+    <!-- Post content -->
+    <TextView
+        android:id="@+id/post_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Post content"
+        style="@style/PostContent" />
 
 
 </LinearLayout>
