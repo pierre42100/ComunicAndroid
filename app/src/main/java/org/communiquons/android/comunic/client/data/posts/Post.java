@@ -16,6 +16,7 @@ public class Post {
     private int userID;
     private int post_time;
     private String content;
+    private PostTypes type;
 
 
     //Set and get the ID of the post
@@ -55,6 +56,16 @@ public class Post {
 
     public String getContent() {
         return content;
+    }
+
+    //Set and get the type of the post
+
+    public void setType(PostTypes type) {
+        this.type = type;
+    }
+
+    public PostTypes getType() {
+        return type;
     }
 }
 

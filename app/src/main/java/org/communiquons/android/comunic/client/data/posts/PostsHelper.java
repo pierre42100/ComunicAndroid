@@ -2,6 +2,7 @@ package org.communiquons.android.comunic.client.data.posts;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
@@ -85,6 +86,22 @@ public class PostsHelper {
         post.setUserID(json.getInt("userID"));
         post.setPost_time(json.getInt("post_time"));
         post.setContent(json.getString("content"));
+
+        //Determine the type of the post
+        switch (json.getString("kind")){
+
+            case "text":
+                post.setType(PostTypes.TEXT);
+                break;
+
+            case "image":
+                post.setType(PostTypes.IMAGE);
+                break;
+
+            default:
+                post.setType(PostTypes.UNKNOWN);
+
+        }
 
         return post;
     }
