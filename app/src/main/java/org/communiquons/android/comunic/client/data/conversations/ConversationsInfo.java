@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.communiquons.android.comunic.client.data.utils.ArrayUtils;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 import java.util.ArrayList;
 
@@ -241,7 +242,7 @@ public class ConversationsInfo {
      * @return The displayed name of the conversation
      */
     public String getDisplayName() {
-        return displayName;
+        return Utilities.prepareStringTextView(displayName);
     }
 
     /**
