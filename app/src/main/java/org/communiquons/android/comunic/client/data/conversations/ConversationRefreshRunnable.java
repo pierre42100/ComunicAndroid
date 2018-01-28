@@ -190,9 +190,9 @@ public class ConversationRefreshRunnable implements Runnable {
                     });
                 }
 
-                //Make a small break
+                //Make a small break (1 sec 200)
                 try {
-                    object.wait(500);
+                    object.wait(1200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     break;
