@@ -18,6 +18,9 @@ public class Post {
     private String content;
     private PostTypes type;
 
+    //Files specific
+    private String file_path_url;
+
 
     //Set and get the ID of the post
     public void setId(int id) {
@@ -59,13 +62,21 @@ public class Post {
     }
 
     //Set and get the type of the post
-
     public void setType(PostTypes type) {
         this.type = type;
     }
 
     public PostTypes getType() {
         return type;
+    }
+
+    //Set and get file path url
+    public void setFile_path_url(String file_path_url) {
+        this.file_path_url = file_path_url;
+    }
+
+    public String getFile_path_url() {
+        return file_path_url;
     }
 }
 

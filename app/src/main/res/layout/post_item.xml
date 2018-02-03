@@ -47,6 +47,13 @@
 
     </LinearLayout>
 
+    <!-- Post image (if any) -->
+    <ImageView
+        android:id="@+id/post_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"/>
+
     <!-- Post content -->
     <TextView
         android:id="@+id/post_content"

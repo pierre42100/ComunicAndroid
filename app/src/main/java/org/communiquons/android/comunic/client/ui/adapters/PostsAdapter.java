@@ -15,6 +15,7 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.posts.Post;
+import org.communiquons.android.comunic.client.data.posts.PostTypes;
 import org.communiquons.android.comunic.client.data.posts.PostsList;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
@@ -91,8 +92,22 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         ((TextView) convertView.findViewById(R.id.post_creation_time)).setText(utils.
                 timeToString(Utilities.time() - post.getPost_time()));
 
-        //Set post conent
+        //Set post content
         ((TextView) convertView.findViewById(R.id.post_content)).setText(Utilities.prepareStringTextView(post.getContent()));
+
+        //Set post image (if any)
+        ImageView postImage = convertView.findViewById(R.id.post_image);
+        postImage.setVisibility(View.GONE);
+        postImage.setImageDrawable(null);
+        ImageLoadManager.remove(postImage);
+        if(post.getType() == PostTypes.IMAGE){
+
+            //Make image visible
+            postImage.setVisibility(View.VISIBLE);
+
+            //Load image
+            ImageLoadManager.load(getContext(), post.getFile_path_url(), postImage);
+        }
 
         return convertView;
     }

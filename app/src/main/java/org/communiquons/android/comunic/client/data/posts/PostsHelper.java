@@ -2,7 +2,6 @@ package org.communiquons.android.comunic.client.data.posts;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.view.View;
 
 import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
@@ -101,6 +100,11 @@ public class PostsHelper {
             default:
                 post.setType(PostTypes.UNKNOWN);
 
+        }
+
+        //Get file path url (if any)
+        if(json.getString("file_path_url") != null){
+            post.setFile_path_url(json.getString("file_path_url"));
         }
 
         return post;
