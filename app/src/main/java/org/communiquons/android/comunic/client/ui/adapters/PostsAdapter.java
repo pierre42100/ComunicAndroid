@@ -88,12 +88,34 @@ public class PostsAdapter extends ArrayAdapter<Post>{
             ImageLoadManager.load(getContext(), userInfo.getAcountImageURL(), userAccountImage);
         }
 
+
         //Set post creation time
         ((TextView) convertView.findViewById(R.id.post_creation_time)).setText(utils.
                 timeToString(Utilities.time() - post.getPost_time()));
 
+
+        //Set post visibility level
+        TextView visibilityLevel = convertView.findViewById(R.id.post_visibility);
+        switch (post.getVisibilityLevel()){
+
+            case PUBLIC:
+                visibilityLevel.setText(R.string.post_visibility_public);
+                break;
+
+            case FRIENDS:
+                visibilityLevel.setText(R.string.post_visibility_friends);
+                break;
+
+            case PRIVATE:
+            default:
+                visibilityLevel.setText(R.string.post_visibility_private);
+                break;
+        }
+
+
         //Set post content
         ((TextView) convertView.findViewById(R.id.post_content)).setText(Utilities.prepareStringTextView(post.getContent()));
+
 
         //Set post image (if any)
         ImageView postImage = convertView.findViewById(R.id.post_image);

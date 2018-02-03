@@ -17,6 +17,7 @@ public class Post {
     private int post_time;
     private String content;
     private PostTypes type;
+    private PostVisibilityLevels visibilityLevel;
 
     //Files specific
     private String file_path_url;
@@ -68,6 +69,16 @@ public class Post {
 
     public PostTypes getType() {
         return type;
+    }
+
+
+    //Set and get post visibility level
+    public void setVisibilityLevel(PostVisibilityLevels visibilityLevel) {
+        this.visibilityLevel = visibilityLevel;
+    }
+
+    public PostVisibilityLevels getVisibilityLevel() {
+        return visibilityLevel;
     }
 
     //Set and get file path url

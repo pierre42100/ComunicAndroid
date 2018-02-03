@@ -97,4 +97,7 @@
     <string name="dialog_loading_msg">Loading…</string>
     <string name="navigation_bottom_user_item">User</string>
     <string name="err_get_user_posts">Couldn\'t get user posts !</string>
+    <string name="post_visibility_public">public</string>
+    <string name="post_visibility_friends">friends</string>
+    <string name="post_visibility_private">private</string>
 </resources>

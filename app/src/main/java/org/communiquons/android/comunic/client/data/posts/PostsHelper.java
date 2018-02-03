@@ -86,6 +86,24 @@ public class PostsHelper {
         post.setPost_time(json.getInt("post_time"));
         post.setContent(json.getString("content"));
 
+        //Determine the visibility level of the post
+        switch (json.getString("visibility_level")){
+
+            case "public":
+                post.setVisibilityLevel(PostVisibilityLevels.PUBLIC);
+                break;
+
+            case "friends":
+                post.setVisibilityLevel(PostVisibilityLevels.FRIENDS);
+                break;
+
+            case "private":
+            default :
+                post.setVisibilityLevel(PostVisibilityLevels.PRIVATE);
+                break;
+
+        }
+
         //Determine the type of the post
         switch (json.getString("kind")){
 
