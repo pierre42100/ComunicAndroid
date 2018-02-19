@@ -62,4 +62,27 @@
         <item name="android:layout_marginTop">5dp</item>
         <item name="android:layout_marginBottom">2dp</item>
     </style>
+
+
+    <!-- Comments style -->
+    <!-- Comments contener -->
+    <style name="CommentContener">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingStart">5dp</item>
+        <item name="android:paddingEnd">5dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <!-- Comment user name -->
+    <style name="CommentUserName">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:paddingStart">2dp</item>
+        <item name="android:layout_marginEnd">5dp</item>
+    </style>
+
+    <!-- Comment text -->
+    <style name="CommentText">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>

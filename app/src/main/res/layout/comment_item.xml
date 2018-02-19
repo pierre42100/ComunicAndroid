@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/CommentContener"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <!-- User name and image-->
+    <ImageView
+        android:id="@+id/user_account_image"
+        android:layout_width="@dimen/account_image_default_width"
+        android:layout_height="@dimen/account_image_default_height"
+        android:src="@drawable/default_account_image"
+        android:contentDescription="@string/user_image_description" />
+
+    <TextView
+        android:id="@+id/user_account_name"
+        style="@style/CommentUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="User name" />
+
+
+    <!-- Comment content -->
+    <TextView
+        android:id="@+id/comment_text"
+        style="@style/CommentText"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        tools:text="A comment content" />
+
+</LinearLayout>
