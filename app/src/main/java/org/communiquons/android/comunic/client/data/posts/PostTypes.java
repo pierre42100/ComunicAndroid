@@ -20,6 +20,11 @@ public enum PostTypes {
     IMAGE,
 
     /**
+     * Movie
+     */
+    MOVIE,
+
+    /**
      * Unknown type
      */
     UNKNOWN

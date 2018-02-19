@@ -115,6 +115,10 @@ public class PostsHelper {
                 post.setType(PostTypes.IMAGE);
                 break;
 
+            case "movie":
+                post.setType(PostTypes.MOVIE);
+                break;
+
             default:
                 post.setType(PostTypes.UNKNOWN);
 
