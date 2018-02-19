@@ -1,5 +1,11 @@
 package org.communiquons.android.comunic.client.data.posts;
 
+import android.support.annotation.Nullable;
+
+import org.communiquons.android.comunic.client.data.comments.Comment;
+
+import java.util.ArrayList;
+
 /**
  * Post model
  *
@@ -18,6 +24,7 @@ public class Post {
     private String content;
     private PostTypes type;
     private PostVisibilityLevels visibilityLevel;
+    private ArrayList<Comment> comments_list;
 
     //Files specific
     private String file_path_url;
@@ -44,7 +51,7 @@ public class Post {
 
 
     //Set and get the post creation time
-    public void setPost_time(int post_time) {
+    void setPost_time(int post_time) {
         this.post_time = post_time;
     }
 
@@ -63,7 +70,7 @@ public class Post {
     }
 
     //Set and get the type of the post
-    public void setType(PostTypes type) {
+    void setType(PostTypes type) {
         this.type = type;
     }
 
@@ -73,7 +80,7 @@ public class Post {
 
 
     //Set and get post visibility level
-    public void setVisibilityLevel(PostVisibilityLevels visibilityLevel) {
+    void setVisibilityLevel(PostVisibilityLevels visibilityLevel) {
         this.visibilityLevel = visibilityLevel;
     }
 
@@ -81,8 +88,18 @@ public class Post {
         return visibilityLevel;
     }
 
+    //Set and get comments list
+    void setComments_list(ArrayList<Comment> comments_list) {
+        this.comments_list = comments_list;
+    }
+
+    @Nullable
+    public ArrayList<Comment> getComments_list() {
+        return comments_list;
+    }
+
     //Set and get file path url
-    public void setFile_path_url(String file_path_url) {
+    void setFile_path_url(String file_path_url) {
         this.file_path_url = file_path_url;
     }
 

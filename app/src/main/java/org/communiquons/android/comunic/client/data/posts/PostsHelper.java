@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
 import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.comments.CommentsHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -85,6 +86,7 @@ public class PostsHelper {
         post.setUserID(json.getInt("userID"));
         post.setPost_time(json.getInt("post_time"));
         post.setContent(json.getString("content"));
+        post.setComments_list(CommentsHelper.parse_json_array(json.getJSONArray("comments")));
 
         //Determine the visibility level of the post
         switch (json.getString("visibility_level")){
