@@ -1,5 +1,7 @@
 package org.communiquons.android.comunic.client.data.posts;
 
+import org.communiquons.android.comunic.client.data.comments.Comment;
+
 import java.util.ArrayList;
 
 /**
@@ -17,7 +19,7 @@ public class PostsList extends ArrayList<Post> {
     private static final String TAG = "PostsList";
 
     /**
-     * Get the IDs of the users who created the posts
+     * Get the IDs of the users who created the posts and their comments
      *
      * @return The list of users of the post
      */
@@ -31,6 +33,18 @@ public class PostsList extends ArrayList<Post> {
             //Add User ID if required
             if(!ids.contains(userID))
                 ids.add(userID);
+
+            if(post.getComments_list() != null){
+
+                //Process the list of comments
+                for(Comment comment : post.getComments_list()){
+
+                    if(ids.contains(comment.getUserID()))
+                        ids.add(comment.getUserID());
+
+                }
+
+            }
         }
 
         return ids;
