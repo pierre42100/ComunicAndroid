@@ -70,6 +70,7 @@ public class FriendsListHelper {
 
         //Prepare the API request
         APIRequestParameters params = new APIRequestParameters(mContext, "friends/getList");
+        params.addParameter("complete", true);
 
         //Prepare the result
         ArrayList<Friend> friends = new ArrayList<>();
