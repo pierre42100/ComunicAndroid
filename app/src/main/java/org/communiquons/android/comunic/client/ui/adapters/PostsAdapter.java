@@ -4,21 +4,27 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
+import org.communiquons.android.comunic.client.data.comments.Comment;
 import org.communiquons.android.comunic.client.data.posts.Post;
 import org.communiquons.android.comunic.client.data.posts.PostTypes;
 import org.communiquons.android.comunic.client.data.posts.PostsList;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
+
+import java.util.ArrayList;
 
 /**
  * Posts adapter
@@ -28,6 +34,11 @@ import org.communiquons.android.comunic.client.data.utils.Utilities;
  */
 
 public class PostsAdapter extends ArrayAdapter<Post>{
+
+    /**
+     * Debug tag
+     */
+    private static final String TAG = "PostsAdapter";
 
     /**
      * Informations about the users
@@ -116,7 +127,6 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         //Set post content
         ((TextView) convertView.findViewById(R.id.post_content)).setText(Utilities.prepareStringTextView(post.getContent()));
 
-
         //Set post image (if any)
         ImageView postImage = convertView.findViewById(R.id.post_image);
         postImage.setVisibility(View.GONE);
@@ -129,6 +139,32 @@ public class PostsAdapter extends ArrayAdapter<Post>{
 
             //Load image
             ImageLoadManager.load(getContext(), post.getFile_path_url(), postImage);
+        }
+
+        //Process post comments
+        ArrayList<Comment> comments = post.getComments_list();
+        LinearLayout commentsView = convertView.findViewById(R.id.comments_list);
+        commentsView.removeAllViews();
+        if(comments != null) {
+
+            //Show comments list
+            convertView.findViewById(R.id.comments_list).setVisibility(View.VISIBLE);
+
+            for (Comment comment : comments) {
+
+                //Try to find information about the user
+                UserInfo commentUser = mUsersInfos.containsKey(comment.getUserID()) ?
+                        mUsersInfos.get(comment.getUserID()) : null;
+
+                //Inflate the view
+                View commentView = CommentsAdapter.getInflatedView(getContext(), comment,
+                        commentUser, commentsView);
+                commentsView.addView(commentView);
+            }
+        }
+        else {
+            //Hide comments list
+            convertView.findViewById(R.id.comments_list).setVisibility(View.GONE);
         }
 
         return convertView;

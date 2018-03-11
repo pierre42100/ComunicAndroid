@@ -66,7 +66,8 @@
         android:id="@+id/post_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="fitCenter"/>
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/post_image_description"/>
 
     <!-- Post content -->
     <TextView
@@ -75,6 +76,13 @@
         android:layout_height="wrap_content"
         tools:text="Post content"
         style="@style/PostContent" />
+
+    <!-- Post comments -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/comments_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 
 </LinearLayout>
