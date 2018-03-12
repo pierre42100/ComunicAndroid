@@ -2,6 +2,8 @@
     <!-- The default size of an account image -->
     <dimen name="account_image_default_width">64dp</dimen>
     <dimen name="account_image_default_height">64dp</dimen>
+    <dimen name="account_image_small_width">32dp</dimen>
+    <dimen name="account_image_small_height">32dp</dimen>
     <dimen name="account_image_xsmall_width">16dp</dimen>
     <dimen name="account_image_xsmall_height">16dp</dimen>
 

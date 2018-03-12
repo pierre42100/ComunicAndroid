@@ -9,8 +9,8 @@
     <!-- User name and image-->
     <ImageView
         android:id="@+id/user_account_image"
-        android:layout_width="@dimen/account_image_xsmall_width"
-        android:layout_height="@dimen/account_image_xsmall_height"
+        android:layout_width="@dimen/account_image_small_width"
+        android:layout_height="@dimen/account_image_small_height"
         android:src="@drawable/default_account_image"
         android:contentDescription="@string/user_image_description" />
 
