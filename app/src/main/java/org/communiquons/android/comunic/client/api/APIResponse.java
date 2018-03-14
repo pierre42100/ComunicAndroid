@@ -14,7 +14,7 @@ import org.json.JSONObject;
 public class APIResponse {
 
     /**
-     * Reponse code
+     * Response code
      */
     private int response_code;
 
