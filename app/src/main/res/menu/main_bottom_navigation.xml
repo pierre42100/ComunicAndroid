@@ -6,17 +6,18 @@
         android:icon="@drawable/ic_menu_allfriends"
         />
 
-    <item
+    <!--<item
         android:id="@+id/main_bottom_navigation_users_view"
         android:title="@string/navigation_bottom_user_item"
         android:icon="@drawable/perm_group_personal_info"
-        android:visible="false" />
+        android:visible="false" />-->
 
     <item
         android:id="@+id/main_bottom_navigation_me_view"
-        android:title="@string/navigation_bottom_me_item"
-        android:icon="@drawable/ic_menu_home"
-        />
+        android:title="@string/navigation_bottom_user_item"
+        android:icon="@drawable/perm_group_personal_info"
+        /> <!--android:icon="@drawable/ic_menu_home"
+            android:title="@string/navigation_bottom_me_item"-->
 
     <item
         android:id="@+id/main_bottom_navigation_conversations"

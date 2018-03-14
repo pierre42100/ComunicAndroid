@@ -201,12 +201,12 @@ public class UserPageFragment extends Fragment {
         getActivity().setTitle(userInfo.getDisplayFullName());
 
         //Update activity menu dock
-        if(AccountUtils.getID(getActivity()) == userID)
+        //if(AccountUtils.getID(getActivity()) == userID)
             ((MainActivity) getActivity()).setSelectedNavigationItem(
                     R.id.main_bottom_navigation_me_view);
-        else
+        /*else
             ((MainActivity) getActivity()).setSelectedNavigationItem(
-                    R.id.main_bottom_navigation_users_view);
+                    R.id.main_bottom_navigation_users_view);*/
 
         //Update user name and account image
         user_name.setText(userInfo.getDisplayFullName());
