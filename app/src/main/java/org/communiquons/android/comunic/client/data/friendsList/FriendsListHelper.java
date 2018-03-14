@@ -70,7 +70,7 @@ public class FriendsListHelper {
 
         //Prepare the API request
         APIRequestParameters params = new APIRequestParameters(mContext, "friends/getList");
-        params.addParameter("complete", true);
+        params.addBoolean("complete", true);
 
         //Prepare the result
         ArrayList<Friend> friends = new ArrayList<>();
@@ -122,7 +122,7 @@ public class FriendsListHelper {
         try {
             //Remove the friend online
             APIRequestParameters delparams = new APIRequestParameters(mContext, "friends/remove");
-            delparams.addParameter("friendID", ""+friend.getId());
+            delparams.addString("friendID", ""+friend.getId());
             new APIRequest().exec(delparams);
 
             //Remove the friend from the local database
@@ -146,8 +146,8 @@ public class FriendsListHelper {
             //Perform a request to update the satus online
             APIRequestParameters reqParams = new APIRequestParameters(mContext,
                     "friends/respondRequest");
-            reqParams.addParameter("friendID", ""+friend.getId());
-            reqParams.addParameter("accept", accept ? "true" : "false");
+            reqParams.addInt("friendID", friend.getId());
+            reqParams.addString("accept", accept ? "true" : "false");
             new APIRequest().exec(reqParams);
 
             //Update the friend in the local database

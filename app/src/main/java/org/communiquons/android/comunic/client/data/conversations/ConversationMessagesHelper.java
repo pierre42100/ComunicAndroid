@@ -91,12 +91,12 @@ public class ConversationMessagesHelper {
         //Make an API request
         APIRequestParameters params = new APIRequestParameters(mContext,
                 "conversations/sendMessage");
-        params.addParameter("conversationID", ""+convID);
-        params.addParameter("message", message);
+        params.addString("conversationID", ""+convID);
+        params.addString("message", message);
 
         //Include image (if any)
         if(image != null)
-            params.addParameter("image", "data:image/png;base64," + image);
+            params.addString("image", "data:image/png;base64," + image);
 
         try {
             new APIRequest().exec(params);
@@ -156,8 +156,8 @@ public class ConversationMessagesHelper {
         //Prepare a request on the API
         APIRequestParameters params = new APIRequestParameters(mContext,
                 "conversations/refresh_single");
-        params.addParameter("conversationID", ""+conversationID);
-        params.addParameter("last_message_id", ""+last_message_id);
+        params.addString("conversationID", ""+conversationID);
+        params.addString("last_message_id", ""+last_message_id);
 
         ArrayList<ConversationMessage> list = new ArrayList<>();
 

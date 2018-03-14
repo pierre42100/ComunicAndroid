@@ -2,8 +2,6 @@ package org.communiquons.android.comunic.client.api;
 
 import android.content.Context;
 
-import org.communiquons.android.comunic.client.api.APIPostData;
-
 import java.util.ArrayList;
 
 /**
@@ -54,7 +52,7 @@ public class APIRequestParameters {
      * @param name The name of the new key
      * @param value The value of the new key
      */
-    public void addParameter(String name, String value){
+    public void addString(String name, String value){
         parameters.add(new APIPostData(name, value));
     }
 
@@ -64,8 +62,8 @@ public class APIRequestParameters {
      * @param name The name of the new key
      * @param value The value of the new key (int)
      */
-    public void addParameter(String name, int value){
-        this.addParameter(name, ""+value);
+    public void addInt(String name, int value){
+        this.addString(name, ""+value);
     }
 
     /**
@@ -74,8 +72,8 @@ public class APIRequestParameters {
      * @param name The name of the new key
      * @param value The value of the new key (boolean)
      */
-    public void addParameter(String name, boolean value){
-        this.addParameter(name, value ? "true" : "false");
+    public void addBoolean(String name, boolean value){
+        this.addString(name, value ? "true" : "false");
     }
 
     /**

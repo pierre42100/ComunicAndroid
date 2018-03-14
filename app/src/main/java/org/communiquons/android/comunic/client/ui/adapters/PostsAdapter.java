@@ -1,18 +1,22 @@
 package org.communiquons.android.comunic.client.ui.adapters;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
@@ -21,8 +25,10 @@ import org.communiquons.android.comunic.client.data.comments.Comment;
 import org.communiquons.android.comunic.client.data.posts.Post;
 import org.communiquons.android.comunic.client.data.posts.PostTypes;
 import org.communiquons.android.comunic.client.data.posts.PostsList;
+import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
 
 import java.util.ArrayList;
 
@@ -69,7 +75,8 @@ public class PostsAdapter extends ArrayAdapter<Post>{
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView,
+                        @NonNull ViewGroup parent) {
 
         //Check if the view has to be inflated
         if(convertView == null)
@@ -167,6 +174,81 @@ public class PostsAdapter extends ArrayAdapter<Post>{
             convertView.findViewById(R.id.comments_list).setVisibility(View.GONE);
         }
 
+
+        //Update comment creation form
+        View commentCreationForm = convertView.findViewById(R.id.create_comment_form);
+        EditCommentContentView input_comment = convertView.findViewById(R.id.input_comment_content);
+        if(comments == null){
+
+            //Hide comment creation form
+            commentCreationForm.setVisibility(View.GONE);
+
+        }
+        else {
+
+            //Display comment creation form
+            commentCreationForm.setVisibility(View.VISIBLE);
+
+            //Make sure the form is correctly set up
+            if(input_comment.getPostID() != post.getId()){
+
+                //Reset input comment
+                input_comment.setPostID(post.getId());
+                input_comment.setText("");
+
+                //Make the send button lives
+                final View finalConvertView = convertView;
+                convertView.findViewById(R.id.comment_send_button)
+                        .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sendComment(position, finalConvertView);
+                    }
+                });
+
+            }
+        }
+
         return convertView;
+    }
+
+    /**
+     * Intend to send a new comment to the server
+     *
+     * @param pos The position of the post to update
+     * @param container The container of the post item
+     */
+    private void sendComment(int pos, View container){
+
+        //Get post informations
+        Post post = getItem(pos);
+        if(post==null)
+            return;
+
+        //Get informations about the comment
+        int postID = post.getId();
+        String content = ((EditText) container.findViewById(R.id.input_comment_content)).getText()+"";
+
+        //Check the comment's validity
+        if(!StringsUtils.isValidForContent(content)){
+            Toast.makeText(getContext(), R.string.err_invalid_comment_content,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Submit the comment in a separate thread
+        new AsyncTask<Void, Void, Pair<UserInfo, Comment>>(){
+
+            @Override
+            @Nullable
+            protected Pair<UserInfo, Comment> doInBackground(Void... params) {
+
+                //Try to create the comment
+
+
+                return null;
+            }
+
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }

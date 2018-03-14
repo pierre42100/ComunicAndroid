@@ -110,8 +110,8 @@ public class LoginActivity extends AppCompatActivity {
 
         //Perform a request on the API to check user credentials and get login tokens
         APIRequestParameters params = new APIRequestParameters(this, "user/connectUSER");
-        params.addParameter("userMail", ""+login_mail.getText());
-        params.addParameter("userPassword", ""+login_password.getText());
+        params.addString("userMail", ""+login_mail.getText());
+        params.addString("userPassword", ""+login_password.getText());
 
         //Create Request
         new APIRequestTask(){

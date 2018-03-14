@@ -120,7 +120,7 @@ public class GetUsersHelper {
         //Perform an API request
         APIRequestParameters params = new APIRequestParameters(mContext,
                 "user/getAdvancedUserInfos");
-        params.addParameter("userID", userID);
+        params.addInt("userID", userID);
 
         //Perform the request
         try {
@@ -237,8 +237,8 @@ public class GetUsersHelper {
 
         //Make an API request
         APIRequestParameters params = new APIRequestParameters(mContext, "search/user");
-        params.addParameter("query", query);
-        params.addParameter("searchLimit", ""+limit);
+        params.addString("query", query);
+        params.addString("searchLimit", ""+limit);
 
         try {
 
@@ -281,7 +281,7 @@ public class GetUsersHelper {
         for(int id : IDs) {
             id_string += id + ",";
         }
-        requestParameters.addParameter("usersID", id_string);
+        requestParameters.addString("usersID", id_string);
 
 
         try {

@@ -47,7 +47,7 @@ public class PostsHelper {
 
         //Perform a request on the API
         APIRequestParameters params = new APIRequestParameters(mContext, "posts/get_user");
-        params.addParameter("userID", userID);
+        params.addInt("userID", userID);
 
         //Perform the request
         try {

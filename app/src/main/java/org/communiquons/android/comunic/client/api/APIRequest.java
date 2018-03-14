@@ -120,8 +120,8 @@ public class APIRequest {
      * @param params The request parametres to update
      */
     private void addAPItokens(APIRequestParameters params){
-        params.addParameter("serviceName", BuildConfig.api_service_name);
-        params.addParameter("serviceToken", BuildConfig.api_service_token);
+        params.addString("serviceName", BuildConfig.api_service_name);
+        params.addString("serviceToken", BuildConfig.api_service_token);
     }
 
     /**
@@ -145,8 +145,8 @@ public class APIRequest {
             return; //Not enough tokens
 
         //Add them to the request
-        params.addParameter("userToken1", tokens.get(0));
-        params.addParameter("userToken2", tokens.get(1));
+        params.addString("userToken1", tokens.get(0));
+        params.addString("userToken2", tokens.get(1));
 
     }
 

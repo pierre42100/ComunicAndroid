@@ -117,8 +117,8 @@ public class ConversationsListHelper {
         //Prepare an API request
         APIRequestParameters params = new APIRequestParameters(mContext,
                 "conversations/getPrivate");
-        params.addParameter("otherUser", userID);
-        params.addParameter("allowCreate", allowCreate);
+        params.addInt("otherUser", userID);
+        params.addBoolean("allowCreate", allowCreate);
 
         //Try to perform request
         try {
@@ -215,7 +215,7 @@ public class ConversationsListHelper {
 
         //Delete the conversation on the API
         APIRequestParameters params = new APIRequestParameters(mContext, "conversations/delete");
-        params.addParameter("conversationID", ""+convID);
+        params.addString("conversationID", ""+convID);
 
         try {
             new APIRequest().exec(params);
@@ -246,9 +246,9 @@ public class ConversationsListHelper {
 
         //Make an API request
         APIRequestParameters params = new APIRequestParameters(mContext, "conversations/create");
-        params.addParameter("name", name.equals("") ? "false" : name);
-        params.addParameter("follow", follow ? "true" : "false");
-        params.addParameter("users", members_str);
+        params.addString("name", name.equals("") ? "false" : name);
+        params.addString("follow", follow ? "true" : "false");
+        params.addString("users", members_str);
 
         //Perform the request
         try {
@@ -290,18 +290,18 @@ public class ConversationsListHelper {
         //Prepare a request on the database
         APIRequestParameters params = new APIRequestParameters(mContext,
                 "conversations/updateSettings");
-        params.addParameter("conversationID", ""+convID);
+        params.addString("conversationID", ""+convID);
 
         //Add the name (if any)
         if(name != null)
-            params.addParameter("name", name.equals("") ? "false" : name);
+            params.addString("name", name.equals("") ? "false" : name);
 
         //Add the members (if any)
         if(members != null)
-            params.addParameter("members", ArrayUtils.int_array_to_string(members, ","));
+            params.addString("members", ArrayUtils.int_array_to_string(members, ","));
 
         //Add following state
-        params.addParameter("following", following ? "true" : "false");
+        params.addString("following", following ? "true" : "false");
 
         //Perform the request
         try {
@@ -370,7 +370,7 @@ public class ConversationsListHelper {
         //Perform an API request
         APIRequestParameters params = new APIRequestParameters(mContext,
                 "conversations/getInfosOne");
-        params.addParameter("conversationID", ""+convID);
+        params.addString("conversationID", ""+convID);
 
         try {
 
