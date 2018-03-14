@@ -101,4 +101,8 @@
     <string name="post_visibility_friends">friends</string>
     <string name="post_visibility_private">private</string>
     <string name="post_image_description">Post image (if any)</string>
+    <string name="new_comment_hint">New comment</string>
+    <string name="err_invalid_comment_content">Specified comment content seems to be invalid…</string>
+    <string name="err_create_comment">An error occurred while trying to create comment!</string>
+    <string name="action_send">Send</string>
 </resources>

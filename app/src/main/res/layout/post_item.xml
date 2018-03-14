@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    style="@style/PostContener"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/PostContener">
+    android:orientation="vertical">
 
     <!-- Informations about user who created the post -->
     <LinearLayout
+        style="@style/PostHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/PostHeader">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/user_account_image"
-            android:src="@drawable/default_account_image"
-            android:contentDescription="@string/user_image_description"
             android:layout_width="@dimen/account_image_default_width"
-            android:layout_height="@dimen/account_image_default_height" />
+            android:layout_height="@dimen/account_image_default_height"
+            android:contentDescription="@string/user_image_description"
+            android:src="@drawable/default_account_image" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
             <!-- User name -->
             <TextView
@@ -40,7 +40,7 @@
                 style="@style/PostDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="15 days ago"/>
+                tools:text="15 days ago" />
 
         </LinearLayout>
 
@@ -48,15 +48,15 @@
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <!-- Post visibility level -->
         <TextView
             android:id="@+id/post_visibility"
+            style="@style/PostVisibility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Public"
-            style="@style/PostVisibility"/>
+            tools:text="Public" />
 
 
     </LinearLayout>
@@ -66,23 +66,48 @@
         android:id="@+id/post_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
-        android:contentDescription="@string/post_image_description"/>
+        android:contentDescription="@string/post_image_description"
+        android:scaleType="fitCenter" />
 
     <!-- Post content -->
     <TextView
         android:id="@+id/post_content"
+        style="@style/PostContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Post content"
-        style="@style/PostContent" />
+        tools:text="Post content" />
 
     <!-- Post comments -->
     <LinearLayout
-        android:orientation="vertical"
         android:id="@+id/comments_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <!-- Comments form -->
+    <LinearLayout
+        android:id="@+id/create_comment_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Comment hint -->
+        <org.communiquons.android.comunic.client.ui.views.EditCommentContentView
+            android:id="@+id/input_comment_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/new_comment_hint"
+            android:inputType="textMultiLine" />
+
+        <ImageButton
+            android:id="@+id/comment_send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/action_send"
+            android:src="@android:drawable/ic_menu_send" />
+
+    </LinearLayout>
 
 
 </LinearLayout>

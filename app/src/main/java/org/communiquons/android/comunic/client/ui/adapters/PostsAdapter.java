@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -19,9 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
+import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersInfos;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.comments.Comment;
+import org.communiquons.android.comunic.client.data.comments.CommentsHelper;
 import org.communiquons.android.comunic.client.data.posts.Post;
 import org.communiquons.android.comunic.client.data.posts.PostTypes;
 import org.communiquons.android.comunic.client.data.posts.PostsList;
@@ -57,6 +62,16 @@ public class PostsAdapter extends ArrayAdapter<Post>{
     private Utilities utils;
 
     /**
+     * Comments helper
+     */
+    private CommentsHelper mCommentsHelper;
+
+    /**
+     * Get user helper
+     */
+    private GetUsersHelper mUserHelper;
+
+    /**
      * Create the Post Adapter
      *
      * @param context The context of execution of the application
@@ -71,6 +86,12 @@ public class PostsAdapter extends ArrayAdapter<Post>{
 
         //Create utilities object
         utils = new Utilities(getContext());
+
+        //Create get user helper object
+        mUserHelper = new GetUsersHelper(getContext(), DatabaseHelper.getInstance(getContext()));
+
+        //Create comments helper object
+        mCommentsHelper = new CommentsHelper(context);
     }
 
     @NonNull
@@ -221,13 +242,17 @@ public class PostsAdapter extends ArrayAdapter<Post>{
     private void sendComment(int pos, View container){
 
         //Get post informations
-        Post post = getItem(pos);
+        final Post post = getItem(pos);
         if(post==null)
             return;
 
+        //Get view about the comment
+        final EditCommentContentView commentInput = container.findViewById(R.id.input_comment_content);
+        final ImageButton sendButton = container.findViewById(R.id.comment_send_button);
+
         //Get informations about the comment
-        int postID = post.getId();
-        String content = ((EditText) container.findViewById(R.id.input_comment_content)).getText()+"";
+        final int postID = post.getId();
+        final String content = commentInput.getText()+"";
 
         //Check the comment's validity
         if(!StringsUtils.isValidForContent(content)){
@@ -235,6 +260,9 @@ public class PostsAdapter extends ArrayAdapter<Post>{
                     Toast.LENGTH_SHORT).show();
             return;
         }
+
+        //Lock send button
+        sendButton.setClickable(false);
 
         //Submit the comment in a separate thread
         new AsyncTask<Void, Void, Pair<UserInfo, Comment>>(){
@@ -244,11 +272,57 @@ public class PostsAdapter extends ArrayAdapter<Post>{
             protected Pair<UserInfo, Comment> doInBackground(Void... params) {
 
                 //Try to create the comment
+                int commentID = mCommentsHelper.send_comment(postID, content);
 
+                //Check for errors
+                if(commentID < 1)
+                    return null;
 
-                return null;
+                //Get information about the newly created comment
+                Comment comment = mCommentsHelper.getInfosSingle(commentID);
+
+                //Check for errors
+                if(comment == null)
+                    return null;
+
+                //Get informations about the related user
+                UserInfo user = mUserHelper.getSingle(comment.getUserID(), false);
+
+                //Check for errors
+                if(user == null)
+                    return null;
+
+                //Return result
+                return Pair.create(user, comment);
             }
 
+            @Override
+            protected void onPostExecute(@Nullable Pair<UserInfo, Comment> userInfoCommentPair) {
+
+                //Unlock send button
+                sendButton.setClickable(true);
+
+                //Check for errors
+                if(userInfoCommentPair == null){
+                    Toast.makeText(getContext(), R.string.err_create_comment,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //Empty comment input
+                commentInput.setText("");
+
+                //Add the comment to the list
+                ArrayList<Comment> comments = post.getComments_list();
+                assert comments != null;
+                comments.add(userInfoCommentPair.second);
+
+                //Add the user to the list
+                mUsersInfos.put(userInfoCommentPair.first.getId(), userInfoCommentPair.first);
+
+                //Update data set
+                notifyDataSetChanged();
+            }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }

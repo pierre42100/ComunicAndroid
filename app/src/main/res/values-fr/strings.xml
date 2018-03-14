@@ -93,4 +93,5 @@
     <string name="fragment_update_conversation_title_update">Modification de conversation</string>
     <string name="fragment_update_conversation_members_menu_delete">Supprimer</string>
     <string name="fragment_update_conversation_button_update">Mettre à jour</string>
+    <string name="err_invalid_comment_content">Le commentaire saisi semble être invalide…</string>
 </resources>
