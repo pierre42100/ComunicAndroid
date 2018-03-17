@@ -17,7 +17,7 @@
 
     <LinearLayout
         android:id="@+id/fragment_conversation_message_item_container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="5dp"
@@ -40,7 +40,7 @@
             android:layout_gravity="center"
             android:padding="5dp"
             android:textColor="@color/conversation_otheruser_messages_textColor"
-            tools:text="A message" />
+            tools:text="A message"/>
 
         <ImageView
             android:id="@+id/fragment_conversation_message_item_messageimage"

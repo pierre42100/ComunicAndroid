@@ -122,8 +122,13 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
                     .findViewById(R.id.fragment_conversation_message_item_left_account_image)
                     .setVisibility(View.GONE);
 
+            //Align text on the right
+            contentView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+
         }
         else {
+
+
 
             //Message appears on the right
             ((LinearLayout)convertView).setGravity(Gravity.START);
@@ -142,6 +147,8 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
                     .findViewById(R.id.fragment_conversation_message_item_right_account_image)
                     .setVisibility(View.GONE);
 
+            //Align text on the left
+            contentView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         }
 
         /*
