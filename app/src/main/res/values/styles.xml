@@ -75,6 +75,11 @@
         <item name="android:paddingBottom">2dp</item>
     </style>
 
+    <!-- Comment user account image -->
+    <style name="CommentUserImage">
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
     <!-- Comment user name -->
     <style name="CommentUserName">
         <item name="android:layout_gravity">center</item>
@@ -86,5 +91,10 @@
     <style name="CommentText">
         <item name="android:layout_gravity">center</item>
         <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <!-- Comment actions button -->
+    <style name="CommentActionsButton">
+        <item name="android:padding">2dp</item>
     </style>
 </resources>

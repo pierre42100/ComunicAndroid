@@ -2,17 +2,22 @@ package org.communiquons.android.comunic.client.ui.adapters;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.Account.AccountUtils;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.comments.Comment;
+import org.communiquons.android.comunic.client.data.comments.CommentsHelper;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
 
 import java.util.ArrayList;
@@ -25,6 +30,11 @@ import java.util.ArrayList;
  */
 
 public class CommentsAdapter extends ArrayAdapter<Comment> {
+
+    /**
+     * Comment helper
+     */
+    private static CommentsHelper mCHelper = null;
 
     /**
      * Class constructor
@@ -48,6 +58,11 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
     static View getInflatedView(Context context, Comment comment, @Nullable UserInfo user,
                                        ViewGroup viewGroup){
 
+        //Create comment helper if required
+        if(mCHelper == null){
+            mCHelper = new CommentsHelper(context.getApplicationContext());
+        }
+
         //Inflate a view
         View v = LayoutInflater.from(context).inflate(R.layout.comment_item, viewGroup, false);
 
@@ -65,28 +80,49 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
      * @param user Information about the user (NULL for none)
      * @return Updated view
      */
-    private static View fillView(Context context, View view, Comment comment,
-                                 @Nullable UserInfo user){
+    private static View fillView(final Context context, View view, Comment comment,
+                                 @Nullable UserInfo user) {
+
+        //Check wether the current user is the owner of the comment or not
+        final boolean isOwner = AccountUtils.getID(context) == comment.getUserID();
 
         //Update user name and account image
         ImageView accountImage = view.findViewById(R.id.user_account_image);
         TextView accountName = view.findViewById(R.id.user_account_name);
 
-        if(user == null){
+        if (user == null) {
             accountImage.setImageDrawable(UiUtils.getDrawable(context,
                     R.drawable.default_account_image));
             accountName.setText("");
-        }
-        else {
+        } else {
             ImageLoadManager.load(context, user.getAcountImageURL(), accountImage);
             accountName.setText(user.getDisplayFullName());
         }
 
         //Update comment content
-        ((TextView)view.findViewById(R.id.comment_text)).setText(comment.getContent());
+        ((TextView) view.findViewById(R.id.comment_text)).setText(comment.getContent());
+
+        //Update comment actions
+        ImageButton actions = view.findViewById(R.id.comment_actions_btn);
+
+        //Create context menu
+        actions.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+                //Inflate the menu
+                new MenuInflater(context).inflate(R.menu.menu_comments_actions, menu);
+
+                //Disable some entries accordingly to ownership status
+                menu.findItem(R.id.action_delete).setEnabled(isOwner);
+
+            }
+        });
+
 
         //Return view
         return view;
+
 
     }
 }

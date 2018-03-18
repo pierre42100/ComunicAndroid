@@ -22,6 +22,9 @@ public class Comment {
     private int likes;
     private boolean user_like;
 
+    //This field is used to indicate the corresponding comment has been deleted
+    private boolean deleted = false;
+
 
     //Get and set comment ID
     public int getId() {
@@ -110,5 +113,14 @@ public class Comment {
 
     public void setUser_like(boolean user_like) {
         this.user_like = user_like;
+    }
+
+    //Get and set the current deleted state of the comment
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

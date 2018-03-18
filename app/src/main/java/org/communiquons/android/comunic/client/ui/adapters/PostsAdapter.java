@@ -180,6 +180,10 @@ public class PostsAdapter extends ArrayAdapter<Post>{
 
             for (Comment comment : comments) {
 
+                //Check if the comment has been deleted
+                if(comment.isDeleted())
+                    continue; //Skip comment
+
                 //Try to find information about the user
                 UserInfo commentUser = mUsersInfos.containsKey(comment.getUserID()) ?
                         mUsersInfos.get(comment.getUserID()) : null;

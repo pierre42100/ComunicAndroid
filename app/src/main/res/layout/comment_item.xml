@@ -8,6 +8,7 @@
 
     <!-- User name and image-->
     <ImageView
+        style="@style/CommentUserImage"
         android:id="@+id/user_account_image"
         android:layout_width="@dimen/account_image_small_width"
         android:layout_height="@dimen/account_image_small_height"
@@ -30,5 +31,13 @@
         android:layout_weight="2"
         android:layout_height="wrap_content"
         tools:text="A comment content" />
+
+    <!-- Comment actions -->
+    <ImageButton
+        style="@style/CommentActionsButton"
+        android:id="@+id/comment_actions_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_menu_manage" />
 
 </LinearLayout>
