@@ -189,6 +189,11 @@ public class FriendsListFragment extends Fragment
 
             @Override
             protected void onPostExecute(ArrayList<FriendUser> friendUsers) {
+
+                //Check the activity still exists
+                if(getActivity() == null)
+                    return;
+
                 apply_friends_list(friendUsers);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
