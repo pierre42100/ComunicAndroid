@@ -62,14 +62,9 @@ public class PostsAdapter extends ArrayAdapter<Post>{
     private Utilities utils;
 
     /**
-     * Comments helper
+     * Actions update listener
      */
-    private CommentsHelper mCommentsHelper;
-
-    /**
-     * Get user helper
-     */
-    private GetUsersHelper mUserHelper;
+    private onPostUpdate mListener;
 
     /**
      * Create the Post Adapter
@@ -77,8 +72,11 @@ public class PostsAdapter extends ArrayAdapter<Post>{
      * @param context The context of execution of the application
      * @param list The list of posts
      * @param usersInfos Informations about the user
+     * @param listener Specify the listener to perform callback actions such as create a comment
+     *                 for example
      */
-    public PostsAdapter(Context context, PostsList list, ArrayMap<Integer, UserInfo> usersInfos){
+    public PostsAdapter(Context context, PostsList list, ArrayMap<Integer, UserInfo> usersInfos,
+                        onPostUpdate listener){
         super(context, 0, list);
 
         //Save the users info object
@@ -87,11 +85,7 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         //Create utilities object
         utils = new Utilities(getContext());
 
-        //Create get user helper object
-        mUserHelper = new GetUsersHelper(getContext(), DatabaseHelper.getInstance(getContext()));
-
-        //Create comments helper object
-        mCommentsHelper = new CommentsHelper(context);
+        mListener = listener;
     }
 
     @NonNull
@@ -104,24 +98,24 @@ public class PostsAdapter extends ArrayAdapter<Post>{
             convertView = LayoutInflater.from(getContext())
                     .inflate(R.layout.post_item, parent, false);
 
-        //Get informations about the post and the user
+        //Get information about the post and the user
         Post post = getItem(position);
         assert post != null;
         UserInfo userInfo = null;
         if(mUsersInfos.containsKey(post.getUserID()))
             userInfo = mUsersInfos.get(post.getUserID());
 
-        //Get the views related to user Informations
+        //Get the views related to user Information
         ImageView userAccountImage = convertView.findViewById(R.id.user_account_image);
         TextView userAccountName = convertView.findViewById(R.id.user_account_name);
 
-        //Reset user informations
+        //Reset user information
         userAccountName.setText("");
         ImageLoadManager.remove(userAccountImage);
         userAccountImage.setImageDrawable(UiUtils.getDrawable(getContext(),
                 R.drawable.default_account_image));
 
-        //Set user informations if available
+        //Set user information if available
         if(userInfo != null){
             userAccountName.setText(userInfo.getDisplayFullName());
             ImageLoadManager.load(getContext(), userInfo.getAcountImageURL(), userAccountImage);
@@ -245,7 +239,7 @@ public class PostsAdapter extends ArrayAdapter<Post>{
      */
     private void sendComment(int pos, View container){
 
-        //Get post informations
+        //Get post information
         final Post post = getItem(pos);
         if(post==null)
             return;
@@ -254,79 +248,26 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         final EditCommentContentView commentInput = container.findViewById(R.id.input_comment_content);
         final ImageButton sendButton = container.findViewById(R.id.comment_send_button);
 
-        //Get informations about the comment
-        final int postID = post.getId();
-        final String content = commentInput.getText()+"";
+        //Call interface
+        mListener.onCreateComment(pos, sendButton, post, commentInput);
 
-        //Check the comment's validity
-        if(!StringsUtils.isValidForContent(content)){
-            Toast.makeText(getContext(), R.string.err_invalid_comment_content,
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
+    }
 
-        //Lock send button
-        sendButton.setClickable(false);
+    /**
+     * This interface is used to redirect post update events to the fragment managing the
+     * rendering of the posts
+     */
+    public interface onPostUpdate {
 
-        //Submit the comment in a separate thread
-        new AsyncTask<Void, Void, Pair<UserInfo, Comment>>(){
+        /**
+         * This method is called when a comment creation request is made
+         *
+         * @param pos The position of the post in the list
+         * @param button The button triggered to submit comment creation
+         * @param post Informations about the target post
+         * @param input The input where the comment comment was typed
+         */
+        void onCreateComment(int pos, View button, Post post, EditCommentContentView input);
 
-            @Override
-            @Nullable
-            protected Pair<UserInfo, Comment> doInBackground(Void... params) {
-
-                //Try to create the comment
-                int commentID = mCommentsHelper.send_comment(postID, content);
-
-                //Check for errors
-                if(commentID < 1)
-                    return null;
-
-                //Get information about the newly created comment
-                Comment comment = mCommentsHelper.getInfosSingle(commentID);
-
-                //Check for errors
-                if(comment == null)
-                    return null;
-
-                //Get informations about the related user
-                UserInfo user = mUserHelper.getSingle(comment.getUserID(), false);
-
-                //Check for errors
-                if(user == null)
-                    return null;
-
-                //Return result
-                return Pair.create(user, comment);
-            }
-
-            @Override
-            protected void onPostExecute(@Nullable Pair<UserInfo, Comment> userInfoCommentPair) {
-
-                //Unlock send button
-                sendButton.setClickable(true);
-
-                //Check for errors
-                if(userInfoCommentPair == null){
-                    Toast.makeText(getContext(), R.string.err_create_comment,
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                //Empty comment input
-                commentInput.setText("");
-
-                //Add the comment to the list
-                ArrayList<Comment> comments = post.getComments_list();
-                assert comments != null;
-                comments.add(userInfoCommentPair.second);
-
-                //Add the user to the list
-                mUsersInfos.put(userInfoCommentPair.first.getId(), userInfoCommentPair.first);
-
-                //Update data set
-                notifyDataSetChanged();
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }
