@@ -1,36 +1,25 @@
 package org.communiquons.android.comunic.client.ui.adapters;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersInfos;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.comments.Comment;
-import org.communiquons.android.comunic.client.data.comments.CommentsHelper;
 import org.communiquons.android.comunic.client.data.posts.Post;
 import org.communiquons.android.comunic.client.data.posts.PostTypes;
 import org.communiquons.android.comunic.client.data.posts.PostsList;
-import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
@@ -184,7 +173,7 @@ public class PostsAdapter extends ArrayAdapter<Post>{
 
                 //Inflate the view
                 View commentView = CommentsAdapter.getInflatedView(getContext(), comment,
-                        commentUser, commentsView);
+                        mListener, commentUser, commentsView);
                 commentsView.addView(commentView);
             }
         }
@@ -268,6 +257,21 @@ public class PostsAdapter extends ArrayAdapter<Post>{
          * @param input The input where the comment comment was typed
          */
         void onCreateComment(int pos, View button, Post post, EditCommentContentView input);
+
+        /**
+         * Show the available actions for a comment
+         *
+         * @param button The button that provoqued the event
+         * @param comment Target comment for the actions
+         */
+        void showCommentActions(View button, Comment comment);
+
+        /**
+         * Handles the process of deletion of a comment.
+         *
+         * @param comment The comment to delete
+         */
+        void deleteComment(Comment comment);
 
     }
 }

@@ -29,12 +29,7 @@ import java.util.ArrayList;
  * Created by pierre on 3/11/18.
  */
 
-public class CommentsAdapter extends ArrayAdapter<Comment> {
-
-    /**
-     * Comment helper
-     */
-    private static CommentsHelper mCHelper = null;
+class CommentsAdapter extends ArrayAdapter<Comment> {
 
     /**
      * Class constructor
@@ -51,39 +46,37 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
      *
      * @param context The context of the application
      * @param comment The comment to fill
+     * @param listener The actions update listener
      * @param user Information about the user (NULL for none)
      * @param viewGroup Target view group
      * @return Generated view
      */
-    static View getInflatedView(Context context, Comment comment, @Nullable UserInfo user,
-                                       ViewGroup viewGroup){
-
-        //Create comment helper if required
-        if(mCHelper == null){
-            mCHelper = new CommentsHelper(context.getApplicationContext());
-        }
+    static View getInflatedView(Context context, Comment comment,
+                                PostsAdapter.onPostUpdate listener,
+                                @Nullable UserInfo user, ViewGroup viewGroup){
 
         //Inflate a view
         View v = LayoutInflater.from(context).inflate(R.layout.comment_item, viewGroup, false);
 
         //Return filled view
-        return fillView(context, v, comment, user);
+        return fillView(context, v, comment, user, listener);
 
     }
 
     /**
      * Fill a view with a specified comments informations
      *
-     * @param context The context of the acivitiy / application
+     * @param context The context of the activity / application
      * @param view The view to update
      * @param comment The comment to update
      * @param user Information about the user (NULL for none)
+     * @param listener Posts updates listener
      * @return Updated view
      */
-    private static View fillView(final Context context, View view, Comment comment,
-                                 @Nullable UserInfo user) {
+    private static View fillView(final Context context, final View view, final Comment comment,
+                                 @Nullable UserInfo user, final PostsAdapter.onPostUpdate listener) {
 
-        //Check wether the current user is the owner of the comment or not
+        //Check whether the current user is the owner of the comment or not
         final boolean isOwner = AccountUtils.getID(context) == comment.getUserID();
 
         //Update user name and account image
@@ -105,20 +98,12 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
         //Update comment actions
         ImageButton actions = view.findViewById(R.id.comment_actions_btn);
 
-        //Create context menu
-        actions.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+        actions.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-
-                //Inflate the menu
-                new MenuInflater(context).inflate(R.menu.menu_comments_actions, menu);
-
-                //Disable some entries accordingly to ownership status
-                menu.findItem(R.id.action_delete).setEnabled(isOwner);
-
+            public void onClick(View v) {
+                listener.showCommentActions(view, comment);
             }
         });
-
 
         //Return view
         return view;

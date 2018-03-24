@@ -106,4 +106,9 @@
     <string name="err_create_comment">An error occurred while trying to create comment!</string>
     <string name="action_send">Send</string>
     <string name="action_delete_comment">Delete</string>
+    <string name="popup_deletecomment_title">Delete comment</string>
+    <string name="popup_deletecomment_message">Are you sure do you want to delete this comment? The operation is unrecoverable !</string>
+    <string name="popup_deletecomment_cancel">No</string>
+    <string name="popup_deletecomment_confirm">Yes</string>
+    <string name="err_delete_comment">An error occurred while trying to delete the comment !</string>
 </resources>

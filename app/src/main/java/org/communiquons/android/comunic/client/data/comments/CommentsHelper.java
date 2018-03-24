@@ -103,6 +103,32 @@ public class CommentsHelper {
     }
 
     /**
+     * Intend to delete a comment
+     *
+     * @param commentID The ID of the comment to delete
+     * @return TRUE in case of success / FALSE else
+     */
+    public boolean delete(int commentID){
+
+        //Prepare an API request
+        APIRequestParameters params = new APIRequestParameters(mContext, "comments/delete");
+        params.addInt("commentID", commentID);
+
+        //Try to perform the request
+        try {
+
+            APIResponse response = new APIRequest().exec(params);
+
+            return response.getResponse_code() == 200;
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    /**
      * Parse a json array that contains comment and return the list of comments as an object
      *
      * @param array The JSON array to parse
