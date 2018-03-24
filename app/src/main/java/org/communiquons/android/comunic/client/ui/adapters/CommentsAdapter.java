@@ -76,9 +76,6 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
     private static View fillView(final Context context, final View view, final Comment comment,
                                  @Nullable UserInfo user, final PostsAdapter.onPostUpdate listener) {
 
-        //Check whether the current user is the owner of the comment or not
-        final boolean isOwner = AccountUtils.getID(context) == comment.getUserID();
-
         //Update user name and account image
         ImageView accountImage = view.findViewById(R.id.user_account_image);
         TextView accountName = view.findViewById(R.id.user_account_name);
