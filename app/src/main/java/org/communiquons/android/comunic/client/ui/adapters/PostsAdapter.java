@@ -88,7 +88,7 @@ public class PostsAdapter extends ArrayAdapter<Post>{
                     .inflate(R.layout.post_item, parent, false);
 
         //Get information about the post and the user
-        Post post = getItem(position);
+        final Post post = getItem(position);
         assert post != null;
         UserInfo userInfo = null;
         if(mUsersInfos.containsKey(post.getUserID()))
@@ -133,6 +133,15 @@ public class PostsAdapter extends ArrayAdapter<Post>{
                 visibilityLevel.setText(R.string.post_visibility_private);
                 break;
         }
+
+        //Set post actions
+        convertView.findViewById(R.id.post_actions_btn).setOnClickListener(
+                new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.showPostActions(v, position, post);
+            }
+        });
 
 
         //Set post content
@@ -257,6 +266,15 @@ public class PostsAdapter extends ArrayAdapter<Post>{
          * @param input The input where the comment comment was typed
          */
         void onCreateComment(int pos, View button, Post post, EditCommentContentView input);
+
+        /**
+         * Show the available actions for a post
+         *
+         * @param button The button that provoked event
+         * @param pos The position of the comment
+         * @param post the target post
+         */
+        void showPostActions(View button, int pos, Post post);
 
         /**
          * Show the available actions for a comment

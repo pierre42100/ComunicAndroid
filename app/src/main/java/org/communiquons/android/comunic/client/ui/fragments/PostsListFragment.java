@@ -55,6 +55,11 @@ public class PostsListFragment extends Fragment
     private int MENU_ACTION_COMMENTS = 1;
 
     /**
+     * Menu action : post actions
+     */
+    private int MENU_ACTIONS_POST = 2;
+
+    /**
      * The current menu action
      */
     private int MENU_ACTION = MENU_ACTION_NONE;
@@ -63,6 +68,11 @@ public class PostsListFragment extends Fragment
      * Current processed comment that context menu display actions for
      */
     private Comment mCurrCommentInContextMenu;
+
+    /**
+     * Current processed post that context menu displays actions for
+     */
+    private int mNumCurrPostInContextMenu;
 
     /**
      * The list of posts
@@ -239,6 +249,29 @@ public class PostsListFragment extends Fragment
 
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    @Override
+    public void showPostActions(View button, final int pos, Post post) {
+
+        button.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v,
+                                            ContextMenu.ContextMenuInfo menuInfo) {
+
+                //Inflate the menu
+                MenuInflater inflater = getActivity().getMenuInflater();
+                inflater.inflate(R.menu.menu_post_actions, menu);
+
+                //Save information about the post
+                MENU_ACTION = MENU_ACTIONS_POST;
+                mNumCurrPostInContextMenu = pos;
+
+            }
+        });
+
+        //Show context menu
+        button.showContextMenu();
     }
 
     @Override

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/PostContener"
+    style="@style/PostContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Informations about user who created the post -->
+    <!-- Information about user who created the post -->
     <LinearLayout
         style="@style/PostHeader"
         android:layout_width="match_parent"
@@ -57,6 +57,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Public" />
+
+        <ImageView
+            style="@style/PostActionsButton"
+            android:id="@+id/post_actions_btn"
+            android:layout_width="@dimen/post_options_btn_width"
+            android:layout_height="@dimen/post_options_btn_height"
+            android:src="@android:drawable/ic_menu_manage"
+            android:contentDescription="@string/post_action_btn_description"/>
+
+
 
 
     </LinearLayout>

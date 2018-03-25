@@ -112,4 +112,6 @@
     <string name="popup_deletecomment_confirm">Yes</string>
     <string name="err_delete_comment">An error occurred while trying to delete the comment !</string>
     <string name="comment_action_btn_description">Actions on comment</string>
+    <string name="post_action_btn_description">Actions on post</string>
+    <string name="action_delete_post">Delete</string>
 </resources>

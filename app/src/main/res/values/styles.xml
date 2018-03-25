@@ -28,12 +28,18 @@
     </style>
 
     <!-- Posts style -->
-    <!-- Post contener -->
-    <style name="PostContener">
+    <!-- Post container -->
+    <style name="PostContainer">
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:paddingStart">5dp</item>
         <item name="android:paddingEnd">5dp</item>
+    </style>
+
+    <!-- Comment actions button -->
+    <style name="PostActionsButton">
+        <item name="android:padding">2dp</item>
+        <item name="android:layout_gravity">center</item>
     </style>
 
     <!-- Post header -->
@@ -56,6 +62,7 @@
     <!-- Post visibility -->
     <style name="PostVisibility">
         <item name="android:paddingEnd">2dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
     </style>
 
     <!-- Post content -->
@@ -67,8 +74,8 @@
 
 
     <!-- Comments style -->
-    <!-- Comments contener -->
-    <style name="CommentContener">
+    <!-- Comments container -->
+    <style name="CommentContainer">
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingStart">5dp</item>
         <item name="android:paddingEnd">5dp</item>
