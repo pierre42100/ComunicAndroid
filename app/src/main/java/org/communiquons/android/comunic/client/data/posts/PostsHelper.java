@@ -72,9 +72,34 @@ public class PostsHelper {
     }
 
     /**
-     * Parse a JSON post informations into POST object
+     * Intend to delete a post specified by its ID
      *
-     * @param json Source JSON post informations
+     * @param postID The ID of the post to delete
+     * @return TRUE in case of SUCCESS / FALSE else
+     */
+    public boolean delete(int postID){
+
+        //Perform the request on the server
+        APIRequestParameters params = new APIRequestParameters(mContext, "posts/delete");
+        params.addInt("postID", postID);
+
+        //Intend to perform the request
+        try {
+
+            APIResponse response = new APIRequest().exec(params);
+
+            return response.getResponse_code() == 200;
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Parse a JSON post information into POST object
+     *
+     * @param json Source JSON post information
      * @return The created post element
      */
     private Post parse_json_post(JSONObject json) throws JSONException {
@@ -124,6 +149,25 @@ public class PostsHelper {
             default:
                 post.setType(PostTypes.UNKNOWN);
 
+        }
+
+        //Determine the user access level to the post
+        switch (json.getString("user_access")){
+
+            case "basic":
+                post.setUser_access_level(PostUserAccess.BASIC_ACCESS);
+                break;
+
+            case "intermediate":
+                post.setUser_access_level(PostUserAccess.INTERMEDIATE_ACCESS);
+                break;
+
+            case "full":
+                post.setUser_access_level(PostUserAccess.FULL_ACCESS);
+                break;
+
+            default:
+                post.setUser_access_level(PostUserAccess.NO_ACCESS);
         }
 
         //Get file path url (if any)

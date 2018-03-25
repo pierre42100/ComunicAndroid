@@ -25,6 +25,8 @@ import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.comments.Comment;
 import org.communiquons.android.comunic.client.data.comments.CommentsHelper;
 import org.communiquons.android.comunic.client.data.posts.Post;
+import org.communiquons.android.comunic.client.data.posts.PostUserAccess;
+import org.communiquons.android.comunic.client.data.posts.PostsHelper;
 import org.communiquons.android.comunic.client.data.posts.PostsList;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.ui.adapters.PostsAdapter;
@@ -95,6 +97,11 @@ public class PostsListFragment extends Fragment
     ListView mListView;
 
     /**
+     * Posts helper
+     */
+    PostsHelper mPostsHelper;
+
+    /**
      * Comments helper
      */
     CommentsHelper mCommentsHelper;
@@ -143,6 +150,9 @@ public class PostsListFragment extends Fragment
      * Display the list of posts
      */
     public void show(){
+
+        //Create post helper
+        mPostsHelper = new PostsHelper(getActivity());
 
         //Create comment helper
         mCommentsHelper = new CommentsHelper(getActivity());
@@ -252,7 +262,7 @@ public class PostsListFragment extends Fragment
     }
 
     @Override
-    public void showPostActions(View button, final int pos, Post post) {
+    public void showPostActions(View button, final int pos, final Post post) {
 
         button.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
             @Override
@@ -267,11 +277,71 @@ public class PostsListFragment extends Fragment
                 MENU_ACTION = MENU_ACTIONS_POST;
                 mNumCurrPostInContextMenu = pos;
 
+                //Disable some options if the user is not the post owner
+                if(post.getUser_access_level() != PostUserAccess.INTERMEDIATE_ACCESS &&
+                        post.getUser_access_level() != PostUserAccess.FULL_ACCESS){
+
+                    //Disable delete action
+                    menu.findItem(R.id.action_delete).setEnabled(false);
+
+                }
             }
         });
 
         //Show context menu
         button.showContextMenu();
+    }
+
+    @Override
+    public void deletePost(final int pos) {
+
+        //Get information about the related post
+        final Post post = mPostsList.get(pos);
+
+        //Ask user confirmation
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.popup_deletepost_title)
+                .setMessage(R.string.popup_deletepost_message)
+                .setNegativeButton(R.string.popup_deletepost_cancel, null)
+
+
+                .setPositiveButton(R.string.popup_deletepost_confirm,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //Remove the post from the list
+                        mPostsList.remove(pos);
+                        mPostsAdapter.notifyDataSetChanged();
+
+                        //Perform post deletion
+                        new AsyncTask<Integer, Void, Boolean>(){
+
+                            @Override
+                            protected Boolean doInBackground(Integer... params) {
+                                return mPostsHelper.delete(params[0]);
+                            }
+
+                            @Override
+                            protected void onPostExecute(Boolean result) {
+
+                                if(getActivity() == null)
+                                    return;
+
+                                if(!result){
+                                    Toast.makeText(getActivity(), R.string.err_delete_post,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, post.getId());
+
+                    }
+                })
+
+
+                .show();
+
     }
 
     @Override
@@ -351,6 +421,20 @@ public class PostsListFragment extends Fragment
         //Check if this fragment has recently created a menu or not
         if(MENU_ACTION == MENU_ACTION_NONE)
             return false;
+
+        //Check if the action is related to a post
+        if(MENU_ACTION == MENU_ACTIONS_POST){
+
+            //Check whether the related post exists or not
+            if(!(mPostsList.size() > mNumCurrPostInContextMenu))
+                return false;
+
+            //Check if the request is to delete the comment
+            if(item.getItemId() == R.id.action_delete) {
+                deletePost(mNumCurrPostInContextMenu);
+                return true;
+            }
+        }
 
         //Check if a comment action context menu has been created
         if(MENU_ACTION == MENU_ACTION_COMMENTS){

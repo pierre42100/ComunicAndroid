@@ -262,7 +262,7 @@ public class PostsAdapter extends ArrayAdapter<Post>{
          *
          * @param pos The position of the post in the list
          * @param button The button triggered to submit comment creation
-         * @param post Informations about the target post
+         * @param post Information about the target post
          * @param input The input where the comment comment was typed
          */
         void onCreateComment(int pos, View button, Post post, EditCommentContentView input);
@@ -277,9 +277,16 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         void showPostActions(View button, int pos, Post post);
 
         /**
+         * Handles the deletion process of a post
+         *
+         * @param pos The position of the post to delete
+         */
+        void deletePost(int pos);
+
+        /**
          * Show the available actions for a comment
          *
-         * @param button The button that provoqued the event
+         * @param button The button that provoked the event
          * @param comment Target comment for the actions
          */
         void showCommentActions(View button, Comment comment);

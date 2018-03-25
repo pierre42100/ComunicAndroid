@@ -25,6 +25,7 @@ public class Post {
     private PostTypes type;
     private PostVisibilityLevels visibilityLevel;
     private ArrayList<Comment> comments_list;
+    private PostUserAccess user_access_level = PostUserAccess.NO_ACCESS;
 
     //Files specific
     private String file_path_url;
@@ -96,6 +97,15 @@ public class Post {
     @Nullable
     public ArrayList<Comment> getComments_list() {
         return comments_list;
+    }
+
+    //Set and post user access level
+    void setUser_access_level(PostUserAccess user_access_level) {
+        this.user_access_level = user_access_level;
+    }
+
+    public PostUserAccess getUser_access_level() {
+        return user_access_level;
     }
 
     //Set and get file path url
