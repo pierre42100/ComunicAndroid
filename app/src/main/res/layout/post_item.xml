@@ -97,10 +97,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            style="@style/TextAppearance.AppCompat"
             android:hint="@string/new_comment_hint"
             android:inputType="textMultiLine" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/comment_send_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

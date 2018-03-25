@@ -235,7 +235,7 @@ public class PostsAdapter extends ArrayAdapter<Post>{
 
         //Get view about the comment
         final EditCommentContentView commentInput = container.findViewById(R.id.input_comment_content);
-        final ImageButton sendButton = container.findViewById(R.id.comment_send_button);
+        final ImageView sendButton = container.findViewById(R.id.comment_send_button);
 
         //Call interface
         mListener.onCreateComment(pos, sendButton, post, commentInput);
