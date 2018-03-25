@@ -278,8 +278,7 @@ public class PostsListFragment extends Fragment
                 mNumCurrPostInContextMenu = pos;
 
                 //Disable some options if the user is not the post owner
-                if(post.getUser_access_level() != PostUserAccess.INTERMEDIATE_ACCESS &&
-                        post.getUser_access_level() != PostUserAccess.FULL_ACCESS){
+                if(!post.canDelete()){
 
                     //Disable delete action
                     menu.findItem(R.id.action_delete).setEnabled(false);

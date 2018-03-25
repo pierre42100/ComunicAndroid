@@ -108,6 +108,16 @@ public class Post {
         return user_access_level;
     }
 
+    /**
+     * Check whether the user can delete the post or not
+     *
+     * @return TRUE if the post can be deleted by the user / FALSE else
+     */
+    public boolean canDelete(){
+        return getUser_access_level() == PostUserAccess.INTERMEDIATE_ACCESS ||
+                getUser_access_level() == PostUserAccess.FULL_ACCESS;
+    }
+
     //Set and get file path url
     void setFile_path_url(String file_path_url) {
         this.file_path_url = file_path_url;
