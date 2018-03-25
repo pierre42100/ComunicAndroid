@@ -33,11 +33,12 @@
         tools:text="A comment content" />
 
     <!-- Comment actions -->
-    <ImageButton
+    <ImageView
         style="@style/CommentActionsButton"
         android:id="@+id/comment_actions_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_manage" />
+        android:layout_width="@dimen/comment_options_btn_width"
+        android:layout_height="@dimen/comment_options_btn_height"
+        android:src="@android:drawable/ic_menu_manage"
+        android:contentDescription="@string/comment_action_btn_description"/>
 
 </LinearLayout>

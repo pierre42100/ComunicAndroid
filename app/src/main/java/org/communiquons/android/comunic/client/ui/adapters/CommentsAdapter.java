@@ -93,7 +93,7 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
         ((TextView) view.findViewById(R.id.comment_text)).setText(comment.getContent());
 
         //Update comment actions
-        ImageButton actions = view.findViewById(R.id.comment_actions_btn);
+        ImageView actions = view.findViewById(R.id.comment_actions_btn);
 
         actions.setOnClickListener(new View.OnClickListener() {
             @Override
