@@ -25,7 +25,6 @@ import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.comments.Comment;
 import org.communiquons.android.comunic.client.data.comments.CommentsHelper;
 import org.communiquons.android.comunic.client.data.posts.Post;
-import org.communiquons.android.comunic.client.data.posts.PostUserAccess;
 import org.communiquons.android.comunic.client.data.posts.PostsHelper;
 import org.communiquons.android.comunic.client.data.posts.PostsList;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
@@ -101,6 +100,7 @@ public class PostsListFragment extends Fragment
      */
     PostsHelper mPostsHelper;
 
+
     /**
      * Comments helper
      */
@@ -174,6 +174,7 @@ public class PostsListFragment extends Fragment
 
         //Notify data set update
         mPostsAdapter.notifyDataSetChanged();
+
     }
 
     @Override

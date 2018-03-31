@@ -27,6 +27,10 @@
         <item name="android:paddingEnd">5dp</item>
     </style>
 
+    <style name="AddUserPostButton">
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
     <!-- Posts style -->
     <!-- Post container -->
     <style name="PostContainer">

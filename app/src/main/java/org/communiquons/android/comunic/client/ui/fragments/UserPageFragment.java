@@ -96,6 +96,16 @@ public class UserPageFragment extends Fragment {
      */
     private PostsListFragment mPostsListFragment;
 
+    /**
+     * Create a post on user page button
+     */
+    private ImageView mCreatePostButton;
+
+    /**
+     * Create a post on user page form
+     */
+    private View mCreatePostForm;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,6 +137,20 @@ public class UserPageFragment extends Fragment {
         //Get the user views
         user_image = view.findViewById(R.id.user_account_image);
         user_name = view.findViewById(R.id.user_account_name);
+
+        //Get the view related to the create post form
+        mCreatePostButton = view.findViewById(R.id.create_post_button);
+        mCreatePostForm = view.findViewById(R.id.create_post_form);
+
+        //Trigger the form
+        mCreatePostForm.setVisibility(View.GONE);
+        mCreatePostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCreatePostForm.setVisibility(
+                        mCreatePostForm.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     @Override

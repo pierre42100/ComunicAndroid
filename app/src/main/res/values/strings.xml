@@ -119,4 +119,7 @@
     <string name="popup_deletepost_cancel">No</string>
     <string name="popup_deletepost_confirm">Yes</string>
     <string name="err_delete_post">An error occurred while trying to delete post! Please try again later…</string>
+    <string name="new_post_hint">New post…</string>
+    <string name="post_action_send">Send</string>
+    <string name="btn_show_create_form_description">Show / Hide create post form.</string>
 </resources>

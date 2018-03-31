@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:id="@+id/fragment_user_page"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <FrameLayout
         style="@style/UserPageHeader"
@@ -21,18 +21,36 @@
                 android:id="@+id/user_account_image"
                 android:layout_width="@dimen/account_image_default_width"
                 android:layout_height="@dimen/account_image_default_height"
-                android:src="@drawable/default_account_image"
-                android:contentDescription="@string/user_image_description"/>
+                android:contentDescription="@string/user_image_description"
+                android:src="@drawable/default_account_image" />
 
             <TextView
                 android:id="@+id/user_account_name"
                 style="@style/UserPageName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="User name"/>
+                tools:text="User name" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/create_post_button"
+                style="@style/AddUserPostButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/btn_show_create_form_description"
+                android:src="@android:drawable/ic_menu_add" />
         </LinearLayout>
 
     </FrameLayout>
+
+    <!-- Include post creation form -->
+    <include
+        android:id="@+id/create_post_form"
+        layout="@layout/post_create_form" />
 
     <!-- User posts -->
     <FrameLayout
@@ -40,5 +58,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
 
 </LinearLayout>
