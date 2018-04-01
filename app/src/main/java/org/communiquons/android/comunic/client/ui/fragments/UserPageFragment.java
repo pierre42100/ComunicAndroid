@@ -20,6 +20,7 @@ import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
 import org.communiquons.android.comunic.client.data.UsersInfo.AdvancedUserInfo;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
+import org.communiquons.android.comunic.client.data.posts.Post;
 import org.communiquons.android.comunic.client.data.posts.PostsHelper;
 import org.communiquons.android.comunic.client.data.posts.PostsList;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
@@ -34,7 +35,7 @@ import org.communiquons.android.comunic.client.ui.activities.MainActivity;
  * Created by pierre on 1/13/18.
  */
 
-public class UserPageFragment extends Fragment {
+public class UserPageFragment extends Fragment implements PostsCreateFormFragment.OnPostCreated {
 
     /**
      * Debug tag
@@ -49,10 +50,10 @@ public class UserPageFragment extends Fragment {
     /**
      * The ID of the current user
      */
-    private int userID;
+    private int mUserID;
 
     /**
-     * User informations
+     * Page's user information
      */
     private AdvancedUserInfo userInfo;
 
@@ -62,7 +63,7 @@ public class UserPageFragment extends Fragment {
     private PostsList mPostsList;
 
     /**
-     * User informations
+     * User information
      */
     private ArrayMap<Integer, UserInfo> mUsersInfo;
 
@@ -112,7 +113,7 @@ public class UserPageFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         //Save user ID
-        userID = getArguments().getInt(ARGUMENT_USER_ID);
+        mUserID = getArguments().getInt(ARGUMENT_USER_ID);
 
         //Get database helper
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
@@ -151,6 +152,9 @@ public class UserPageFragment extends Fragment {
                         mCreatePostForm.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
             }
         });
+
+        //Create the fragment
+        init_create_post_fragment();
     }
 
     @Override
@@ -176,7 +180,7 @@ public class UserPageFragment extends Fragment {
                     if(getActivity() != null)
                         onGotUserInfo(advancedUserInfo);
                 }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, userID);
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mUserID);
         }
         else
             onGotUserInfo(userInfo);
@@ -211,14 +215,14 @@ public class UserPageFragment extends Fragment {
             return;
         }
 
-        //Save user informations
+        //Save user information
         userInfo = info;
 
         //Set activity title
         getActivity().setTitle(userInfo.getDisplayFullName());
 
         //Update activity menu dock
-        //if(AccountUtils.getID(getActivity()) == userID)
+        //if(AccountUtils.getID(getActivity()) == mUserID)
             ((MainActivity) getActivity()).setSelectedNavigationItem(
                     R.id.main_bottom_navigation_me_view);
         /*else
@@ -243,7 +247,7 @@ public class UserPageFragment extends Fragment {
 
             @Override
             protected PostsList doInBackground(Void... params) {
-                PostsList list = mPostsHelper.get_user(userID);
+                PostsList list = mPostsHelper.get_user(mUserID);
 
                 //Get the information about the users who created the posts
                 if(list != null)
@@ -308,5 +312,33 @@ public class UserPageFragment extends Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_user_page, mPostsListFragment);
         transaction.commit();
+    }
+
+    /**
+     * Create and create post fragment
+     */
+    private void init_create_post_fragment(){
+
+        //Create bundle
+        Bundle args = new Bundle();
+        args.putInt(PostsCreateFormFragment.PAGE_TYPE_ARG, PostsCreateFormFragment.PAGE_TYPE_USER);
+        args.putInt(PostsCreateFormFragment.PAGE_ID_ARG, mUserID);
+
+        //Create fragment
+        Fragment fragment = new PostsCreateFormFragment();
+        fragment.setArguments(args);
+
+        //Perform transaction
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.create_post_form, fragment);
+        transaction.commit();
+
+    }
+
+    @Override
+    public void onPostCreated(Post post) {
+        //Reload the list of post
+        mPostsList = null;
+        load_posts();
     }
 }
