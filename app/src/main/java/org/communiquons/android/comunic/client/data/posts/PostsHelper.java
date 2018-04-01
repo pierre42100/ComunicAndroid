@@ -110,6 +110,15 @@ public class PostsHelper {
         post.setId(json.getInt("ID"));
         post.setUserID(json.getInt("userID"));
         post.setPost_time(json.getInt("post_time"));
+
+        //Determine the type and the id of the page
+        if(json.getInt("user_page_id") != 0){
+            //Set information about the user
+            post.setPage_type(PageType.USER_PAGE);
+            post.setPage_id(json.getInt("user_page_id"));
+        }
+
+
         post.setContent(json.getString("content"));
         post.setComments_list(CommentsHelper.parse_json_array(json.getJSONArray("comments")));
 

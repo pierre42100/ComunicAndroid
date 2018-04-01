@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Post model
  *
- * This object contains the informations about a single post
+ * This object contains the information about a single post
  *
  * @author Pierre HUBERT
  * Created by pierre on 1/21/18.
@@ -21,6 +21,8 @@ public class Post {
     private int id;
     private int userID;
     private int post_time;
+    private PageType page_type;
+    private int page_id;
     private String content;
     private PostTypes type;
     private PostVisibilityLevels visibilityLevel;
@@ -60,6 +62,25 @@ public class Post {
         return post_time;
     }
 
+
+    //Set and get the type of the page
+    void setPage_type(PageType page_type) {
+        this.page_type = page_type;
+    }
+
+    public PageType getPage_type() {
+        return page_type;
+    }
+
+
+    //Get and set page id
+    void setPage_id(int page_id) {
+        this.page_id = page_id;
+    }
+
+    public int getPage_id() {
+        return page_id;
+    }
 
     //Set and get the content of the post
     public void setContent(String content) {

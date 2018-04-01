@@ -15,6 +15,7 @@
 
     <!-- Submit post -->
     <Button
+        android:id="@+id/submit_create_post_form"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/post_action_send"
