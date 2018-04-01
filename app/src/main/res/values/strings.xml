@@ -124,4 +124,6 @@
     <string name="btn_show_create_form_description">Show / Hide create post form.</string>
     <string name="err_post_content_too_short">The content of the post is too short!</string>
     <string name="err_submit_post">An error occurred while trying to create the post!</string>
+    <string name="navigation_bottom_notif_item">Notifications</string>
+    <string name="main_menu_friends_list">Friends list</string>
 </resources>

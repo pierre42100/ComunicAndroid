@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Display friends list -->
+    <item
+        android:id="@+id/action_friends_list"
+        android:title="@string/main_menu_friends_list" />
+
+    <!-- Sign out -->
     <item
         android:id="@+id/action_logout"
         android:title="@string/main_menu_logout"

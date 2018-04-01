@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
         //Initialize DatabaseHelper
         dbHelper = DatabaseHelper.getInstance(this);
 
-        //Intialize conversation list helper
+        //Initialize conversation list helper
         conversationsListHelper = new ConversationsListHelper(this, dbHelper);
 
         //If it is the first time the application is launched, start the user friends tab
@@ -155,6 +155,12 @@ public class MainActivity extends AppCompatActivity
         //Get action id
         int id = item.getItemId();
 
+        //To display the list of friends
+        if(id == R.id.action_friends_list){
+            openFriendsFragment();
+            return true;
+        }
+
         //Check for logout request
         if(id == R.id.action_logout){
             confirmUserLogout();
@@ -178,9 +184,9 @@ public class MainActivity extends AppCompatActivity
                 switch (item.getItemId()) {
 
                     //If the user clicked to show the friends list
-                    case R.id.main_bottom_navigation_friends_list:
+                    /*case R.id.main_bottom_navigation_friends_list:
                         openFriendsFragment();
-                        return true;
+                        return true;*/
 
                     //If the user chose to show information about him
                     case R.id.main_bottom_navigation_me_view:
