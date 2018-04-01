@@ -27,6 +27,7 @@ import org.communiquons.android.comunic.client.data.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
 import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
+import org.communiquons.android.comunic.client.ui.fragments.NotificationsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UpdateConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UserInfosFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UserPageFragment;
@@ -188,6 +189,11 @@ public class MainActivity extends AppCompatActivity
                         openFriendsFragment();
                         return true;*/
 
+                    //If the user wants to open notifications
+                    case R.id.main_bottom_navigation_notif:
+                        openNotificationsFragment();
+                        return true;
+
                     //If the user chose to show information about him
                     case R.id.main_bottom_navigation_me_view:
 
@@ -263,6 +269,17 @@ public class MainActivity extends AppCompatActivity
         transaction.addToBackStack(null);
         transaction.commit();
 
+    }
+
+    /**
+     * Open notifications fragment
+     */
+    void openNotificationsFragment(){
+        NotificationsFragment notifications = new NotificationsFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, notifications);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     /**
