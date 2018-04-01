@@ -299,14 +299,10 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
         if(mPostsList == null || mUsersInfo == null)
             return;
 
-        if(mPostsListFragment == null) {
-
-            //Create post fragment if requiredand display it
-            mPostsListFragment = new PostsListFragment();
-            mPostsListFragment.setPostsList(mPostsList);
-            mPostsListFragment.setUsersInfos(mUsersInfo);
-
-        }
+        //Create the fragment
+        mPostsListFragment = new PostsListFragment();
+        mPostsListFragment.setPostsList(mPostsList);
+        mPostsListFragment.setUsersInfos(mUsersInfo);
 
         //Set the fragment
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -325,8 +321,9 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
         args.putInt(PostsCreateFormFragment.PAGE_ID_ARG, mUserID);
 
         //Create fragment
-        Fragment fragment = new PostsCreateFormFragment();
+        PostsCreateFormFragment fragment = new PostsCreateFormFragment();
         fragment.setArguments(args);
+        fragment.setOnPostCreatedListener(this);
 
         //Perform transaction
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -339,6 +336,7 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
     public void onPostCreated(Post post) {
         //Reload the list of post
         mPostsList = null;
+        init_create_post_fragment();
         load_posts();
     }
 }

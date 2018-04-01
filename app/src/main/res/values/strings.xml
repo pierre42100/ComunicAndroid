@@ -122,5 +122,6 @@
     <string name="new_post_hint">New post…</string>
     <string name="post_action_send">Send</string>
     <string name="btn_show_create_form_description">Show / Hide create post form.</string>
-    <string name="err_post_content_too_short">The content of the post is too short !</string>
+    <string name="err_post_content_too_short">The content of the post is too short!</string>
+    <string name="err_submit_post">An error occurred while trying to create the post!</string>
 </resources>

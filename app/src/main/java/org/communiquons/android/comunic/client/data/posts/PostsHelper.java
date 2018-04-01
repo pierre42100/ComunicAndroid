@@ -37,6 +37,37 @@ public class PostsHelper {
     }
 
     /**
+     * Get information about a single post
+     *
+     * @param id The ID of the target post
+     * @return Information about the post / null in case of failure
+     */
+    @Nullable
+    public Post getSingle(int id){
+
+        //Perform an API request
+        APIRequestParameters params = new APIRequestParameters(mContext, "posts/get_single");
+        params.addInt("postID", id);
+
+        try {
+
+            //Send the request to the server
+            APIResponse response = new APIRequest().exec(params);
+
+            //Check for errors
+            if(response.getResponse_code() != 200)
+                return null;
+
+            //Parse and return information about the server
+            return parse_json_post(response.getJSONObject());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Get the list of the posts of a user
      *
      * @param userID The ID of the user to get the post from
@@ -93,6 +124,83 @@ public class PostsHelper {
         } catch (Exception e){
             e.printStackTrace();
             return false;
+        }
+    }
+
+    /**
+     * Intend to create a post
+     *
+     * @param post The post to create
+     * @return The ID of the create post / -1 in case of failure
+     */
+    public int create(CreatePost post){
+
+        //Prepare the request on the server
+        APIRequestParameters params = new APIRequestParameters(mContext, "posts/create");
+
+        //Put basic information about the post
+        params.addString("content", post.getContent());
+
+        //Determine the kind of post
+        switch (post.getType()){
+            case TEXT:
+                params.addString("kind", "text");
+                break;
+
+            default:
+                //Throw an exception
+                throw new RuntimeException("The kind of post is unsupported!");
+        }
+
+        //Determine the visibility level of the post
+        switch (post.getVisibilityLevel()){
+
+            case PUBLIC:
+                params.addString("visibility", "public");
+                break;
+
+            case FRIENDS:
+                params.addString("visibility", "friends");
+                break;
+
+            case PRIVATE:
+                params.addString("visibility", "private");
+                break;
+
+            default:
+                throw new RuntimeException("Unsupported kind of Visibility level!");
+        }
+
+        //Set the kind of target page
+        switch (post.getPage_type()){
+
+            case USER_PAGE:
+                params.addString("kind-page", "user");
+                break;
+
+            default:
+                throw new RuntimeException("Unsupported kind of page !");
+        }
+
+        //Set the ID of the target page
+        params.addInt("kind-id", post.getPage_id());
+
+        //Perform the request on the server
+        try {
+
+            //Perform the request
+            APIResponse response = new APIRequest().exec(params);
+
+            //Check for errors
+            if(response.getResponse_code() != 200)
+                return -1;
+
+            //Get and return the ID of the created post
+            return response.getJSONObject().getInt("postID");
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return -1;
         }
     }
 

@@ -64,7 +64,7 @@ public class Post {
 
 
     //Set and get the type of the page
-    void setPage_type(PageType page_type) {
+    public void setPage_type(PageType page_type) {
         this.page_type = page_type;
     }
 
@@ -74,7 +74,7 @@ public class Post {
 
 
     //Get and set page id
-    void setPage_id(int page_id) {
+    public void setPage_id(int page_id) {
         this.page_id = page_id;
     }
 
@@ -92,7 +92,7 @@ public class Post {
     }
 
     //Set and get the type of the post
-    void setType(PostTypes type) {
+    public void setType(PostTypes type) {
         this.type = type;
     }
 
@@ -102,7 +102,7 @@ public class Post {
 
 
     //Set and get post visibility level
-    void setVisibilityLevel(PostVisibilityLevels visibilityLevel) {
+    public void setVisibilityLevel(PostVisibilityLevels visibilityLevel) {
         this.visibilityLevel = visibilityLevel;
     }
 
