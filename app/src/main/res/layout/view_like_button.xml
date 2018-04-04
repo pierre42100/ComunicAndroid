@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="3dp"
+    android:id="@+id/like_container">
+
+    <!-- Like image -->
+    <ImageView
+        android:id="@+id/like_img"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:contentDescription="@string/like_button_img"
+        android:src="@drawable/like_up"
+        android:layout_marginEnd="3dp"/>
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/like_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        tools:text="Like" />
+
+</LinearLayout>

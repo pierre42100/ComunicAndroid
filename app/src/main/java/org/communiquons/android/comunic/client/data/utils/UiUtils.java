@@ -44,6 +44,13 @@ public class UiUtils {
     }
 
     /**
+     * Get a string from ressources
+     */
+    public static String getString(Context context, int res_id){
+        return context.getResources().getString(res_id);
+    }
+
+    /**
      * Create and display a loading dialog
      *
      * Use dismiss() to close this dialog

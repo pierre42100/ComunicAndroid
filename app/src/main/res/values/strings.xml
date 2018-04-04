@@ -127,4 +127,7 @@
     <string name="navigation_bottom_notif_item">Notifications</string>
     <string name="main_menu_friends_list">Friends list</string>
     <string name="fragment_notifications_title">Notifications</string>
+    <string name="like_button_img">Like</string>
+    <string name="like_view_like">Like</string>
+    <string name="like_view_liking">Liking</string>
 </resources>

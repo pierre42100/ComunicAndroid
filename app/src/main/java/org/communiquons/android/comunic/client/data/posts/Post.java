@@ -25,9 +25,17 @@ public class Post {
     private int page_id;
     private String content;
     private PostTypes type;
+
+    //Related with visibility
     private PostVisibilityLevels visibilityLevel;
-    private ArrayList<Comment> comments_list;
     private PostUserAccess user_access_level = PostUserAccess.NO_ACCESS;
+
+    //Likes
+    private int numberLike;
+    private boolean isLiking;
+
+    //Comments
+    private ArrayList<Comment> comments_list;
 
     //Files specific
     private String file_path_url;
@@ -127,6 +135,26 @@ public class Post {
 
     public PostUserAccess getUser_access_level() {
         return user_access_level;
+    }
+
+
+    //Set and get the number of likes other the like
+    void setNumberLike(int numberLike) {
+        this.numberLike = numberLike;
+    }
+
+    public int getNumberLike() {
+        return numberLike;
+    }
+
+
+    //Set and get the liking state over the post
+    void setLiking(boolean liking) {
+        isLiking = liking;
+    }
+
+    public boolean isLiking() {
+        return isLiking;
     }
 
     /**

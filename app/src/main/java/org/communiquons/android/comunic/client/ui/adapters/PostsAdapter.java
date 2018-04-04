@@ -23,6 +23,7 @@ import org.communiquons.android.comunic.client.data.posts.PostsList;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
+import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
 
 import java.util.ArrayList;
 
@@ -160,6 +161,11 @@ public class PostsAdapter extends ArrayAdapter<Post>{
             //Load image
             ImageLoadManager.load(getContext(), post.getFile_path_url(), postImage);
         }
+
+        //Set posts likes
+        LikeButtonView likeButtonView = convertView.findViewById(R.id.like_button);
+        likeButtonView.setNumberLikes(post.getNumberLike());
+        likeButtonView.setIsLiking(post.isLiking());
 
         //Process post comments
         ArrayList<Comment> comments = post.getComments_list();

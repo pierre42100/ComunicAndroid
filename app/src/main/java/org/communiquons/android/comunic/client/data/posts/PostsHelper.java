@@ -2,6 +2,7 @@ package org.communiquons.android.comunic.client.data.posts;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
@@ -21,6 +22,11 @@ import org.json.JSONObject;
  */
 
 public class PostsHelper {
+
+    /**
+     * Debug tag
+     */
+    private final static String TAG = "PostsHelper";
 
     /**
      * The context of the application
@@ -286,6 +292,10 @@ public class PostsHelper {
             default:
                 post.setUser_access_level(PostUserAccess.NO_ACCESS);
         }
+
+        //Get information about likes
+        post.setNumberLike(json.getInt("likes"));
+        post.setLiking(json.getBoolean("userlike"));
 
         //Get file path url (if any)
         if(json.getString("file_path_url") != null){

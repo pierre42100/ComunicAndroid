@@ -67,8 +67,6 @@
             android:contentDescription="@string/post_action_btn_description"/>
 
 
-
-
     </LinearLayout>
 
     <!-- Post image (if any) -->
@@ -86,6 +84,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Post content" />
+
+    <!-- Like button -->
+    <org.communiquons.android.comunic.client.ui.views.LikeButtonView
+        android:id="@+id/like_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/PostLikeButton"/>
 
     <!-- Post comments -->
     <LinearLayout

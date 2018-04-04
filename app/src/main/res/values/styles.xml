@@ -76,6 +76,13 @@
         <item name="android:layout_marginBottom">2dp</item>
     </style>
 
+    <!-- Post like button -->
+    <style name="PostLikeButton">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
 
     <!-- Comments style -->
     <!-- Comments container -->
