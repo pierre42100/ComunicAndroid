@@ -123,7 +123,7 @@ public class LikeButtonView extends FrameLayout implements View.OnClickListener 
      *
      * @return TRUE if the user is liking / FALSE else
      */
-    public boolean ismIsLiking() {
+    public boolean isIsLiking() {
         return mIsLiking;
     }
 
@@ -141,7 +141,7 @@ public class LikeButtonView extends FrameLayout implements View.OnClickListener 
                 R.string.like_view_like);
 
         if(numberLikes > 0)
-            text += "(" + numberLikes + ")";
+            text += " (" + numberLikes + ")";
 
         mLikeText.setText(text);
 
@@ -149,6 +149,19 @@ public class LikeButtonView extends FrameLayout implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
+
+        //Check if the user want to like or dislike component
+        if(mIsLiking){
+            mIsLiking = false;
+            numberLikes--;
+        }
+        else {
+            mIsLiking = true;
+            numberLikes++;
+        }
+
+        //Refresh display
+        refresh();
 
     }
 }
