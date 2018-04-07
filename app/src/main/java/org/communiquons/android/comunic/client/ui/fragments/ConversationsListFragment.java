@@ -225,7 +225,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
 
             //Check for errors
             if(usersInfo == null){
-                Log.e(TAG, "Couldn't get informations about some users !");
+                Log.e(TAG, "Couldn't get information about some users !");
                 return;
             }
 

@@ -130,4 +130,10 @@
     <string name="like_button_img">Like</string>
     <string name="like_view_like">Like</string>
     <string name="like_view_liking">Liking</string>
+    <string name="action_edit_comment">Edit</string>
+    <string name="popup_editcomment_title">Edit the content of the comment</string>
+    <string name="popup_editcomment_cancel">Cancel</string>
+    <string name="popup_editcomment_confirm">Edit</string>
+    <string name="popup_editcomment_edit_placeholder">New content for the comment</string>
+    <string name="err_update_comment_content">An error occurred while trying to update comment content !</string>
 </resources>

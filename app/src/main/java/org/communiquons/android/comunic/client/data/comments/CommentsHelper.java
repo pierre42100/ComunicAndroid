@@ -103,6 +103,31 @@ public class CommentsHelper {
     }
 
     /**
+     * Edit the content of the comment
+     *
+     * @param commentID The ID of the comment to update
+     * @param content The new content of the comment
+     * @return TRUE for a success / FALSE else
+     */
+    public boolean editContent(int commentID, String content){
+
+        //Perform a request on the server
+        APIRequestParameters params = new APIRequestParameters(mContext, "comments/edit");
+        params.addInt("commentID", commentID);
+        params.addString("content", content);
+
+        //Try to perform the request on the server
+        try {
+            APIResponse response = new APIRequest().exec(params);
+            return  response.getResponse_code() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    /**
      * Intend to delete a comment
      *
      * @param commentID The ID of the comment to delete

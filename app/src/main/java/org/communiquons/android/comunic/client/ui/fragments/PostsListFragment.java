@@ -391,8 +391,10 @@ public class PostsListFragment extends Fragment
                 inflater.inflate(R.menu.menu_comments_actions, menu);
 
                 //Disable moderation actions if required
-                if(comment.getUserID() != AccountUtils.getID(getActivity()))
+                if(comment.getUserID() != AccountUtils.getID(getActivity())) {
+                    menu.findItem(R.id.action_edit_comment).setEnabled(false);
                     menu.findItem(R.id.action_delete).setEnabled(false);
+                }
 
                 //Save information about the comment in the fragment
                 MENU_ACTION = MENU_ACTION_COMMENTS;
@@ -414,6 +416,87 @@ public class PostsListFragment extends Fragment
             @Override
             protected Boolean doInBackground(Void... params) {
                 return mLikesHelper.update(LikesType.COMMENT, comment.getId(), is_liking);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    @Override
+    public void onUpdateCommentContent(final Comment comment) {
+
+        //Inflate the content of the dialog
+        View content = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_comment, null);
+        final EditCommentContentView commentInput = content.findViewById(R.id.input_comment_content);
+        commentInput.setText(comment.getContent());
+
+        //Display a dialog
+        new AlertDialog.Builder(getActivity())
+
+                //Set general information
+                .setTitle(R.string.popup_editcomment_title)
+                .setNegativeButton(R.string.popup_editcomment_cancel, null)
+                .setView(content)
+
+                //Set positive action
+                .setPositiveButton(R.string.popup_editcomment_confirm,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        submitNewComment(comment, commentInput.getText()+"");
+                    }
+                })
+
+                .show();
+
+    }
+
+    /**
+     * Submit the new content of the comment back to the server, after having done security check
+     *
+     * @param comment The comment to update
+     * @param newContent The new content for the comment
+     */
+    private void submitNewComment(final Comment comment, final String newContent){
+
+        //Check the length of the comment
+        if(!StringsUtils.isValidForContent(newContent)){
+            Toast.makeText(getActivity(), R.string.err_invalid_comment_content,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Try to update the content of the comment on the server
+        new AsyncTask<Void, Void, Comment>(){
+
+            @Override
+            protected Comment doInBackground(Void... params) {
+
+                //Try to update the comment
+                if(!mCommentsHelper.editContent(comment.getId(), newContent))
+                    return null;
+
+                //Get a new version of the comment
+                return mCommentsHelper.getInfosSingle(comment.getId());
+
+            }
+
+            @Override
+            protected void onPostExecute(@Nullable Comment newComment) {
+
+                //Check if the activity has been destroyed
+                if(getActivity() == null)
+                    return;
+
+                //Check for errors
+                if(newComment == null){
+                    Toast.makeText(getActivity(), R.string.err_update_comment_content,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //Update the comment content
+                comment.setContent(newComment.getContent());
+                mPostsAdapter.notifyDataSetChanged();
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -490,7 +573,13 @@ public class PostsListFragment extends Fragment
             if(mCurrCommentInContextMenu == null)
                 return false;
 
-            //Check the action to perform
+            //Edit the comment
+            if(item.getItemId() == R.id.action_edit_comment){
+                onUpdateCommentContent(mCurrCommentInContextMenu);
+                return true;
+            }
+
+            //Delete the comment
             if(item.getItemId() == R.id.action_delete){
                 deleteComment(mCurrCommentInContextMenu);
                 return true;

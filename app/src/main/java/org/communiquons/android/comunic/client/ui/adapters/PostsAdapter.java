@@ -321,6 +321,13 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         void onCommentLikeUpdate(Comment comment, boolean is_liking);
 
         /**
+         * Handles the update of the content of a comment
+         *
+         * @param comment The target comment
+         */
+        void onUpdateCommentContent(Comment comment);
+
+        /**
          * Handles the process of deletion of a comment.
          *
          * @param comment The comment to delete
