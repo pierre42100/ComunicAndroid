@@ -19,6 +19,7 @@ import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.comments.Comment;
 import org.communiquons.android.comunic.client.data.comments.CommentsHelper;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
 
 import java.util.ArrayList;
 
@@ -91,6 +92,19 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
 
         //Update comment content
         ((TextView) view.findViewById(R.id.comment_text)).setText(comment.getContent());
+
+
+        //Update comment likes
+        LikeButtonView like = view.findViewById(R.id.like_button);
+        like.setNumberLikes(comment.getLikes());
+        like.setIsLiking(comment.isLiking());
+        like.setUpdateListener(new LikeButtonView.OnLikeUpdateListener() {
+            @Override
+            public void OnLikeUpdate(boolean isLiking) {
+                listener.onCommentLikeUpdate(comment, isLiking);
+            }
+        });
+
 
         //Update comment actions
         ImageView actions = view.findViewById(R.id.comment_actions_btn);

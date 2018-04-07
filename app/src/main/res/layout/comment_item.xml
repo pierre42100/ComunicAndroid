@@ -31,6 +31,13 @@
         android:layout_weight="2"
         android:layout_height="wrap_content"
         tools:text="A comment content" />
+    
+    <!-- Comment like button -->
+    <org.communiquons.android.comunic.client.ui.views.LikeButtonView
+        android:id="@+id/like_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"/>
 
     <!-- Comment actions -->
     <ImageView

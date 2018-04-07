@@ -53,6 +53,10 @@ public class LikesHelper {
                 params.addString("type", "post");
                 break;
 
+            case COMMENT:
+                params.addString("type", "comment");
+                break;
+
             default:
                 throw new RuntimeException("Unrecognized kind of post !");
         }

@@ -12,6 +12,11 @@ public enum LikesType {
     /**
      * For the posts
      */
-    POST
+    POST,
+
+    /**
+     * For the comments
+     */
+    COMMENT,
 
 }

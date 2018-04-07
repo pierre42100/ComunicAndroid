@@ -406,6 +406,20 @@ public class PostsListFragment extends Fragment
     }
 
     @Override
+    public void onCommentLikeUpdate(final Comment comment, final boolean is_liking) {
+
+        //Perform the operation in the background
+        new AsyncTask<Void, Void, Boolean>(){
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return mLikesHelper.update(LikesType.COMMENT, comment.getId(), is_liking);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    @Override
     public void deleteComment(final Comment comment) {
 
         //Show a confirmation dialog

@@ -313,6 +313,14 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         void showCommentActions(View button, Comment comment);
 
         /**
+         * Handles the update of the likes of a comment
+         *
+         * @param comment The comment to update
+         * @param is_liking The new liking status
+         */
+        void onCommentLikeUpdate(Comment comment, boolean is_liking);
+
+        /**
          * Handles the process of deletion of a comment.
          *
          * @param comment The comment to delete
