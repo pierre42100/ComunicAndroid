@@ -139,7 +139,7 @@ public class Post {
 
 
     //Set and get the number of likes other the like
-    void setNumberLike(int numberLike) {
+    public void setNumberLike(int numberLike) {
         this.numberLike = numberLike;
     }
 
@@ -149,7 +149,7 @@ public class Post {
 
 
     //Set and get the liking state over the post
-    void setLiking(boolean liking) {
+    public void setLiking(boolean liking) {
         isLiking = liking;
     }
 

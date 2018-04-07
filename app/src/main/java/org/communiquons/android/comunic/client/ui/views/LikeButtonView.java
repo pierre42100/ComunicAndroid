@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -13,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
 
 /**
@@ -49,6 +47,11 @@ public class LikeButtonView extends FrameLayout implements View.OnClickListener 
      * Number of likes
      */
     private int numberLikes = 0;
+
+    /**
+     * Like Update listener
+     */
+    private OnLikeUpdateListener mUpdateListener = null;
 
     public LikeButtonView(@NonNull Context context) {
         super(context);
@@ -128,6 +131,15 @@ public class LikeButtonView extends FrameLayout implements View.OnClickListener 
     }
 
     /**
+     * Set like update listener
+     *
+     * @param updateListener The listener for the like update
+     */
+    public void setUpdateListener(OnLikeUpdateListener updateListener) {
+        this.mUpdateListener = updateListener;
+    }
+
+    /**
      * Refresh the like view
      */
     private void refresh(){
@@ -162,6 +174,23 @@ public class LikeButtonView extends FrameLayout implements View.OnClickListener 
 
         //Refresh display
         refresh();
+
+        //Call listener (if any)
+        if(mUpdateListener != null)
+            mUpdateListener.OnLikeUpdate(mIsLiking);
+    }
+
+    /**
+     * Likes update listener interface
+     */
+    public interface OnLikeUpdateListener {
+
+        /**
+         * This method is called when an update is done on a like
+         *
+         * @param isLiking New liking status
+         */
+        void OnLikeUpdate(boolean isLiking);
 
     }
 }

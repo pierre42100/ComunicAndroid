@@ -166,6 +166,13 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         LikeButtonView likeButtonView = convertView.findViewById(R.id.like_button);
         likeButtonView.setNumberLikes(post.getNumberLike());
         likeButtonView.setIsLiking(post.isLiking());
+        likeButtonView.setUpdateListener(new LikeButtonView.OnLikeUpdateListener() {
+            @Override
+            public void OnLikeUpdate(boolean isLiking) {
+                //Call listener
+                mListener.onPostLikeUpdate(post, isLiking);
+            }
+        });
 
         //Process post comments
         ArrayList<Comment> comments = post.getComments_list();
@@ -281,6 +288,14 @@ public class PostsAdapter extends ArrayAdapter<Post>{
          * @param post the target post
          */
         void showPostActions(View button, int pos, Post post);
+
+        /**
+         * Handles the update of the likes of a post
+         *
+         * @param post The target post
+         * @param is_liking New liking status
+         */
+        void onPostLikeUpdate(Post post, boolean is_liking);
 
         /**
          * Handles the deletion process of a post

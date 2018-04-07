@@ -24,6 +24,8 @@ import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
 import org.communiquons.android.comunic.client.data.comments.Comment;
 import org.communiquons.android.comunic.client.data.comments.CommentsHelper;
+import org.communiquons.android.comunic.client.data.likes.LikesHelper;
+import org.communiquons.android.comunic.client.data.likes.LikesType;
 import org.communiquons.android.comunic.client.data.posts.Post;
 import org.communiquons.android.comunic.client.data.posts.PostsHelper;
 import org.communiquons.android.comunic.client.data.posts.PostsList;
@@ -112,6 +114,11 @@ public class PostsListFragment extends Fragment
     GetUsersHelper mUserHelper;
 
     /**
+     * Likes helper
+     */
+    LikesHelper mLikesHelper;
+
+    /**
      * Set the list of posts of the fragment
      *
      * @param list The list of post
@@ -127,6 +134,23 @@ public class PostsListFragment extends Fragment
      */
     public void setUsersInfos(ArrayMap<Integer, UserInfo> list){
         this.mUsersInfo = list;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        //Create post helper
+        mPostsHelper = new PostsHelper(getActivity());
+
+        //Create comment helper
+        mCommentsHelper = new CommentsHelper(getActivity());
+
+        //Create user helper
+        mUserHelper = new GetUsersHelper(getActivity(), DatabaseHelper.getInstance(getActivity()));
+
+        //Create likes helper
+        mLikesHelper = new LikesHelper(getActivity());
     }
 
     @Nullable
@@ -150,15 +174,6 @@ public class PostsListFragment extends Fragment
      * Display the list of posts
      */
     public void show(){
-
-        //Create post helper
-        mPostsHelper = new PostsHelper(getActivity());
-
-        //Create comment helper
-        mCommentsHelper = new CommentsHelper(getActivity());
-
-        //Create user helper
-        mUserHelper = new GetUsersHelper(getActivity(), DatabaseHelper.getInstance(getActivity()));
 
         //Check if the list of posts is not null
         if(mPostsList == null && mUsersInfo == null)
@@ -290,6 +305,24 @@ public class PostsListFragment extends Fragment
 
         //Show context menu
         button.showContextMenu();
+    }
+
+    @Override
+    public void onPostLikeUpdate(final Post post, final boolean is_liking) {
+
+        //Save new post information
+        post.setNumberLike(post.getNumberLike() + (is_liking ? 1 : -1));
+        post.setLiking(is_liking);
+
+        //Perform the update in the background
+        new AsyncTask<Void, Void, Boolean>(){
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return mLikesHelper.update(LikesType.POST, post.getId(), is_liking);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
     }
 
     @Override
