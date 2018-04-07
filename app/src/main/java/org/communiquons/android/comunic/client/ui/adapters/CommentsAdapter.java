@@ -96,6 +96,7 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
 
         //Update comment likes
         LikeButtonView like = view.findViewById(R.id.like_button);
+        like.setSmallButton(true);
         like.setNumberLikes(comment.getLikes());
         like.setIsLiking(comment.isLiking());
         like.setUpdateListener(new LikeButtonView.OnLikeUpdateListener() {

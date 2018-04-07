@@ -49,6 +49,11 @@ public class LikeButtonView extends FrameLayout implements View.OnClickListener 
     private int numberLikes = 0;
 
     /**
+     * Display mode : small
+     */
+    private boolean mSmallButton = false;
+
+    /**
      * Like Update listener
      */
     private OnLikeUpdateListener mUpdateListener = null;
@@ -140,23 +145,46 @@ public class LikeButtonView extends FrameLayout implements View.OnClickListener 
     }
 
     /**
+     * Set whether the like button should appear as a small button or not
+     *
+     * @param smallButton TRUE if the button is a small button / FALSE else
+     */
+    public void setSmallButton(boolean smallButton) {
+        this.mSmallButton = smallButton;
+        refresh();
+    }
+
+    /**
      * Refresh the like view
      */
     private void refresh(){
 
-        //Update the image
-        mLikeImage.setImageDrawable(UiUtils.getDrawable(getContext(),
-                mIsLiking ? R.drawable.like_down : R.drawable.like_up));
+        if(!mSmallButton) {
 
-        //Update the text
-        String text = UiUtils.getString(getContext(), mIsLiking ? R.string.like_view_liking :
-                R.string.like_view_like);
+            //Update the image
+            mLikeImage.setImageDrawable(UiUtils.getDrawable(getContext(), R.drawable.like_up));
 
-        if(numberLikes > 0)
-            text += " (" + numberLikes + ")";
+            //Update the text
+            String text = UiUtils.getString(getContext(), mIsLiking ? R.string.like_view_liking :
+                    R.string.like_view_like);
 
-        mLikeText.setText(text);
+            if (numberLikes > 0)
+                text += " (" + numberLikes + ")";
 
+            mLikeText.setText(text);
+
+        }
+        else {
+
+            //Update the text
+            mLikeText.setText(numberLikes > 0 ? ""+numberLikes : "");
+
+            //Update the image
+            mLikeImage.setImageDrawable(UiUtils.getDrawable(getContext(),
+                    mIsLiking ? R.drawable.like_down : R.drawable.like_up));
+
+
+        }
     }
 
     @Override
