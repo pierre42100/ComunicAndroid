@@ -136,4 +136,5 @@
     <string name="popup_editcomment_confirm">Edit</string>
     <string name="popup_editcomment_edit_placeholder">New content for the comment</string>
     <string name="err_update_comment_content">An error occurred while trying to update comment content !</string>
+    <string name="comment_image_description">Comment image</string>
 </resources>

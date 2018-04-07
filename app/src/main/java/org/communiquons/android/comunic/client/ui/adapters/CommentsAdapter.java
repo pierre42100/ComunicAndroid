@@ -93,6 +93,16 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
         //Update comment content
         ((TextView) view.findViewById(R.id.comment_text)).setText(comment.getContent());
 
+        //Update comment image (if any)
+        ImageView commentImage = view.findViewById(R.id.comment_image);
+        if(comment.getImage_url().length() < 5)
+            commentImage.setVisibility(View.GONE);
+        else {
+            commentImage.setVisibility(View.VISIBLE);
+            ImageLoadManager.remove(commentImage);
+            ImageLoadManager.load(context, comment.getImage_url(), commentImage);
+        }
+
 
         //Update comment likes
         LikeButtonView like = view.findViewById(R.id.like_button);
