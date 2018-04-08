@@ -63,7 +63,7 @@ public class UserInfosFragment extends Fragment {
         final ImageView imageView = view.findViewById(R.id.fragments_userinfos_account_image);
         final TextView userNameView = view.findViewById(R.id.fragments_userinfos_user_name);
 
-        //Retrieve user informations in order to display them
+        //Retrieve user information in order to display them
         int user_id = new AccountUtils(mContext).get_current_user_id();
         new GetUsersInfos(mContext, dbHelper).get(user_id, new GetUsersInfos.getUserInfosCallback() {
             @Override
