@@ -167,6 +167,15 @@ public class Post {
                 getUser_access_level() == PostUserAccess.FULL_ACCESS;
     }
 
+    /**
+     * Check whether the current user can update the content of the current post or not
+     *
+     * @return TRUE if the post can be updated by the current user / FALSE else
+     */
+    public boolean canUpdate(){
+        return  getUser_access_level() == PostUserAccess.FULL_ACCESS;
+    }
+
     //Set and get file path url
     void setFile_path_url(String file_path_url) {
         this.file_path_url = file_path_url;

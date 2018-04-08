@@ -298,6 +298,13 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         void onPostLikeUpdate(Post post, boolean is_liking);
 
         /**
+         * Handles the update request of the content of a post
+         *
+         * @param post Target post
+         */
+        void onPostContentUpdate(Post post);
+
+        /**
          * Handles the deletion process of a post
          *
          * @param pos The position of the post to delete

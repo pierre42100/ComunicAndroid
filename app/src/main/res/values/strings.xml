@@ -137,4 +137,10 @@
     <string name="popup_editcomment_edit_placeholder">New content for the comment</string>
     <string name="err_update_comment_content">An error occurred while trying to update comment content !</string>
     <string name="comment_image_description">Comment image</string>
+    <string name="action_edit_post">Edit</string>
+    <string name="popup_editpost_title">Edit the post</string>
+    <string name="popup_editpost_cancel">Cancel</string>
+    <string name="popup_editpost_confirm">Edit</string>
+    <string name="edit_post_content_hint">New content for the post</string>
+    <string name="err_update_post_content">An error occurred while trying to update the content of the post!</string>
 </resources>

@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -300,6 +301,10 @@ public class PostsListFragment extends Fragment
                     menu.findItem(R.id.action_delete).setEnabled(false);
 
                 }
+
+                //Check if the current user can update the post or not
+                if(!post.canUpdate())
+                    menu.findItem(R.id.action_edit_post).setEnabled(false);
             }
         });
 
@@ -323,6 +328,73 @@ public class PostsListFragment extends Fragment
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
+    }
+
+    @Override
+    public void onPostContentUpdate(final Post post) {
+
+        //Inflate a view
+        final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_post,
+                null);
+        ((EditText)view.findViewById(R.id.post_content_input)).setText(post.getContent());
+
+        //Create a dialog
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.popup_editpost_title)
+                .setNegativeButton(R.string.popup_editpost_cancel, null)
+                .setView(view)
+
+                .setPositiveButton(R.string.popup_editpost_confirm,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        processPostUpdate(post, view);
+                    }
+                })
+
+                .show();
+
+    }
+
+    /**
+     * Process the update of a post content
+     *
+     * @param post The target post
+     * @param editForm The form that contains the updated post
+     */
+    private void processPostUpdate(final Post post, View editForm){
+
+        //Get the content of the post
+        final String newContent = ((EditText)editForm.findViewById(R.id.post_content_input)).getText()+"";
+
+        //Update the content of the post
+        new AsyncTask<Void, Void, Post>(){
+
+            @Override
+            protected Post doInBackground(Void... params) {
+                if(!mPostsHelper.update_content(post.getId(), newContent))
+                    return null;
+
+                return mPostsHelper.getSingle(post.getId());
+            }
+
+            @Override
+            protected void onPostExecute(@Nullable Post newPost) {
+
+                if(getActivity() == null)
+                    return;
+
+                if(newPost == null){
+                    Toast.makeText(getActivity(), R.string.err_update_post_content,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //Update the content of the post
+                post.setContent(newPost.getContent());
+                mPostsAdapter.notifyDataSetChanged();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -429,8 +501,7 @@ public class PostsListFragment extends Fragment
     public void onUpdateCommentContent(final Comment comment) {
 
         //Inflate the content of the dialog
-        View content = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_comment,
-                mListView);
+        View content = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_comment, null);
         final EditCommentContentView commentInput = content.findViewById(R.id.input_comment_content);
         commentInput.setText(comment.getContent());
 
@@ -563,6 +634,11 @@ public class PostsListFragment extends Fragment
             //Check whether the related post exists or not
             if(!(mPostsList.size() > mNumCurrPostInContextMenu))
                 return false;
+
+            //Edit the content of the post if required
+            if(item.getItemId() == R.id.action_edit_post){
+                onPostContentUpdate(mPostsList.get(mNumCurrPostInContextMenu));
+            }
 
             //Check if the request is to delete the comment
             if(item.getItemId() == R.id.action_delete) {

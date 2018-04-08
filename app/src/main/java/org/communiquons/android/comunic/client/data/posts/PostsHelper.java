@@ -211,6 +211,30 @@ public class PostsHelper {
     }
 
     /**
+     * Intend to update the content of a post
+     *
+     * @param postId The ID of the post to update
+     * @param content The new content for the post
+     * @return TRUE in case of success / FALSE else
+     */
+    public boolean update_content(int postId, String content) {
+
+        //Perform a request on the API
+        APIRequestParameters params = new APIRequestParameters(mContext, "posts/update_content");
+        params.addString("new_content", content);
+        params.addInt("postID", postId);
+
+        //Try to perform the request
+        try {
+            APIResponse response = new APIRequest().exec(params);
+            return response.getResponse_code() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Parse a JSON post information into POST object
      *
      * @param json Source JSON post information
