@@ -410,6 +410,10 @@ public class PostsListFragment extends Fragment
     @Override
     public void onCommentLikeUpdate(final Comment comment, final boolean is_liking) {
 
+        //Update information in the comment object
+        comment.setUser_like(is_liking);
+        comment.setLikes(comment.getLikes() + (is_liking ? 1 : -1));
+
         //Perform the operation in the background
         new AsyncTask<Void, Void, Boolean>(){
 
@@ -425,7 +429,8 @@ public class PostsListFragment extends Fragment
     public void onUpdateCommentContent(final Comment comment) {
 
         //Inflate the content of the dialog
-        View content = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_comment, null);
+        View content = getActivity().getLayoutInflater().inflate(R.layout.dialog_edit_comment,
+                mListView);
         final EditCommentContentView commentInput = content.findViewById(R.id.input_comment_content);
         commentInput.setText(comment.getContent());
 
