@@ -34,6 +34,10 @@
             android:name=".ui.activities.SearchUserActivity"
             android:label="@string/activity_searchuser_title"/>
 
+        <!-- Notifications background refresh service -->
+        <service android:name=".data.services.NotificationsService"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

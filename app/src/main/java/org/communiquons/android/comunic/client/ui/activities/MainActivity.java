@@ -24,6 +24,7 @@ import org.communiquons.android.comunic.client.data.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.friendsList.FriendRefreshLoopRunnable;
+import org.communiquons.android.comunic.client.data.services.NotificationsService;
 import org.communiquons.android.comunic.client.data.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
@@ -132,6 +133,10 @@ public class MainActivity extends AppCompatActivity
         friendsListRefreshThread = new Thread(
                 new FriendRefreshLoopRunnable(getApplicationContext(), dbHelper));
         friendsListRefreshThread.start();
+
+        //Start notification thread
+        Intent intent = new Intent(this, NotificationsService.class);
+        startService(intent);
     }
 
     @Override
