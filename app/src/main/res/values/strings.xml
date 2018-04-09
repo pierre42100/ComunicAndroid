@@ -147,4 +147,6 @@
     <string name="fragment_settings_title">Settings</string>
     <string name="preference_background_notif_title">Background notifications refresh</string>
     <string name="preference_background_notif_summary">This allow you to stay informed about the latest notifications on Comunic by checking at a regular interval the existence of notifications, even if the application is closed.</string>
+    <string name="notification_notif_available_title">New activity on Comunic</string>
+    <string name="notification_notif_available_content"> %1$d notification(s) and %2$d unread conversations(s)</string>
 </resources>
