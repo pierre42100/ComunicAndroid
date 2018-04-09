@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -28,6 +29,7 @@ import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment
 import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
 import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
 import org.communiquons.android.comunic.client.ui.fragments.NotificationsFragment;
+import org.communiquons.android.comunic.client.ui.fragments.SettingsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UpdateConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UserInfosFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UserPageFragment;
@@ -162,6 +164,12 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
+        //To open settings fragment
+        if(id == R.id.action_settings){
+            openSettingsFragment();
+            return true;
+        }
+
         //Check for logout request
         if(id == R.id.action_logout){
             confirmUserLogout();
@@ -269,6 +277,17 @@ public class MainActivity extends AppCompatActivity
         transaction.addToBackStack(null);
         transaction.commit();
 
+    }
+
+    /**
+     * Open settings fragment
+     */
+    void openSettingsFragment(){
+        SettingsFragment settingsFragment = new SettingsFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, settingsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     /**

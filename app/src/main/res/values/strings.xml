@@ -143,4 +143,8 @@
     <string name="popup_editpost_confirm">Edit</string>
     <string name="edit_post_content_hint">New content for the post</string>
     <string name="err_update_post_content">An error occurred while trying to update the content of the post!</string>
+    <string name="action_settings">Settings</string>
+    <string name="fragment_settings_title">Settings</string>
+    <string name="preference_background_notif_title">Background notifications refresh</string>
+    <string name="preference_background_notif_summary">This allow you to stay informed about the latest notifications on Comunic by checking at a regular interval the existence of notifications, even if the application is closed.</string>
 </resources>

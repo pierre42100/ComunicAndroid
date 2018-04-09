@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Enable and / or disable notification service -->
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="enable_background_notification_refresh"
+        android:title="@string/preference_background_notif_title"
+        android:summary="@string/preference_background_notif_summary"/>
+
+</PreferenceScreen>
