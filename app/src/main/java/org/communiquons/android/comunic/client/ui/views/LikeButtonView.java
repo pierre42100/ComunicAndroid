@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
 /**
  * Like button view

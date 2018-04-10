@@ -5,7 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import org.communiquons.android.comunic.client.BuildConfig;
-import org.communiquons.android.comunic.client.data.Account.Account;
+import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -132,14 +132,14 @@ public class APIRequest {
     private void addLoginTokens(APIRequestParameters params){
 
         //Create account object
-        Account account = new Account(params.getContext());
+        AccountHelper accountHelper = new AccountHelper(params.getContext());
 
         //Check if user is signed in or not
-        if(!account.signed_in())
+        if(!accountHelper.signed_in())
             return; //Do nothing
 
         //Get login tokens
-        ArrayList<String> tokens = account.getLoginTokens();
+        ArrayList<String> tokens = accountHelper.getLoginTokens();
 
         if(tokens.size() < 2)
             return; //Not enough tokens

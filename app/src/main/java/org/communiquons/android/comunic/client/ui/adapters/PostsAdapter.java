@@ -8,19 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
-import org.communiquons.android.comunic.client.data.comments.Comment;
-import org.communiquons.android.comunic.client.data.posts.Post;
-import org.communiquons.android.comunic.client.data.posts.PostTypes;
-import org.communiquons.android.comunic.client.data.posts.PostsList;
-import org.communiquons.android.comunic.client.data.utils.UiUtils;
+import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.models.Comment;
+import org.communiquons.android.comunic.client.data.models.Post;
+import org.communiquons.android.comunic.client.data.enums.PostTypes;
+import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
@@ -101,14 +100,14 @@ public class PostsAdapter extends ArrayAdapter<Post>{
 
         //Reset user information
         userAccountName.setText("");
-        ImageLoadManager.remove(userAccountImage);
+        ImageLoadHelper.remove(userAccountImage);
         userAccountImage.setImageDrawable(UiUtils.getDrawable(getContext(),
                 R.drawable.default_account_image));
 
         //Set user information if available
         if(userInfo != null){
             userAccountName.setText(userInfo.getDisplayFullName());
-            ImageLoadManager.load(getContext(), userInfo.getAcountImageURL(), userAccountImage);
+            ImageLoadHelper.load(getContext(), userInfo.getAcountImageURL(), userAccountImage);
         }
 
 
@@ -152,14 +151,14 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         ImageView postImage = convertView.findViewById(R.id.post_image);
         postImage.setVisibility(View.GONE);
         postImage.setImageDrawable(null);
-        ImageLoadManager.remove(postImage);
+        ImageLoadHelper.remove(postImage);
         if(post.getType() == PostTypes.IMAGE){
 
             //Make image visible
             postImage.setVisibility(View.VISIBLE);
 
             //Load image
-            ImageLoadManager.load(getContext(), post.getFile_path_url(), postImage);
+            ImageLoadHelper.load(getContext(), post.getFile_path_url(), postImage);
         }
 
         //Set posts likes

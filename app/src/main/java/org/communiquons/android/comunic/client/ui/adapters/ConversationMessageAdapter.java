@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
-import org.communiquons.android.comunic.client.data.conversations.ConversationMessage;
-import org.communiquons.android.comunic.client.data.utils.UiUtils;
+import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.models.ConversationMessage;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
 import java.util.ArrayList;
 
@@ -181,8 +180,8 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
          */
         if(message.hasImage()){
             //Load the image
-            ImageLoadManager.remove(messageImageView);
-            ImageLoadManager.load(getContext(), message.getImage_path(), messageImageView);
+            ImageLoadHelper.remove(messageImageView);
+            ImageLoadHelper.load(getContext(), message.getImage_path(), messageImageView);
 
             //Make the image visible
             messageImageView.setVisibility(View.VISIBLE);
@@ -219,7 +218,7 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
             Update account image
          */
         //Cancel any load pending operation
-        ImageLoadManager.remove(accountImageView);
+        ImageLoadHelper.remove(accountImageView);
 
         //Set the default image
         accountImageView.setImageResource(R.drawable.default_account_image);
@@ -228,7 +227,7 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
         //Check if we can load a specific image
         if(user != null) {
             String imageURL = user.getAcountImageURL();
-            ImageLoadManager.load(getContext(), imageURL, accountImageView);
+            ImageLoadHelper.load(getContext(), imageURL, accountImageView);
         }
 
 

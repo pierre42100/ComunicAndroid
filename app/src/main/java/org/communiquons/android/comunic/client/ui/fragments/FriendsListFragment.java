@@ -20,15 +20,15 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
-import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
-import org.communiquons.android.comunic.client.data.friendsList.Friend;
-import org.communiquons.android.comunic.client.data.friendsList.FriendUser;
+import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
+import org.communiquons.android.comunic.client.data.models.Friend;
+import org.communiquons.android.comunic.client.data.models.FriendUser;
 import org.communiquons.android.comunic.client.ui.adapters.FriendsAdapter;
-import org.communiquons.android.comunic.client.data.friendsList.FriendsListHelper;
-import org.communiquons.android.comunic.client.data.friendsList.FriendsUtils;
+import org.communiquons.android.comunic.client.data.helpers.FriendsListHelper;
+import org.communiquons.android.comunic.client.data.utils.FriendsUtils;
 
 import java.util.ArrayList;
 

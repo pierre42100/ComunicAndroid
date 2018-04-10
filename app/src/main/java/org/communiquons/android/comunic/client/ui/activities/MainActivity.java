@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -18,14 +17,14 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.api.APIRequest;
-import org.communiquons.android.comunic.client.data.Account.Account;
-import org.communiquons.android.comunic.client.data.Account.AccountUtils;
-import org.communiquons.android.comunic.client.data.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
-import org.communiquons.android.comunic.client.data.friendsList.FriendRefreshLoopRunnable;
+import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
+import org.communiquons.android.comunic.client.data.utils.AccountUtils;
+import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
+import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
-import org.communiquons.android.comunic.client.data.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
 import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Account object
      */
-    private Account account;
+    private AccountHelper accountHelper;
 
     /**
      * Account utils object
@@ -86,10 +85,10 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         //Initialize account objects
-        account = new Account(this);
+        accountHelper = new AccountHelper(this);
 
         //Check if user is signed in or not
-        if(!account.signed_in()){
+        if(!accountHelper.signed_in()){
             //Open the login activity
             startActivity(new Intent(this, LoginActivity.class));
             return;
@@ -123,7 +122,7 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
 
         //Check if user is signed in or not
-        if(!account.signed_in()){
+        if(!accountHelper.signed_in()){
             //Open the login activity
             startActivity(new Intent(this, LoginActivity.class));
             return;
@@ -253,7 +252,7 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
 
                         //Sign out user
-                        account.sign_out();
+                        accountHelper.sign_out();
 
                         //Redirect to login activity
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));

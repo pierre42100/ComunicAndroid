@@ -15,8 +15,8 @@ public final class DatabaseContract {
     public DatabaseContract(){}
 
     /* Database basic information */
-    static final int DATABASE_VERSION = 4;
-    static final String DATABASE_NAME = "database.db";
+    public static final int DATABASE_VERSION = 4;
+    public static final String DATABASE_NAME = "database.db";
 
     /* Users info table */
     public static abstract class UsersInfoSchema implements BaseColumns {

@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
-import org.communiquons.android.comunic.client.data.utils.UiUtils;
+import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
 import java.util.ArrayList;
 
@@ -64,7 +64,7 @@ public class UsersAsysncInfoAdapter extends ArrayAdapter<Integer> {
         TextView account_name = convertView.findViewById(R.id.user_name);
 
         //Empty the entry
-        ImageLoadManager.remove(account_image);
+        ImageLoadHelper.remove(account_image);
         account_image.setImageDrawable(UiUtils.getDrawable(getContext(),
                 R.drawable.default_account_image));
         account_name.setText("");
@@ -78,7 +78,7 @@ public class UsersAsysncInfoAdapter extends ArrayAdapter<Integer> {
             UserInfo user = usersInfos.get(userID);
 
             account_name.setText(user.getDisplayFullName());
-            ImageLoadManager.load(getContext(), user.getAcountImageURL(), account_image);
+            ImageLoadHelper.load(getContext(), user.getAcountImageURL(), account_image);
         }
 
         return convertView;

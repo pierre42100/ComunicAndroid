@@ -10,9 +10,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.Account.Account;
-import org.communiquons.android.comunic.client.data.notifications.NotificationsCount;
-import org.communiquons.android.comunic.client.data.notifications.NotificationsHelper;
+import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
+import org.communiquons.android.comunic.client.data.models.NotificationsCount;
+import org.communiquons.android.comunic.client.data.helpers.NotificationsHelper;
 import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 
@@ -80,7 +80,7 @@ public class NotificationsService extends IntentService {
             }
 
             //Check if the user is signed in or not
-            if(!new Account(this).signed_in()){
+            if(!new AccountHelper(this).signed_in()){
                 Log.v(TAG, "Skip notifications refresh because the user is not signed in.");
                 removeNotification();
                 continue;

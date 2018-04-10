@@ -16,10 +16,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.ui.adapters.UsersBasicAdapter;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
 
 import java.util.ArrayList;
 

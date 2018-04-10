@@ -15,15 +15,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
-import org.communiquons.android.comunic.client.data.UsersInfo.AdvancedUserInfo;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
-import org.communiquons.android.comunic.client.data.posts.Post;
-import org.communiquons.android.comunic.client.data.posts.PostsHelper;
-import org.communiquons.android.comunic.client.data.posts.PostsList;
-import org.communiquons.android.comunic.client.data.utils.UiUtils;
+import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
+import org.communiquons.android.comunic.client.data.models.AdvancedUserInfo;
+import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.models.Post;
+import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
+import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 
 /**
@@ -231,8 +231,8 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
 
         //Update user name and account image
         user_name.setText(userInfo.getDisplayFullName());
-        ImageLoadManager.remove(user_image);
-        ImageLoadManager.load(getActivity(), userInfo.getAcountImageURL(), user_image);
+        ImageLoadHelper.remove(user_image);
+        ImageLoadHelper.load(getActivity(), userInfo.getAcountImageURL(), user_image);
 
         //Load the list of posts of the user
         load_posts();

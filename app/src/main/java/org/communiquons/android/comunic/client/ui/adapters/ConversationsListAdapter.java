@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 import java.util.ArrayList;

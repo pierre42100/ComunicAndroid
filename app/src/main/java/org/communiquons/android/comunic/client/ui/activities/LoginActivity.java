@@ -11,8 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.Account.Account;
-import org.communiquons.android.comunic.client.data.Account.AccountUtils;
+import org.communiquons.android.comunic.client.data.asynctasks.APIRequestTask;
+import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
+import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -161,8 +162,8 @@ public class LoginActivity extends AppCompatActivity {
             tokens.add(tokensObj.getString("token2"));
 
             //Save tokens
-            Account account = new Account(this);
-            if(!account.save_new_tokens(tokens)) {
+            AccountHelper accountHelper = new AccountHelper(this);
+            if(!accountHelper.save_new_tokens(tokens)) {
                 show_err_server_response();
                 return;
             }

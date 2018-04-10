@@ -12,10 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
-import org.communiquons.android.comunic.client.data.notifications.Notif;
-import org.communiquons.android.comunic.client.data.notifications.NotifsList;
+import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.models.Notif;
+import org.communiquons.android.comunic.client.data.arrays.NotifsList;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 /**
@@ -68,8 +68,8 @@ public class NotificationsAdapter extends ArrayAdapter<Notif>{
 
         //Update the user account image
         ImageView image = convertView.findViewById(R.id.user_account_image);
-        ImageLoadManager.remove(image);
-        ImageLoadManager.load(getContext(),
+        ImageLoadHelper.remove(image);
+        ImageLoadHelper.load(getContext(),
                 mUsersInfo.get(notif.getFrom_user_id()).getAcountImageURL(), image);
 
 

@@ -15,10 +15,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.notifications.NotificationsHelper;
-import org.communiquons.android.comunic.client.data.notifications.NotifsList;
+import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.helpers.NotificationsHelper;
+import org.communiquons.android.comunic.client.data.arrays.NotifsList;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.NotificationsAdapter;
 

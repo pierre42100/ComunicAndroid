@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
-import org.communiquons.android.comunic.client.data.friendsList.FriendUser;
+import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
+import org.communiquons.android.comunic.client.data.models.FriendUser;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
 
@@ -63,7 +63,7 @@ public class FriendsAdapter extends ArrayAdapter<FriendUser> {
         //Update user account image
         ImageView user_image = listItemView.findViewById(R.id.fragment_friendslist_item_accountimage);
         user_image.setImageDrawable(getContext().getDrawable(R.drawable.default_account_image));
-        ImageLoadManager.load(getContext(), friendUser.getUserInfo().getAcountImageURL(), user_image);
+        ImageLoadHelper.load(getContext(), friendUser.getUserInfo().getAcountImageURL(), user_image);
 
         //Update user name
         TextView user_name = listItemView.findViewById(R.id.fragment_friendslist_item_fullname);

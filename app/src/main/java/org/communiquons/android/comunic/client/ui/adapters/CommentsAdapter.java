@@ -2,23 +2,18 @@ package org.communiquons.android.comunic.client.ui.adapters;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.Account.AccountUtils;
-import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadManager;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
-import org.communiquons.android.comunic.client.data.comments.Comment;
-import org.communiquons.android.comunic.client.data.comments.CommentsHelper;
-import org.communiquons.android.comunic.client.data.utils.UiUtils;
+import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.models.Comment;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
 
 import java.util.ArrayList;
@@ -86,7 +81,7 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
                     R.drawable.default_account_image));
             accountName.setText("");
         } else {
-            ImageLoadManager.load(context, user.getAcountImageURL(), accountImage);
+            ImageLoadHelper.load(context, user.getAcountImageURL(), accountImage);
             accountName.setText(user.getDisplayFullName());
         }
 
@@ -99,8 +94,8 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
             commentImage.setVisibility(View.GONE);
         else {
             commentImage.setVisibility(View.VISIBLE);
-            ImageLoadManager.remove(commentImage);
-            ImageLoadManager.load(context, comment.getImage_url(), commentImage);
+            ImageLoadHelper.remove(commentImage);
+            ImageLoadHelper.load(context, comment.getImage_url(), commentImage);
         }
 
 

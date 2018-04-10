@@ -14,11 +14,11 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.Account.AccountUtils;
-import org.communiquons.android.comunic.client.data.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.ImageLoad.ImageLoadTask;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersInfos;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
+import org.communiquons.android.comunic.client.data.utils.AccountUtils;
+import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.asynctasks.ImageLoadTask;
+import org.communiquons.android.comunic.client.data.asynctasks.GetUsersInfos;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
 
 /**
  * User informations fragment

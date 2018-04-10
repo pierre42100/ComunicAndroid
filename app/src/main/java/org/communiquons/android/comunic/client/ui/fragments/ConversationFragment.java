@@ -24,17 +24,17 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.Account.AccountUtils;
-import org.communiquons.android.comunic.client.data.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
-import org.communiquons.android.comunic.client.data.conversations.ConversationMessage;
+import org.communiquons.android.comunic.client.data.utils.AccountUtils;
+import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAdapter;
-import org.communiquons.android.comunic.client.data.conversations.ConversationMessagesHelper;
-import org.communiquons.android.comunic.client.data.conversations.ConversationRefreshRunnable;
-import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
-import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
-import org.communiquons.android.comunic.client.data.utils.BitmapUtils;
+import org.communiquons.android.comunic.client.data.helpers.ConversationMessagesHelper;
+import org.communiquons.android.comunic.client.data.runnables.ConversationRefreshRunnable;
+import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
+import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;

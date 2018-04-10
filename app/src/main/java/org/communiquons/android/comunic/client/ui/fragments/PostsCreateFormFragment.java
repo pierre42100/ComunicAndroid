@@ -9,16 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.posts.CreatePost;
-import org.communiquons.android.comunic.client.data.posts.PageType;
-import org.communiquons.android.comunic.client.data.posts.Post;
-import org.communiquons.android.comunic.client.data.posts.PostTypes;
-import org.communiquons.android.comunic.client.data.posts.PostVisibilityLevels;
-import org.communiquons.android.comunic.client.data.posts.PostsHelper;
+import org.communiquons.android.comunic.client.data.models.CreatePost;
+import org.communiquons.android.comunic.client.data.enums.PageType;
+import org.communiquons.android.comunic.client.data.models.Post;
+import org.communiquons.android.comunic.client.data.enums.PostTypes;
+import org.communiquons.android.comunic.client.data.enums.PostVisibilityLevels;
+import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
 
 /**
  * Posts creation form

@@ -21,15 +21,15 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.Account.AccountUtils;
-import org.communiquons.android.comunic.client.data.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.UsersInfo.UserInfo;
-import org.communiquons.android.comunic.client.data.conversations.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.utils.AccountUtils;
+import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationsListAdapter;
-import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper;
-import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper.openConversationListener;
-import org.communiquons.android.comunic.client.data.conversations.ConversationsListHelper.updateConversationListener;
+import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
+import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper.openConversationListener;
+import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper.updateConversationListener;
 
 import java.util.ArrayList;
 
