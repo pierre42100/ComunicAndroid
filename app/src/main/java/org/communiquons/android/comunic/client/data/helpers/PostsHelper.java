@@ -3,9 +3,8 @@ package org.communiquons.android.comunic.client.data.helpers;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import org.communiquons.android.comunic.client.api.APIRequest;
-import org.communiquons.android.comunic.client.api.APIRequestParameters;
-import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.CreatePost;
 import org.communiquons.android.comunic.client.data.enums.PageType;
 import org.communiquons.android.comunic.client.data.models.Post;
@@ -63,7 +62,7 @@ public class PostsHelper {
         try {
 
             //Send the request to the server
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             //Check for errors
             if(response.getResponse_code() != 200)
@@ -95,7 +94,7 @@ public class PostsHelper {
         try {
 
             //Make the request on the API
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             //Get the list of posts and process it
             JSONArray posts = response.getJSONArray();
@@ -128,7 +127,7 @@ public class PostsHelper {
         //Intend to perform the request
         try {
 
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             return response.getResponse_code() == 200;
 
@@ -200,7 +199,7 @@ public class PostsHelper {
         try {
 
             //Perform the request
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             //Check for errors
             if(response.getResponse_code() != 200)
@@ -231,7 +230,7 @@ public class PostsHelper {
 
         //Try to perform the request
         try {
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
             return response.getResponse_code() == 200;
         } catch (Exception e) {
             e.printStackTrace();

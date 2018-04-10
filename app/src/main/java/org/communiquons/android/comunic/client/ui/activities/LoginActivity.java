@@ -12,15 +12,16 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.asynctasks.APIRequestTask;
+import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import org.communiquons.android.comunic.client.api.*;
 
 /**
  * Login activity of the application
@@ -52,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         aUtils = new AccountUtils(this);
 
         //Check for connectivity
-        if(!APIRequest.isAPIavailable(this)){
+        if(!APIRequestHelper.isAPIavailable(this)){
             Toast.makeText(this, R.string.err_no_internet_connection, Toast.LENGTH_SHORT).show();
         }
 
@@ -95,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         //Check internet connection
-        if(!APIRequest.isAPIavailable(this)){
+        if(!APIRequestHelper.isAPIavailable(this)){
             show_form_error(getString(R.string.err_no_internet_connection));
             stop = 1;
         }

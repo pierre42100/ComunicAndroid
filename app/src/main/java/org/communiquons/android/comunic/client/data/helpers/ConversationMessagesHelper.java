@@ -4,9 +4,8 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import org.communiquons.android.comunic.client.api.APIRequest;
-import org.communiquons.android.comunic.client.api.APIRequestParameters;
-import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -99,7 +98,7 @@ public class ConversationMessagesHelper {
             params.addString("image", "data:image/png;base64," + image);
 
         try {
-            new APIRequest().exec(params);
+            new APIRequestHelper().exec(params);
             return true;
         } catch (Exception e){
             e.printStackTrace();
@@ -163,7 +162,7 @@ public class ConversationMessagesHelper {
 
         try {
             //Perform the request
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             //Get the list of new messages
             JSONArray messages = response.getJSONArray();

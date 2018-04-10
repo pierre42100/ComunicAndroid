@@ -4,9 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.communiquons.android.comunic.client.api.APIRequest;
-import org.communiquons.android.comunic.client.api.APIRequestParameters;
-import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.Comment;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,7 +58,7 @@ public class CommentsHelper {
         try {
 
             //Try to perform the request
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             //Check and return success
             return response.getJSONObject().getInt("commentID");
@@ -87,7 +86,7 @@ public class CommentsHelper {
         try {
 
             //Perform the request
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             //Process result (if any)
             if(response.getResponse_code() != 200)
@@ -119,7 +118,7 @@ public class CommentsHelper {
 
         //Try to perform the request on the server
         try {
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
             return  response.getResponse_code() == 200;
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,7 +142,7 @@ public class CommentsHelper {
         //Try to perform the request
         try {
 
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             return response.getResponse_code() == 200;
 

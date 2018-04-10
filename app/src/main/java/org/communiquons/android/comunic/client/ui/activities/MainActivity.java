@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.api.APIRequest;
+import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity
         init_bottom_menu();
 
         //Check for connectivity
-        if(!APIRequest.isAPIavailable(this)){
+        if(!APIRequestHelper.isAPIavailable(this)){
             Toast.makeText(this, R.string.err_no_internet_connection, Toast.LENGTH_SHORT).show();
         }
 

@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.api;
+package org.communiquons.android.comunic.client.data.models;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,14 +26,14 @@ public class APIResponse {
     /**
      * Constructor of the API response
      */
-    APIResponse(){}
+    public APIResponse(){}
 
     /**
      * Set response string
      *
      * @param response The request response
      */
-    void setResponse(String response) {
+    public void setResponse(String response) {
         this.response = response;
     }
 
@@ -42,7 +42,7 @@ public class APIResponse {
      *
      * @param response_code The response code
      */
-    void setResponse_code(int response_code) {
+    public void setResponse_code(int response_code) {
         this.response_code = response_code;
     }
 

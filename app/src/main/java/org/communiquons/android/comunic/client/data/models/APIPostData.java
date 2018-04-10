@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.api;
+package org.communiquons.android.comunic.client.data.models;
 
 import java.net.URLEncoder;
 

@@ -6,9 +6,8 @@ import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 import android.util.Log;
 
-import org.communiquons.android.comunic.client.api.APIRequest;
-import org.communiquons.android.comunic.client.api.APIRequestParameters;
-import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.AdvancedUserInfo;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.json.JSONArray;
@@ -134,7 +133,7 @@ public class GetUsersHelper {
 
         //Perform the request
         try {
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             //Parse user informations
             return parse_advanced_user_json(response.getJSONObject());
@@ -253,7 +252,7 @@ public class GetUsersHelper {
         try {
 
             //Get and extract the response
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
             JSONArray array = response.getJSONArray();
 
             //Make response
@@ -297,7 +296,7 @@ public class GetUsersHelper {
         try {
 
             //Perform the request
-            APIResponse result = new APIRequest().exec(requestParameters);
+            APIResponse result = new APIRequestHelper().exec(requestParameters);
 
             if(result != null) {
 

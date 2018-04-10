@@ -3,9 +3,8 @@ package org.communiquons.android.comunic.client.data.helpers;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import org.communiquons.android.comunic.client.api.APIRequest;
-import org.communiquons.android.comunic.client.api.APIRequestParameters;
-import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.data.enums.NotifElemType;
 import org.communiquons.android.comunic.client.data.enums.NotificationTypes;
@@ -57,7 +56,7 @@ public class NotificationsHelper {
         //Try to perform the request and parse results
         try {
 
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             //Try to parse results
             JSONObject object = response.getJSONObject();
@@ -85,7 +84,7 @@ public class NotificationsHelper {
 
         //Try to perform the request on the server
         try {
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
             return response.getResponse_code() == 200;
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,7 +108,7 @@ public class NotificationsHelper {
         try {
 
             //Try to perform the request on the server
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             //Check for errors
             if(response.getResponse_code() != 200)

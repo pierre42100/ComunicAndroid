@@ -6,9 +6,8 @@ import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 import android.util.Log;
 
-import org.communiquons.android.comunic.client.api.APIRequest;
-import org.communiquons.android.comunic.client.api.APIRequestParameters;
-import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
@@ -121,7 +120,7 @@ public class ConversationsListHelper {
 
         //Try to perform request
         try {
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
             JSONObject object = response.getJSONObject();
 
             //Check for conversations ID
@@ -217,7 +216,7 @@ public class ConversationsListHelper {
         params.addString("conversationID", ""+convID);
 
         try {
-            new APIRequest().exec(params);
+            new APIRequestHelper().exec(params);
         } catch (Exception e){
             return false;
         }
@@ -251,7 +250,7 @@ public class ConversationsListHelper {
 
         //Perform the request
         try {
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             //Get conversation ID
             JSONObject obj = response.getJSONObject();
@@ -306,7 +305,7 @@ public class ConversationsListHelper {
         try {
 
             //Try to perform the request
-            new APIRequest().exec(params);
+            new APIRequestHelper().exec(params);
 
             //Delete the conversation from the local database to force it to be refreshed
             //on next load
@@ -334,7 +333,7 @@ public class ConversationsListHelper {
 
             //Prepare the request on the server
             APIRequestParameters params = new APIRequestParameters(mContext, "conversations/getList");
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             //Check if an error occurred
             JSONArray friends = response.getJSONArray();
@@ -373,7 +372,7 @@ public class ConversationsListHelper {
 
         try {
 
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             JSONObject object = response.getJSONObject();
 

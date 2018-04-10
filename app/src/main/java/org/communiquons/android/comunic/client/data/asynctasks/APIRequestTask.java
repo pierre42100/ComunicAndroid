@@ -2,9 +2,9 @@ package org.communiquons.android.comunic.client.data.asynctasks;
 
 import android.os.AsyncTask;
 
-import org.communiquons.android.comunic.client.api.APIRequest;
-import org.communiquons.android.comunic.client.api.APIRequestParameters;
-import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 
 /**
  * Perform an API request on the server
@@ -33,7 +33,7 @@ public abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Voi
 
         try {
             //Perform the API request
-            APIRequest req = new APIRequest();
+            APIRequestHelper req = new APIRequestHelper();
             return req.exec(params[0]);
         } catch (Exception e) {
             e.printStackTrace();

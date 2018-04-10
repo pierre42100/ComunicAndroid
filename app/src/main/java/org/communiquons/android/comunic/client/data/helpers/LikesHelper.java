@@ -2,9 +2,8 @@ package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.Context;
 
-import org.communiquons.android.comunic.client.api.APIRequest;
-import org.communiquons.android.comunic.client.api.APIRequestParameters;
-import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.enums.LikesType;
 
 /**
@@ -64,7 +63,7 @@ public class LikesHelper {
 
         //Intend to perform the request
         try {
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
 
             return response.getResponse_code() == 200;
 

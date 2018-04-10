@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.api;
+package org.communiquons.android.comunic.client.data.models;
 
 import android.content.Context;
 
@@ -81,7 +81,7 @@ public class APIRequestParameters {
      *
      * @return The request URI
      */
-    String getRequest_uri() {
+    public String getRequest_uri() {
         return request_uri;
     }
 
@@ -91,7 +91,7 @@ public class APIRequestParameters {
      *
      * @return A string
      */
-    String get_parameters_encoded(){
+    public String get_parameters_encoded(){
 
         //Return string
         String result = "";

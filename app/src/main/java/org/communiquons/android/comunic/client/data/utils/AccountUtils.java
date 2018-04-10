@@ -2,9 +2,9 @@ package org.communiquons.android.comunic.client.data.utils;
 
 import android.content.Context;
 
-import org.communiquons.android.comunic.client.api.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
 import org.communiquons.android.comunic.client.data.asynctasks.APIRequestTask;
-import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.json.JSONObject;
 
 /**

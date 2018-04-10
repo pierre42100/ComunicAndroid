@@ -4,9 +4,8 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import org.communiquons.android.comunic.client.api.APIRequest;
-import org.communiquons.android.comunic.client.api.APIRequestParameters;
-import org.communiquons.android.comunic.client.api.APIResponse;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.Friend;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -78,7 +77,7 @@ public class FriendsListHelper {
         try {
 
             //Perform the request and retrieve the response
-            APIResponse response = new APIRequest().exec(params);
+            APIResponse response = new APIRequestHelper().exec(params);
             JSONArray friendsList = response.getJSONArray();
 
             if(friendsList == null)
@@ -123,7 +122,7 @@ public class FriendsListHelper {
             //Remove the friend online
             APIRequestParameters delparams = new APIRequestParameters(mContext, "friends/remove");
             delparams.addString("friendID", ""+friend.getId());
-            new APIRequest().exec(delparams);
+            new APIRequestHelper().exec(delparams);
 
             //Remove the friend from the local database
             fdbHelper.delete_friend(friend);
@@ -148,7 +147,7 @@ public class FriendsListHelper {
                     "friends/respondRequest");
             reqParams.addInt("friendID", friend.getId());
             reqParams.addString("accept", accept ? "true" : "false");
-            new APIRequest().exec(reqParams);
+            new APIRequestHelper().exec(reqParams);
 
             //Update the friend in the local database
             if(accept) {

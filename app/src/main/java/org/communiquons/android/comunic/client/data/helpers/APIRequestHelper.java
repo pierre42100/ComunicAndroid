@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.api;
+package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -6,6 +6,8 @@ import android.net.NetworkInfo;
 
 import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
+import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -28,12 +30,12 @@ import java.util.ArrayList;
  * Created by pierre on 11/12/17.
  */
 
-public class APIRequest {
+public class APIRequestHelper {
 
     /**
      * Public constructor
      */
-    public APIRequest(){
+    public APIRequestHelper(){
 
     }
 
