@@ -37,6 +37,11 @@ public enum NotificationTypes {
     /**
      * When an element is updated
      */
-    ELEM_UPDATED
+    ELEM_UPDATED,
+
+    /**
+     * Unknown notification type
+     */
+    UNKNOWN
 
 }

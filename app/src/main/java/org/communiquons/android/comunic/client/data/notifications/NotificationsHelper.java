@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import org.communiquons.android.comunic.client.api.APIRequest;
 import org.communiquons.android.comunic.client.api.APIRequestParameters;
 import org.communiquons.android.comunic.client.api.APIResponse;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -85,4 +87,163 @@ public class NotificationsHelper {
         }
     }
 
+    /**
+     * Get the list of unread notifications
+     *
+     * @return TRUE in case of success / FALSE else
+     */
+    @Nullable
+    public NotifsList getListUnread(){
+
+        //Perform a request on the server
+        APIRequestParameters params = new APIRequestParameters(mContext,
+                "notifications/get_list_unread");
+
+        //Try to perform the request on the server
+        try {
+
+            //Try to perform the request on the server
+            APIResponse response = new APIRequest().exec(params);
+
+            //Check for errors
+            if(response.getResponse_code() != 200)
+                return null;
+
+            //Parse the results
+            JSONArray array = response.getJSONArray();
+            NotifsList list = new NotifsList();
+            for (int i = 0; i < array.length(); i++){
+                list.add(parseNotifJSONObject(array.getJSONObject(i)));
+            }
+
+            //Return the list of notifications
+            return list;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    /**
+     * Parse a JSON object into a Notif object
+     *
+     * @param object The JSON object
+     * @return The generated notif (notification) object
+     * @throws JSONException If an error occurred while trying to parse the information
+     */
+    private Notif parseNotifJSONObject(JSONObject object) throws JSONException {
+
+        Notif notif = new Notif();
+
+        //Parse object information
+        notif.setId(object.getInt("id"));
+        notif.setTime_create(object.getInt("time_create"));
+        notif.setSeen(object.getBoolean("seen"));
+        notif.setFrom_user_id(object.getInt("from_user_id"));
+        notif.setDest_user_id(object.getInt("dest_user_id"));
+        notif.setOn_elem_id(object.getInt("on_elem_id"));
+        notif.setOn_elem_type(getNotifElemTypeFromString(object.getString("on_elem_type")));
+        notif.setType(getNotifTypeFromString(object.getString("type")));
+        notif.setVisibility(getNotifVisiblityFromString(object.getString("event_visibility")));
+        notif.setFrom_container_id(object.getInt("from_container_id"));
+        notif.setFrom_container_type(getNotifElemTypeFromString(object.getString("from_container_type")));
+
+        return notif;
+
+    }
+
+    /**
+     * Determine notification element type from a string
+     *
+     * @param string The string to parse
+     * @return Matching element type
+     */
+    private NotifElemType getNotifElemTypeFromString(String string){
+
+        switch (string){
+
+            case "user_page":
+                return NotifElemType.USER_PAGE;
+
+            case "conversation":
+                return NotifElemType.CONVERSATION;
+
+            case "conversation_message":
+                return NotifElemType.CONVERSATION_MESSAGE;
+
+            case "post":
+                return NotifElemType.POST;
+
+            case "comment":
+                return NotifElemType.COMMENT;
+
+            case "friend_request":
+                return NotifElemType.FRIEND_REQUEST;
+
+            //Default : unknown type of elem
+            default:
+                return NotifElemType.UNKNOWN;
+        }
+
+    }
+
+    /**
+     * Turn a string into a notifications types value
+     *
+     * @param string The input string
+     * @return Matching notification type
+     */
+    private NotificationTypes getNotifTypeFromString(String string){
+
+        switch (string){
+
+            case "comment_created":
+                return NotificationTypes.COMMENT_CREATED;
+
+            case "sent_friend_request":
+                return NotificationTypes.SENT_FRIEND_REQUEST;
+
+            case "accepted_friend_request":
+                return NotificationTypes.ACCEPTED_FRIEND_REQUEST;
+
+            case "rejected_friend_request":
+                return NotificationTypes.REJECTED_FRIEND_REQUEST;
+
+            case "elem_created":
+                return NotificationTypes.ELEM_CREATED;
+
+            case "elem_updated":
+                return NotificationTypes.ELEM_UPDATED;
+
+            //Default : Unknown notification type
+            default:
+                return NotificationTypes.UNKNOWN;
+        }
+
+    }
+
+    /**
+     * Turn a string into a notification visibility value
+     *
+     * @param string The input string
+     * @return Matching notification visibility
+     */
+    private NotificationVisibility getNotifVisiblityFromString(String string){
+
+        switch (string){
+
+            case "event_public":
+                return NotificationVisibility.EVENT_PUBLIC;
+
+            case "event_private":
+                return NotificationVisibility.EVENT_PRIVATE;
+
+            //In case the visibility was not found
+            default:
+                return NotificationVisibility.UNKNOWN;
+        }
+
+    }
 }

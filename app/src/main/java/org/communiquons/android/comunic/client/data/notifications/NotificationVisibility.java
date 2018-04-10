@@ -17,6 +17,11 @@ public enum NotificationVisibility {
     /**
      * When a notification is targeting several users
      */
-    EVENT_PUBLIC
+    EVENT_PUBLIC,
+
+    /**
+     * Unknown visibility
+     */
+    UNKNOWN
 
 }

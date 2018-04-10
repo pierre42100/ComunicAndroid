@@ -37,6 +37,11 @@ public enum NotifElemType {
     /**
      * On a friendship request
      */
-    FRIEND_REQUEST
+    FRIEND_REQUEST,
+
+    /**
+     * Unknown type
+     */
+    UNKNOWN
 
 }
