@@ -10,11 +10,17 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.UsersInfo.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.notifications.NotificationsHelper;
+import org.communiquons.android.comunic.client.data.notifications.NotifsList;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
+import org.communiquons.android.comunic.client.ui.adapters.NotificationsAdapter;
 
 /**
  * Notifications fragment
@@ -31,9 +37,35 @@ public class NotificationsFragment extends Fragment {
     private NotificationsHelper mNotificationsHelper;
 
     /**
+     * Get users helper
+     */
+    private GetUsersHelper mUsersInfoHelper;
+
+    /**
+     * Notifications list
+     */
+    private NotifsList mNotificationsList;
+
+    /**
      * Delete all the notifications button
      */
     private View mDeleteNotificationsBtn;
+
+    /**
+     * Notifications list view
+     */
+    private ListView mNotificationsListView;
+
+    /**
+     * Notifications adapter
+     */
+    private NotificationsAdapter mNotificationsAdapter;
+
+    /**
+     * Loading progress bar
+     */
+    private ProgressBar mLoadingProgress;
+
 
     @Override
     public void onAttach(Context context) {
@@ -41,6 +73,9 @@ public class NotificationsFragment extends Fragment {
 
         //Create notifications helper
         mNotificationsHelper = new NotificationsHelper(context);
+
+        //Create get users helper
+        mUsersInfoHelper = new GetUsersHelper(context);
     }
 
     @Nullable
@@ -53,6 +88,9 @@ public class NotificationsFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Get loading progress view
+        mLoadingProgress = view.findViewById(R.id.loading_progress);
+
         //Delete all the notifications action
         mDeleteNotificationsBtn = view.findViewById(R.id.delete_all_notif_btn);
         mDeleteNotificationsBtn.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +99,9 @@ public class NotificationsFragment extends Fragment {
                 confirmNotificationsDeletion();
             }
         });
+
+        //Get the notifications list view
+        mNotificationsListView = view.findViewById(R.id.notificcation_list);
     }
 
     @Override
@@ -73,6 +114,17 @@ public class NotificationsFragment extends Fragment {
         //Update the bottom navigation menu
         ((MainActivity) getActivity())
                 .setSelectedNavigationItem(R.id.main_bottom_navigation_notif);
+
+        //Check if it is required to fetch the list of notifications
+        if(mNotificationsList == null){
+
+            //Get the list of notifications
+            getListNotifications();
+
+        }
+        else
+            //Display the list of notifications
+            displayNotificationsList();
     }
 
     /**
@@ -131,5 +183,67 @@ public class NotificationsFragment extends Fragment {
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
+    }
+
+    /**
+     * Get and save the list of notifications from the server
+     */
+    private void getListNotifications(){
+
+        //Perform the task on a separate thread
+        new AsyncTask<Void, Void, NotifsList>(){
+
+            @Override
+            protected NotifsList doInBackground(Void... params) {
+
+                NotifsList list = mNotificationsHelper.getListUnread();
+
+                //If we got the list of notifications, fetch users information
+                if(list != null)
+                    list.setUsersInfo(mUsersInfoHelper.getMultiple(list.getUsersID()));
+
+                return list;
+
+            }
+
+            @Override
+            protected void onPostExecute(@Nullable NotifsList notifs) {
+
+                //Check if the activity has been destroyed
+                if(getActivity() == null)
+                    return;
+
+                //Check if we could not get the list of notifications
+                if(notifs == null){
+                    Toast.makeText(getActivity(), R.string.err_get_list_notifs,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //Check if we could not get information about the users of the notifications
+                if(notifs.getUsersInfo() == null){
+                    Toast.makeText(getActivity(), R.string.err_get_users_info,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //Save the list of notifications and display it
+                mNotificationsList = notifs;
+                displayNotificationsList();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * Display the list of notifications
+     */
+    private void displayNotificationsList(){
+
+        //Hide loading progress bar
+        mLoadingProgress.setVisibility(View.GONE);
+
+        //Create notification adapter
+        mNotificationsAdapter = new NotificationsAdapter(getActivity(), mNotificationsList);
+        mNotificationsListView.setAdapter(mNotificationsAdapter);
     }
 }

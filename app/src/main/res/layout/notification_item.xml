@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp">
+
+    <!-- User image -->
+    <ImageView
+        android:id="@+id/user_account_image"
+        android:layout_width="@dimen/account_image_default_width"
+        android:layout_height="@dimen/account_image_default_height"
+        android:src="@drawable/default_account_image"
+        android:contentDescription="@string/user_image_description"
+        android:layout_marginEnd="10dp"/>
+
+    <!-- Message -->
+    <TextView
+        android:id="@+id/notification_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="Notification message content from a user. This message might be long"
+        android:layout_gravity="center"/>
+
+    <!-- Date of the message -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/ic_menu_my_calendar"/>
+
+        <TextView
+            android:id="@+id/notification_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="1min" />
+
+    </LinearLayout>
+
+</LinearLayout>

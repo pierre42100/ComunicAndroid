@@ -156,4 +156,5 @@
     <string name="dialog_deleteallnotifs_confirm">Yes</string>
     <string name="err_delete_all_notifs">An error occurred while trying to delete the entire list of notifications!</string>
     <string name="success_delete_all_notifs">All the notifications have been deleted!</string>
+    <string name="err_get_list_notifs">An error occurred while trying to get the list of notifications !</string>
 </resources>

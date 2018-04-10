@@ -43,6 +43,15 @@ public class GetUsersHelper {
     /**
      * Public constructor of the class
      *
+     * @param context The context of the application
+     */
+    public GetUsersHelper(@NonNull Context context){
+        this(context, DatabaseHelper.getInstance(context));
+    }
+
+    /**
+     * Public constructor of the class
+     *
      * @param context The context of execution of the application
      * @param udbHelper User database helper
      */
@@ -137,11 +146,11 @@ public class GetUsersHelper {
     }
 
     /**
-     * Get the list of missing users ID in a set of users informations
+     * Get the list of missing users ID in a set of users information
      *
      * @param IDs The reference IDs list
-     * @param usersInfo Informations about the users
-     * @return
+     * @param usersInfo Information about the users
+     * @return The list of missing IDs
      */
     public static ArrayList<Integer> get_missing_ids(@NonNull ArrayList<Integer> IDs,
                                                      @NonNull ArrayMap<Integer, UserInfo> usersInfo){
@@ -299,12 +308,12 @@ public class GetUsersHelper {
                     //Process each user ID
                     for(int userID : IDs) {
 
-                        UserInfo userInfos = null;
+                        UserInfo userInfos;
 
                         //Extract user object
                         JSONObject userObject = userObjectContainer.getJSONObject(""+userID);
 
-                        //Continue only if we could extract required informations
+                        //Continue only if we could extract required information
                         if (userObject != null) {
                             //Parse user information
                             userInfos = parse_user_json(userObject);
