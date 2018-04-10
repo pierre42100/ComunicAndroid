@@ -112,9 +112,9 @@ public class MainActivity extends AppCompatActivity
         //Initialize conversation list helper
         conversationsListHelper = new ConversationsListHelper(this, dbHelper);
 
-        //If it is the first time the application is launched, start the user friends tab
+        //If it is the first time the application is launched, open notifications fragment
         if(savedInstanceState == null){
-            openFriendsFragment();
+            openNotificationsFragment();
         }
     }
 

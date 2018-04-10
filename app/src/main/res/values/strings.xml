@@ -149,4 +149,11 @@
     <string name="preference_background_notif_summary">This allow you to stay informed about the latest notifications on Comunic by checking at a regular interval the existence of notifications, even if the application is closed.</string>
     <string name="notification_notif_available_title">New activity on Comunic</string>
     <string name="notification_notif_available_content"> %1$d notification(s) and %2$d unread conversations(s)</string>
+    <string name="action_delete_all_notifications">Delete all the notifications</string>
+    <string name="dialog_deleteallnotifs_title">Delete all the notifications</string>
+    <string name="dialog_deleteallnotifs_message">Are you sure do you want to delete all the notifications ? This can not be undone!</string>
+    <string name="dialog_deleteallnotifs_cancel">No</string>
+    <string name="dialog_deleteallnotifs_confirm">Yes</string>
+    <string name="err_delete_all_notifs">An error occurred while trying to delete the entire list of notifications!</string>
+    <string name="success_delete_all_notifs">All the notifications have been deleted!</string>
 </resources>

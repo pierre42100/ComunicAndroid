@@ -64,4 +64,25 @@ public class NotificationsHelper {
         }
     }
 
+    /**
+     * Intend to delete the entire list of notifications
+     *
+     * @return TRUE in case of success / FALSE else
+     */
+    public boolean deleteAllNotifs(){
+
+        //Perform a request on the server
+        APIRequestParameters params = new APIRequestParameters(mContext,
+                "notifications/delete_all");
+
+        //Try to perform the request on the server
+        try {
+            APIResponse response = new APIRequest().exec(params);
+            return response.getResponse_code() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
