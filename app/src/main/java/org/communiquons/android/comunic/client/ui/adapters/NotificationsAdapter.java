@@ -16,6 +16,7 @@ import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.data.arrays.NotifsList;
+import org.communiquons.android.comunic.client.data.utils.NotifsUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 /**
@@ -72,6 +73,9 @@ public class NotificationsAdapter extends ArrayAdapter<Notif>{
         ImageLoadHelper.load(getContext(),
                 mUsersInfo.get(notif.getFrom_user_id()).getAcountImageURL(), image);
 
+        //Update the message of the notification
+        TextView message = convertView.findViewById(R.id.notification_message);
+        message.setText(NotifsUtils.getNotificationMessage(getContext(), notif, mUsersInfo));
 
         //Update the date of the notification
         TextView date = convertView.findViewById(R.id.notification_date);
