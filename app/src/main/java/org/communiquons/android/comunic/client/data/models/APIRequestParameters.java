@@ -29,6 +29,11 @@ public class APIRequestParameters {
     private String request_uri;
 
     /**
+     * Set if the connection should be parsed even in case of error
+     */
+    private boolean tryContinueOnError = false;
+
+    /**
      * The class constructor
      *
      * @param context The context of the request
@@ -114,5 +119,23 @@ public class APIRequestParameters {
      */
     public Context getContext() {
         return context;
+    }
+
+    /**
+     * Set whether the response should be parsed even in case of error
+     *
+     * @param tryContinueOnError TRUE to continue / FALSE else
+     */
+    public void setTryContinueOnError(boolean tryContinueOnError) {
+        this.tryContinueOnError = tryContinueOnError;
+    }
+
+    /**
+     * Check whether the connection should be maintained even in case of error
+     *
+     * @return TRUE if the request should be maintained / FALSE else
+     */
+    public boolean isTryContinueOnError() {
+        return tryContinueOnError;
     }
 }

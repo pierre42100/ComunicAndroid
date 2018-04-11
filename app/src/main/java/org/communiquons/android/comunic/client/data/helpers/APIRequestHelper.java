@@ -45,7 +45,7 @@ public class APIRequestHelper {
      * @param parameters The parameters to pass to the server
      * @return The result of the request
      */
-    public APIResponse exec(APIRequestParameters parameters) throws Exception{
+    public APIResponse exec(APIRequestParameters parameters) throws Exception {
 
         //Add API and login tokens
         addAPItokens(parameters);
@@ -54,6 +54,7 @@ public class APIRequestHelper {
         APIResponse result = new APIResponse();
 
         InputStream is = null;
+        HttpURLConnection conn = null;
 
         try {
 
@@ -61,7 +62,7 @@ public class APIRequestHelper {
             URL url = new URL(BuildConfig.api_url + parameters.getRequest_uri());
 
             //The request is being performed on an http server
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
 
             //Configure the connection
             conn.setReadTimeout(3000);
@@ -91,6 +92,20 @@ public class APIRequestHelper {
             result.setResponse(response);
 
             conn.disconnect();
+
+        } catch (Exception e){
+
+            e.printStackTrace();
+
+            //Check for response code
+            if(conn != null && parameters.isTryContinueOnError()){
+                //Get response code
+                result.setResponse_code(conn.getResponseCode());
+            }
+
+            //Else we throw an exception
+            else
+                throw new Exception("An exception occurred while trying to connect to server !");
 
         } finally {
             //Close streams
