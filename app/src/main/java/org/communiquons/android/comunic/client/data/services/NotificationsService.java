@@ -31,6 +31,16 @@ public class NotificationsService extends IntentService {
     private static final String TAG = "NotificationsService";
 
     /**
+     * Notification channel ID
+     */
+    private final String CHANNEL_ID = "MainNotifChannel";
+
+    /**
+     * Main notification ID
+     */
+    private final static int MAIN_NOTIFICATION_ID = 0;
+
+    /**
      * Keep run status
      */
     private boolean run;
@@ -40,15 +50,12 @@ public class NotificationsService extends IntentService {
      */
     private NotificationsHelper mNotifHelper;
 
-    /**
-     * Notification channel ID
-     */
-    private final String CHANNEL_ID = "MainNotifChannel";
 
     /**
-     * Main notification ID
+     * Last notification count
      */
-    private final static int MAIN_NOTIFICATION_ID = 0;
+    private NotificationsCount mLastCount;
+
 
     /**
      * Public constructor
@@ -105,8 +112,18 @@ public class NotificationsService extends IntentService {
 
             if(count.getNotificationsCount() > 0 || count.getConversationsCount() > 0){
 
-                //Show notification
-                showNotification(count);
+                //Check notification count
+                if(mLastCount != null){
+
+                    //Check if it is required to push a new notification
+                    if(mLastCount.getNotificationsCount() != count.getNotificationsCount()
+                            || mLastCount.getConversationsCount() != count.getConversationsCount())
+
+                        showNotification(count);
+                }
+                else
+                    //Show notification
+                    showNotification(count);
             }
 
             else {
@@ -115,6 +132,9 @@ public class NotificationsService extends IntentService {
                 removeNotification();
 
             }
+
+            //Save last notifications count
+            mLastCount = count;
 
         }
 
