@@ -157,4 +157,11 @@
     <string name="err_delete_all_notifs">An error occurred while trying to delete the entire list of notifications!</string>
     <string name="success_delete_all_notifs">All the notifications have been deleted!</string>
     <string name="err_get_list_notifs">An error occurred while trying to get the list of notifications !</string>
+    <string name="notif_sent_friend_request">sent you a friendship request.</string>
+    <string name="notif_accepted_friend_request">accepted your friendship request.</string>
+    <string name="notif_rejected_friend_request">rejected your friendship request.</string>
+    <string name="notif_created_post">created a new post</string>
+    <string name="notif_posted_comment">posted a comment</string>
+    <string name="notif_on_creator_page">on his / her page</string>
+    <string name="notif_on_user_page">on %1$s\'s page</string>
 </resources>

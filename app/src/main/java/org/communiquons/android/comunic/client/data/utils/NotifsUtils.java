@@ -3,10 +3,12 @@ package org.communiquons.android.comunic.client.data.utils;
 import android.content.Context;
 import android.util.ArrayMap;
 
+import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.enums.NotifElemType;
 import org.communiquons.android.comunic.client.data.enums.NotificationTypes;
 import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
 /**
  * Notifications utilities
@@ -34,24 +36,24 @@ public class NotifsUtils {
 
         //For friendship request
         if(notif.getType() == NotificationTypes.SENT_FRIEND_REQUEST)
-            message += "sent you a friendship request.";
+            message += UiUtils.getString(context, R.string.notif_sent_friend_request);
         if(notif.getType() == NotificationTypes.ACCEPTED_FRIEND_REQUEST)
-            message += "accepted your friendship request.";
+            message += UiUtils.getString(context, R.string.notif_accepted_friend_request);
         if(notif.getType() == NotificationTypes.REJECTED_FRIEND_REQUEST)
-            message += "rejected your friendship request.";
+            message += UiUtils.getString(context, R.string.notif_rejected_friend_request);
 
         //In case of creation of an element
         if(notif.getType() == NotificationTypes.ELEM_CREATED){
 
             //For the posts
             if(notif.getOn_elem_type() == NotifElemType.POST)
-                message += "created a new post";
+                message += UiUtils.getString(context, R.string.notif_created_post);
 
         }
 
         //For comments creation
         if(notif.getType() == NotificationTypes.COMMENT_CREATED){
-            message += "posted a comment";
+            message += UiUtils.getString(context, R.string.notif_posted_comment);
         }
 
         //Add a separator
@@ -62,10 +64,10 @@ public class NotifsUtils {
         if(notif.getFrom_container_type() == NotifElemType.USER_PAGE){
 
             if(notif.getFrom_user_id() == notif.getFrom_container_id())
-                message += "on his / her page";
+                message += UiUtils.getString(context, R.string.notif_on_creator_page);
             else
-                message += "on " + userInfos.get(notif.getFrom_container_id()).getDisplayFullName()
-                        + "'s page";
+                message += UiUtils.getString(context, R.string.notif_on_user_page,
+                        userInfos.get(notif.getFrom_container_id()).getDisplayFullName());
 
         }
 
