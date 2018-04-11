@@ -72,6 +72,29 @@ public class NotificationsHelper {
     }
 
     /**
+     * Mark a notification as seen
+     *
+     * @param notifID The ID of the target notification
+     * @return TRUE in case of success / FALSE else
+     */
+    public boolean markSeen(int notifID){
+
+        //Perform a request on the server
+        APIRequestParameters params = new APIRequestParameters(mContext, "notifications/mark_seen");
+        params.addInt("notifID", notifID);
+
+        //Try to send the request to the server
+        try {
+            APIResponse response = new APIRequestHelper().exec(params);
+            return response.getResponse_code() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    /**
      * Intend to delete the entire list of notifications
      *
      * @return TRUE in case of success / FALSE else

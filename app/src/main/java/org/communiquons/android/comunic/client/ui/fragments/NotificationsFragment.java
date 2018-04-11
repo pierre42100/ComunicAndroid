@@ -7,9 +7,13 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -28,7 +32,7 @@ import org.communiquons.android.comunic.client.ui.adapters.NotificationsAdapter;
  * Created by pierre on 4/1/18.
  */
 
-public class NotificationsFragment extends Fragment {
+public class NotificationsFragment extends Fragment implements View.OnCreateContextMenuListener {
 
     /**
      * Notifications helper
@@ -244,5 +248,71 @@ public class NotificationsFragment extends Fragment {
         //Create notification adapter
         mNotificationsAdapter = new NotificationsAdapter(getActivity(), mNotificationsList);
         mNotificationsListView.setAdapter(mNotificationsAdapter);
+
+        //Set context menu creator
+        mNotificationsListView.setOnCreateContextMenuListener(this);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        //Check the context menu is targeting the list view
+        if(v != mNotificationsListView)
+            return;
+
+        //Inflate the menu
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.menu_notification_actions, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        //Fetch source item
+        AdapterView.AdapterContextMenuInfo src
+                = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        //Check if the action is to delete the notification
+        if(item.getItemId() == R.id.action_delete){
+            deleteNotification(src.position);
+            return true;
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+    /**
+     * Delete the notification located at a specified position
+     *
+     * @param pos The position of the notification to delete
+     */
+    private void deleteNotification(int pos){
+
+        //Get the ID of the notification
+        int notifID = mNotificationsList.get(pos).getId();
+        
+        //Delete the notification from the list
+        mNotificationsList.remove(pos);
+        mNotificationsAdapter.notifyDataSetChanged();
+
+        //Delete the notification from the server
+        new AsyncTask<Integer, Void, Boolean>(){
+
+            @Override
+            protected Boolean doInBackground(Integer... params) {
+                return mNotificationsHelper.markSeen(params[0]);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                if(getActivity() == null)
+                    return;
+
+                //Check for errors
+                if(!aBoolean)
+                    Toast.makeText(getActivity(), R.string.err_delete_notification,
+                            Toast.LENGTH_SHORT).show();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, notifID);
     }
 }
