@@ -19,9 +19,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.enums.NotifElemType;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.helpers.NotificationsHelper;
 import org.communiquons.android.comunic.client.data.arrays.NotifsList;
+import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.NotificationsAdapter;
 
@@ -32,7 +34,8 @@ import org.communiquons.android.comunic.client.ui.adapters.NotificationsAdapter;
  * Created by pierre on 4/1/18.
  */
 
-public class NotificationsFragment extends Fragment implements View.OnCreateContextMenuListener {
+public class NotificationsFragment extends Fragment implements View.OnCreateContextMenuListener,
+        AdapterView.OnItemClickListener {
 
     /**
      * Notifications helper
@@ -69,6 +72,10 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
      */
     private ProgressBar mLoadingProgress;
 
+    /**
+     * User page opener
+     */
+    private GetUsersHelper.onOpenUsersPageListener mUserPageOpener;
 
     @Override
     public void onAttach(Context context) {
@@ -117,6 +124,9 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
         //Update the bottom navigation menu
         ((MainActivity) getActivity())
                 .setSelectedNavigationItem(R.id.main_bottom_navigation_notif);
+
+        //Get user page opener
+        mUserPageOpener = (GetUsersHelper.onOpenUsersPageListener) getActivity();
 
         //Check if it is required to fetch the list of notifications
         if(mNotificationsList == null){
@@ -251,6 +261,7 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
 
         //Set context menu creator
         mNotificationsListView.setOnCreateContextMenuListener(this);
+        mNotificationsListView.setOnItemClickListener(this);
     }
 
     @Override
@@ -314,5 +325,24 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
                             Toast.LENGTH_SHORT).show();
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, notifID);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        //Delete the notification
+        //deleteNotification(position);
+
+        //Perform notification action
+        Notif notif = mNotificationsList.get(position);
+
+        //For friendship request
+        if(notif.getOn_elem_type() == NotifElemType.FRIEND_REQUEST){
+
+            //Open user page
+            mUserPageOpener.openUserPage(notif.getFrom_user_id());
+
+        }
+
     }
 }

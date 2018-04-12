@@ -24,6 +24,7 @@ import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
+import org.communiquons.android.comunic.client.ui.fragments.UserAccessDeniedFragment;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
@@ -335,6 +336,36 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, userPageFragment);
         transaction.addToBackStack(null);
+        transaction.commit();
+
+    }
+
+    /**
+     * Open the page of a user for which the access has been denied
+     *
+     * @param userID The ID of the target user
+     */
+    @Override
+    public void openUserAccessDeniedPage(int userID) {
+
+        //Prepare the argument
+        Bundle args = new Bundle();
+        args.putInt(UserAccessDeniedFragment.ARGUMENT_USER_ID, userID);
+
+        //Create fragment
+        UserAccessDeniedFragment userAccessDeniedFragment = new UserAccessDeniedFragment();
+        userAccessDeniedFragment.setArguments(args);
+
+        //Remove the last entry of the backstack
+        //This is important in order to avoid to get the user unable to quit the page.
+        //Because it would get the user back to the user page fragment which would
+        //redirect immediately to this fragment indefinitely.
+        getFragmentManager().popBackStackImmediate();
+
+        //Perform the transition
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.main_fragment, userAccessDeniedFragment);
         transaction.commit();
 
     }

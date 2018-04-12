@@ -7,7 +7,7 @@
     <color name="holo_green_dark">#ff669900</color>
     <color name="darker_gray">#aaa</color>
     <color name="darker_darker_gray">#5b5b5b</color>
-    <color name="dark_blue">#303F9F</color>
+    <color name="dark_blue">#303f9f</color>
 
     <!-- Conversation messages -->
     <color name="conversation_user_messages_background">#3F51B5</color>

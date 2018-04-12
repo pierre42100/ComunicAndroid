@@ -50,7 +50,7 @@
     <string name="date_m">m</string>
     <string name="date_s">s</string>
     <string name="date_hours">date_hours</string>
-    <string name="err_get_user_info">Couldn\'t get user information !</string>
+    <string name="err_get_user_info">Could not get user information !</string>
     <string name="fragment_conversation_err_load_message">Could not load messages!</string>
     <string name="fragment_conversation_message_image">Conversation message image</string>
     <string name="conversation_message_send">Send</string>
@@ -166,4 +166,10 @@
     <string name="notif_on_user_page">on %1$s\'s page</string>
     <string name="action_delete_notification">Delete</string>
     <string name="err_delete_notification">An error occurred while trying to delete the notification!</string>
+    <string name="notice_user_page_private">This account is private.</string>
+    <string name="button_send_friend_request">Send request</string>
+    <string name="button_cancel_friend_request">Cancel request</string>
+    <string name="button_accept_friend_request">Accept request</string>
+    <string name="button_reject_friend_request">Reject request</string>
+    <string name="err_get_friendship_status">An error occurred while retrieving friendship status!</string>
 </resources>

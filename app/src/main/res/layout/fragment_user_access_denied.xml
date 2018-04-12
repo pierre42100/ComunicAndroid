@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Basic account information -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp">
+
+        <ImageView
+            android:id="@+id/user_account_image"
+            android:layout_width="@dimen/account_image_default_width"
+            android:layout_height="@dimen/account_image_default_height"
+            android:src="@drawable/default_account_image"
+            android:contentDescription="@string/user_image_description"
+            android:layout_marginEnd="10dp"/>
+
+        <TextView
+            android:id="@+id/user_account_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="User account name"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+
+
+
+    <!-- Available actions -->
+    <LinearLayout
+        android:id="@+id/buttons_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="0dp">
+
+        <Button
+            android:id="@+id/button_send_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_send_friend_request"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <Button
+            android:id="@+id/button_cancel_request"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_cancel_friend_request"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_send_request" />
+
+        <Button
+            android:id="@+id/button_accept_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_accept_friend_request"
+            app:layout_constraintTop_toBottomOf="@+id/button_cancel_request"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <Button
+            android:id="@+id/button_reject_request"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_reject_friend_request"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_accept_request" />
+    </LinearLayout>
+
+    <!-- Account private notice -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="@string/notice_user_page_private"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttons_list"
+        android:layout_marginBottom="8dp" />
+
+</android.support.constraint.ConstraintLayout>

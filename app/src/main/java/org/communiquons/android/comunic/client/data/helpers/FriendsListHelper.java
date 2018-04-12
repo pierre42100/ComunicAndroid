@@ -7,6 +7,7 @@ import android.util.Log;
 import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.Friend;
+import org.communiquons.android.comunic.client.data.models.FriendshipStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -142,7 +143,7 @@ public class FriendsListHelper {
     public void respondRequest(Friend friend, boolean accept){
         try {
 
-            //Perform a request to update the satus online
+            //Perform a request to update the status online
             APIRequestParameters reqParams = new APIRequestParameters(mContext,
                     "friends/respondRequest");
             reqParams.addInt("friendID", friend.getId());
@@ -162,5 +163,44 @@ public class FriendsListHelper {
             Log.e(TAG, "Couldn't respond to friendship request !");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Get a friendship status
+     *
+     * @param friendID The ID of the target friend
+     * @return Information about the friendship / null in case of failure
+     */
+    @Nullable
+    public FriendshipStatus getFrienshipStatus(int friendID) {
+
+        //Perform a request on the API
+        APIRequestParameters params = new APIRequestParameters(mContext, "friends/getStatus");
+        params.addInt("friendID", friendID);
+
+        try {
+
+            //Get the response
+            APIResponse response = new APIRequestHelper().exec(params);
+
+            //Check for errors
+            if(response.getResponse_code() != 200)
+                return null;
+
+            //Parse the response
+            JSONObject object = response.getJSONObject();
+            FriendshipStatus status = new FriendshipStatus();
+            status.setAreFriend(object.getBoolean("are_friend"));
+            status.setSentRequest(object.getBoolean("sent_request"));
+            status.setReceivedRequest(object.getBoolean("received_request"));
+            status.setFollowing(object.getBoolean("following"));
+
+            return status;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 }

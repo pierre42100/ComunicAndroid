@@ -64,7 +64,7 @@ public class GetUsersHelper {
      * Public constructor of the class
      *
      * @param context The context of execution of the application
-     * @param dbHelper Databasehelpepr
+     * @param dbHelper DatabaseHelper
      */
     public GetUsersHelper(@NonNull Context context, @NonNull DatabaseHelper dbHelper){
         mContext = context;
@@ -74,8 +74,8 @@ public class GetUsersHelper {
     /**
      * Get information about a single user from the server
      *
-     * @param id The ID of the user to get informations on
-     * @param force Force the informations to be fetched from the server
+     * @param id The ID of the user to get information on
+     * @param force Force the information to be fetched from the server
      * @return User information or null in case of failure
      */
     @Nullable
@@ -103,7 +103,7 @@ public class GetUsersHelper {
                     //Add the user to the database
                     udbHelper.insertOrUpdate(infos);
 
-                    //Return user informations
+                    //Return user information
                     return infos;
 
                 }
@@ -118,10 +118,10 @@ public class GetUsersHelper {
     }
 
     /**
-     * Get advanced informations about a single user
+     * Get advanced information about a single user
      *
      * @param userID The user to get information about
-     * @return Informations about the user / null in case of failure
+     * @return Information about the user / null in case of failure
      */
     @Nullable
     public AdvancedUserInfo get_advanced_infos(int userID){
@@ -129,13 +129,31 @@ public class GetUsersHelper {
         //Perform an API request
         APIRequestParameters params = new APIRequestParameters(mContext,
                 "user/getAdvancedUserInfos");
+        params.setTryContinueOnError(true);
         params.addInt("userID", userID);
 
         //Perform the request
         try {
             APIResponse response = new APIRequestHelper().exec(params);
 
-            //Parse user informations
+            //Check if the request echoed because the user is not allowed to access it
+            if(response.getResponse_code() != 200){
+
+                if(response.getResponse_code() == 401){
+
+                    //Return an empty AdvancedUserInfo object with access forbidden set to true
+                    AdvancedUserInfo info = new AdvancedUserInfo();
+                    info.setAccessForbidden(true);
+                    return info;
+
+                }
+
+                //Else we can not do anything
+                return null;
+
+            }
+
+            //Parse user information
             return parse_advanced_user_json(response.getJSONObject());
 
         } catch (Exception e) {
@@ -368,7 +386,7 @@ public class GetUsersHelper {
     @Nullable
     private AdvancedUserInfo parse_advanced_user_json(JSONObject userObject){
 
-        //Parse basic informations about the user
+        //Parse basic information about the user
         AdvancedUserInfo advancedUserInfo = (AdvancedUserInfo)
                 parse_base_user_json(new AdvancedUserInfo(), userObject);
 
@@ -376,7 +394,7 @@ public class GetUsersHelper {
         if(advancedUserInfo == null)
             return null;
 
-        //Parse advanced user informations
+        //Parse advanced user information
         try {
 
             //Get account creation time
@@ -393,19 +411,19 @@ public class GetUsersHelper {
     }
 
     /**
-     * Parse user basic informations into a user object
+     * Parse user basic information into a user object
      *
-     * @param userInfos The user informations object to fill
+     * @param userInfos The user information object to fill
      * @param userObject The source JSON object
      * @return The filled user Infos object
      */
     @Nullable
     private UserInfo parse_base_user_json(UserInfo userInfos, JSONObject userObject){
 
-        //Try to retrieve basic user informations
+        //Try to retrieve basic user information
         try {
 
-            //Retrieve all user informations
+            //Retrieve all user information
             userInfos.setId(userObject.getInt("userID"));
             userInfos.setFirstName(userObject.getString("firstName"));
             userInfos.setLastName(userObject.getString("lastName"));
@@ -432,5 +450,12 @@ public class GetUsersHelper {
          * @param userID The ID of the user to create page
          */
         void openUserPage(int userID);
+
+        /**
+         * Open the page of a user for which the access has been denied
+         *
+         * @param userID The ID of the target user
+         */
+        void openUserAccessDeniedPage(int userID);
     }
 }

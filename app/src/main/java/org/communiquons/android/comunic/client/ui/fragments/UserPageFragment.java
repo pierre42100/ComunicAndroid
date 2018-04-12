@@ -107,6 +107,11 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
      */
     private View mCreatePostForm;
 
+    /**
+     * User page open listener
+     */
+    private GetUsersHelper.onOpenUsersPageListener mOpenUsersPageListener;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -123,6 +128,9 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
 
         //Create posts helper instance
         mPostsHelper = new PostsHelper(getActivity());
+
+        //Get the open user page listener
+        mOpenUsersPageListener = (GetUsersHelper.onOpenUsersPageListener) getActivity();
     }
 
     @Nullable
@@ -214,6 +222,14 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
             Toast.makeText(getActivity(), R.string.err_get_user_info, Toast.LENGTH_SHORT).show();
             return;
         }
+
+        //Check if the user is not allowed to access user information
+        if(info.isAccessForbidden()){
+            //Open appropriate fragment
+            mOpenUsersPageListener.openUserAccessDeniedPage(mUserID);
+            return;
+        }
+
 
         //Save user information
         userInfo = info;
