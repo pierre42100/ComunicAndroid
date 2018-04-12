@@ -27,6 +27,7 @@ import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.NotificationsAdapter;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
+import org.communiquons.android.comunic.client.ui.listeners.onPostOpenListener;
 
 /**
  * Notifications fragment
@@ -78,6 +79,11 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
      */
     private onOpenUsersPageListener mUserPageOpener;
 
+    /**
+     * Post open listener
+     */
+    private onPostOpenListener mOpenPostListener;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -128,6 +134,9 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
 
         //Get user page opener
         mUserPageOpener = (onOpenUsersPageListener) getActivity();
+
+        //Get post opener
+        mOpenPostListener = (onPostOpenListener) getActivity();
 
         //Check if it is required to fetch the list of notifications
         if(mNotificationsList == null){
@@ -331,11 +340,11 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        //Delete the notification
-        //deleteNotification(position);
-
         //Perform notification action
         Notif notif = mNotificationsList.get(position);
+
+        //Delete the notification
+        deleteNotification(position);
 
         //For friendship request
         if(notif.getOn_elem_type() == NotifElemType.FRIEND_REQUEST){
@@ -345,5 +354,12 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
 
         }
 
+        //If the notification is targeting a post
+        if(notif.getOn_elem_type() == NotifElemType.POST){
+
+            //Open the post
+            mOpenPostListener.onOpenPost(notif.getOn_elem_id());
+
+        }
     }
 }

@@ -40,7 +40,7 @@ public class PostsList extends ArrayList<Post> {
                 //Process the list of comments
                 for(Comment comment : post.getComments_list()){
 
-                    if(ids.contains(comment.getUserID()))
+                    if(!ids.contains(comment.getUserID()))
                         ids.add(comment.getUserID());
 
                 }

@@ -23,8 +23,10 @@ import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
+import org.communiquons.android.comunic.client.ui.fragments.SinglePostFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UserAccessDeniedFragment;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
+import org.communiquons.android.comunic.client.ui.listeners.onPostOpenListener;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 import org.communiquons.android.comunic.client.ui.listeners.updateConversationListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
@@ -44,7 +46,7 @@ import org.communiquons.android.comunic.client.ui.fragments.UserPageFragment;
  * @author Pierre HUBERT
  */
 public class MainActivity extends AppCompatActivity implements openConversationListener,
-        updateConversationListener, onOpenUsersPageListener {
+        updateConversationListener, onOpenUsersPageListener, onPostOpenListener {
 
     /**
      * Debug tag
@@ -456,6 +458,24 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, updateConversationFragment);
         transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void onOpenPost(int postID) {
+
+        //Prepare the arguments
+        Bundle arguments = new Bundle();
+        arguments.putInt(SinglePostFragment.ARGUMENT_POST_ID, postID);
+
+        //Create the fragment
+        SinglePostFragment singlePostFragment = new SinglePostFragment();
+        singlePostFragment.setArguments(arguments);
+
+        //Perform the transaction
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.main_fragment, singlePostFragment);
         transaction.commit();
     }
 }

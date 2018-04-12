@@ -172,4 +172,5 @@
     <string name="button_accept_friend_request">Accept request</string>
     <string name="button_reject_friend_request">Reject request</string>
     <string name="err_get_friendship_status">An error occurred while retrieving friendship status!</string>
+    <string name="err_get_post_info">An error occurred while trying to get post information!</string>
 </resources>
