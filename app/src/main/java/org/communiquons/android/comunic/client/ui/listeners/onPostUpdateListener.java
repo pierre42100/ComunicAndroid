@@ -12,7 +12,7 @@ import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
  *
  * @author Pierre HUBERT
  */
-public interface onPostUpdate {
+public interface onPostUpdateListener {
 
     /**
      * This method is called when a comment creation request is made

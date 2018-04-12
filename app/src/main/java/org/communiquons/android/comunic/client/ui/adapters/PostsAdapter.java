@@ -19,7 +19,7 @@ import org.communiquons.android.comunic.client.data.models.Comment;
 import org.communiquons.android.comunic.client.data.models.Post;
 import org.communiquons.android.comunic.client.data.enums.PostTypes;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
-import org.communiquons.android.comunic.client.ui.listeners.onPostUpdate;
+import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
@@ -54,7 +54,7 @@ public class PostsAdapter extends ArrayAdapter<Post>{
     /**
      * Actions update listener
      */
-    private onPostUpdate mListener;
+    private onPostUpdateListener mListener;
 
     /**
      * Create the Post Adapter
@@ -66,7 +66,7 @@ public class PostsAdapter extends ArrayAdapter<Post>{
      *                 for example
      */
     public PostsAdapter(Context context, PostsList list, ArrayMap<Integer, UserInfo> usersInfos,
-                        onPostUpdate listener){
+                        onPostUpdateListener listener){
         super(context, 0, list);
 
         //Save the users info object

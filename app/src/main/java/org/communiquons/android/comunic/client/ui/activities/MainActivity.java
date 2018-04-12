@@ -43,10 +43,8 @@ import org.communiquons.android.comunic.client.ui.fragments.UserPageFragment;
  *
  * @author Pierre HUBERT
  */
-public class MainActivity extends AppCompatActivity
-        implements openConversationListener,
-        updateConversationListener,
-        onOpenUsersPageListener {
+public class MainActivity extends AppCompatActivity implements openConversationListener,
+        updateConversationListener, onOpenUsersPageListener {
 
     /**
      * Debug tag
