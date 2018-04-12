@@ -66,22 +66,17 @@ public class SinglePostFragment extends Fragment {
     private GetUsersHelper mGetUserHelper;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        //Create post helper
-        mPostsHelper = new PostsHelper(context);
-
-        //Create get user helper
-        mGetUserHelper = new GetUsersHelper(context);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //Get post ID
         mPostID = getArguments().getInt(ARGUMENT_POST_ID);
+
+        //Create post helper
+        mPostsHelper = new PostsHelper(getActivity());
+
+        //Create get user helper
+        mGetUserHelper = new GetUsersHelper(getActivity());
     }
 
     @Nullable

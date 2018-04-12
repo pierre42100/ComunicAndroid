@@ -85,14 +85,14 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
     private onPostOpenListener mOpenPostListener;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         //Create notifications helper
-        mNotificationsHelper = new NotificationsHelper(context);
+        mNotificationsHelper = new NotificationsHelper(getActivity());
 
         //Create get users helper
-        mUsersInfoHelper = new GetUsersHelper(context);
+        mUsersInfoHelper = new GetUsersHelper(getActivity());
     }
 
     @Nullable
