@@ -26,6 +26,7 @@ import org.communiquons.android.comunic.client.data.arrays.NotifsList;
 import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.NotificationsAdapter;
+import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
 
 /**
  * Notifications fragment
@@ -75,7 +76,7 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
     /**
      * User page opener
      */
-    private GetUsersHelper.onOpenUsersPageListener mUserPageOpener;
+    private onOpenUsersPageListener mUserPageOpener;
 
     @Override
     public void onAttach(Context context) {
@@ -126,7 +127,7 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
                 .setSelectedNavigationItem(R.id.main_bottom_navigation_notif);
 
         //Get user page opener
-        mUserPageOpener = (GetUsersHelper.onOpenUsersPageListener) getActivity();
+        mUserPageOpener = (onOpenUsersPageListener) getActivity();
 
         //Check if it is required to fetch the list of notifications
         if(mNotificationsList == null){

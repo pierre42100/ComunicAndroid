@@ -13,6 +13,7 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.Comment;
+import org.communiquons.android.comunic.client.ui.listeners.onPostUpdate;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
 
@@ -48,7 +49,7 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
      * @return Generated view
      */
     static View getInflatedView(Context context, Comment comment,
-                                PostsAdapter.onPostUpdate listener,
+                                onPostUpdate listener,
                                 @Nullable UserInfo user, ViewGroup viewGroup){
 
         //Inflate a view
@@ -70,7 +71,7 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
      * @return Updated view
      */
     private static View fillView(final Context context, final View view, final Comment comment,
-                                 @Nullable UserInfo user, final PostsAdapter.onPostUpdate listener) {
+                                 @Nullable UserInfo user, final onPostUpdate listener) {
 
         //Update user name and account image
         ImageView accountImage = view.findViewById(R.id.user_account_image);

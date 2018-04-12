@@ -23,6 +23,7 @@ import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.Post;
 import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 
@@ -110,7 +111,7 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
     /**
      * User page open listener
      */
-    private GetUsersHelper.onOpenUsersPageListener mOpenUsersPageListener;
+    private onOpenUsersPageListener mOpenUsersPageListener;
 
 
     @Override
@@ -130,7 +131,7 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
         mPostsHelper = new PostsHelper(getActivity());
 
         //Get the open user page listener
-        mOpenUsersPageListener = (GetUsersHelper.onOpenUsersPageListener) getActivity();
+        mOpenUsersPageListener = (onOpenUsersPageListener) getActivity();
     }
 
     @Nullable

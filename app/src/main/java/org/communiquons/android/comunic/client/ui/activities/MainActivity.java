@@ -20,11 +20,13 @@ import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
 import org.communiquons.android.comunic.client.ui.fragments.UserAccessDeniedFragment;
+import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
+import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
+import org.communiquons.android.comunic.client.ui.listeners.updateConversationListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
@@ -42,9 +44,9 @@ import org.communiquons.android.comunic.client.ui.fragments.UserPageFragment;
  * @author Pierre HUBERT
  */
 public class MainActivity extends AppCompatActivity
-        implements ConversationsListHelper.openConversationListener,
-        ConversationsListHelper.updateConversationListener,
-        GetUsersHelper.onOpenUsersPageListener {
+        implements openConversationListener,
+        updateConversationListener,
+        onOpenUsersPageListener {
 
     /**
      * Debug tag

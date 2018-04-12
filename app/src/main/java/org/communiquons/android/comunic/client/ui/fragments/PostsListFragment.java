@@ -32,6 +32,7 @@ import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.ui.adapters.PostsAdapter;
+import org.communiquons.android.comunic.client.ui.listeners.onPostUpdate;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import java.util.ArrayList;
  */
 
 public class PostsListFragment extends Fragment
-    implements PostsAdapter.onPostUpdate {
+    implements onPostUpdate {
 
     /**
      * Menu action : no action

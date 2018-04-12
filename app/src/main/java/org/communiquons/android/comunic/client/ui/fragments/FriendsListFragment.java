@@ -23,12 +23,13 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.models.Friend;
 import org.communiquons.android.comunic.client.data.models.FriendUser;
 import org.communiquons.android.comunic.client.ui.adapters.FriendsAdapter;
 import org.communiquons.android.comunic.client.data.helpers.FriendsListHelper;
 import org.communiquons.android.comunic.client.data.utils.FriendsUtils;
+import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
+import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 
 import java.util.ArrayList;
 
@@ -80,12 +81,12 @@ public class FriendsListFragment extends Fragment
     /**
      * Conversation opener
      */
-    private ConversationsListHelper.openConversationListener convOpener;
+    private openConversationListener convOpener;
 
     /**
      * Users page opener
      */
-    private GetUsersHelper.onOpenUsersPageListener usersPageOpener;
+    private onOpenUsersPageListener usersPageOpener;
 
     /**
      * Friend adapter
@@ -110,8 +111,8 @@ public class FriendsListFragment extends Fragment
 
         //Cast activity to convOpener
         try {
-            convOpener = (ConversationsListHelper.openConversationListener) getActivity();
-            usersPageOpener = (GetUsersHelper.onOpenUsersPageListener) getActivity();
+            convOpener = (openConversationListener) getActivity();
+            usersPageOpener = (onOpenUsersPageListener) getActivity();
         } catch (ClassCastException e){
             e.printStackTrace();
 

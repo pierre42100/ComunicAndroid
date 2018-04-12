@@ -31,6 +31,7 @@ import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.ui.adapters.UsersAsysncInfoAdapter;
 import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
+import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 
 import java.util.ArrayList;
 
@@ -141,7 +142,7 @@ public class UpdateConversationFragment extends Fragment {
     /**
      * Conversation opener
      */
-    private ConversationsListHelper.openConversationListener convOpener;
+    private openConversationListener convOpener;
 
     /**
      * Conversation members list context menu
@@ -173,7 +174,7 @@ public class UpdateConversationFragment extends Fragment {
 
         //Get conversation opener
         try {
-            convOpener = (ConversationsListHelper.openConversationListener) getActivity();
+            convOpener = (openConversationListener) getActivity();
         } catch (ClassCastException e){
             throw new RuntimeException(getActivity().getClass().getName() + " must implement the" +
                     " ConversationsListHelper.openConversationListener interface !");

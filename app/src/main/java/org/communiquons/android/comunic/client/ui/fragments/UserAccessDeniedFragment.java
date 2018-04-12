@@ -1,8 +1,6 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
-import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +20,7 @@ import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
 import org.communiquons.android.comunic.client.data.models.FriendshipStatus;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
+import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
 
 /**
  * User access denied fragment
@@ -55,7 +54,7 @@ public class UserAccessDeniedFragment extends Fragment implements View.OnClickLi
     /**
      * User page opener
      */
-    private GetUsersHelper.onOpenUsersPageListener mOpenUsersPageListener;
+    private onOpenUsersPageListener mOpenUsersPageListener;
 
     /**
      * Information about the user
@@ -117,11 +116,11 @@ public class UserAccessDeniedFragment extends Fragment implements View.OnClickLi
 
         //Get user page opener
         try {
-            mOpenUsersPageListener = (GetUsersHelper.onOpenUsersPageListener) getActivity();
+            mOpenUsersPageListener = (onOpenUsersPageListener) getActivity();
         } catch (ClassCastException e){
             e.printStackTrace();
             throw new RuntimeException(getActivity().getClass().getName() + "must implement "
-                    + GetUsersHelper.onOpenUsersPageListener.class.getName());
+                    + onOpenUsersPageListener.class.getName());
         }
     }
 

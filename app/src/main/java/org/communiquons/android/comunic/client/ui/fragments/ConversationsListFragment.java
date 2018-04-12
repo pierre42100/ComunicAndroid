@@ -28,8 +28,8 @@ import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationsListAdapter;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
-import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper.openConversationListener;
-import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper.updateConversationListener;
+import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
+import org.communiquons.android.comunic.client.ui.listeners.updateConversationListener;
 
 import java.util.ArrayList;
 
