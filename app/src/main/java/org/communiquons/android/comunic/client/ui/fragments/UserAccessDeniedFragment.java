@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +29,7 @@ import org.communiquons.android.comunic.client.ui.activities.MainActivity;
  * Created by pierre on 4/11/18.
  */
 
-public class UserAccessDeniedFragment extends Fragment {
+public class UserAccessDeniedFragment extends Fragment implements View.OnClickListener {
 
     /**
      * The name in the bundle of the target user ID
@@ -68,6 +70,11 @@ public class UserAccessDeniedFragment extends Fragment {
      * User account name
      */
     private TextView mUserName;
+
+    /**
+     * Buttons list container
+     */
+    private LinearLayout mButtonsList;
 
     /**
      * Send request button
@@ -118,6 +125,7 @@ public class UserAccessDeniedFragment extends Fragment {
         mUserName = view.findViewById(R.id.user_account_name);
 
         //Get the buttons
+        mButtonsList = view.findViewById(R.id.buttons_list);
         mSendRequestButton = view.findViewById(R.id.button_send_request);
         mCancelRequestButton = view.findViewById(R.id.button_cancel_request);
         mAcceptRequestButton = view.findViewById(R.id.button_accept_request);
@@ -237,7 +245,8 @@ public class UserAccessDeniedFragment extends Fragment {
         //Save the friendship status
         mFriendshipStatus = status;
 
-        //Hide all the button by default
+        //Hide all the button by default but the list
+        mButtonsList.setVisibility(View.VISIBLE);
         mSendRequestButton.setVisibility(View.GONE);
         mCancelRequestButton.setVisibility(View.GONE);
         mAcceptRequestButton.setVisibility(View.GONE);
@@ -262,5 +271,79 @@ public class UserAccessDeniedFragment extends Fragment {
         else {
             mSendRequestButton.setVisibility(View.VISIBLE);
         }
+
+        //Make all the buttons click point on the fragment
+        mSendRequestButton.setOnClickListener(this);
+        mCancelRequestButton.setOnClickListener(this);
+        mAcceptRequestButton.setOnClickListener(this);
+        mRejectRequestButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        //Make buttons list disappear
+        mButtonsList.setVisibility(View.INVISIBLE);
+
+        //Get the ID of the button
+        int action_id = v.getId();
+
+        //Process the request
+        new AsyncTask<Integer, Void, FriendshipStatus>(){
+
+            @Override
+            protected FriendshipStatus doInBackground(Integer... params) {
+
+                //Perform requested action
+                performFriendshipUpdate(params[0]);
+
+                //Return new friendship status
+                return mFriendListHelper.getFrienshipStatus(mUserID);
+            }
+
+            @Override
+            protected void onPostExecute(FriendshipStatus status) {
+                if(getActivity() == null)
+                    return;
+
+                onGotFriendshipStatus(status);
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, action_id);
+
+    }
+
+    /**
+     * Perform the update of the friendship status, as requested per the click on the buttons
+     *
+     * @param action_id The ID of the button that has been clicked
+     */
+    private void performFriendshipUpdate(int action_id){
+
+        switch (action_id){
+
+            //Send a friendship request
+            case R.id.button_send_request:
+                mFriendListHelper.sendRequest(mUserID);
+                break;
+
+            //Accept a friendship request
+            case R.id.button_accept_request:
+                mFriendListHelper.respondRequest(mUserID, true);
+                break;
+
+            //Reject a friendship request
+            case R.id.button_reject_request:
+                mFriendListHelper.respondRequest(mUserID, false);
+                break;
+
+            //Cancel a friendship request
+            case R.id.button_cancel_request:
+                mFriendListHelper.cancelRequest(mUserID);
+                break;
+
+            default:
+                throw new RuntimeException("Unsupported action by updater!");
+        }
+
     }
 }

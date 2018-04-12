@@ -135,6 +135,51 @@ public class FriendsListHelper {
     }
 
     /**
+     * Send a friendship request to a user
+     *
+     * @param friendID The ID of the target friend
+     * @return TRUE in case of success / FALSE else
+     */
+    public boolean sendRequest(int friendID){
+
+        //Prepare the request
+        APIRequestParameters params = new APIRequestParameters(mContext, "friends/sendRequest");
+        params.addInt("friendID", friendID);
+
+        //Try to perform the request
+        try {
+            APIResponse response = new APIRequestHelper().exec(params);
+            return response.getResponse_code() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Cancel a friendship request
+     *
+     * @param friendID The ID of the target friend
+     * @return TRUE in case of success / FALSE else
+     */
+    public boolean cancelRequest(int friendID){
+
+        //Prepare the request
+        APIRequestParameters params = new APIRequestParameters(mContext, "friends/removeRequest");
+        params.addInt("friendID", friendID);
+
+        //Try to perform the request
+        try {
+            APIResponse response = new APIRequestHelper().exec(params);
+            return response.getResponse_code() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    /**
      * Respond to a friendship request
      *
      * @param friend The friend to update
@@ -143,16 +188,12 @@ public class FriendsListHelper {
     public void respondRequest(Friend friend, boolean accept){
         try {
 
-            //Perform a request to update the status online
-            APIRequestParameters reqParams = new APIRequestParameters(mContext,
-                    "friends/respondRequest");
-            reqParams.addInt("friendID", friend.getId());
-            reqParams.addString("accept", accept ? "true" : "false");
-            new APIRequestHelper().exec(reqParams);
+            //Respond to the request online
+            respondRequest(friend.getId(), accept);
 
             //Update the friend in the local database
             if(accept) {
-                friend.setAccepted(accept);
+                friend.setAccepted(true);
                 fdbHelper.update_friend(friend);
             }
             else {
@@ -163,6 +204,34 @@ public class FriendsListHelper {
             Log.e(TAG, "Couldn't respond to friendship request !");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Respond to a friendship request
+     *
+     * @param friendID The ID of the target friend
+     * @param accept TRUE to accept request / FALSE else
+     * @return TRUE in case of success / FALSE else
+     */
+    public boolean respondRequest(int friendID, boolean accept){
+
+        //Perform a request to update the status online
+        APIRequestParameters reqParams = new APIRequestParameters(mContext,
+                "friends/respondRequest");
+        reqParams.addInt("friendID", friendID);
+        reqParams.addString("accept", accept ? "true" : "false");
+
+        //Execute the request
+        try {
+            //Perform the request
+            APIResponse response = new APIRequestHelper().exec(reqParams);
+            return response.getResponse_code() == 200;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     /**
