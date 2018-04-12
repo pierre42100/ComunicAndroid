@@ -1,5 +1,6 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -50,6 +51,11 @@ public class UserAccessDeniedFragment extends Fragment implements View.OnClickLi
      * Friend list helper
      */
     private FriendsListHelper mFriendListHelper;
+
+    /**
+     * User page opener
+     */
+    private GetUsersHelper.onOpenUsersPageListener mOpenUsersPageListener;
 
     /**
      * Information about the user
@@ -108,6 +114,15 @@ public class UserAccessDeniedFragment extends Fragment implements View.OnClickLi
 
         //Save the ID of the target user
         mUserID = getArguments().getInt(ARGUMENT_USER_ID);
+
+        //Get user page opener
+        try {
+            mOpenUsersPageListener = (GetUsersHelper.onOpenUsersPageListener) getActivity();
+        } catch (ClassCastException e){
+            e.printStackTrace();
+            throw new RuntimeException(getActivity().getClass().getName() + "must implement "
+                    + GetUsersHelper.onOpenUsersPageListener.class.getName());
+        }
     }
 
     @Nullable
@@ -253,8 +268,10 @@ public class UserAccessDeniedFragment extends Fragment implements View.OnClickLi
         mRejectRequestButton.setVisibility(View.GONE);
 
         //Check if the users are friend
-        if(mFriendshipStatus.isFriend())
+        if(mFriendshipStatus.isFriend()) {
+            mOpenUsersPageListener.openUserPage(mUserID);
             return;
+        }
 
         //Check if the current user has sent a friendship request
         if(mFriendshipStatus.isSentRequest()){
