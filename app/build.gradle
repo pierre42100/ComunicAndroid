@@ -18,6 +18,10 @@ android {
             buildConfigField "String", "api_url", "\"http://devweb.local/comunic/api/\""
             buildConfigField "String", "api_service_name", "\"ComunicAndroid\""
             buildConfigField "String", "api_service_token", "\"5eQ8WGAeDTTyY\""
+
+            //Connexion to Crash Reporter
+            buildConfigField "String", "crash_reporter_url", "\"http://devweb.local/CrashReporterWeb/project/api/v1/push\""
+            buildConfigField "String", "crash_reporter_key", "\"KSyqOzkfJasDTxE0wrXYnUPl8dV1veBc\""
         }
 
         release {
@@ -28,6 +32,10 @@ android {
             buildConfigField "String", "api_url", "\"https://api.communiquons.org/\""
             buildConfigField "String", "api_service_name", "\"ComunicAndroid\""
             buildConfigField "String", "api_service_token", "\"cWHlmMS5A1\""
+
+            //Connexion to Crash Reporter
+            buildConfigField "String", "crash_reporter_url", "\"https://crashreporter.communiquons.org/api/v1/push\""
+            buildConfigField "String", "crash_reporter_key", "\"z38jtULRuKHb2BOyvG4VTXDhn9gwelZ1\""
         }
     }
 }

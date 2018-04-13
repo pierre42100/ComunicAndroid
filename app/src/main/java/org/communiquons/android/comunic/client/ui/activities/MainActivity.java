@@ -15,7 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.crashreporter.CrashReporter;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
@@ -86,6 +88,12 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Initialize crash reporter
+        CrashReporter reporter = new CrashReporter(this, BuildConfig.crash_reporter_url,
+                BuildConfig.crash_reporter_key);
+        reporter.uploadAwaitingReport();
+        Thread.setDefaultUncaughtExceptionHandler(reporter);
 
         //Initialize account objects
         accountHelper = new AccountHelper(this);
