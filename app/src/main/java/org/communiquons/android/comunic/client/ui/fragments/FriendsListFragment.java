@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,12 +48,7 @@ public class FriendsListFragment extends Fragment
     /**
      * Debug tag
      */
-    private String TAG = "FriendsListFragment";
-
-    /**
-     * The root view of the fragment
-     */
-    private View rootView;
+    private static final String TAG = "FriendsListFragment";
 
     /**
      * Application context
@@ -95,9 +91,19 @@ public class FriendsListFragment extends Fragment
     private FriendsAdapter fAdapter;
 
     /**
+     * Loading progress bar
+     */
+    private ProgressBar mProgressBar;
+
+    /**
      * No friend notice
      */
     private TextView mNoFriendNotice;
+
+    /**
+     * Friends list view
+     */
+    private ListView mFriendsListView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,7 +115,7 @@ public class FriendsListFragment extends Fragment
         //Create database helper
         mDbHelper = DatabaseHelper.getInstance(mContext);
 
-        //Create friendlist operation object
+        //Create friend list helper object
         flistHelper = new FriendsListHelper(mDbHelper, mContext);
 
         //Create get user helper
@@ -139,11 +145,15 @@ public class FriendsListFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        rootView = view;
+        //Get loading progress bar
+        mProgressBar = view.findViewById(R.id.fragment_friendslist_progressbar);
 
         //Get the no friend notice
         mNoFriendNotice = view.findViewById(R.id.no_friend_notice);
         mNoFriendNotice.setVisibility(View.GONE);
+
+        //Get friends listview
+        mFriendsListView = view.findViewById(R.id.fragment_friendslist_listview);
 
         //Retain the fragment
         //setRetainInstance(true);
@@ -236,13 +246,12 @@ public class FriendsListFragment extends Fragment
 
         //Set the adapter
         fAdapter = new FriendsAdapter(this, getActivity(), friendsList);
-        ListView listView = rootView.findViewById(R.id.fragment_friendslist_listview);
-        listView.setAdapter(fAdapter);
+        mFriendsListView.setAdapter(fAdapter);
 
         //Register the view for the context menu
-        registerForContextMenu(listView);
+        registerForContextMenu(mFriendsListView);
 
-        listView.setOnItemClickListener(this);
+        mFriendsListView.setOnItemClickListener(this);
     }
 
     @Override
@@ -387,13 +396,7 @@ public class FriendsListFragment extends Fragment
      * @param display Specify whether the loading bar has to be shown or not
      */
     private void display_progress_bar(boolean display){
-
-        //Get the view
-        rootView.findViewById(R.id.fragment_friendslist_progressbar).setVisibility(
-                display ? View.VISIBLE : View.GONE
-        );
-
-
+        mProgressBar.setVisibility(display ? View.VISIBLE : View.GONE);
     }
 
     /**
