@@ -54,6 +54,15 @@
         android:id="@+id/create_post_form"
         layout="@layout/post_create_form" />
 
+    <!-- No post on user page notice -->
+    <TextView
+        android:id="@+id/no_post_notice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notice_no_post_user_page"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"/>
+
     <!-- User posts -->
     <FrameLayout
         android:id="@+id/user_posts"

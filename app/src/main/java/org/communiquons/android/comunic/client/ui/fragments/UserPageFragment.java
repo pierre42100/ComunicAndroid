@@ -94,6 +94,11 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
     private ImageView user_image;
 
     /**
+     * No post notice
+     */
+    private TextView mNoPostNotice;
+
+    /**
      * Posts list fragment
      */
     private PostsListFragment mPostsListFragment;
@@ -147,6 +152,10 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
         //Get the user views
         user_image = view.findViewById(R.id.user_account_image);
         user_name = view.findViewById(R.id.user_account_name);
+
+        //Get the no post notice
+        mNoPostNotice = view.findViewById(R.id.no_post_notice);
+        mNoPostNotice.setVisibility(View.GONE);
 
         //Get the view related to the create post form
         mCreatePostButton = view.findViewById(R.id.create_post_button);
@@ -325,6 +334,9 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_user_page, mPostsListFragment);
         transaction.commit();
+
+        //Check if there is not any post on the page
+        mNoPostNotice.setVisibility(mPostsList.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
     /**
