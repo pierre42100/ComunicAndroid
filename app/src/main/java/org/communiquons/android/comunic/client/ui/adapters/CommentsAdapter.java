@@ -61,7 +61,7 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
     }
 
     /**
-     * Fill a view with a specified comments informations
+     * Fill a view with a specified comments information
      *
      * @param context The context of the activity / application
      * @param view The view to update

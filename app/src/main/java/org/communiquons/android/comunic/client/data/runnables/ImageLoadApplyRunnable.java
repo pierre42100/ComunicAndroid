@@ -15,7 +15,7 @@ import android.widget.ImageView;
 class ImageLoadApplyRunnable implements Runnable {
 
     /**
-     * The bitmap to appply
+     * The bitmap to apply
      */
     private Bitmap bitmap;
 
