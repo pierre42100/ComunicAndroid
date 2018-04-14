@@ -70,10 +70,11 @@
     </LinearLayout>
 
     <!-- Post image (if any) -->
-    <ImageView
+    <org.communiquons.android.comunic.client.ui.views.WebImageView
         android:id="@+id/post_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:src="@drawable/img_placeholder"
         android:contentDescription="@string/post_image_description"
         android:scaleType="centerInside" />
 

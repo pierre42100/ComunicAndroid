@@ -24,6 +24,7 @@ import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
+import org.communiquons.android.comunic.client.ui.views.WebImageView;
 
 import java.util.ArrayList;
 
@@ -149,17 +150,23 @@ public class PostsAdapter extends ArrayAdapter<Post>{
         ((TextView) convertView.findViewById(R.id.post_content)).setText(Utilities.prepareStringTextView(post.getContent()));
 
         //Set post image (if any)
-        ImageView postImage = convertView.findViewById(R.id.post_image);
-        postImage.setVisibility(View.GONE);
-        postImage.setImageDrawable(null);
-        ImageLoadHelper.remove(postImage);
+        WebImageView postImage = convertView.findViewById(R.id.post_image);
         if(post.getType() == PostTypes.IMAGE){
 
             //Make image visible
             postImage.setVisibility(View.VISIBLE);
 
             //Load image
-            ImageLoadHelper.load(getContext(), post.getFile_path_url(), postImage);
+            postImage.loadURL(post.getFile_path_url());
+        }
+        else {
+
+            //Hide the image
+            postImage.setVisibility(View.GONE);
+
+            //Remove the image
+            postImage.removeImage();
+
         }
 
         //Set posts likes
