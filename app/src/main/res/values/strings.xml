@@ -175,4 +175,5 @@
     <string name="err_get_post_info">An error occurred while trying to get post information!</string>
     <string name="notice_no_notification">You do not have any notification yet.</string>
     <string name="notice_no_post_user_page">There is not any post on this page yet.</string>
+    <string name="notice_no_conversation">You do not have any conversation yet.</string>
 </resources>

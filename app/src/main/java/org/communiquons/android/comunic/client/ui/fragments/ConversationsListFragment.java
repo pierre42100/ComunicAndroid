@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
@@ -63,6 +64,11 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
      * The conversation list helper
      */
     private ConversationsListHelper conversationsListHelper;
+
+    /**
+     * No conversation notice
+     */
+    private TextView mNoConversationNotice;
 
     /**
      * Conversations ListView
@@ -113,6 +119,10 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
 
         //Get progress bar wheel
         progressBar = view.findViewById(R.id.fragment_conversationslist_progressbar);
+
+        //Get no conversation notice
+        mNoConversationNotice = view.findViewById(R.id.no_conversation_notice);
+        mNoConversationNotice.setVisibility(View.GONE);
 
         //Refresh conversations list
         refresh_conversations_list();
@@ -307,6 +317,9 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
 
         //Remove progress bar
         display_progress_bar(false);
+
+        //Update the visibility of the no conversation notice
+        updateNoConversationNotice();
     }
 
     @Override
@@ -329,7 +342,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
                     confirmDeleteConversation(convID);
                     return true;
 
-                //To udpate the conversation
+                //To update the conversation
                 case R.id.menu_fragment_conversationslist_item_update:
                     updateConversationListener.updateConversation(convID);
                     return true;
@@ -403,6 +416,11 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
 
             @Override
             protected void onPostExecute(Boolean result) {
+
+                //Check if the activity has been destroyed
+                if(getActivity() == null)
+                    return;
+
                 refresh_conversations_list();
 
                 //Display a toast if an error occurred
@@ -412,5 +430,13 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
                             Toast.LENGTH_SHORT).show();
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * Update the visibility of the "no conversation" notice message
+     */
+    private void updateNoConversationNotice(){
+        if(convList != null)
+            mNoConversationNotice.setVisibility(convList.size() == 0 ? View.VISIBLE : View.GONE);
     }
 }

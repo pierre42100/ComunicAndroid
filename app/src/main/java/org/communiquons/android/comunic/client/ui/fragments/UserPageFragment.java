@@ -15,17 +15,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
-import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
-import org.communiquons.android.comunic.client.data.models.AdvancedUserInfo;
-import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.data.models.Post;
-import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
+import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
+import org.communiquons.android.comunic.client.data.models.AdvancedUserInfo;
+import org.communiquons.android.comunic.client.data.models.Post;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
-import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 
 /**
  * User page fragment
