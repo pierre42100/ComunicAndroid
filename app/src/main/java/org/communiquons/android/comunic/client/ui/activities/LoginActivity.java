@@ -69,6 +69,15 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //If the user is signed in, open the main activity
+        if(new AccountHelper(this).signed_in())
+            openMainActivity();
+    }
+
     /**
      * Handle login form submission
      */
@@ -186,13 +195,20 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else {
                     //Redirect to the main activity
-                    Intent redirect = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(redirect);
+                    openMainActivity();
                 }
 
             }
         });
 
+    }
+
+    /**
+     * Open the main activity
+     */
+    private void openMainActivity(){
+        Intent redirect = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(redirect);
     }
 
     /**
