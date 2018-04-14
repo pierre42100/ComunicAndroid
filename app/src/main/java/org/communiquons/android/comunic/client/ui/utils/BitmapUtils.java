@@ -77,7 +77,7 @@ public class BitmapUtils {
         //Calculate the reduction ratio
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
-        //Decode Bitmap with new parametres
+        //Decode Bitmap with new parameters
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(file.getAbsolutePath(), options);
     }

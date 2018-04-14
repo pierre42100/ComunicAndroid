@@ -1,5 +1,7 @@
 package org.communiquons.android.comunic.client.data.utils;
 
+import java.util.Random;
+
 /**
  * Strings utilities
  *
@@ -23,6 +25,26 @@ public class StringsUtils {
 
         //The string appears to be valid
         return true;
+    }
+
+    /**
+     * Generate a random string
+     *
+     * @param length The length of the string to generate
+     * @return Generated string
+     */
+    public static String random(int length){
+
+        Random generator = new Random();
+        StringBuilder randomStringBuilder = new StringBuilder();
+        char tempChar;
+        for (int i = 0; i < length; i++){
+            tempChar = (char) (generator.nextInt(96) + 32);
+            randomStringBuilder.append(tempChar);
+        }
+
+        return randomStringBuilder.toString();
+
     }
 
 }
