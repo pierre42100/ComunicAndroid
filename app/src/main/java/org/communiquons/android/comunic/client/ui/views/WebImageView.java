@@ -21,6 +21,15 @@ public class WebImageView extends android.support.v7.widget.AppCompatImageView {
      */
     private String mCurrURL;
 
+    /**
+     * Default drawable ID (displayed on loading)
+     */
+    private int mDefaultDrawable = R.drawable.img_placeholder;
+
+
+    /**
+     * Constructors
+     */
     public WebImageView(Context context) {
         super(context);
     }
@@ -31,6 +40,25 @@ public class WebImageView extends android.support.v7.widget.AppCompatImageView {
 
     public WebImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    /**
+     * Get the current default drawable for this view
+     *
+     * @return The default drawable
+     */
+    public int getDefaultDrawable() {
+        return mDefaultDrawable;
+    }
+
+    /**
+     * Set the default drawable for this view. This drawable will be used while the other one
+     * is loading
+     *
+     * @param defaultDrawable The default drawable
+     */
+    public void setDefaultDrawable(int defaultDrawable) {
+        this.mDefaultDrawable = defaultDrawable;
     }
 
     /**
@@ -48,7 +76,7 @@ public class WebImageView extends android.support.v7.widget.AppCompatImageView {
 
         //Reset image loader
         ImageLoadHelper.remove(this);
-        setImageDrawable(UiUtils.getDrawable(getContext(), R.drawable.img_placeholder));
+        setImageDrawable(UiUtils.getDrawable(getContext(), mDefaultDrawable));
         ImageLoadHelper.load(getContext(), url, this);
 
         //Save image URL

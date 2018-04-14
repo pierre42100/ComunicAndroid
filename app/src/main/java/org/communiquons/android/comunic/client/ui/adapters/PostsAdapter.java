@@ -25,6 +25,7 @@ import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
 import org.communiquons.android.comunic.client.ui.views.WebImageView;
+import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 import java.util.ArrayList;
 
@@ -97,19 +98,18 @@ public class PostsAdapter extends ArrayAdapter<Post>{
             userInfo = mUsersInfos.get(post.getUserID());
 
         //Get the views related to user Information
-        ImageView userAccountImage = convertView.findViewById(R.id.user_account_image);
+        WebUserAccountImage userAccountImage = convertView.findViewById(R.id.user_account_image);
         TextView userAccountName = convertView.findViewById(R.id.user_account_name);
-
-        //Reset user information
-        userAccountName.setText("");
-        ImageLoadHelper.remove(userAccountImage);
-        userAccountImage.setImageDrawable(UiUtils.getDrawable(getContext(),
-                R.drawable.default_account_image));
 
         //Set user information if available
         if(userInfo != null){
             userAccountName.setText(userInfo.getDisplayFullName());
-            ImageLoadHelper.load(getContext(), userInfo.getAcountImageURL(), userAccountImage);
+            userAccountImage.setUser(userInfo);
+        }
+        else {
+            //Reset user information
+            userAccountName.setText("");
+            userAccountImage.removeUser();
         }
 
 
