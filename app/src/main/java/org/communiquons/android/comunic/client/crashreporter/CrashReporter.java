@@ -47,6 +47,14 @@ public class CrashReporter implements Thread.UncaughtExceptionHandler {
     private static final int API_CONNEXION_TIMEOUT = 3000;
 
     /**
+     * Enable server response reading (debug only)
+     *
+     * Note: On some situations, it might be also required to enable this option on production
+     * environment.
+     */
+    private static final boolean API_READ_RESPONSE = true;
+
+    /**
      * Method used to connect to the api
      */
     private static final String API_CONNEXION_METHOD = "POST";
@@ -284,7 +292,7 @@ public class CrashReporter implements Thread.UncaughtExceptionHandler {
             //Setup a few settings
             conn.setRequestMethod(API_CONNEXION_METHOD);
             conn.setDoOutput(true);
-            conn.setDoInput(false);
+            conn.setDoInput(API_READ_RESPONSE);
             conn.setConnectTimeout(API_CONNEXION_TIMEOUT);
             conn.setChunkedStreamingMode(0);
 
@@ -298,6 +306,17 @@ public class CrashReporter implements Thread.UncaughtExceptionHandler {
             writer.flush();
             writer.close();
             os.close();
+
+            //Read response if required
+            if(API_READ_RESPONSE){
+
+                //Read the response and return it immediately
+                InputStream is = conn.getInputStream();
+                String response = readIs(is);
+                Log.v(TAG, "Server response:" + response);
+                is.close();
+            }
+
 
             conn.disconnect();
 
