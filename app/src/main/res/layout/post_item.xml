@@ -73,9 +73,9 @@
     <ImageView
         android:id="@+id/post_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:contentDescription="@string/post_image_description"
-        android:scaleType="fitCenter" />
+        android:scaleType="centerInside" />
 
     <!-- Post content -->
     <TextView
