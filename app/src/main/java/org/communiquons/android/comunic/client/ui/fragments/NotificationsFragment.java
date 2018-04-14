@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
@@ -75,6 +76,11 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
     private ProgressBar mLoadingProgress;
 
     /**
+     * No notification notice
+     */
+    private TextView mNoNotifNotice;
+
+    /**
      * User page opener
      */
     private onOpenUsersPageListener mUserPageOpener;
@@ -107,6 +113,10 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
 
         //Get loading progress view
         mLoadingProgress = view.findViewById(R.id.loading_progress);
+
+        //Get the "no notification" notice
+        mNoNotifNotice = view.findViewById(R.id.no_notification_notification_notice);
+        mNoNotifNotice.setVisibility(View.GONE);
 
         //Delete all the notifications action
         mDeleteNotificationsBtn = view.findViewById(R.id.delete_all_notif_btn);
@@ -272,6 +282,9 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
         //Set context menu creator
         mNotificationsListView.setOnCreateContextMenuListener(this);
         mNotificationsListView.setOnItemClickListener(this);
+
+        //Check if there is not any notification to display the "no notification" notice
+        updateNoNotifNotif();
     }
 
     @Override
@@ -315,6 +328,9 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
         //Delete the notification from the list
         mNotificationsList.remove(pos);
         mNotificationsAdapter.notifyDataSetChanged();
+
+        //Check if the "no notification" notice has to be shown
+        updateNoNotifNotif();
 
         //Delete the notification from the server
         new AsyncTask<Integer, Void, Boolean>(){
@@ -361,5 +377,12 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
             mOpenPostListener.onOpenPost(notif.getOn_elem_id());
 
         }
+    }
+
+    /**
+     * Update the visibility status of the no notification status
+     */
+    private void updateNoNotifNotif(){
+        mNoNotifNotice.setVisibility(mNotificationsList.size() == 0 ? View.VISIBLE : View.GONE);
     }
 }

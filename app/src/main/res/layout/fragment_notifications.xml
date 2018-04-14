@@ -11,6 +11,15 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"/>
 
+    <!-- No notification notice -->
+    <TextView
+        android:id="@+id/no_notification_notification_notice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notice_no_notification"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"/>
+
     <!-- Notifications list -->
     <ListView
         android:id="@+id/notificcation_list"
