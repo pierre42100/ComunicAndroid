@@ -400,6 +400,8 @@ public class GetUsersHelper {
             //Get account creation time
             advancedUserInfo.setAccount_creation_time(userObject.getInt("account_creation_time"));
 
+            //Check if user can post text or this page or not
+            advancedUserInfo.setCanPostText(userObject.getBoolean("can_post_texts"));
 
         } catch (JSONException e){
             e.printStackTrace();

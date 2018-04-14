@@ -260,6 +260,10 @@ public class UserPageFragment extends Fragment implements PostsCreateFormFragmen
         ImageLoadHelper.remove(user_image);
         ImageLoadHelper.load(getActivity(), userInfo.getAcountImageURL(), user_image);
 
+        //Check if the user can post text on this page
+        mCreatePostButton.setVisibility(userInfo.isCanPostText() ? View.VISIBLE : View.GONE);
+
+
         //Load the list of posts of the user
         load_posts();
     }

@@ -12,6 +12,7 @@ public class AdvancedUserInfo extends UserInfo {
     //Private fields
     private int account_creation_time;
     private boolean accessForbidden = false;
+    private boolean canPostText;
 
     /**
      * Get the account creation time
@@ -47,5 +48,23 @@ public class AdvancedUserInfo extends UserInfo {
      */
     public void setAccessForbidden(boolean accessForbidden) {
         this.accessForbidden = accessForbidden;
+    }
+
+    /**
+     * Set whether the current user can post a text on this user page or not
+     *
+     * @param canPostText TRUE to allow / FALSE to deny
+     */
+    public void setCanPostText(boolean canPostText) {
+        this.canPostText = canPostText;
+    }
+
+    /**
+     * Check whether the user can post text on this user page
+     *
+     * @return TRUE : yes / FALSE no
+     */
+    public boolean isCanPostText() {
+        return canPostText;
     }
 }
