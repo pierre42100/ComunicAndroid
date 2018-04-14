@@ -10,6 +10,15 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true" />
 
+    <!-- No friend notice -->
+    <TextView
+        android:id="@+id/no_friend_notice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/notice_no_friend"
+        android:textAlignment="center"
+        android:layout_marginTop="50dp"/>
+
     <ListView
         android:id="@+id/fragment_friendslist_listview"
         android:layout_width="match_parent"

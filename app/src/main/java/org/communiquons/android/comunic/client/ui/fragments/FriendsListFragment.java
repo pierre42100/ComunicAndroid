@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
@@ -93,6 +94,11 @@ public class FriendsListFragment extends Fragment
      */
     private FriendsAdapter fAdapter;
 
+    /**
+     * No friend notice
+     */
+    private TextView mNoFriendNotice;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +140,10 @@ public class FriendsListFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         rootView = view;
+
+        //Get the no friend notice
+        mNoFriendNotice = view.findViewById(R.id.no_friend_notice);
+        mNoFriendNotice.setVisibility(View.GONE);
 
         //Retain the fragment
         //setRetainInstance(true);
@@ -218,9 +228,11 @@ public class FriendsListFragment extends Fragment
             return;
         }
 
-
         //Save the list of friends
         this.friendsList = friendsList;
+
+        //Update the visibility of the no friend notice
+        updateNoFriendNoticeVisibility();
 
         //Set the adapter
         fAdapter = new FriendsAdapter(this, getActivity(), friendsList);
@@ -382,6 +394,14 @@ public class FriendsListFragment extends Fragment
         );
 
 
+    }
+
+    /**
+     * Update the visibility of the no friend notice
+     */
+    private void updateNoFriendNoticeVisibility(){
+        if(friendsList != null)
+            mNoFriendNotice.setVisibility(friendsList.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
