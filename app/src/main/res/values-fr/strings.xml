@@ -174,4 +174,8 @@
     <string name="post_visibility_public">publique</string>
     <string name="preference_background_notif_title">Mise à jour des notifications en arrière plan</string>
     <string name="success_delete_all_notifs">Toute les notifications ont été supprimées !</string>
+    <string name="notice_no_conversation">Vous n\'avez pas encore de conversation.</string>
+    <string name="notice_no_friend">Vous n\'avez pas encore d\'amis.</string>
+    <string name="notice_no_notification">Vous n\'avez pas de notification pour le moment.</string>
+    <string name="notice_no_post_user_page">Il n\'y a pour le moment aucun post sur cette page.</string>
 </resources>
