@@ -118,7 +118,7 @@
     <string name="comment_image_description">Image de commentaire</string>
     <string name="like_button_img">Aimer</string>
     <string name="like_view_like">Aimer</string>
-    <string name="like_view_liking">J\'aimer</string>
+    <string name="like_view_liking">J\'aime</string>
     <string name="main_menu_friends_list">Liste d\'amis</string>
     <string name="navigation_bottom_notif_item">Notifications</string>
     <string name="navigation_bottom_user_item">Utilisateur</string>
