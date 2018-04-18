@@ -1,6 +1,6 @@
 CHANGELOG
 
-V 1.3 :
+V 1.2 :
 * Can start private conversation with users
 * Basic display of the posts : display only text and image posts
 * Comments : Can be shown + created (text comment only)
@@ -13,12 +13,12 @@ V 1.3 :
  * Redirect to special fragment if the user page is private
 * Implemented CrashReporter
 
-V 1.2 :
+V 1.1 :
 * Update conversation information
 * Application translated in French
 
 
-V 1.1 :
+V 1.0 :
 - Initial release
 * Create conversation / access conversation / Delete conversations
 * Display friendlist
