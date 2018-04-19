@@ -135,7 +135,7 @@ public class ImageLoadRunnable implements Runnable {
      * Once the image was downloaded (if it wasn't already) load the image into a bitmap object
      * The apply to the final image view
      */
-    private void load_image(){
+    private synchronized void load_image(){
 
         //Check if the file exists
         if(!file.exists()){
