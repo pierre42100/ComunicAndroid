@@ -18,6 +18,7 @@ import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 import java.util.ArrayList;
 
@@ -97,7 +98,7 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
                 findViewById(R.id.fragment_conversation_message_item_content);
         ImageView messageImageView = convertView.
                 findViewById(R.id.fragment_conversation_message_item_messageimage);
-        ImageView accountImageView;
+        WebUserAccountImage accountImageView;
         TextView userNameView = convertView.
                 findViewById(R.id.fragment_conversation_message_item_username);
 
@@ -217,18 +218,13 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
         /*
             Update account image
          */
-        //Cancel any load pending operation
-        ImageLoadHelper.remove(accountImageView);
-
-        //Set the default image
-        accountImageView.setImageResource(R.drawable.default_account_image);
-        accountImageView.setVisibility(View.VISIBLE);
 
         //Check if we can load a specific image
         if(user != null) {
-            String imageURL = user.getAcountImageURL();
-            ImageLoadHelper.load(getContext(), imageURL, accountImageView);
+            accountImageView.setUser(user);
         }
+        else
+            accountImageView.removeUser();
 
 
         return convertView;
