@@ -101,6 +101,7 @@ public class ImageLoadHelper {
     private static void clean(){
 
         //Get the list of threads
+        int i = 0;
         for(View view : threads.keySet()){
 
             if(threads.get(view) != null)
@@ -108,6 +109,10 @@ public class ImageLoadHelper {
                 if(!threads.get(view).isAlive())
                     threads.remove(view);
 
+            //Avoid ArrayIndexOutOfBoundsException
+            i++;
+            if(threads.size() < i)
+                return;
         }
 
     }
