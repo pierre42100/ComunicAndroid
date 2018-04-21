@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.Friend;
 import org.communiquons.android.comunic.client.data.models.FriendshipStatus;
@@ -69,7 +69,7 @@ public class FriendsListHelper {
     public ArrayList<Friend> download(){
 
         //Prepare the API request
-        APIRequestParameters params = new APIRequestParameters(mContext, "friends/getList");
+        APIRequest params = new APIRequest(mContext, "friends/getList");
         params.addBoolean("complete", true);
 
         //Prepare the result
@@ -121,7 +121,7 @@ public class FriendsListHelper {
     public void remove(Friend friend){
         try {
             //Remove the friend online
-            APIRequestParameters delparams = new APIRequestParameters(mContext, "friends/remove");
+            APIRequest delparams = new APIRequest(mContext, "friends/remove");
             delparams.addString("friendID", ""+friend.getId());
             new APIRequestHelper().exec(delparams);
 
@@ -143,7 +143,7 @@ public class FriendsListHelper {
     public boolean sendRequest(int friendID){
 
         //Prepare the request
-        APIRequestParameters params = new APIRequestParameters(mContext, "friends/sendRequest");
+        APIRequest params = new APIRequest(mContext, "friends/sendRequest");
         params.addInt("friendID", friendID);
 
         //Try to perform the request
@@ -165,7 +165,7 @@ public class FriendsListHelper {
     public boolean cancelRequest(int friendID){
 
         //Prepare the request
-        APIRequestParameters params = new APIRequestParameters(mContext, "friends/removeRequest");
+        APIRequest params = new APIRequest(mContext, "friends/removeRequest");
         params.addInt("friendID", friendID);
 
         //Try to perform the request
@@ -216,7 +216,7 @@ public class FriendsListHelper {
     public boolean respondRequest(int friendID, boolean accept){
 
         //Perform a request to update the status online
-        APIRequestParameters reqParams = new APIRequestParameters(mContext,
+        APIRequest reqParams = new APIRequest(mContext,
                 "friends/respondRequest");
         reqParams.addInt("friendID", friendID);
         reqParams.addString("accept", accept ? "true" : "false");
@@ -244,7 +244,7 @@ public class FriendsListHelper {
     public FriendshipStatus getFrienshipStatus(int friendID) {
 
         //Perform a request on the API
-        APIRequestParameters params = new APIRequestParameters(mContext, "friends/getStatus");
+        APIRequest params = new APIRequest(mContext, "friends/getStatus");
         params.addInt("friendID", friendID);
 
         try {

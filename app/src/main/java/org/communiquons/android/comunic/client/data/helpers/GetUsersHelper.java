@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 import android.util.Log;
 
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.AdvancedUserInfo;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
@@ -127,7 +127,7 @@ public class GetUsersHelper {
     public AdvancedUserInfo get_advanced_infos(int userID){
 
         //Perform an API request
-        APIRequestParameters params = new APIRequestParameters(mContext,
+        APIRequest params = new APIRequest(mContext,
                 "user/getAdvancedUserInfos");
         params.setTryContinueOnError(true);
         params.addInt("userID", userID);
@@ -263,7 +263,7 @@ public class GetUsersHelper {
     private ArrayList<Integer> search_users_online(String query, int limit){
 
         //Make an API request
-        APIRequestParameters params = new APIRequestParameters(mContext, "search/user");
+        APIRequest params = new APIRequest(mContext, "search/user");
         params.addString("query", query);
         params.addString("searchLimit", ""+limit);
 
@@ -299,7 +299,7 @@ public class GetUsersHelper {
 
         //Perform a request on the API server
         //Setup the request
-        APIRequestParameters requestParameters = new APIRequestParameters(mContext,
+        APIRequest requestParameters = new APIRequest(mContext,
                 "user/getInfosMultiple");
 
 

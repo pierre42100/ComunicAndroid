@@ -2,7 +2,7 @@ package org.communiquons.android.comunic.client.data.utils;
 
 import android.content.Context;
 
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.asynctasks.APIRequestTask;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.json.JSONObject;
@@ -66,7 +66,7 @@ public class AccountUtils {
     public void refresh_current_user_id(final onceRefreshedUserID callback){
 
         //Perform an API request
-        APIRequestParameters params = new APIRequestParameters(mContext, "user/getCurrentUserID");
+        APIRequest params = new APIRequest(mContext, "user/getCurrentUserID");
         new APIRequestTask(){
             @Override
             protected void onPostExecute(APIResponse result) {

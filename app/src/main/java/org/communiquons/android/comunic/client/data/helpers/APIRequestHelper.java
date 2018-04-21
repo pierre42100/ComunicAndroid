@@ -5,8 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import org.communiquons.android.comunic.client.BuildConfig;
-import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 
 import java.io.BufferedOutputStream;
@@ -45,7 +44,7 @@ public class APIRequestHelper {
      * @param parameters The parameters to pass to the server
      * @return The result of the request
      */
-    public APIResponse exec(APIRequestParameters parameters) throws Exception {
+    public APIResponse exec(APIRequest parameters) throws Exception {
 
         //Add API and login tokens
         addAPItokens(parameters);
@@ -136,7 +135,7 @@ public class APIRequestHelper {
      *
      * @param params The request parametres to update
      */
-    private void addAPItokens(APIRequestParameters params){
+    private void addAPItokens(APIRequest params){
         params.addString("serviceName", BuildConfig.api_service_name);
         params.addString("serviceToken", BuildConfig.api_service_token);
     }
@@ -146,7 +145,7 @@ public class APIRequestHelper {
      *
      * @param params The parameters of the request to update
      */
-    private void addLoginTokens(APIRequestParameters params){
+    private void addLoginTokens(APIRequest params){
 
         //Create account object
         AccountHelper accountHelper = new AccountHelper(params.getContext());

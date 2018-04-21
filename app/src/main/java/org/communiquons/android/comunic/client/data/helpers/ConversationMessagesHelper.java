@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.json.JSONArray;
@@ -88,7 +88,7 @@ public class ConversationMessagesHelper {
     public boolean sendMessage(int convID, String message, @Nullable String image){
 
         //Make an API request
-        APIRequestParameters params = new APIRequestParameters(mContext,
+        APIRequest params = new APIRequest(mContext,
                 "conversations/sendMessage");
         params.addString("conversationID", ""+convID);
         params.addString("message", message);
@@ -153,7 +153,7 @@ public class ConversationMessagesHelper {
     private ArrayList<ConversationMessage> downloadNew(int conversationID, int last_message_id){
 
         //Prepare a request on the API
-        APIRequestParameters params = new APIRequestParameters(mContext,
+        APIRequest params = new APIRequest(mContext,
                 "conversations/refresh_single");
         params.addString("conversationID", ""+conversationID);
         params.addString("last_message_id", ""+last_message_id);

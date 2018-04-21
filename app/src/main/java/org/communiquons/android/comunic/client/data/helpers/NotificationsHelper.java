@@ -3,7 +3,7 @@ package org.communiquons.android.comunic.client.data.helpers;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.data.enums.NotifElemType;
@@ -50,7 +50,7 @@ public class NotificationsHelper {
     public NotificationsCount pullCount(){
 
         //Perform an API request
-        APIRequestParameters params = new APIRequestParameters(mContext,
+        APIRequest params = new APIRequest(mContext,
                 "notifications/count_all_news");
 
         //Try to perform the request and parse results
@@ -80,7 +80,7 @@ public class NotificationsHelper {
     public boolean markSeen(int notifID){
 
         //Perform a request on the server
-        APIRequestParameters params = new APIRequestParameters(mContext, "notifications/mark_seen");
+        APIRequest params = new APIRequest(mContext, "notifications/mark_seen");
         params.addInt("notifID", notifID);
 
         //Try to send the request to the server
@@ -102,7 +102,7 @@ public class NotificationsHelper {
     public boolean deleteAllNotifs(){
 
         //Perform a request on the server
-        APIRequestParameters params = new APIRequestParameters(mContext,
+        APIRequest params = new APIRequest(mContext,
                 "notifications/delete_all");
 
         //Try to perform the request on the server
@@ -124,7 +124,7 @@ public class NotificationsHelper {
     public NotifsList getListUnread(){
 
         //Perform a request on the server
-        APIRequestParameters params = new APIRequestParameters(mContext,
+        APIRequest params = new APIRequest(mContext,
                 "notifications/get_list_unread");
 
         //Try to perform the request on the server

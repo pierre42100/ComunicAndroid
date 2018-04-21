@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * Created by pierre on 10/31/17.
  */
 
-public class APIRequestParameters {
+public class APIRequest {
 
     /**
      * The context of the request
@@ -39,7 +39,7 @@ public class APIRequestParameters {
      * @param context The context of the request
      * @param uri The request URI on the server
      */
-    public APIRequestParameters(Context context, String uri){
+    public APIRequest(Context context, String uri){
 
         //Save the context
         this.context = context;
@@ -47,7 +47,7 @@ public class APIRequestParameters {
         //Save request URI
         request_uri = uri;
 
-        //Intialize parameters array
+        //Initialize parameters array
         parameters = new ArrayList<>();
     }
 

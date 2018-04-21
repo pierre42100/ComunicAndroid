@@ -14,7 +14,7 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.asynctasks.APIRequestTask;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //Perform a request on the API to check user credentials and get login tokens
-        APIRequestParameters params = new APIRequestParameters(this, "user/connectUSER");
+        APIRequest params = new APIRequest(this, "user/connectUSER");
         params.addString("userMail", ""+login_mail.getText());
         params.addString("userPassword", ""+login_password.getText());
 

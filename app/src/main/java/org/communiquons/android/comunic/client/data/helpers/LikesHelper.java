@@ -2,7 +2,7 @@ package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.Context;
 
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.enums.LikesType;
 
@@ -43,7 +43,7 @@ public class LikesHelper {
     public boolean update(LikesType type, int id, boolean liking){
 
         //Perform an API request
-        APIRequestParameters params = new APIRequestParameters(mContext, "likes/update");
+        APIRequest params = new APIRequest(mContext, "likes/update");
         params.addInt("id", id);
         params.addBoolean("like", liking);
 

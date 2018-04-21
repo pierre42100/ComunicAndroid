@@ -3,7 +3,7 @@ package org.communiquons.android.comunic.client.data.helpers;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.CreatePost;
 import org.communiquons.android.comunic.client.data.enums.PageType;
@@ -56,7 +56,7 @@ public class PostsHelper {
     public Post getSingle(int id){
 
         //Perform an API request
-        APIRequestParameters params = new APIRequestParameters(mContext, "posts/get_single");
+        APIRequest params = new APIRequest(mContext, "posts/get_single");
         params.addInt("postID", id);
 
         try {
@@ -87,7 +87,7 @@ public class PostsHelper {
     public PostsList get_user(int userID){
 
         //Perform a request on the API
-        APIRequestParameters params = new APIRequestParameters(mContext, "posts/get_user");
+        APIRequest params = new APIRequest(mContext, "posts/get_user");
         params.addInt("userID", userID);
 
         //Perform the request
@@ -121,7 +121,7 @@ public class PostsHelper {
     public boolean delete(int postID){
 
         //Perform the request on the server
-        APIRequestParameters params = new APIRequestParameters(mContext, "posts/delete");
+        APIRequest params = new APIRequest(mContext, "posts/delete");
         params.addInt("postID", postID);
 
         //Intend to perform the request
@@ -146,7 +146,7 @@ public class PostsHelper {
     public int create(CreatePost post){
 
         //Prepare the request on the server
-        APIRequestParameters params = new APIRequestParameters(mContext, "posts/create");
+        APIRequest params = new APIRequest(mContext, "posts/create");
 
         //Put basic information about the post
         params.addString("content", post.getContent());
@@ -224,7 +224,7 @@ public class PostsHelper {
     public boolean update_content(int postId, String content) {
 
         //Perform a request on the API
-        APIRequestParameters params = new APIRequestParameters(mContext, "posts/update_content");
+        APIRequest params = new APIRequest(mContext, "posts/update_content");
         params.addString("new_content", content);
         params.addInt("postID", postId);
 

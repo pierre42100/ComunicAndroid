@@ -3,7 +3,7 @@ package org.communiquons.android.comunic.client.data.asynctasks;
 import android.os.AsyncTask;
 
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 
 /**
@@ -18,7 +18,7 @@ import org.communiquons.android.comunic.client.data.models.APIResponse;
  * Created by pierre on 10/31/17.
  */
 @Deprecated
-public abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Void, APIResponse> {
+public abstract class APIRequestTask extends AsyncTask<APIRequest, Void, APIResponse> {
 
     /**
      * API request in a Background task
@@ -29,7 +29,7 @@ public abstract class APIRequestTask extends AsyncTask<APIRequestParameters, Voi
      * @return JSONObject The result of the request
      */
     @Override
-    protected APIResponse doInBackground(APIRequestParameters... params) {
+    protected APIResponse doInBackground(APIRequest... params) {
 
         try {
             //Perform the API request

@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 import android.util.Log;
 
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
@@ -113,7 +113,7 @@ public class ConversationsListHelper {
     public Integer getPrivate(int userID, boolean allowCreate){
 
         //Prepare an API request
-        APIRequestParameters params = new APIRequestParameters(mContext,
+        APIRequest params = new APIRequest(mContext,
                 "conversations/getPrivate");
         params.addInt("otherUser", userID);
         params.addBoolean("allowCreate", allowCreate);
@@ -212,7 +212,7 @@ public class ConversationsListHelper {
     public boolean delete(int convID){
 
         //Delete the conversation on the API
-        APIRequestParameters params = new APIRequestParameters(mContext, "conversations/delete");
+        APIRequest params = new APIRequest(mContext, "conversations/delete");
         params.addString("conversationID", ""+convID);
 
         try {
@@ -243,7 +243,7 @@ public class ConversationsListHelper {
         }
 
         //Make an API request
-        APIRequestParameters params = new APIRequestParameters(mContext, "conversations/create");
+        APIRequest params = new APIRequest(mContext, "conversations/create");
         params.addString("name", name.equals("") ? "false" : name);
         params.addString("follow", follow ? "true" : "false");
         params.addString("users", members_str);
@@ -286,7 +286,7 @@ public class ConversationsListHelper {
                           @Nullable ArrayList<Integer> members, boolean following){
 
         //Prepare a request on the database
-        APIRequestParameters params = new APIRequestParameters(mContext,
+        APIRequest params = new APIRequest(mContext,
                 "conversations/updateSettings");
         params.addString("conversationID", ""+convID);
 
@@ -332,7 +332,7 @@ public class ConversationsListHelper {
         try {
 
             //Prepare the request on the server
-            APIRequestParameters params = new APIRequestParameters(mContext, "conversations/getList");
+            APIRequest params = new APIRequest(mContext, "conversations/getList");
             APIResponse response = new APIRequestHelper().exec(params);
 
             //Check if an error occurred
@@ -366,7 +366,7 @@ public class ConversationsListHelper {
     private ConversationsInfo downloadSingle(int convID){
 
         //Perform an API request
-        APIRequestParameters params = new APIRequestParameters(mContext,
+        APIRequest params = new APIRequest(mContext,
                 "conversations/getInfosOne");
         params.addString("conversationID", ""+convID);
 

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.communiquons.android.comunic.client.data.models.APIRequestParameters;
+import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.Comment;
 import org.json.JSONArray;
@@ -50,7 +50,7 @@ public class CommentsHelper {
     public int send_comment(int postID, String comment){
 
         //Create and perform an API request
-        APIRequestParameters params = new APIRequestParameters(mContext, "comments/create");
+        APIRequest params = new APIRequest(mContext, "comments/create");
         params.addInt("postID", postID);
         params.addString("content", comment);
 
@@ -79,7 +79,7 @@ public class CommentsHelper {
     public Comment getInfosSingle(int commentID){
 
         //Prepare API request
-        APIRequestParameters params = new APIRequestParameters(mContext, "comments/get_single");
+        APIRequest params = new APIRequest(mContext, "comments/get_single");
         params.addInt("commentID", commentID);
 
         //Perform the request
@@ -112,7 +112,7 @@ public class CommentsHelper {
     public boolean editContent(int commentID, String content){
 
         //Perform a request on the server
-        APIRequestParameters params = new APIRequestParameters(mContext, "comments/edit");
+        APIRequest params = new APIRequest(mContext, "comments/edit");
         params.addInt("commentID", commentID);
         params.addString("content", content);
 
@@ -136,7 +136,7 @@ public class CommentsHelper {
     public boolean delete(int commentID){
 
         //Prepare an API request
-        APIRequestParameters params = new APIRequestParameters(mContext, "comments/delete");
+        APIRequest params = new APIRequest(mContext, "comments/delete");
         params.addInt("commentID", commentID);
 
         //Try to perform the request
