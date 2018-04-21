@@ -1,9 +1,13 @@
 package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.communiquons.android.comunic.client.data.models.APIFileRequest;
+import org.communiquons.android.comunic.client.data.models.APIPostFile;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
@@ -82,23 +86,36 @@ public class ConversationMessagesHelper {
      *
      * @param convID Target conversation ID
      * @param message The message to send
-     * @param image Base64 encoded image to include with the message (can be null)
+     * @param image Image to include with the request, as bitmap (can be null)
      * @return true in case of success / false else
      */
-    public boolean sendMessage(int convID, String message, @Nullable String image){
+    public boolean sendMessage(int convID, String message, @Nullable Bitmap image){
 
         //Make an API request
-        APIRequest params = new APIRequest(mContext,
+        APIFileRequest params = new APIFileRequest(mContext,
                 "conversations/sendMessage");
         params.addString("conversationID", ""+convID);
         params.addString("message", message);
 
         //Include image (if any)
-        if(image != null)
-            params.addString("image", "data:image/png;base64," + image);
+        if(image != null) {
+            APIPostFile file = new APIPostFile();
+            file.setFieldName("image");
+            file.setFileName("conversationImage.png");
+            file.setBitmap(image);
+            params.addFile(file);
+        }
 
         try {
-            new APIRequestHelper().exec(params);
+
+            if(image != null){
+                //Perform a POST request
+                new APIRequestHelper().execPostFile(params);
+            }
+            else
+                //Perform normal request
+                new APIRequestHelper().exec(params);
+
             return true;
         } catch (Exception e){
             e.printStackTrace();

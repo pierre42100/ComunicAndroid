@@ -113,6 +113,15 @@ public class APIRequest {
     }
 
     /**
+     * Get the list of parameters
+     *
+     * @return The list of parameters
+     */
+    public ArrayList<APIPostData> getParameters() {
+        return parameters;
+    }
+
+    /**
      * Get the context of the request
      *
      * @return The context of the request

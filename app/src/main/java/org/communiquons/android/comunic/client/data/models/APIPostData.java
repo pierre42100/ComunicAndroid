@@ -9,7 +9,7 @@ import java.net.URLEncoder;
  * Created by pierre on 10/31/17.
  */
 
-class APIPostData {
+public class APIPostData {
 
     /**
      * The name of the key
@@ -30,6 +30,52 @@ class APIPostData {
     APIPostData(String name, String value){
         key_name = name;
         key_value = value;
+    }
+
+    /**
+     * Get the name of the key
+     *
+     * @return The name of key
+     */
+    public String getKey_name() {
+        return key_name;
+    }
+
+    /**
+     * Get the value associated with the ky
+     *
+     * @return The value of the key
+     */
+    public String getKey_value() {
+        return key_value;
+    }
+
+    /**
+     * Get the key name, as an encoded string
+     *
+     * @return The encoded key name
+     */
+    public String getEncodedKeyName(){
+        try {
+            return URLEncoder.encode(getKey_name(), "UTF-8");
+        } catch (java.io.UnsupportedEncodingException e){
+            e.printStackTrace();
+            throw new RuntimeException("Unsupported encoding : UTF-8 !", e);
+        }
+    }
+
+    /**
+     * Get the key value, as an encoded string
+     *
+     * @return The encoded key value
+     */
+    public String getEncodedKeyValue(){
+        try {
+            return URLEncoder.encode(getKey_value(), "UTF-8");
+        } catch (java.io.UnsupportedEncodingException e){
+            e.printStackTrace();
+            throw new RuntimeException("Unsupported encoding : UTF-8 !", e);
+        }
     }
 
     /**

@@ -535,14 +535,8 @@ public class ConversationFragment extends Fragment
 
             @Override
             protected Boolean doInBackground(Void... params) {
-                String message_image = null;
-
-                //Reduce Bitmap and convert it to a base64-encoded string
-                if(new_message_bitmap != null)
-                        message_image = BitmapUtils.bitmapToBase64(
-                                BitmapUtils.reduceBitmap(new_message_bitmap, 1199, 1199));
-
-                return convMessHelper.sendMessage(conversation_id, message_content, message_image);
+                return convMessHelper.sendMessage(conversation_id,
+                        message_content, new_message_bitmap);
             }
 
             @Override

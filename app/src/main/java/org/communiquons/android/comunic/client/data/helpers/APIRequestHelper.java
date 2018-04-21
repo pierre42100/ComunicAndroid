@@ -5,6 +5,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import org.communiquons.android.comunic.client.BuildConfig;
+import org.communiquons.android.comunic.client.data.models.APIFileRequest;
+import org.communiquons.android.comunic.client.data.models.APIPostData;
+import org.communiquons.android.comunic.client.data.models.APIPostFile;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 
@@ -16,8 +19,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 /**
@@ -115,6 +121,126 @@ public class APIRequestHelper {
         return result;
     }
 
+    /**
+     * Execute an API request over the server
+     *
+     * Note : this methods is based on a StackOverflow answer:
+     * https://stackoverflow.com/a/33149413/3781411
+     *
+     * @param req Information about the request
+     * @return The response of the server
+     * @throws Exception In case of failure during the connection with the API
+     */
+    public APIResponse execPostFile(APIFileRequest req) throws Exception {
+
+        //Add API and login tokens to the request
+        addAPItokens(req);
+        addLoginTokens(req);
+
+        //Prepare response
+        APIResponse response = new APIResponse();
+        HttpURLConnection conn = null;
+        OutputStream out;
+        PrintWriter writer;
+
+        //Create unique boundary
+        String boundary = "===" + System.currentTimeMillis() + "===";
+        String LINE_FEED = "\r\n";
+
+        try {
+
+            //Initialize connection
+            URL url = new URL(BuildConfig.api_url + req.getRequest_uri());
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setUseCaches(false);
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+
+            //Get output stream
+            out = conn.getOutputStream();
+            writer = new PrintWriter(new OutputStreamWriter(out, "UTF-8"));
+
+            //Append values
+            for(APIPostData value : req.getParameters()){
+
+                writer.append("--" + boundary).append(LINE_FEED);
+                writer.append("Content-Disposition: form-data; name=\"" + value.getEncodedKeyName() + "\"")
+                        .append(LINE_FEED);
+                writer.append("Content-Type: form-data; charset=UTF-8").append(
+                        LINE_FEED);
+                writer.append(LINE_FEED);
+                writer.append(value.getKey_value()).append(LINE_FEED);
+                writer.flush();
+
+            }
+
+            //Append files
+            for(APIPostFile file : req.getFiles()){
+
+                String fileName = file.getFileName();
+                writer.append("--" + boundary).append(LINE_FEED);
+                writer.append(
+                        "Content-Disposition: form-data; name=\"" + file.getFieldName()
+                                + "\"; filename=\"" + fileName + "\"")
+                        .append(LINE_FEED);
+                writer.append(
+                        "Content-Type: "
+                                + URLConnection.guessContentTypeFromName(fileName))
+                        .append(LINE_FEED);
+                writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+                writer.append(LINE_FEED);
+                writer.flush();
+
+                out.write(file.getByteArray());
+                out.flush();
+
+                writer.append(LINE_FEED);
+                writer.flush();
+            }
+
+            //Finish request and get response
+            writer.append(LINE_FEED).flush();
+            writer.append("--" + boundary + "--").append(LINE_FEED);
+            writer.close();
+
+            StringBuilder responseBuffer = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                responseBuffer.append(line);
+            }
+            reader.close();
+            conn.disconnect();
+
+            //Return the response
+            response.setResponse_code(conn.getResponseCode());
+            response.setResponse(responseBuffer.toString());
+        }
+
+        //Malformed URL Exceptions must be fixed by dev
+        catch (MalformedURLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("MalformedURLException should never occur...");
+        }
+
+        catch (IOException e) {
+            e.printStackTrace();
+            response.setResponse_code(0);
+
+            if(req.isTryContinueOnError() && conn != null){
+                response.setResponse_code(conn.getResponseCode());
+                return response;
+            }
+
+            //Throw an exception
+            throw new Exception("Could not connect to the server");
+        }
+
+        return response;
+    }
+
     // Reads an InputStream and converts it to a String.
     private String readIt(InputStream stream) throws IOException {
 
@@ -133,7 +259,7 @@ public class APIRequestHelper {
     /**
      * Add the API client tokens to API request object
      *
-     * @param params The request parametres to update
+     * @param params The request parameters to update
      */
     private void addAPItokens(APIRequest params){
         params.addString("serviceName", BuildConfig.api_service_name);
