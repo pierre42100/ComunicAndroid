@@ -13,9 +13,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -245,6 +247,35 @@ public class ConversationFragment extends Fragment
                 send_message();
             }
         });
+
+        //Make message input act like send button on enter key press
+        new_message_content.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    send_message();
+                    return false;
+                }
+
+
+                return false;
+            }
+        });
+        /*setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                if(event != null){
+                    if(event.getKeyCode() == KeyEvent.KEYCODE_ENTER &&
+                            //actionId == EditorInfo.IME_NULL &&
+                            event.getAction() == KeyEvent.ACTION_DOWN)
+                        send_message();
+                }
+
+                return false;
+            }
+        });*/
 
         //Make pick image button lives
         pick_image_button.setOnClickListener(new View.OnClickListener() {
