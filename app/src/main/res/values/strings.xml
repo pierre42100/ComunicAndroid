@@ -178,4 +178,8 @@
     <string name="notice_no_conversation">You do not have any conversation yet.</string>
     <string name="notice_no_friend">You do not have any friend yet.</string>
     <string name="err_get_older_conversation_messages">An error occurred while trying to get older messages for the conversation!</string>
+    <string name="preference_debug_mode_title">Enable debug mode</string>
+    <string name="preference_debug_mode_summary">Enable this option to get access to development / debug features.</string>
+    <string name="menu_debug_title">Debug</string>
+    <string name="menu_clear_local_db">Clear local database</string>
 </resources>

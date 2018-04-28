@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.BuildConfig;
@@ -25,6 +26,7 @@ import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
+import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
 import org.communiquons.android.comunic.client.ui.fragments.SinglePostFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UserAccessDeniedFragment;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
@@ -164,6 +166,13 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        //Check if the debug menu has to be shown or not
+        if(PreferencesUtils.getBoolean(this, "enable_debug_mode", false)) {
+            SubMenu debugMenu = menu.addSubMenu(R.string.menu_debug_title);
+            getMenuInflater().inflate(R.menu.debug_menu, debugMenu);
+        }
+
         return true;
     }
 

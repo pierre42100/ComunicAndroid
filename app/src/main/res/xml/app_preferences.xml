@@ -8,4 +8,12 @@
         android:title="@string/preference_background_notif_title"
         android:summary="@string/preference_background_notif_summary"/>
 
+
+    <!-- Enable and / or disable debug mode -->
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="enable_debug_mode"
+        android:title="@string/preference_debug_mode_title"
+        android:summary="@string/preference_debug_mode_summary" />
+
 </PreferenceScreen>
