@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/clear_local_db"
+        android:id="@+id/action_clear_local_db"
         android:title="@string/menu_clear_local_db"/>
 
 </menu>

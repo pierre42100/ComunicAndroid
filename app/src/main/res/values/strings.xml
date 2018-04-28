@@ -179,7 +179,9 @@
     <string name="notice_no_friend">You do not have any friend yet.</string>
     <string name="err_get_older_conversation_messages">An error occurred while trying to get older messages for the conversation!</string>
     <string name="preference_debug_mode_title">Enable debug mode</string>
-    <string name="preference_debug_mode_summary">Enable this option to get access to development / debug features.</string>
+    <string name="preference_debug_mode_summary">Enable this option to get access to development / debug features. (Need application restart to make effect)</string>
     <string name="menu_debug_title">Debug</string>
     <string name="menu_clear_local_db">Clear local database</string>
+    <string name="success_clear_local_db">The local database has been successfully cleared! You may need to restart the application to make the changes being fully applied.</string>
+    <string name="err_clear_local_db">An error occurred while trying to clear local database!</string>
 </resources>

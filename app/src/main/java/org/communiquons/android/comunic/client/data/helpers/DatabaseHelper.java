@@ -127,9 +127,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      *
      * @param db Database object
      */
-    public void init_db(SQLiteDatabase db){
+    void init_db(SQLiteDatabase db){
 
-        //Create user informations table
+        //Create user information table
         db.execSQL(SQL_CREATE_USERS_INFOS_TABLE);
 
         //Create friends list table
@@ -147,8 +147,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      *
      * @param db The database
      */
-    public void clear_db(SQLiteDatabase db){
-        //Delete users informations table
+    void clear_db(SQLiteDatabase db){
+        //Delete users information table
         db.execSQL(SQL_DELETE_USERS_INFOS_TABLE);
 
         //Delete friends list table

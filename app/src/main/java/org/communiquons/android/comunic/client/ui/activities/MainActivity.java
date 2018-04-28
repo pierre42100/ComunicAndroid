@@ -21,6 +21,7 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.crashreporter.CrashReporter;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
+import org.communiquons.android.comunic.client.data.helpers.DebugHelper;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
@@ -197,6 +198,12 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         //Check for logout request
         if(id == R.id.action_logout){
             confirmUserLogout();
+            return true;
+        }
+
+        //Check if user wants to clear database
+        if(id == R.id.action_clear_local_db){
+            clearLocalDatabase();
             return true;
         }
 
@@ -495,4 +502,16 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         transaction.replace(R.id.main_fragment, singlePostFragment);
         transaction.commit();
     }
+
+    /**
+     * Clear the cache database of the application
+     */
+    private void clearLocalDatabase() {
+
+        if(!new DebugHelper(this).clearLocalDatabase())
+            Toast.makeText(this, R.string.err_clear_local_db, Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, R.string.success_clear_local_db, Toast.LENGTH_SHORT).show();
+    }
+
 }
