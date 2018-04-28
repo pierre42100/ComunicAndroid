@@ -692,6 +692,8 @@ public class ConversationFragment extends Fragment
 
         //Check if the list is null (in case of error)
         if(list == null) {
+            Toast.makeText(getActivity(), R.string.err_get_older_conversation_messages,
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
