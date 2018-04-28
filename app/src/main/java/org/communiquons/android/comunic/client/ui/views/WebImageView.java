@@ -43,25 +43,6 @@ public class WebImageView extends android.support.v7.widget.AppCompatImageView {
     }
 
     /**
-     * Get the current default drawable for this view
-     *
-     * @return The default drawable
-     */
-    public int getDefaultDrawable() {
-        return mDefaultDrawable;
-    }
-
-    /**
-     * Set the default drawable for this view. This drawable will be used while the other one
-     * is loading
-     *
-     * @param defaultDrawable The default drawable
-     */
-    public void setDefaultDrawable(int defaultDrawable) {
-        this.mDefaultDrawable = defaultDrawable;
-    }
-
-    /**
      * Load an image specified by its URL in the image
      *
      * @param url The URL pointing on the image
@@ -89,5 +70,42 @@ public class WebImageView extends android.support.v7.widget.AppCompatImageView {
     public void removeImage() {
         mCurrURL = null;
         ImageLoadHelper.remove(this);
+    }
+
+    /**
+     * Get the current default drawable for this view
+     *
+     * @return The default drawable
+     */
+    public int getDefaultDrawable() {
+        return mDefaultDrawable;
+    }
+
+    /**
+     * Set the default drawable for this view. This drawable will be used while the other one
+     * is loading
+     *
+     * @param defaultDrawable The default drawable
+     */
+    public void setDefaultDrawable(int defaultDrawable) {
+        this.mDefaultDrawable = defaultDrawable;
+    }
+
+    /**
+     * Get the current URL used in this image view
+     *
+     * @return The URL of the current image / null else
+     */
+    public String getCurrURL() {
+        return mCurrURL;
+    }
+
+    /**
+     * Check the current object has an image URL defined
+     *
+     * @return TRUE if a remote image as been set / FALSE else
+     */
+    public boolean hasImageURL(){
+        return  mCurrURL != null;
     }
 }

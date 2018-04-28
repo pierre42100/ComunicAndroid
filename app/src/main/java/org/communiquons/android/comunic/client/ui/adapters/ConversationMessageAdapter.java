@@ -18,6 +18,7 @@ import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.WebImageView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 import java.util.ArrayList;
@@ -96,7 +97,7 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
                 .findViewById(R.id.fragment_conversation_message_item_container);
         TextView contentView = convertView.
                 findViewById(R.id.fragment_conversation_message_item_content);
-        ImageView messageImageView = convertView.
+        WebImageView messageImageView = convertView.
                 findViewById(R.id.fragment_conversation_message_item_messageimage);
         WebUserAccountImage accountImageView;
         TextView userNameView = convertView.
@@ -181,8 +182,7 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
          */
         if(message.hasImage()){
             //Load the image
-            ImageLoadHelper.remove(messageImageView);
-            ImageLoadHelper.load(getContext(), message.getImage_path(), messageImageView);
+            messageImageView.loadURL(message.getImage_path());
 
             //Make the image visible
             messageImageView.setVisibility(View.VISIBLE);

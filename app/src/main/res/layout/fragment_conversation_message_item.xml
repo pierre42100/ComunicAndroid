@@ -42,7 +42,7 @@
             android:textColor="@color/conversation_otheruser_messages_textColor"
             tools:text="A message"/>
 
-        <ImageView
+        <org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView
             android:id="@+id/fragment_conversation_message_item_messageimage"
             android:layout_width="40dp"
             android:layout_height="40dp"
