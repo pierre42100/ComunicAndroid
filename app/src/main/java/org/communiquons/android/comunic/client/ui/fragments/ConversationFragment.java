@@ -356,18 +356,45 @@ public class ConversationFragment extends Fragment
         display_main_progress_bar(false);
         display_not_msg_notice(false);
 
-        final ArrayList<Integer> usersToFetch = new ArrayList<>();
-
         //Add the messages to the the main list of messages
         for(ConversationMessage message : newMessages){
             messagesList.add(message);
-
-            if(!users.containsKey(message.getUser_id()))
-                usersToFetch.add(message.getUser_id());
         }
 
         convMessAdapter.notifyDataSetChanged();
         last_message_id = lastID;
+
+        //Make sure we have got information about all the members of the conversation
+        refreshUserInfo();
+    }
+
+    @Override
+    public void onLoadError() {
+        //Display a toast
+        Toast.makeText(getActivity(), R.string.fragment_conversation_err_load_message,
+                Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Make sure we have got the information about all the users of the conversation
+     */
+    private void refreshUserInfo(){
+
+        if(messagesList == null)
+            return;
+
+        final ArrayList<Integer> usersToFetch = new ArrayList<>();
+
+        //Process the list of messages
+        for(ConversationMessage message : messagesList){
+
+            if(!users.containsKey(message.getUser_id())){
+                if(!usersToFetch.contains(message.getUser_id()))
+                    usersToFetch.add(message.getUser_id());
+            }
+
+        }
+
 
         //Fetch user information if required
         if(usersToFetch.size() > 0){
@@ -384,13 +411,6 @@ public class ConversationFragment extends Fragment
                 }
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
-    }
-
-    @Override
-    public void onLoadError() {
-        //Display a toast
-        Toast.makeText(getActivity(), R.string.fragment_conversation_err_load_message,
-                Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -634,6 +654,9 @@ public class ConversationFragment extends Fragment
         if(mGetOlderMessagesTask != null)
             return;
 
+        //Display progress bar
+        display_main_progress_bar(true);
+
         //Create and execute the task
         mGetOlderMessagesTask = new AsyncTask<Void, Void, ArrayList<ConversationMessage>>(){
 
@@ -664,17 +687,25 @@ public class ConversationFragment extends Fragment
         //Remove link over task
         mGetOlderMessagesTask = null;
 
+        //Remove progress bar
+        display_main_progress_bar(false);
+
         //Check if the list is null (in case of error)
-        if(list == null)
+        if(list == null) {
             return;
+        }
 
         if(list.size() == 0)
             return;
+        Log.v(TAG, "List size: " + list.size());
 
         //Add the messages to the list
         messagesList.addAll(0, list);
 
         //Notify adapter
         convMessAdapter.notifyDataSetChanged();
+
+        //Refresh user information if required
+        refreshUserInfo();
     }
 }

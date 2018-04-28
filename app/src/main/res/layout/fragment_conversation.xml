@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <!-- Loading wheel -->
@@ -9,7 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"/>
 
     <!-- No message notice -->
     <TextView
@@ -18,53 +19,59 @@
         android:layout_height="wrap_content"
         android:text="@string/fragment_conversation_no_msg"
         android:textAlignment="center"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="70dp" />
 
-    <!-- Messages -->
-    <org.communiquons.android.comunic.client.ui.views.ScrollListView
-        android:id="@+id/fragment_conversation_messageslist"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:divider="@null"
-        android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll"
-        />
-
-    <!-- Send messages form -->
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/conversation_footer_bg">
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/fragment_conversation_newmessage_content"
-            android:layout_width="0dp"
+        <!-- Messages -->
+        <org.communiquons.android.comunic.client.ui.views.ScrollListView
+            android:id="@+id/fragment_conversation_messageslist"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
+            android:divider="@null"
+            android:stackFromBottom="true"
+            android:transcriptMode="alwaysScroll"
+            />
+
+        <!-- Send messages form -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:hint="@string/fragment_conversation_new_message_placeholder"/>
+            android:background="@color/conversation_footer_bg">
 
-        <ImageButton
-            android:id="@+id/fragment_conversation_newmessage_pickimage"
-            android:layout_width="@dimen/fragment_conversation_buttons_width"
-            android:layout_height="@dimen/fragment_conversation_buttons_height"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:scaleType="fitCenter"
-            android:contentDescription="@string/conversation_message_add_image"/>
+            <EditText
+                android:id="@+id/fragment_conversation_newmessage_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="@string/fragment_conversation_new_message_placeholder"/>
 
-        <ImageButton
-            android:id="@+id/fragment_conversation_newmessage_send"
-            android:layout_width="@dimen/fragment_conversation_buttons_width"
-            android:layout_height="@dimen/fragment_conversation_buttons_height"
-            android:src="@android:drawable/ic_menu_send"
-            android:contentDescription="@string/conversation_message_send"/>
+            <ImageButton
+                android:id="@+id/fragment_conversation_newmessage_pickimage"
+                android:layout_width="@dimen/fragment_conversation_buttons_width"
+                android:layout_height="@dimen/fragment_conversation_buttons_height"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/conversation_message_add_image"/>
 
-        <ProgressBar
-            android:id="@+id/fragment_conversation_newmessage_loading"
-            android:layout_width="@dimen/fragment_conversation_buttons_width"
-            android:layout_height="@dimen/fragment_conversation_buttons_height" />
+            <ImageButton
+                android:id="@+id/fragment_conversation_newmessage_send"
+                android:layout_width="@dimen/fragment_conversation_buttons_width"
+                android:layout_height="@dimen/fragment_conversation_buttons_height"
+                android:src="@android:drawable/ic_menu_send"
+                android:contentDescription="@string/conversation_message_send"/>
+
+            <ProgressBar
+                android:id="@+id/fragment_conversation_newmessage_loading"
+                android:layout_width="@dimen/fragment_conversation_buttons_width"
+                android:layout_height="@dimen/fragment_conversation_buttons_height" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
