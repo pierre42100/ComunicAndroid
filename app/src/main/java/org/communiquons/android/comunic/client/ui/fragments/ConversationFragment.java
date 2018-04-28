@@ -262,20 +262,6 @@ public class ConversationFragment extends Fragment
                 return false;
             }
         });
-        /*setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-                if(event != null){
-                    if(event.getKeyCode() == KeyEvent.KEYCODE_ENTER &&
-                            //actionId == EditorInfo.IME_NULL &&
-                            event.getAction() == KeyEvent.ACTION_DOWN)
-                        send_message();
-                }
-
-                return false;
-            }
-        });*/
 
         //Make pick image button lives
         pick_image_button.setOnClickListener(new View.OnClickListener() {
