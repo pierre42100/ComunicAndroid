@@ -22,7 +22,8 @@ public class PreferencesUtils {
      * @return The preference value (if found) or the default value
      */
     public static boolean getBoolean(Context context, String key, boolean def){
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(
+                context.getApplicationContext());
         return sharedPrefs.getBoolean(key, def);
     }
 

@@ -139,6 +139,39 @@ public class ConversationMessagesHelper {
     }
 
     /**
+     * Request the request of older messages from the database / API
+     *
+     * @param convID Target conversationID
+     * @param oldestMessageID The ID of the oldest known message
+     * @return The list of messages / null in case of failure
+     */
+    @Nullable
+    public ArrayList<ConversationMessage> getOlderMessages(int convID, int oldestMessageID){
+
+        //Check what is the oldest message stored in the database
+        int oldestMessageDownloaded = mDbHelper.getOldestMessageID(convID);
+
+        //Check if no message has been already download
+        if(oldestMessageDownloaded == 0)
+            return null;
+
+        //Download older messages from the server
+        ArrayList<ConversationMessage> messages =
+                downloadOlder(convID, oldestMessageDownloaded, 10);
+
+        //Check for errors
+        if(messages == null)
+            return null;
+
+        //Save the new messages
+        if(!mDbHelper.insertMultiple(messages))
+            return null;
+
+        //Get the messages
+        return mDbHelper.getInterval(convID, 0, oldestMessageID - 1);
+    }
+
+    /**
      * Get the ID of the last message of the conversation from the database
      *
      * @param conversation_id Target conversation
@@ -193,6 +226,49 @@ public class ConversationMessagesHelper {
 
         } catch (Exception e){
             Log.e(TAG, "Couldn't refresh the list of messages!");
+            e.printStackTrace();
+            return null;
+        }
+
+        return list;
+    }
+
+    /**
+     * Get older messages for a conversation
+     *
+     * @param conversationID The ID of the target conversation
+     * @param oldestMessageID The ID of the oldest known message
+     * @param limit The limit for the download
+     * @return The list of message / null in case of failure
+     */
+    @Nullable
+    private ArrayList<ConversationMessage> downloadOlder(int conversationID, int oldestMessageID,
+                                                         int limit){
+
+        ArrayList<ConversationMessage> list = new ArrayList<>();
+
+        //Prepare a request over the server
+        APIRequest req = new APIRequest(mContext, "conversations/get_older_messages");
+        req.addInt("conversationID", conversationID);
+        req.addInt("oldest_message_id", oldestMessageID);
+        req.addInt("limit", limit);
+
+        //Perform the request
+        try {
+
+            APIResponse response = new APIRequestHelper().exec(req);
+
+            //Check for errors
+            if(response.getResponse_code() != 200)
+                return null;
+
+            //Process the list of messages
+            JSONArray messages = response.getJSONArray();
+
+            for(int i = 0; i < messages.length(); i++)
+                list.add(getMessageObject(conversationID, messages.getJSONObject(i)));
+
+        } catch (Exception e){
             e.printStackTrace();
             return null;
         }

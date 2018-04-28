@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,10 +16,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +35,9 @@ import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.FilesUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAdapter;
+import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
+import org.communiquons.android.comunic.client.ui.views.ScrollListView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,7 +56,8 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class ConversationFragment extends Fragment
-        implements ConversationRefreshRunnable.onMessagesChangeListener {
+        implements ConversationRefreshRunnable.onMessagesChangeListener,
+        OnScrollChangeDetectListener {
 
     /**
      * Pick image request number
@@ -115,9 +115,9 @@ public class ConversationFragment extends Fragment
     private TextView no_msg_notice;
 
     /**
-     * Converstion message listView
+     * Conversation message listView
      */
-    private ListView convMessListView;
+    private ScrollListView convMessListView;
 
     /**
      * Conversation messages helper
@@ -163,6 +163,11 @@ public class ConversationFragment extends Fragment
      * Get user helper
      */
     private GetUsersHelper getUsersHelper;
+
+    /**
+     * Async task used to fetch older messages
+     */
+    private AsyncTask mGetOlderMessagesTask;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -280,6 +285,10 @@ public class ConversationFragment extends Fragment
 
         //Hide new message sending wheel
         new_message_progress_bar.setVisibility(View.GONE);
+
+
+        //Set a listener to detect when the user reaches the top of the conversation
+        convMessListView.setOnScrollChangeDetectListener(this);
     }
 
     @Override
@@ -606,5 +615,66 @@ public class ConversationFragment extends Fragment
      */
     private void display_not_msg_notice(boolean visible){
         no_msg_notice.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    /**
+     * This method is called when the user reach the top of the conversation
+     */
+    @Override
+    public void onReachTop() {
+
+        //Check if we have got other messages to get
+        if(messagesList == null)
+            return;
+        if(messagesList.size() == 0)
+            return;
+        final int firstMessageID = messagesList.get(0).getId();
+
+        //Check if another task is running
+        if(mGetOlderMessagesTask != null)
+            return;
+
+        //Create and execute the task
+        mGetOlderMessagesTask = new AsyncTask<Void, Void, ArrayList<ConversationMessage>>(){
+
+            @Override
+            protected ArrayList<ConversationMessage> doInBackground(Void... params) {
+                return convMessHelper.getOlderMessages(conversation_id, firstMessageID);
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<ConversationMessage> conversationMessages) {
+                if(getActivity() == null)
+                    return;
+
+                onGotOlderMessages(conversationMessages);
+
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    /**
+     * Actions to do once we downloaded older messages from the server
+     *
+     * @param list The list of messages that was downloaded
+     */
+    private void onGotOlderMessages(@Nullable ArrayList<ConversationMessage> list){
+
+        //Remove link over task
+        mGetOlderMessagesTask = null;
+
+        //Check if the list is null (in case of error)
+        if(list == null)
+            return;
+
+        if(list.size() == 0)
+            return;
+
+        //Add the messages to the list
+        messagesList.addAll(0, list);
+
+        //Notify adapter
+        convMessAdapter.notifyDataSetChanged();
     }
 }

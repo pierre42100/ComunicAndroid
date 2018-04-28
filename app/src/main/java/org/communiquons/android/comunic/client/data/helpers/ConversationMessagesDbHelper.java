@@ -93,6 +93,38 @@ class ConversationMessagesDbHelper {
     }
 
     /**
+     * Get the oldest message known of a conversation
+     *
+     * @param convID Target conversation ID
+     * @return The ID of the latest known message / -1 in case of failure
+     */
+    int getOldestMessageID(int convID) {
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        //Prepare the query over the database
+        String[] columns = {ConversationsMessagesSchema.COLUMN_NAME_MESSAGE_ID};
+        String selection = ConversationsMessagesSchema.COLUMN_NAME_CONVERSATION_ID + " = ?";
+        String[] selectionArgs = {""+convID};
+        String orderBy = ConversationsMessagesSchema.COLUMN_NAME_MESSAGE_ID;
+
+        //Perform the request
+        Cursor response = db.query(TABLE_NAME, columns, selection, selectionArgs, null,
+                null, orderBy, "1");
+
+        //Process response
+        int messageID = 0;
+        if(response.getCount() != 0){
+            response.moveToFirst();
+            messageID = response.getInt(response.getColumnIndexOrThrow(
+                    ConversationsMessagesSchema.COLUMN_NAME_MESSAGE_ID));
+        }
+        response.close();
+
+        return  messageID;
+    }
+
+    /**
      * Insert a list of messages into the database
      *
      * @param list The list of messages to insert
