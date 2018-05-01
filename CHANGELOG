@@ -1,5 +1,10 @@
 CHANGELOG
 
+V1.3 :
+* Try to fix Bitmap crashes
+* Enlarge images in conversations
+* Create debug mode
+
 V 1.2 :
 * Can start private conversation with users
 * Basic display of the posts : display only text and image posts
