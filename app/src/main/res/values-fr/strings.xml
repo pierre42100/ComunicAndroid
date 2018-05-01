@@ -178,4 +178,11 @@
     <string name="notice_no_friend">Vous n\'avez pas encore d\'amis.</string>
     <string name="notice_no_notification">Vous n\'avez pas de notification pour le moment.</string>
     <string name="notice_no_post_user_page">Il n\'y a pour le moment aucun post sur cette page.</string>
+    <string name="menu_debug_title">Debug</string>
+    <string name="menu_clear_local_db">Vider la base de donnée locale</string>
+    <string name="preference_debug_mode_summary">Activez cette option pour utiliser des fonctions de développement / débogage. (Nécessite un redémarrage de l\'application pour prendre effet).</string>
+    <string name="preference_debug_mode_title">Activer le mode de débogage</string>
+    <string name="success_clear_local_db">La base de donnée locale a bien été vidée ! Un redémarrage peut être nécessaire pour que l\'ensemble des modifications soient prises en compte.</string>
+    <string name="err_get_older_conversation_messages">Une erreur a survenue lors de la récupération des anciens messages pour la conversation !</string>
+    <string name="err_clear_local_db">Une erreur a survenue lors de la tentative de nettoyage de la base de données locale !</string>
 </resources>
