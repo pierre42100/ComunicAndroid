@@ -99,7 +99,14 @@ public class Post {
     }
 
     public String getContent() {
+        if(content == null)
+            return "";
+
+        if(content.equals("null"))
+            return "";
+
         return content;
+
     }
 
     //Set and get the type of the post
