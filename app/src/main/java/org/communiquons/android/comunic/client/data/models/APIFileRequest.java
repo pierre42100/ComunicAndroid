@@ -48,4 +48,13 @@ public class APIFileRequest extends APIRequest {
     public ArrayList<APIPostFile> getFiles() {
         return files;
     }
+
+    /**
+     * Check whether a request includes a file or not
+     *
+     * @return TRUE if at least one file is present in the request / FALSE elses
+     */
+    public boolean containsFiles(){
+        return files.size() > 0;
+    }
 }

@@ -3,6 +3,8 @@ package org.communiquons.android.comunic.client.data.helpers;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
+import org.communiquons.android.comunic.client.data.models.APIFileRequest;
+import org.communiquons.android.comunic.client.data.models.APIPostFile;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.CreatePost;
@@ -146,15 +148,26 @@ public class PostsHelper {
     public int create(CreatePost post){
 
         //Prepare the request on the server
-        APIRequest params = new APIRequest(mContext, "posts/create");
+        APIFileRequest req = new APIFileRequest(mContext, "posts/create");
 
         //Put basic information about the post
-        params.addString("content", post.getContent());
+        req.addString("content", post.getContent());
 
         //Determine the kind of post
         switch (post.getType()){
             case TEXT:
-                params.addString("kind", "text");
+                req.addString("kind", "text");
+                break;
+
+            case IMAGE:
+                req.addString("kind", "image");
+
+                //Process image and add it to the request
+                APIPostFile file = new APIPostFile();
+                file.setFileName("image.png");
+                file.setBitmap(post.getNewImage());
+                file.setFieldName("image");
+                req.addFile(file);
                 break;
 
             default:
@@ -166,15 +179,15 @@ public class PostsHelper {
         switch (post.getVisibilityLevel()){
 
             case PUBLIC:
-                params.addString("visibility", "public");
+                req.addString("visibility", "public");
                 break;
 
             case FRIENDS:
-                params.addString("visibility", "friends");
+                req.addString("visibility", "friends");
                 break;
 
             case PRIVATE:
-                params.addString("visibility", "private");
+                req.addString("visibility", "private");
                 break;
 
             default:
@@ -185,7 +198,7 @@ public class PostsHelper {
         switch (post.getPage_type()){
 
             case USER_PAGE:
-                params.addString("kind-page", "user");
+                req.addString("kind-page", "user");
                 break;
 
             default:
@@ -193,13 +206,17 @@ public class PostsHelper {
         }
 
         //Set the ID of the target page
-        params.addInt("kind-id", post.getPage_id());
+        req.addInt("kind-id", post.getPage_id());
 
         //Perform the request on the server
         try {
 
-            //Perform the request
-            APIResponse response = new APIRequestHelper().exec(params);
+            //Perform the request (upload a file if required)
+            APIResponse response;
+            if(req.containsFiles())
+                response = new APIRequestHelper().execPostFile(req);
+            else
+                response = new APIRequestHelper().exec(req);
 
             //Check for errors
             if(response.getResponse_code() != 200)
