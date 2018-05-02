@@ -1,12 +1,21 @@
 package org.communiquons.android.comunic.client.ui.utils;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Base64;
+import android.util.Log;
+
+import org.communiquons.android.comunic.client.data.utils.FilesUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * Bitmap utilities
@@ -16,6 +25,11 @@ import java.io.File;
  */
 
 public class BitmapUtils {
+
+    /**
+     * Debug tag
+     */
+    private static final String TAG = "BitmapUtils";
 
     /**
      * Convert a Bitmap into a base64-encoded string
@@ -111,5 +125,49 @@ public class BitmapUtils {
 
         return inSampleSize;
 
+    }
+
+    /**
+     * Turn an intent data into Bitmap object
+     *
+     * @param context The context of the activity
+     * @param data Intent data
+     * @return Generated bitmap
+     * @throws FileNotFoundException In case of failure during the process
+     */
+    @Nullable
+    public static Bitmap IntentResultToBitmap(Context context, Intent data)
+            throws FileNotFoundException {
+
+        Uri imageUri = data.getData();
+        InputStream imageStream = context.getContentResolver()
+                .openInputStream(imageUri);
+
+        //Create a temporary file
+        File tempFile = FilesUtils.getTempFile(context);
+
+        if(tempFile == null){
+            Log.e(TAG, "Could not create temporary file to store intent image!");
+            return null;
+        }
+
+        //Intend to transfer file
+        if(!FilesUtils.InputStreamToFile(imageStream, tempFile)){
+            Log.e(TAG, "Could not transfer the content of the image to the file !");
+            return null;
+        }
+
+        //Load bitmap
+        Bitmap bitmap = BitmapUtils.openResized(tempFile, 1198, 1198);
+
+        if(bitmap == null){
+            Log.e(TAG, "Could not open temporary file!");
+            return null;
+        }
+
+        //Schedule file deletion
+        tempFile.deleteOnExit();
+
+        return bitmap;
     }
 }

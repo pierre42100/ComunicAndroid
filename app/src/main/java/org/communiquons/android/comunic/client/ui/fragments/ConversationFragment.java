@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,16 +31,14 @@ import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.runnables.ConversationRefreshRunnable;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
-import org.communiquons.android.comunic.client.data.utils.FilesUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.views.ScrollListView;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
@@ -501,34 +498,14 @@ public class ConversationFragment extends Fragment
         if(resultCode == RESULT_OK){
             try {
 
-                Uri imageUri = data.getData();
-                InputStream imageStream = getActivity().getContentResolver()
-                        .openInputStream(imageUri);
+                //Get new message bitmap
+                new_message_bitmap = BitmapUtils.IntentResultToBitmap(getActivity(), data);
 
-                //Create a temporary file
-                File tempFile = FilesUtils.getTempFile(getActivity());
-
-                if(tempFile == null){
-                    Log.e(TAG, "Could not create temporary file to store conversation image!");
-                    return;
-                }
-
-                //Intend to transfer file
-                if(!FilesUtils.InputStreamToFile(imageStream, tempFile)){
-                    Log.e(TAG, "Could not transfer the content of the image to the file !");
-                    return;
-                }
-
-                //Load bitmap
-                new_message_bitmap = BitmapUtils.openResized(tempFile, 1198, 1198);
-
+                //Check for errors
                 if(new_message_bitmap == null){
-                    Log.e(TAG, "Could not open temporary file!");
+                    remove_picked_image();
                     return;
                 }
-
-                //Schedule file deletion
-                tempFile.deleteOnExit();
 
                 //Append image
                 pick_image_button.setImageBitmap(new_message_bitmap);
@@ -553,8 +530,8 @@ public class ConversationFragment extends Fragment
 
         //Reset image button
         pick_image_button.setImageBitmap(null);
-        pick_image_button.setImageDrawable(getActivity().getResources().
-                getDrawable(android.R.drawable.ic_menu_gallery, getActivity().getTheme()));
+        pick_image_button.setImageDrawable(UiUtils.getDrawable(getActivity(),
+                android.R.drawable.ic_menu_gallery));
     }
 
     /**
