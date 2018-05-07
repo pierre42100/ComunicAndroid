@@ -70,7 +70,7 @@
     </LinearLayout>
 
     <!-- Post image (if any) -->
-    <org.communiquons.android.comunic.client.ui.views.WebImageView
+    <org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView
         android:id="@+id/post_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
