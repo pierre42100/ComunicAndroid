@@ -115,7 +115,7 @@
             android:layout_weight="1"
             style="@style/TextAppearance.AppCompat"
             android:hint="@string/new_comment_hint"
-            android:inputType="textMultiLine" />
+            android:inputType="text" />
 
         <ImageView
             android:id="@+id/comment_send_button"

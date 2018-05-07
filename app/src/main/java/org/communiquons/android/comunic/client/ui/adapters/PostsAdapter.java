@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -240,6 +241,21 @@ public class PostsAdapter extends ArrayAdapter<Post>{
                     @Override
                     public void onClick(View v) {
                         sendComment(position, finalConvertView);
+                    }
+                });
+
+                //Make the comment input behaves like the send button when the user hit the
+                //enter key
+                input_comment.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                        if(event.getAction() == KeyEvent.ACTION_DOWN
+                                && keyCode == KeyEvent.KEYCODE_ENTER){
+                            sendComment(position, finalConvertView);
+                        }
+
+                        return false;
                     }
                 });
 
