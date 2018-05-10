@@ -100,13 +100,33 @@ public class PostsHelper {
 
             //Get the list of posts and process it
             JSONArray posts = response.getJSONArray();
-            PostsList list = new PostsList();
+            return parse_json_posts_list(posts);
 
-            for(int i = 0; i < posts.length(); i++){
-                list.add(parse_json_post(posts.getJSONObject(i)));
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-            return list;
+    /**
+     * Get the list of latest posts of a user
+     *
+     * @return The list of posts / null in case of failure
+     */
+    @Nullable
+    public PostsList get_latest() {
+        //Perform a request on the API
+        APIRequest params = new APIRequest(mContext, "posts/get_latest");
+
+        //Perform the request
+        try {
+
+            //Make the request on the API
+            APIResponse response = new APIRequestHelper().exec(params);
+
+            //Get the list of posts and process it
+            JSONArray posts = response.getJSONArray();
+            return parse_json_posts_list(posts);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -256,10 +276,28 @@ public class PostsHelper {
     }
 
     /**
+     * Turn a JSONArray that contains information about posts into PostList object
+     *
+     * @param array The list of posts to process
+     * @return The list of posts / null in case of failure
+     * @throws JSONException in case of failure
+     */
+    private PostsList parse_json_posts_list(JSONArray array) throws JSONException {
+        PostsList list = new PostsList();
+
+        for(int i = 0; i < array.length(); i++){
+            list.add(parse_json_post(array.getJSONObject(i)));
+        }
+
+        return list;
+    }
+
+    /**
      * Parse a JSON post information into POST object
      *
      * @param json Source JSON post information
      * @return The created post element
+     * @throws JSONException in case of failure
      */
     private Post parse_json_post(JSONObject json) throws JSONException {
 

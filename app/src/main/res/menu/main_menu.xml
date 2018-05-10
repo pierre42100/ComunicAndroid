@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Open user page -->
+    <item
+        android:id="@+id/action_open_user_page"
+        android:title="@string/main_menu_personal_page"/>
+
     <!-- Display friends list -->
     <item
         android:id="@+id/action_friends_list"

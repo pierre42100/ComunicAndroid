@@ -28,6 +28,7 @@ import org.communiquons.android.comunic.client.data.helpers.ConversationsListHel
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
 import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
+import org.communiquons.android.comunic.client.ui.fragments.LatestPostsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.SinglePostFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UserAccessDeniedFragment;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
@@ -183,6 +184,12 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         //Get action id
         int id = item.getItemId();
 
+        //To display the personal page of the user
+        if(id == R.id.action_open_user_page){
+            openUserPage(AccountUtils.getID(MainActivity.this));
+            return true;
+        }
+
         //To display the list of friends
         if(id == R.id.action_friends_list){
             openFriendsFragment();
@@ -236,11 +243,12 @@ public class MainActivity extends AppCompatActivity implements openConversationL
                     //If the user chose to show information about him
                     case R.id.main_bottom_navigation_me_view:
 
-                        //Old version
+                        //Old versions
                         //openUserInfosFragment();
+                        //openUserPage(AccountUtils.getID(MainActivity.this));
 
                         //New version
-                        openUserPage(AccountUtils.getID(MainActivity.this));
+                        openLatestPostsFragment();
                         return true;
 
                     //If the user wants to switch to the conversation fragment
@@ -500,6 +508,21 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.main_fragment, singlePostFragment);
+        transaction.commit();
+    }
+
+    /**
+     * Open latest posts fragment
+     */
+    public void openLatestPostsFragment(){
+
+        //Create the fragment
+        LatestPostsFragment latestPostsFragment = new LatestPostsFragment();
+
+        //Perform the transaction
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, latestPostsFragment);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 

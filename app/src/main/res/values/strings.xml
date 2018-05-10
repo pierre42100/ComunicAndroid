@@ -185,4 +185,8 @@
     <string name="success_clear_local_db">The local database has been successfully cleared! You may need to restart the application to make the changes being fully applied.</string>
     <string name="err_clear_local_db">An error occurred while trying to clear local database!</string>
     <string name="image_description_pick_image">Pick an image</string>
+    <string name="main_menu_personal_page">My page</string>
+    <string name="fragment_latestposts_title">Latest posts</string>
+    <string name="err_get_latest_posts">An error occurred while trying to retrieve the list of latest posts!</string>
+    <string name="notice_no_latest_posts">You do not have any latest posts to display here.</string>
 </resources>
