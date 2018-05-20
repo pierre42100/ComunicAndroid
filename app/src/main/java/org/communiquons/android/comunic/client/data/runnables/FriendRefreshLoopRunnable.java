@@ -61,7 +61,7 @@ public class FriendRefreshLoopRunnable implements Runnable {
                 }
 
                 try {
-                    object.wait(500); //TODO: increase the value
+                    object.wait(15000);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return; //Stop the refresh loop
