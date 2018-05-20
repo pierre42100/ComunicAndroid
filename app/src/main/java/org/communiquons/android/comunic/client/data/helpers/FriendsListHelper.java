@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -8,6 +9,7 @@ import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.Friend;
 import org.communiquons.android.comunic.client.data.models.FriendshipStatus;
+import org.communiquons.android.comunic.client.ui.activities.LoginActivity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -48,7 +50,7 @@ public class FriendsListHelper {
      */
     public FriendsListHelper(DatabaseHelper dbHelper, Context context){
         this.fdbHelper = new FriendsListDbHelper(dbHelper);
-        this.mContext = context;
+        this.mContext = context.getApplicationContext();
     }
 
     /**
@@ -72,6 +74,9 @@ public class FriendsListHelper {
         APIRequest params = new APIRequest(mContext, "friends/getList");
         params.addBoolean("complete", true);
 
+        //Make this request continue in case of errors
+        params.setTryContinueOnError(true);
+
         //Prepare the result
         ArrayList<Friend> friends = new ArrayList<>();
 
@@ -79,6 +84,24 @@ public class FriendsListHelper {
 
             //Perform the request and retrieve the response
             APIResponse response = new APIRequestHelper().exec(params);
+
+            //Check if the credentials have been rejected by the server (error 412 = invalid tokens)
+            if(response.getResponse_code() == 412){
+
+                //Sign out user
+                new AccountHelper(mContext).sign_out();
+
+                //Redirect user to login activity
+                Intent intent = new Intent(mContext, LoginActivity.class);
+                mContext.startActivity(intent);
+                return null;
+            }
+
+            //Check if an error occurred
+            if(response.getResponse_code() != 200)
+                return null;
+
+            //Turn friends list into JSONArray
             JSONArray friendsList = response.getJSONArray();
 
             if(friendsList == null)
@@ -87,13 +110,13 @@ public class FriendsListHelper {
             //Process JSON array
             for(int i = 0; i < friendsList.length(); i++){
 
-                //Try to extract JSON object containing informations
+                //Try to extract JSON object containing information
                 JSONObject friendship_infos = friendsList.getJSONObject(i);
 
-                //Save informations about the friend in the friend object
+                //Save information about the friend in the friend object
                 Friend friend = new Friend();
 
-                //Set friend informations
+                //Set friend information
                 friend.setId(friendship_infos.getInt("ID_friend"));
                 friend.setAccepted(friendship_infos.getInt("accepted") == 1);
                 friend.setFollowing(friendship_infos.getInt("ID_friend") == 1);
