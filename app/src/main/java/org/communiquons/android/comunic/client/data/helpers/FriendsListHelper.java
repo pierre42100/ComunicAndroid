@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Friends list functions
@@ -31,6 +32,9 @@ public class FriendsListHelper {
 
     private FriendsListDbHelper fdbHelper;
     private Context mContext;
+
+    //Friends list access lock
+    public static ReentrantLock ListAccessLock = new ReentrantLock();
 
     /**
      * Public constructor
@@ -56,10 +60,22 @@ public class FriendsListHelper {
     /**
      * Get and return the friends list
      *
-     * @return The list of firned
+     * @return The list of friends
      */
-    public ArrayList<Friend> get(){
-        return fdbHelper.get_list();
+    public ArrayList<Friend> get() {
+
+        //Acquire friends list lock
+        FriendsListHelper.ListAccessLock.lock();
+
+        //Fetch the list
+        ArrayList<Friend> list;
+        try {
+            list = fdbHelper.get_list();
+        } finally {
+            FriendsListHelper.ListAccessLock.unlock();
+        }
+
+        return list;
     }
 
     /**

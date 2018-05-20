@@ -47,9 +47,18 @@ public class FriendRefreshLoopRunnable implements Runnable {
                 //Get the latest version of the list
                 ArrayList<Friend> friendsList = friendsListHelper.download();
 
-                //Save it (only in case of success)
-                if(friendsList != null)
-                    friendsDBHelper.update_list(friendsList);
+                //Acquire a lock over the friend list
+                FriendsListHelper.ListAccessLock.lock();
+
+                try {
+                    //Save it (only in case of success)
+                    if (friendsList != null)
+                        friendsDBHelper.update_list(friendsList);
+
+                } finally {
+                    //Release the lock
+                    FriendsListHelper.ListAccessLock.unlock();
+                }
 
                 try {
                     object.wait(500); //TODO: increase the value
