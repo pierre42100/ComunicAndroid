@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     /**
      * Friends list refresh thread
      */
-    private Thread friendsListRefreshThread;
+    private FriendRefreshLoopRunnable friendsListRefreshRunnable;
 
     /**
      * Database helper
@@ -144,9 +144,9 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         }
 
         //Refresh friends list through a thread
-        friendsListRefreshThread = new Thread(
-                new FriendRefreshLoopRunnable(getApplicationContext(), dbHelper));
-        friendsListRefreshThread.start();
+        friendsListRefreshRunnable = new FriendRefreshLoopRunnable(getApplicationContext(),
+                dbHelper);
+        new Thread(friendsListRefreshRunnable).start();
 
         //Start notification thread
         Intent intent = new Intent(this, NotificationsService.class);
@@ -158,8 +158,8 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         super.onStop();
 
         //Stop the friends list refresh thread
-        if(friendsListRefreshThread != null)
-            friendsListRefreshThread.interrupt();
+        if(friendsListRefreshRunnable != null)
+            friendsListRefreshRunnable.interrupt();
     }
 
     /**
