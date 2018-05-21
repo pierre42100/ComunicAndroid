@@ -11,6 +11,7 @@ import org.communiquons.android.comunic.client.data.utils.ImageLoadUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Image loading runnable
@@ -28,6 +29,11 @@ public class ImageLoadRunnable implements Runnable {
      * Debug tag
      */
     private static final String TAG = "ImageLoadRunnable";
+
+    /**
+     * Image load lock
+     */
+    public static ReentrantLock ImageLoadLock = null;
 
     /**
      * An array map with all the pending images associated with their URLs
@@ -63,6 +69,10 @@ public class ImageLoadRunnable implements Runnable {
      */
     public ImageLoadRunnable(Context context, ImageView imageView, String url){
 
+        if(ImageLoadLock == null)
+            ImageLoadLock = new ReentrantLock();
+
+
         //Check if the list of pending operations has to be initialized or not
         if(pendingOperation == null)
             pendingOperation =  new ArrayMap<>();
@@ -83,19 +93,18 @@ public class ImageLoadRunnable implements Runnable {
         String filename = ImageLoadUtils.IMAGE_CACHE_DIRECTORY + ImageLoadUtils.get_file_name(url);
 
         //Create file object
-        file = new File(mContext.getCacheDir(),filename);
+        file = new File(mContext.getCacheDir(), filename);
 
         //Check no thread is already running for the following image
-        if(!pendingOperation.containsKey(url)){
+        if (!pendingOperation.containsKey(url)) {
 
             //Check if a file exist or not
-            if(file.exists()){
+            if (file.exists()) {
 
                 //Then the file can be loaded in a bitmap
-                load_image();
+                safe_load_image();
                 return;
-            }
-            else {
+            } else {
 
                 //Create the thread and start it
                 Thread thread = new Thread(new ImageDownloadRunnable(url, file));
@@ -108,12 +117,12 @@ public class ImageLoadRunnable implements Runnable {
         Thread operation = pendingOperation.get(url);
 
         //If we couldn't get the thread, this is an error
-        if(operation == null){
+        if (operation == null) {
             Log.e("ImageLoadManagerRunnabl", "run : Couldn't get thread !");
             return;
         }
 
-        if(operation.isAlive()) {
+        if (operation.isAlive()) {
             try {
                 //Wait for the thread to finish
                 operation.join();
@@ -127,8 +136,21 @@ public class ImageLoadRunnable implements Runnable {
         //Remove the thread from the pending list
         pendingOperation.remove(url);
 
+        safe_load_image();
+    }
+
+    /**
+     * Load images safely
+     */
+    private void safe_load_image(){
+
+        Log.v(TAG, "Before lock");
+        ImageLoadLock.lock();
+
         //Load the image
         load_image();
+
+        ImageLoadLock.unlock();
     }
 
     /**
@@ -160,11 +182,19 @@ public class ImageLoadRunnable implements Runnable {
 
                 //Delete file
                 file.delete();
+
                 return;
             }
 
             //Apply the bitmap on the image view (register operation)
-            imageView.post(new ImageLoadApplyRunnable(imageView, bitmap));
+            Object obj = new Object();
+            synchronized (obj){
+                imageView.post(new ImageLoadApplyRunnable(imageView, bitmap, obj));
+                Log.v(TAG, "Locking for " + url);
+                obj.wait(1000); //Wait for the image to be applied
+                Log.v(TAG, "Unlocking   " + url);
+            }
+
 
         } catch (Exception e){
             e.printStackTrace();

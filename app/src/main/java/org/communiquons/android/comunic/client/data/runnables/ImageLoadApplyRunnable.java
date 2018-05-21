@@ -25,16 +25,23 @@ class ImageLoadApplyRunnable implements Runnable {
     private ImageView imageView;
 
     /**
+     * Object to notify when the image has been posted
+     */
+    private Object obj = null;
+
+    /**
      * Construct the class
      *
      * @param imageView The target image view
      * @param bitmap The bitmap to apply
+     * @param obj Object to notify once the image has been applied
      */
-    ImageLoadApplyRunnable(ImageView imageView, Bitmap bitmap){
+    ImageLoadApplyRunnable(ImageView imageView, Bitmap bitmap, Object obj){
 
         //Save the values
         this.bitmap = bitmap;
         this.imageView = imageView;
+        this.obj = obj;
     }
 
     /**
@@ -46,5 +53,11 @@ class ImageLoadApplyRunnable implements Runnable {
 
         //Apply the image
         imageView.setImageBitmap(bitmap);
+
+        synchronized (obj){
+            //Notify
+            obj.notifyAll();
+        }
+
     }
 }
