@@ -185,4 +185,9 @@
     <string name="success_clear_local_db">La base de donnée locale a bien été vidée ! Un redémarrage peut être nécessaire pour que l\'ensemble des modifications soient prises en compte.</string>
     <string name="err_get_older_conversation_messages">Une erreur a survenue lors de la récupération des anciens messages pour la conversation !</string>
     <string name="err_clear_local_db">Une erreur a survenue lors de la tentative de nettoyage de la base de données locale !</string>
+    <string name="main_menu_personal_page">Ma page</string>
+    <string name="notice_no_latest_posts">Vous n\'avez pas encore de posts dans votre fil d\'actualité.</string>
+    <string name="err_get_latest_posts">Une erreur a survenue lors de la tentative de récupération du fil d\'actualité !</string>
+    <string name="fragment_latestposts_title">Fil d\'actualité</string>
+    <string name="image_description_pick_image">Choisir une image</string>
 </resources>
