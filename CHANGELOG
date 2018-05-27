@@ -1,5 +1,11 @@
 CHANGELOG
 
+V 1.4:
+* Intend to fix Bitmap crashes with a lock
+* Added latest posts thread
+* Can create posts with images
+* Can enlarge posts images
+
 V1.3 :
 * Try to fix Bitmap crashes
 * Enlarge images in conversations
