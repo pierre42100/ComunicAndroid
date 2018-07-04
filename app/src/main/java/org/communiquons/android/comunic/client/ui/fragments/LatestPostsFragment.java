@@ -19,6 +19,7 @@ import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
+import org.communiquons.android.comunic.client.ui.listeners.OnPostListFragmentsUpdateListener;
 
 /**
  * Latest posts fragment
@@ -27,7 +28,8 @@ import org.communiquons.android.comunic.client.ui.activities.MainActivity;
  * Created by pierre on 5/10/18.
  */
 
-public class LatestPostsFragment extends Fragment {
+public class LatestPostsFragment extends Fragment
+        implements OnPostListFragmentsUpdateListener {
 
     /**
      * Debug tag
@@ -55,6 +57,11 @@ public class LatestPostsFragment extends Fragment {
     ArrayMap<Integer, UserInfo> mUserInfo;
 
     /**
+     * Fragment that displays the list of posts
+     */
+    private PostsListFragment mPostsListFragment;
+
+    /**
      * Loading progress bar
      */
     ProgressBar mProgressBar;
@@ -63,6 +70,11 @@ public class LatestPostsFragment extends Fragment {
      * No posts notice
      */
     TextView mNoPostNotice;
+
+    /**
+     * Posts load lock
+     */
+    private boolean mLoadPostsLock = false;
 
     @Override
     public void onStart() {
@@ -170,13 +182,14 @@ public class LatestPostsFragment extends Fragment {
 
         //Append the new posts list
         //Apply the post fragment
-        PostsListFragment postsListFragment = new PostsListFragment();
-        postsListFragment.setPostsList(mPostsList);
-        postsListFragment.setUsersInfos(mUserInfo);
+        mPostsListFragment = new PostsListFragment();
+        mPostsListFragment.setPostsList(mPostsList);
+        mPostsListFragment.setUsersInfos(mUserInfo);
+        mPostsListFragment.setOnPostListFragmentsUpdateListener(this);
 
         //Create and commit a transaction
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.posts_list_target, postsListFragment);
+        transaction.replace(R.id.posts_list_target, mPostsListFragment);
         transaction.commit();
     }
 
@@ -196,5 +209,80 @@ public class LatestPostsFragment extends Fragment {
      */
     private void toggleNoPostNoticeVisibility(boolean visible){
         mNoPostNotice.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onLoadMorePosts() {
+
+        //Check if post loading is already locked
+        if(mLoadPostsLock)
+            return;
+
+        if(mPostsList == null)
+            return;
+
+        if(mPostsList.size() == 0)
+            return;
+
+        //Display loading bar
+        mLoadPostsLock = true;
+        toggleLoadingBarVisibility(true);
+
+        //Get the ID of the oldest post to start from
+        final int start = mPostsList.get(mPostsList.size()-1).getId() - 1;
+
+        //Get older posts
+        new GetOlderPosts().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, start);
+    }
+
+    /**
+     * This class get and apply older posts
+     */
+    private class GetOlderPosts extends AsyncTask<Integer, Void, PostsList> {
+
+        @Override
+        protected PostsList doInBackground(Integer... id) {
+
+            //Get the list of older posts
+            PostsList postsList = mPostsHelper.get_latest(id[0]);
+
+            //Check for errors
+            if(postsList == null)
+                return null;
+
+            //Merge posts list
+            mPostsList.addAll(postsList);
+
+            //Get information about the users
+            ArrayMap<Integer, UserInfo> usersInfo
+                    = mUserHelper.getMultiple(mPostsList.getUsersId());
+
+            //Check for errors
+            if(usersInfo == null)
+                return null;
+
+            //Save new user information
+            mUserInfo = usersInfo;
+
+            return postsList;
+        }
+
+        @Override
+        protected void onPostExecute(PostsList posts) {
+
+            //Check if the activity has been detached
+            if(getActivity() == null)
+                return;
+
+            //Unlock post loading
+            mLoadPostsLock = false;
+            toggleLoadingBarVisibility(false);
+
+            //Apply new posts list
+            mPostsListFragment.setPostsList(mPostsList);
+            mPostsListFragment.setUsersInfos(mUserInfo);
+            mPostsListFragment.show();
+
+        }
     }
 }

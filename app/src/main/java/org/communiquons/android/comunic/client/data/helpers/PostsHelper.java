@@ -115,8 +115,23 @@ public class PostsHelper {
      */
     @Nullable
     public PostsList get_latest() {
+        return get_latest(-1);
+    }
+
+    /**
+     * Get the list of latest posts of a user
+     *
+     * @param from The ID of the newest post to start from (-1 to start from the newest post)
+     * @return The list of posts / null in case of failure
+     */
+    @Nullable
+    public PostsList get_latest(int from) {
         //Perform a request on the API
         APIRequest params = new APIRequest(mContext, "posts/get_latest");
+
+        //Check if we have to start from a precise post
+        if(from > 0)
+            params.addInt("startFrom", from);
 
         //Perform the request
         try {

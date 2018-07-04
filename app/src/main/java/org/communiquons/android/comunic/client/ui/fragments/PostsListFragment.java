@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
@@ -32,8 +31,11 @@ import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.ui.adapters.PostsAdapter;
+import org.communiquons.android.comunic.client.ui.listeners.OnPostListFragmentsUpdateListener;
+import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
+import org.communiquons.android.comunic.client.ui.views.ScrollListView;
 
 import java.util.ArrayList;
 
@@ -47,7 +49,7 @@ import java.util.ArrayList;
  */
 
 public class PostsListFragment extends Fragment
-    implements onPostUpdateListener {
+    implements onPostUpdateListener, OnScrollChangeDetectListener {
 
     /**
      * Menu action : no action
@@ -85,9 +87,14 @@ public class PostsListFragment extends Fragment
     PostsList mPostsList;
 
     /**
-     * Informations about the related users
+     * Information about the related users
      */
     ArrayMap<Integer, UserInfo> mUsersInfo;
+
+    /**
+     * Events listener
+     */
+    private OnPostListFragmentsUpdateListener onPostListFragmentsUpdateListener = null;
 
     /**
      * Post adapter
@@ -97,13 +104,12 @@ public class PostsListFragment extends Fragment
     /**
      * The list of posts
      */
-    ListView mListView;
+    ScrollListView mListView;
 
     /**
      * Posts helper
      */
     PostsHelper mPostsHelper;
-
 
     /**
      * Comments helper
@@ -167,6 +173,7 @@ public class PostsListFragment extends Fragment
 
         //Get the list view
         mListView = view.findViewById(R.id.posts_list);
+        mListView.setOnScrollChangeDetectListener(this);
 
         //Show the posts
         show();
@@ -669,5 +676,28 @@ public class PostsListFragment extends Fragment
         }
 
         return super.onContextItemSelected(item);
+    }
+
+    public OnPostListFragmentsUpdateListener getOnPostListFragmentsUpdateListener() {
+        return onPostListFragmentsUpdateListener;
+    }
+
+    public void setOnPostListFragmentsUpdateListener(
+            OnPostListFragmentsUpdateListener onPostListFragmentsUpdateListener) {
+        this.onPostListFragmentsUpdateListener = onPostListFragmentsUpdateListener;
+    }
+
+    @Override
+    public void onReachTop() {
+        //Nothing
+    }
+
+    @Override
+    public void onReachBottom() {
+
+        //Request more posts
+        if(onPostListFragmentsUpdateListener != null)
+            onPostListFragmentsUpdateListener.onLoadMorePosts();
+        
     }
 }
