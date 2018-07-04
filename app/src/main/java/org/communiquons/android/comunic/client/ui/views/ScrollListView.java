@@ -79,9 +79,16 @@ public class ScrollListView extends android.widget.ListView {
                             visibleItemCount, totalItemCount);
 
 
+                //Check if the user reached the top of the view
                 if(onScrollChangeDetectListener != null && firstVisibleItem == 0
                         && visibleItemCount > 0)
                     onScrollChangeDetectListener.onReachTop();
+
+
+                //Check if the user reached the bottom of the view
+                if(onScrollChangeDetectListener != null && totalItemCount > 0 &&
+                        firstVisibleItem + visibleItemCount == totalItemCount)
+                    onScrollChangeDetectListener.onReachBottom();
             }
         });
 

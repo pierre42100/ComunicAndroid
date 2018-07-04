@@ -354,9 +354,7 @@ public class ConversationFragment extends Fragment
         display_not_msg_notice(false);
 
         //Add the messages to the the main list of messages
-        for(ConversationMessage message : newMessages){
-            messagesList.add(message);
-        }
+        messagesList.addAll(newMessages);
 
         convMessAdapter.notifyDataSetChanged();
         last_message_id = lastID;
@@ -651,6 +649,11 @@ public class ConversationFragment extends Fragment
 
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    @Override
+    public void onReachBottom() {
 
     }
 

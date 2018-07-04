@@ -16,4 +16,9 @@ public interface OnScrollChangeDetectListener {
      */
     void onReachTop();
 
+    /**
+     * This method is triggered when the user reach the bottom (last item) of the list view
+     */
+    void onReachBottom();
+
 }
