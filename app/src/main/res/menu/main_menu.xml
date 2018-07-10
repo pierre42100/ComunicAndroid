@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Search user -->
+    <item
+        android:id="@+id/action_search_user"
+        android:title="@string/main_menu_search_user"/>
+
     <!-- Open user page -->
     <item
         android:id="@+id/action_open_user_page"

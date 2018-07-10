@@ -1,5 +1,6 @@
 package org.communiquons.android.comunic.client.ui.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -58,6 +59,11 @@ public class MainActivity extends AppCompatActivity implements openConversationL
      * Debug tag
      */
     private static final String TAG = "MainActivity";
+
+    /**
+     * Intent code : search a user
+     */
+    private static final int SEARCH_USER_INTENT = 3;
 
     /**
      * Account object
@@ -184,6 +190,12 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         //Get action id
         int id = item.getItemId();
 
+        //To search a user
+        if(id == R.id.action_search_user){
+            searchUser();
+            return true;
+        }
+
         //To display the personal page of the user
         if(id == R.id.action_open_user_page){
             openUserPage(AccountUtils.getID(MainActivity.this));
@@ -215,6 +227,28 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         }
 
         return super.onOptionsItemSelected(item);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        //Parent level
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //Check if the request was to search a user
+        if(resultCode == Activity.RESULT_OK){
+
+            switch (requestCode){
+
+                case SEARCH_USER_INTENT:
+                    assert data.getData() != null;
+                    openUserPage(Integer.decode(data.getData().getQueryParameter("userID")));
+                    break;
+
+            }
+
+        }
 
     }
 
@@ -537,4 +571,15 @@ public class MainActivity extends AppCompatActivity implements openConversationL
             Toast.makeText(this, R.string.success_clear_local_db, Toast.LENGTH_SHORT).show();
     }
 
+
+    /**
+     * Open a search activity to find a user
+     */
+    private void searchUser(){
+
+        //Make intent
+        Intent intent = new Intent(this, SearchUserActivity.class);
+        startActivityForResult(intent, SEARCH_USER_INTENT);
+
+    }
 }
