@@ -25,6 +25,11 @@ public enum PostTypes {
     MOVIE,
 
     /**
+     * PDF
+     */
+    PDF,
+
+    /**
      * Unknown type
      */
     UNKNOWN

@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
@@ -25,6 +26,7 @@ import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
+import org.communiquons.android.comunic.client.ui.views.PDFLinkButtonView;
 import org.communiquons.android.comunic.client.ui.views.WebImageView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
@@ -169,6 +171,17 @@ public class PostsAdapter extends ArrayAdapter<Post>{
             postImage.removeImage();
 
         }
+
+        //Set post file PDF (if any)
+        PDFLinkButtonView pdfLinkButtonView = convertView.findViewById(R.id.btn_pdf_link);
+
+        if(post.getType() != PostTypes.PDF)
+            pdfLinkButtonView.setVisibility(View.GONE);
+        else {
+            pdfLinkButtonView.setVisibility(View.VISIBLE);
+            pdfLinkButtonView.setPDFUrl(post.getFile_path_url());
+        }
+
 
         //Set posts likes
         LikeButtonView likeButtonView = convertView.findViewById(R.id.like_button);

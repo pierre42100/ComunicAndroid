@@ -32,12 +32,17 @@
         <!-- Search user activity -->
         <activity
             android:name=".ui.activities.SearchUserActivity"
-            android:label="@string/activity_searchuser_title"/>
+            android:label="@string/activity_searchuser_title" />
 
         <!-- Notifications background refresh service -->
-        <service android:name=".data.services.NotificationsService"
-            android:exported="false"/>
+        <service
+            android:name=".data.services.NotificationsService"
+            android:exported="false" />
 
+        <!-- PDF Viewer activity -->
+        <activity
+            android:name=".ui.activities.PDFActivity"
+            android:label="@string/activity_view_pdf_label"/>
     </application>
 
 </manifest>

@@ -22,6 +22,9 @@ android {
             //Connexion to Crash Reporter
             buildConfigField "String", "crash_reporter_url", "\"http://devweb.local/CrashReporterWeb/project/api/v1/push\""
             buildConfigField "String", "crash_reporter_key", "\"KSyqOzkfJasDTxE0wrXYnUPl8dV1veBc\""
+
+            //Connexion to PDF viewer
+            buildConfigField "String", "pdf_view_url", "\"http://devweb.local/pdfviewer/?file=\""
         }
 
         release {

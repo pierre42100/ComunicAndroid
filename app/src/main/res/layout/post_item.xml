@@ -78,6 +78,13 @@
         android:contentDescription="@string/post_image_description"
         android:scaleType="centerInside" />
 
+    <!-- Related PDF (if any) -->
+    <org.communiquons.android.comunic.client.ui.views.PDFLinkButtonView
+        android:id="@+id/btn_pdf_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/PostPDFButton"/>
+
     <!-- Post content -->
     <TextView
         android:id="@+id/post_content"

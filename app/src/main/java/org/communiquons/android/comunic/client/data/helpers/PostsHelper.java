@@ -367,6 +367,10 @@ public class PostsHelper {
                 post.setType(PostTypes.MOVIE);
                 break;
 
+            case "pdf":
+                post.setType(PostTypes.PDF);
+                break;
+
             default:
                 post.setType(PostTypes.UNKNOWN);
 

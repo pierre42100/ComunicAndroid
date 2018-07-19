@@ -190,4 +190,5 @@
     <string name="err_get_latest_posts">An error occurred while trying to retrieve the list of latest posts!</string>
     <string name="notice_no_latest_posts">You do not have any latest posts to display here.</string>
     <string name="main_menu_search_user">Search user</string>
+    <string name="activity_view_pdf_label">View PDF</string>
 </resources>
