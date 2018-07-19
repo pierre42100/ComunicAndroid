@@ -15,6 +15,7 @@ import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.Comment;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
 
 import java.util.ArrayList;
@@ -90,13 +91,12 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
         ((TextView) view.findViewById(R.id.comment_text)).setText(comment.getContent());
 
         //Update comment image (if any)
-        ImageView commentImage = view.findViewById(R.id.comment_image);
+        EnlargeableWebImageView commentImage = view.findViewById(R.id.comment_image);
         if(comment.getImage_url().length() < 5)
             commentImage.setVisibility(View.GONE);
         else {
             commentImage.setVisibility(View.VISIBLE);
-            ImageLoadHelper.remove(commentImage);
-            ImageLoadHelper.load(context, comment.getImage_url(), commentImage);
+            commentImage.loadURL(comment.getImage_url());
         }
 
 

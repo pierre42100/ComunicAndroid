@@ -33,7 +33,7 @@
         tools:text="A comment content" />
 
     <!-- Comment image -->
-    <ImageView
+    <org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView
         android:id="@+id/comment_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
