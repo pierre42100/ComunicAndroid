@@ -41,9 +41,7 @@ import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment
 import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
 import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
 import org.communiquons.android.comunic.client.ui.fragments.NotificationsFragment;
-import org.communiquons.android.comunic.client.ui.fragments.SettingsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UpdateConversationFragment;
-import org.communiquons.android.comunic.client.ui.fragments.UserInfosFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UserPageFragment;
 
 
@@ -367,17 +365,6 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         NotificationsFragment notifications = new NotificationsFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, notifications);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    /**
-     * Open the user information fragment
-     */
-    void openUserInfosFragment(){
-        UserInfosFragment userInfosFragment = new UserInfosFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_fragment, userInfosFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
