@@ -5,7 +5,6 @@ import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 
 /**
  * Application preferences fragment
@@ -31,8 +30,5 @@ public class SettingsFragment extends PreferenceFragment {
         //Update the title
         getActivity().setTitle(R.string.fragment_settings_title);
 
-        //Update the bottom navigation menu
-        ((MainActivity) getActivity())
-                .setSelectedNavigationItem(R.id.main_bottom_navigation_me_view);
     }
 }

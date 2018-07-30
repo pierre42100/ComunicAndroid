@@ -2,7 +2,7 @@ package org.communiquons.android.comunic.client.ui.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     void openFriendsFragment(){
 
         FriendsListFragment friendsListFragment = new FriendsListFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, friendsListFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -353,14 +353,11 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     }
 
     /**
-     * Open settings fragment
+     * Open settings activity
      */
     void openSettingsFragment(){
-        SettingsFragment settingsFragment = new SettingsFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_fragment, settingsFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -368,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
      */
     void openNotificationsFragment(){
         NotificationsFragment notifications = new NotificationsFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, notifications);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -379,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
      */
     void openUserInfosFragment(){
         UserInfosFragment userInfosFragment = new UserInfosFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, userInfosFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -401,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         UserPageFragment userPageFragment = new UserPageFragment();
         userPageFragment.setArguments(args);
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, userPageFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -428,10 +425,10 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         //This is important in order to avoid to get the user unable to quit the page.
         //Because it would get the user back to the user page fragment which would
         //redirect immediately to this fragment indefinitely.
-        getFragmentManager().popBackStackImmediate();
+        getSupportFragmentManager().popBackStackImmediate();
 
         //Perform the transition
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.main_fragment, userAccessDeniedFragment);
         transaction.commit();
@@ -443,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
      */
     void openConversationsListFragment(){
         ConversationsListFragment conversationsListFragment = new ConversationsListFragment();
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, conversationsListFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -466,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         conversationFragment.setArguments(args);
 
         //Display it
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, conversationFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -521,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         updateConversationFragment.setArguments(args);
 
         //Display the fragment
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, updateConversationFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -539,7 +536,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         singlePostFragment.setArguments(arguments);
 
         //Perform the transaction
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.main_fragment, singlePostFragment);
         transaction.commit();
@@ -554,7 +551,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         LatestPostsFragment latestPostsFragment = new LatestPostsFragment();
 
         //Perform the transaction
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, latestPostsFragment);
         transaction.addToBackStack(null);
         transaction.commit();

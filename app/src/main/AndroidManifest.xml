@@ -42,7 +42,12 @@
         <!-- PDF Viewer activity -->
         <activity
             android:name=".ui.activities.PDFActivity"
-            android:label="@string/activity_view_pdf_label"/>
+            android:label="@string/activity_view_pdf_label" />
+
+        <!-- Settings activity -->
+        <activity
+            android:name=".ui.activities.SettingsActivity"
+            android:label="@string/title_activity_settings"/>
     </application>
 
 </manifest>
