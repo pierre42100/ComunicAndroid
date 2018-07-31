@@ -153,10 +153,6 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
 
         //Update activity title
         getActivity().setTitle(R.string.fragment_conversationslist_title);
-
-        //Update the bottom navigation menu
-        ((MainActivity) getActivity())
-                .setSelectedNavigationItem(R.id.action_conversations);
     }
 
     /**

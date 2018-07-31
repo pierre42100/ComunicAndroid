@@ -296,16 +296,6 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
-
-    /**
-     * Set the currently selected item in the drawer
-     *
-     * @param item The ID of the item
-     */
-    public void setSelectedNavigationItem(int item) {
-
-    }
-
     /**
      * Toggle drawer state
      */

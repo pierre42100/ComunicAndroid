@@ -151,10 +151,6 @@ public class UserAccessDeniedFragment extends Fragment implements View.OnClickLi
     public void onResume() {
         super.onResume();
 
-        //Update activity dock
-        ((MainActivity) getActivity())
-                .setSelectedNavigationItem(R.id.action_latest_posts);
-
         //Check if it is required to fetch user information
         if(mUserInfo == null){
             getUserInfo();

@@ -175,10 +175,6 @@ public class UserPageFragment extends Fragment {
         //Set activity title
         getActivity().setTitle(userInfo.getDisplayFullName());
 
-        //Update activity menu dock
-        ((MainActivity) getActivity()).setSelectedNavigationItem(
-                    R.id.action_latest_posts);
-
         //Initialize view pager
         FragmentPagerBaseAdapter adapter = new FragmentPagerBaseAdapter(getChildFragmentManager());
 

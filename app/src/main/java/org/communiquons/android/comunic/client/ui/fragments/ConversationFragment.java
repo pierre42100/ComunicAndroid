@@ -301,10 +301,6 @@ public class ConversationFragment extends Fragment
         //Update conversation title
         getActivity().setTitle(R.string.fragment_conversation_title);
 
-        //Update the bottom navigation menu
-        ((MainActivity) getActivity())
-                .setSelectedNavigationItem(R.id.action_conversations);
-
 
         //Check for conversation information
         if(conversationInfo == null){

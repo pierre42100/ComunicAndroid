@@ -167,11 +167,6 @@ public class FriendsListFragment extends Fragment
         //Update the title of the application
         getActivity().setTitle(R.string.fragment_friendslist_title);
 
-        //Update the bottom navigation menu
-        ((MainActivity) getActivity())
-                //.setSelectedNavigationItem(R.id.main_bottom_navigation_friends_list);
-                .setSelectedNavigationItem(R.id.action_latest_posts);
-
         //Refresh the friends list
         refresh_friend_list();
     }

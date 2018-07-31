@@ -230,10 +230,6 @@ public class UpdateConversationFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        //Update title and dock
-        ((MainActivity) getActivity()).setSelectedNavigationItem(
-                R.id.action_conversations);
-
         //Set the adapted title
         if(current_action == ACTION_CREATE_CONVERSATION)
             getActivity().setTitle(R.string.fragment_update_conversation_title_create);

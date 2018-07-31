@@ -138,10 +138,6 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
         //Update the title of the application
         getActivity().setTitle(R.string.fragment_notifications_title);
 
-        //Update the bottom navigation menu
-        ((MainActivity) getActivity())
-                .setSelectedNavigationItem(R.id.action_notifications);
-
         //Get user page opener
         mUserPageOpener = (onOpenUsersPageListener) getActivity();
 
