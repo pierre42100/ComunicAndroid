@@ -170,7 +170,7 @@ public class FriendsListFragment extends Fragment
         //Update the bottom navigation menu
         ((MainActivity) getActivity())
                 //.setSelectedNavigationItem(R.id.main_bottom_navigation_friends_list);
-                .setSelectedNavigationItem(R.id.main_bottom_navigation_me_view);
+                .setSelectedNavigationItem(R.id.action_latest_posts);
 
         //Refresh the friends list
         refresh_friend_list();

@@ -112,7 +112,7 @@ public class LatestPostsFragment extends Fragment
 
         //Update the bottom navigation menu
         ((MainActivity) getActivity())
-                .setSelectedNavigationItem(R.id.main_bottom_navigation_me_view);
+                .setSelectedNavigationItem(R.id.action_latest_posts);
 
         //Refresh the list of posts of the user
         refresh_posts_list();

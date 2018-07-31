@@ -7,16 +7,6 @@
         android:id="@+id/action_search_user"
         android:title="@string/main_menu_search_user"/>
 
-    <!-- Open user page -->
-    <item
-        android:id="@+id/action_open_user_page"
-        android:title="@string/main_menu_personal_page"/>
-
-    <!-- Display friends list -->
-    <item
-        android:id="@+id/action_friends_list"
-        android:title="@string/main_menu_friends_list" />
-
     <!-- Settings -->
     <item
         android:id="@+id/action_settings"

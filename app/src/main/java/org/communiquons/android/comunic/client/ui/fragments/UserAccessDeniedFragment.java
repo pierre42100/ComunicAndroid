@@ -153,7 +153,7 @@ public class UserAccessDeniedFragment extends Fragment implements View.OnClickLi
 
         //Update activity dock
         ((MainActivity) getActivity())
-                .setSelectedNavigationItem(R.id.main_bottom_navigation_me_view);
+                .setSelectedNavigationItem(R.id.action_latest_posts);
 
         //Check if it is required to fetch user information
         if(mUserInfo == null){

@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -178,7 +177,7 @@ public class UserPageFragment extends Fragment {
 
         //Update activity menu dock
         ((MainActivity) getActivity()).setSelectedNavigationItem(
-                    R.id.main_bottom_navigation_me_view);
+                    R.id.action_latest_posts);
 
         //Initialize view pager
         FragmentPagerBaseAdapter adapter = new FragmentPagerBaseAdapter(getChildFragmentManager());

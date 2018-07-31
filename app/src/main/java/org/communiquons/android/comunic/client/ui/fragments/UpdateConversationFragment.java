@@ -232,7 +232,7 @@ public class UpdateConversationFragment extends Fragment {
 
         //Update title and dock
         ((MainActivity) getActivity()).setSelectedNavigationItem(
-                R.id.main_bottom_navigation_conversations);
+                R.id.action_conversations);
 
         //Set the adapted title
         if(current_action == ACTION_CREATE_CONVERSATION)

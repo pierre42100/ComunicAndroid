@@ -121,7 +121,7 @@
     <string name="like_view_liking">J\'aime</string>
     <string name="main_menu_friends_list">Liste d\'amis</string>
     <string name="navigation_bottom_notif_item">Notifications</string>
-    <string name="navigation_bottom_user_item">Utilisateur</string>
+    <string name="action_latest_posts">Fil d\'actualité</string>
     <string name="new_comment_hint">Nouveau commentaire</string>
     <string name="new_post_hint">Nouveau post…</string>
     <string name="popup_deletecomment_cancel">Non</string>

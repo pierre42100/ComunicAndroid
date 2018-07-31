@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements
         //Get action id
         int id = item.getItemId();
 
-        //To go backward
+        //To toggle drawer
         if (id == android.R.id.home) {
             toggleDrawer();
             return true;
@@ -208,17 +208,6 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
 
-        //To display the personal page of the user
-        if (id == R.id.action_open_user_page) {
-            openUserPage(AccountUtils.getID(MainActivity.this));
-            return true;
-        }
-
-        //To display the list of friends
-        if (id == R.id.action_friends_list) {
-            openFriendsFragment();
-            return true;
-        }
 
         //To open settings fragment
         if (id == R.id.action_settings) {
@@ -251,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     void init_drawer() {
 
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mDrawer = findViewById(R.id.drawer_layout);
@@ -274,7 +264,36 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        return false;
+        int id = menuItem.getItemId();
+
+        //Notification fragment
+        if(id == R.id.action_notifications){
+            openNotificationsFragment();
+        }
+
+        //Friends list
+        else if(id == R.id.action_friendslist){
+            openFriendsFragment();
+        }
+
+        //User personal page
+        else if(id == R.id.action_personal_page){
+            openUserPage(new AccountUtils(this).get_current_user_id());
+        }
+
+        //Latest posts
+        else if(id == R.id.action_latest_posts){
+            openLatestPostsFragment();
+        }
+
+        //Conversations fragment
+        else if(id == R.id.action_conversations) {
+            openConversationsListFragment();
+        }
+
+
+        mDrawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
 

@@ -13,7 +13,6 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -304,9 +303,8 @@ public class ConversationFragment extends Fragment
 
         //Update the bottom navigation menu
         ((MainActivity) getActivity())
-                .setSelectedNavigationItem(R.id.main_bottom_navigation_conversations);
+                .setSelectedNavigationItem(R.id.action_conversations);
 
-        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Check for conversation information
         if(conversationInfo == null){
@@ -337,7 +335,6 @@ public class ConversationFragment extends Fragment
 
         refreshRunnable.quitSafely();
 
-        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     @Override

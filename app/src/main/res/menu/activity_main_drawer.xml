@@ -2,32 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/main_bottom_navigation_notif"
+        android:id="@+id/action_notifications"
         android:title="@string/navigation_bottom_notif_item"
-        android:icon="@drawable/ic_notif"/>
+        android:icon="@drawable/ic_notif" />
 
     <item
-        android:id="@+id/main_bottom_navigation_friends_list"
+        android:id="@+id/action_friendslist"
         android:title="@string/navigation_bottom_friends_item"
         android:icon="@drawable/ic_menu_allfriends"
         />
 
     <item
-        android:id="@+id/main_bottom_navigation_users_view"
-        android:title="@string/navigation_bottom_user_item"
-        android:icon="@drawable/perm_group_personal_info"
-        android:visible="false" />
+        android:id="@+id/action_personal_page"
+        android:title="@string/action_personal_page"
+        android:icon="@drawable/perm_group_personal_info" />
 
     <item
-        android:id="@+id/main_bottom_navigation_me_view"
-        android:title="@string/navigation_bottom_user_item"
-        android:icon="@drawable/perm_group_personal_info"
-        /> <!--android:icon="@drawable/ic_menu_home"
-            android:title="@string/navigation_bottom_me_item"-->
+        android:id="@+id/action_latest_posts"
+        android:title="@string/action_latest_posts"
+        android:icon="@drawable/ic_sync_black_24dp" />
 
     <item
-        android:id="@+id/main_bottom_navigation_conversations"
+        android:id="@+id/action_conversations"
         android:title="@string/navigation_bottom_conversations_item"
-        android:icon="@drawable/ic_menu_conversations"
-        />
+        android:icon="@drawable/ic_menu_conversations" />
 </menu>

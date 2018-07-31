@@ -3,7 +3,6 @@ package org.communiquons.android.comunic.client.ui.fragments;
 import android.app.AlertDialog;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -141,7 +140,7 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
 
         //Update the bottom navigation menu
         ((MainActivity) getActivity())
-                .setSelectedNavigationItem(R.id.main_bottom_navigation_notif);
+                .setSelectedNavigationItem(R.id.action_notifications);
 
         //Get user page opener
         mUserPageOpener = (onOpenUsersPageListener) getActivity();
