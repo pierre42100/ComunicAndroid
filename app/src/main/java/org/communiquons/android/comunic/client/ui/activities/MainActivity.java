@@ -2,14 +2,17 @@ package org.communiquons.android.comunic.client.ui.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.support.v4.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -22,27 +25,27 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.crashreporter.CrashReporter;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
-import org.communiquons.android.comunic.client.data.helpers.DebugHelper;
-import org.communiquons.android.comunic.client.data.utils.AccountUtils;
-import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
+import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.helpers.DebugHelper;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
+import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
+import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
+import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
+import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
 import org.communiquons.android.comunic.client.ui.fragments.LatestPostsFragment;
+import org.communiquons.android.comunic.client.ui.fragments.NotificationsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.SinglePostFragment;
+import org.communiquons.android.comunic.client.ui.fragments.UpdateConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UserAccessDeniedFragment;
+import org.communiquons.android.comunic.client.ui.fragments.UserPageFragment;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
 import org.communiquons.android.comunic.client.ui.listeners.onPostOpenListener;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 import org.communiquons.android.comunic.client.ui.listeners.updateConversationListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
-import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
-import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
-import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
-import org.communiquons.android.comunic.client.ui.fragments.NotificationsFragment;
-import org.communiquons.android.comunic.client.ui.fragments.UpdateConversationFragment;
-import org.communiquons.android.comunic.client.ui.fragments.UserPageFragment;
 
 
 /**
@@ -50,7 +53,8 @@ import org.communiquons.android.comunic.client.ui.fragments.UserPageFragment;
  *
  * @author Pierre HUBERT
  */
-public class MainActivity extends AppCompatActivity implements openConversationListener,
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener, openConversationListener,
         updateConversationListener, onOpenUsersPageListener, onPostOpenListener {
 
     /**
@@ -91,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     /**
      * Bottom navigation view
      */
-    private BottomNavigationView navigationView;
+    private DrawerLayout mDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         accountHelper = new AccountHelper(this);
 
         //Check if user is signed in or not
-        if(!accountHelper.signed_in()){
+        if (!accountHelper.signed_in()) {
             //Open the login activity
             startActivity(new Intent(this, LoginActivity.class));
             return;
@@ -116,11 +120,11 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         //Set the content of the activity
         setContentView(R.layout.activity_main);
 
-        //Enable bottom navigation menu
-        init_bottom_menu();
+        //Enable drawer
+        init_drawer();
 
         //Check for connectivity
-        if(!APIRequestHelper.isAPIavailable(this)){
+        if (!APIRequestHelper.isAPIavailable(this)) {
             Toast.makeText(this, R.string.err_no_internet_connection, Toast.LENGTH_SHORT).show();
         }
 
@@ -131,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         conversationsListHelper = new ConversationsListHelper(this, dbHelper);
 
         //If it is the first time the application is launched, open notifications fragment
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             openNotificationsFragment();
         }
     }
@@ -141,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         super.onStart();
 
         //Check if user is signed in or not
-        if(!accountHelper.signed_in()){
+        if (!accountHelper.signed_in()) {
             //Open the login activity
             startActivity(new Intent(this, LoginActivity.class));
             return;
@@ -162,9 +166,13 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         super.onStop();
 
         //Stop the friends list refresh thread
-        if(friendsListRefreshRunnable != null)
+        if (friendsListRefreshRunnable != null)
             friendsListRefreshRunnable.interrupt();
     }
+
+
+
+
 
     /**
      * Top menu creation
@@ -174,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         //Check if the debug menu has to be shown or not
-        if(PreferencesUtils.getBoolean(this, "enable_debug_mode", false)) {
+        if (PreferencesUtils.getBoolean(this, "enable_debug_mode", false)) {
             SubMenu debugMenu = menu.addSubMenu(R.string.menu_debug_title);
             getMenuInflater().inflate(R.menu.debug_menu, debugMenu);
         }
@@ -189,43 +197,43 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         int id = item.getItemId();
 
         //To go backward
-        if(id == android.R.id.home){
-            getSupportFragmentManager().popBackStack();
+        if (id == android.R.id.home) {
+            toggleDrawer();
             return true;
         }
 
         //To search a user
-        if(id == R.id.action_search_user){
+        if (id == R.id.action_search_user) {
             searchUser();
             return true;
         }
 
         //To display the personal page of the user
-        if(id == R.id.action_open_user_page){
+        if (id == R.id.action_open_user_page) {
             openUserPage(AccountUtils.getID(MainActivity.this));
             return true;
         }
 
         //To display the list of friends
-        if(id == R.id.action_friends_list){
+        if (id == R.id.action_friends_list) {
             openFriendsFragment();
             return true;
         }
 
         //To open settings fragment
-        if(id == R.id.action_settings){
+        if (id == R.id.action_settings) {
             openSettingsFragment();
             return true;
         }
 
         //Check for logout request
-        if(id == R.id.action_logout){
+        if (id == R.id.action_logout) {
             confirmUserLogout();
             return true;
         }
 
         //Check if user wants to clear database
-        if(id == R.id.action_clear_local_db){
+        if (id == R.id.action_clear_local_db) {
             clearLocalDatabase();
             return true;
         }
@@ -234,6 +242,66 @@ public class MainActivity extends AppCompatActivity implements openConversationL
 
     }
 
+
+
+
+
+    /**
+     * Drawer menu
+     */
+    void init_drawer() {
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mDrawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mDrawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        return false;
+    }
+
+
+    /**
+     * Set the currently selected item in the drawer
+     *
+     * @param item The ID of the item
+     */
+    public void setSelectedNavigationItem(int item) {
+
+    }
+
+    /**
+     * Toggle drawer state
+     */
+    void toggleDrawer(){
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
+        } else {
+            mDrawer.openDrawer(GravityCompat.START);
+        }
+    }
+
+
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -241,9 +309,9 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         super.onActivityResult(requestCode, resultCode, data);
 
         //Check if the request was to search a user
-        if(resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
 
-            switch (requestCode){
+            switch (requestCode) {
 
                 case SEARCH_USER_INTENT:
                     assert data.getData() != null;
@@ -257,81 +325,26 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     }
 
     /**
-     * Bottom menu creation
-     */
-    void init_bottom_menu(){
-        navigationView = (BottomNavigationView) findViewById(R.id.main_bottom_navigation);
-        navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                //Check which option was selected
-                switch (item.getItemId()) {
-
-                    //If the user clicked to show the friends list
-                    /*case R.id.main_bottom_navigation_friends_list:
-                        openFriendsFragment();
-                        return true;*/
-
-                    //If the user wants to open notifications
-                    case R.id.main_bottom_navigation_notif:
-                        openNotificationsFragment();
-                        return true;
-
-                    //If the user chose to show information about him
-                    case R.id.main_bottom_navigation_me_view:
-
-                        //Old versions
-                        //openUserInfosFragment();
-                        //openUserPage(AccountUtils.getID(MainActivity.this));
-
-                        //New version
-                        openLatestPostsFragment();
-                        return true;
-
-                    //If the user wants to switch to the conversation fragment
-                    case R.id.main_bottom_navigation_conversations:
-                        openConversationsListFragment();
-                        return true;
-
-                }
-
-                //Selected element not found
-                return false;
-            }
-        });
-    }
-
-    /**
-     * Set the currently selected item in the bottom navigation view
-     *
-     * @param item The ID of the item
-     */
-    public void setSelectedNavigationItem(int item){
-        navigationView.getMenu().findItem(item).setChecked(true);
-    }
-
-    /**
      * Ask user to confirm if he really what to sign out or not
      */
-    void confirmUserLogout(){
+    void confirmUserLogout() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.popup_signout_title)
                 .setMessage(R.string.popup_signout_message)
                 .setCancelable(true)
                 .setPositiveButton(R.string.popup_signout_confirm_button,
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                        //Sign out user
-                        accountHelper.sign_out();
+                                //Sign out user
+                                accountHelper.sign_out();
 
-                        //Redirect to login activity
-                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                //Redirect to login activity
+                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
 
-                    }
-                })
+                            }
+                        })
                 .setNegativeButton(R.string.popup_signout_cancel_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -346,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     /**
      * Open the friends list fragment
      */
-    void openFriendsFragment(){
+    void openFriendsFragment() {
 
         FriendsListFragment friendsListFragment = new FriendsListFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -359,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     /**
      * Open settings activity
      */
-    void openSettingsFragment(){
+    void openSettingsFragment() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
@@ -367,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     /**
      * Open notifications fragment
      */
-    void openNotificationsFragment(){
+    void openNotificationsFragment() {
         NotificationsFragment notifications = new NotificationsFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, notifications);
@@ -381,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
      * @param userID The ID of the user to open
      */
     @Override
-    public void openUserPage(int userID){
+    public void openUserPage(int userID) {
 
         //Prepare arguments
         Bundle args = new Bundle();
@@ -431,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     /**
      * Open the conversation list fragment
      */
-    void openConversationsListFragment(){
+    void openConversationsListFragment() {
         ConversationsListFragment conversationsListFragment = new ConversationsListFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, conversationsListFragment);
@@ -449,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
 
         //Set the arguments for the conversation
         Bundle args = new Bundle();
-        args.putInt(ConversationFragment.ARG_CONVERSATION_ID ,id);
+        args.putInt(ConversationFragment.ARG_CONVERSATION_ID, id);
 
         //Create the fragment
         ConversationFragment conversationFragment = new ConversationFragment();
@@ -472,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         final AlertDialog dialog = UiUtils.create_loading_dialog(this);
 
         //Get conversation ID in the background
-        new AsyncTask<Integer, Void, Integer>(){
+        new AsyncTask<Integer, Void, Integer>() {
 
             @Override
             protected Integer doInBackground(Integer... params) {
@@ -485,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
                 //Close loading dialog
                 dialog.dismiss();
 
-                if(integer != null)
+                if (integer != null)
                     openConversation(integer);
                 else
                     Toast.makeText(MainActivity.this, R.string.err_get_private_conversation,
@@ -538,7 +551,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     /**
      * Open latest posts fragment
      */
-    public void openLatestPostsFragment(){
+    public void openLatestPostsFragment() {
 
         //Create the fragment
         LatestPostsFragment latestPostsFragment = new LatestPostsFragment();
@@ -555,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
      */
     private void clearLocalDatabase() {
 
-        if(!new DebugHelper(this).clearLocalDatabase())
+        if (!new DebugHelper(this).clearLocalDatabase())
             Toast.makeText(this, R.string.err_clear_local_db, Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(this, R.string.success_clear_local_db, Toast.LENGTH_SHORT).show();
@@ -565,7 +578,7 @@ public class MainActivity extends AppCompatActivity implements openConversationL
     /**
      * Open a search activity to find a user
      */
-    private void searchUser(){
+    private void searchUser() {
 
         //Make intent
         Intent intent = new Intent(this, SearchUserActivity.class);

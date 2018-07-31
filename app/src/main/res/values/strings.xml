@@ -196,4 +196,7 @@
     <string name="tab_posts">Posts</string>
     <string name="member_for">Member for</string>
     <string name="action_create_post">Create a new post</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
