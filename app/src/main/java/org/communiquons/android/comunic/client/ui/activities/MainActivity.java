@@ -188,6 +188,12 @@ public class MainActivity extends AppCompatActivity implements openConversationL
         //Get action id
         int id = item.getItemId();
 
+        //To go backward
+        if(id == android.R.id.home){
+            getSupportFragmentManager().popBackStack();
+            return true;
+        }
+
         //To search a user
         if(id == R.id.action_search_user){
             searchUser();
