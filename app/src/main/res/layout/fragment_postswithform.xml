@@ -18,6 +18,15 @@
         android:layout_height="wrap_content"
         android:layout="@layout/post_create_form" />
 
+    <!-- No post notice -->
+    <TextView
+        android:id="@+id/no_post_notice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notice_no_post_user_page"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"/>
+
     <!-- Posts target -->
     <FrameLayout
         android:id="@+id/posts_list_target"

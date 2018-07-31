@@ -3,6 +3,7 @@ package org.communiquons.android.comunic.client.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.ArrayMap;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
@@ -75,6 +77,11 @@ public class UserPostsFragment extends Fragment
     private Button mCreatePostButton;
 
     /**
+     * No post on user page notice
+     */
+    private TextView mNoPostNotice;
+
+    /**
      * Create post layout
      */
     private FrameLayout mCreatePostLayout;
@@ -110,6 +117,9 @@ public class UserPostsFragment extends Fragment
         //Get the views
         mCreatePostButton = view.findViewById(R.id.create_post_btn);
         mCreatePostLayout = view.findViewById(R.id.create_posts_form_target);
+        mNoPostNotice = view.findViewById(R.id.no_post_notice);
+
+        setNoPostNoticeVisibility(false);
 
         mCreatePostButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +130,7 @@ public class UserPostsFragment extends Fragment
         });
 
         //Initialize helpers
+        assert getActivity() != null;
         mPostsHelper = new PostsHelper(getActivity());
         mUserHelper = new GetUsersHelper(getActivity());
 
@@ -149,8 +160,13 @@ public class UserPostsFragment extends Fragment
                 if(mPostsList != null)
                     mUsersInfo = mUserHelper.getMultiple(mPostsList.getUsersId());
 
-                if(getActivity() != null)
-                    display_posts();
+                if(getActivity() != null && getView() != null)
+                    getView().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            display_posts();
+                        }
+                    });
             }
         });
         mLoadThread.start();
@@ -160,6 +176,7 @@ public class UserPostsFragment extends Fragment
     /**
      * Display the list of posts
      */
+    @UiThread
     private void display_posts(){
 
         //Check for errors
@@ -181,6 +198,8 @@ public class UserPostsFragment extends Fragment
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.posts_list_target, mPostsListFragment);
         transaction.commit();
+
+        setNoPostNoticeVisibility(mPostsList.size() < 1);
     }
 
     /**
@@ -219,6 +238,10 @@ public class UserPostsFragment extends Fragment
     private void setPostFormVisibility(boolean visible){
         mCreatePostLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
         mCreatePostButton.setActivated(visible);
+    }
+
+    private void setNoPostNoticeVisibility(boolean visible){
+        mNoPostNotice.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override
