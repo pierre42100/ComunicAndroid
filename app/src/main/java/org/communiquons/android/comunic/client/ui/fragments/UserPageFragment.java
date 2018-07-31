@@ -137,8 +137,6 @@ public class UserPageFragment extends Fragment {
                 }
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mUserID);
         }
-        else
-            onGotUserInfo(userInfo);
 
     }
 
@@ -192,7 +190,9 @@ public class UserPageFragment extends Fragment {
                 R.string.tab_user_advanced_info));
 
         //Posts fragment
-        adapter.addFragment(new Fragment(), UiUtils.getString(getActivity(),
+        UserPostsFragment postsFragment = new UserPostsFragment();
+        postsFragment.setAdvancedUserInfo(userInfo);
+        adapter.addFragment(postsFragment, UiUtils.getString(getActivity(),
                 R.string.tab_posts));
 
 

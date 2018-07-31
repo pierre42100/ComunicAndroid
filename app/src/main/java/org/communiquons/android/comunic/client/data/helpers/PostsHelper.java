@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.communiquons.android.comunic.client.data.models.APIFileRequest;
@@ -44,8 +45,8 @@ public class PostsHelper {
      *
      * @param context The context of the application
      */
-    public PostsHelper(Context context){
-        mContext = context;
+    public PostsHelper(@NonNull Context context){
+        mContext = context.getApplicationContext();
     }
 
     /**
