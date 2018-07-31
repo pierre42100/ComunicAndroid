@@ -190,8 +190,12 @@ public class UserPageFragment extends Fragment {
                 R.string.tab_user_advanced_info));
 
         //Posts fragment
+        Bundle args = new Bundle();
+        args.putInt(UserPostsFragment.ARGUMENT_USER_ID, userInfo.getId());
+        args.putBoolean(UserPostsFragment.ARGUMENT_CAN_POST_TEXT, userInfo.isCanPostText());
+
         UserPostsFragment postsFragment = new UserPostsFragment();
-        postsFragment.setAdvancedUserInfo(userInfo);
+        postsFragment.setArguments(args);
         adapter.addFragment(postsFragment, UiUtils.getString(getActivity(),
                 R.string.tab_posts));
 

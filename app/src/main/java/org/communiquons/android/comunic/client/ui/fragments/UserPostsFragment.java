@@ -17,7 +17,6 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
-import org.communiquons.android.comunic.client.data.models.AdvancedUserInfo;
 import org.communiquons.android.comunic.client.data.models.Post;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 
@@ -30,9 +29,20 @@ public class UserPostsFragment extends Fragment
     implements PostsCreateFormFragment.OnPostCreated {
 
     /**
-     * Information about the user
+     * Bundle arguments
      */
-    private AdvancedUserInfo mAdvancedUserInfo;
+    public static final String ARGUMENT_USER_ID = "user_id";
+    public static final String ARGUMENT_CAN_POST_TEXT = "can_post_text";
+
+    /**
+     * The ID of the user
+     */
+    private int mUserID;
+
+    /**
+     * Specify whether the user is allowed to create posts on user page or not
+     */
+    private boolean mCanPostsText;
 
     /**
      * The list of posts of the user
@@ -74,16 +84,16 @@ public class UserPostsFragment extends Fragment
      */
     private PostsListFragment mPostsListFragment;
 
-    /**
-     * Specify advanced user information
-     *
-     * Warning ! This method must absolutely be called before the fragment
-     * is attached to an activity !
-     *
-     * @param advancedUserInfo Information about the user
-     */
-    public void setAdvancedUserInfo(AdvancedUserInfo advancedUserInfo) {
-        this.mAdvancedUserInfo = advancedUserInfo;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //Get arguments
+        Bundle bundle = getArguments();
+        assert bundle != null;
+
+        mUserID = bundle.getInt(ARGUMENT_USER_ID);
+        mCanPostsText = bundle.getBoolean(ARGUMENT_CAN_POST_TEXT);
     }
 
     @Nullable
@@ -96,8 +106,6 @@ public class UserPostsFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(mAdvancedUserInfo == null)
-            return;
 
         //Get the views
         mCreatePostButton = view.findViewById(R.id.create_post_btn);
@@ -116,7 +124,7 @@ public class UserPostsFragment extends Fragment
         mUserHelper = new GetUsersHelper(getActivity());
 
         //Add create post fragment, if possible
-        if(mAdvancedUserInfo.isCanPostText())
+        if(mCanPostsText)
             init_create_post_fragment();
         else
             mCreatePostButton.setVisibility(View.GONE);
@@ -136,7 +144,7 @@ public class UserPostsFragment extends Fragment
             public void run() {
 
                 //Get the list of posts of the user
-                mPostsList.addAll(mPostsHelper.get_user(mAdvancedUserInfo.getId()));
+                mPostsList.addAll(mPostsHelper.get_user(mUserID));
 
                 if(mPostsList != null)
                     mUsersInfo = mUserHelper.getMultiple(mPostsList.getUsersId());
@@ -187,7 +195,7 @@ public class UserPostsFragment extends Fragment
         //Create bundle
         Bundle args = new Bundle();
         args.putInt(PostsCreateFormFragment.PAGE_TYPE_ARG, PostsCreateFormFragment.PAGE_TYPE_USER);
-        args.putInt(PostsCreateFormFragment.PAGE_ID_ARG, mAdvancedUserInfo.getId());
+        args.putInt(PostsCreateFormFragment.PAGE_ID_ARG, mUserID);
 
         //Create fragment
         PostsCreateFormFragment fragment = new PostsCreateFormFragment();
