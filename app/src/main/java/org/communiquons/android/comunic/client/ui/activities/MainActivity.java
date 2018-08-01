@@ -134,8 +134,8 @@ public class MainActivity extends AppCompatActivity implements
         conversationsListHelper = new ConversationsListHelper(this, dbHelper);
 
         //If it is the first time the application is launched, open notifications fragment
-        if (savedInstanceState == null) {
-            openNotificationsFragment();
+        if (savedInstanceState == null){
+            openNotificationsFragment(false);
         }
     }
 
@@ -305,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //Notification fragment
         if(id == R.id.action_notifications){
-            openNotificationsFragment();
+            openNotificationsFragment(true);
         }
 
         //Friends list
@@ -425,12 +425,16 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Open notifications fragment
+     *
+     * @param addToBackStack Specify whether the change must
+     *                       be added to backstack or not
      */
-    void openNotificationsFragment() {
+    void openNotificationsFragment(boolean addToBackStack) {
         NotificationsFragment notifications = new NotificationsFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, notifications);
-        transaction.addToBackStack(null);
+        if(addToBackStack)
+            transaction.addToBackStack(null);
         transaction.commit();
     }
 

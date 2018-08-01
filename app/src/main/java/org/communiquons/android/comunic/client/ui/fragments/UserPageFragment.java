@@ -116,7 +116,7 @@ public class UserPageFragment extends Fragment {
         super.onResume();
 
         //Check if we got information about the user
-        if(userInfo == null){
+        if(userInfo == null || mTabLayout.getTabCount() < 2){
 
             //Show loading alert dialog
             loadingDialog = UiUtils.create_loading_dialog(getActivity());
@@ -197,5 +197,6 @@ public class UserPageFragment extends Fragment {
 
         mPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mPager);
+
     }
 }
