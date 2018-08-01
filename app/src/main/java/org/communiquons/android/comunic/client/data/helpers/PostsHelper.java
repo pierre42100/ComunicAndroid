@@ -320,22 +320,7 @@ public class PostsHelper {
         post.setComments_list(CommentsHelper.parse_json_array(json.getJSONArray("comments")));
 
         //Determine the visibility level of the post
-        switch (json.getString("visibility_level")){
-
-            case "public":
-                post.setVisibilityLevel(PostVisibilityLevels.PUBLIC);
-                break;
-
-            case "friends":
-                post.setVisibilityLevel(PostVisibilityLevels.FRIENDS);
-                break;
-
-            case "private":
-            default :
-                post.setVisibilityLevel(PostVisibilityLevels.PRIVATE);
-                break;
-
-        }
+        post.setVisibilityLevel(api_to_visibility_levels(json.getString("visibility_level")));
 
         //Determine the type of the post
         switch (json.getString("kind")){
@@ -393,6 +378,33 @@ public class PostsHelper {
     }
 
     /**
+     * Turn API visibility level to PostVisibilityLevel
+     *
+     * @param level The level to transform
+     * @return Matching visibility level
+     */
+    private PostVisibilityLevels api_to_visibility_levels(String level){
+        switch (level){
+
+            case "public":
+                return PostVisibilityLevels.PUBLIC;
+
+            case "friends":
+                return PostVisibilityLevels.FRIENDS;
+
+            case "members":
+                return PostVisibilityLevels.MEMBERS;
+
+            case "private":
+                return PostVisibilityLevels.PRIVATE;
+
+            default:
+                throw new RuntimeException("Unsupported kind of post visibility " +
+                        "level: '"+level+"' !");
+        }
+    }
+
+    /**
      * Turn a POST visibility level into a string ready for the API
      *
      * @param level The level to convert
@@ -406,6 +418,9 @@ public class PostsHelper {
 
             case FRIENDS:
                 return "friends";
+
+            case MEMBERS:
+                return "members";
 
             case PRIVATE:
                 return "private";

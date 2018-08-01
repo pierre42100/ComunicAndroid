@@ -133,6 +133,10 @@ public class PostsAdapter extends ArrayAdapter<Post>{
                 visibilityLevel.setText(R.string.post_visibility_friends);
                 break;
 
+            case MEMBERS:
+                visibilityLevel.setText(R.string.post_visibility_members);
+                break;
+
             case PRIVATE:
             default:
                 visibilityLevel.setText(R.string.post_visibility_private);

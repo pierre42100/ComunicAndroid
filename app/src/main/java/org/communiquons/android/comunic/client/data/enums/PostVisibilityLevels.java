@@ -20,6 +20,11 @@ public enum PostVisibilityLevels {
     FRIENDS,
 
     /**
+     * Groups-members visible posts
+     */
+    MEMBERS,
+
+    /**
      * Private post
      */
     PRIVATE
