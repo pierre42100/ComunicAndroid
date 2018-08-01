@@ -65,8 +65,8 @@ public class SearchUserActivity extends AppCompatActivity
         getUsersHelper = new GetUsersHelper(this, DatabaseHelper.getInstance(this));
 
         //Get view
-        searchField = (EditText) findViewById(R.id.activity_search_user_field);
-        resultListView = (ListView) findViewById(R.id.activity_search_user_results);
+        searchField = findViewById(R.id.activity_search_user_field);
+        resultListView = findViewById(R.id.activity_search_user_results);
 
         //Set on key listener
         searchField.addTextChangedListener(this);

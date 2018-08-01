@@ -30,7 +30,7 @@ public class PDFActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pdf);
 
         //Get and setup WebView
-        mWebView = (WebView) findViewById(R.id.webview);
+        mWebView = findViewById(R.id.webview);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setAllowFileAccess(false);
         mWebView.getSettings().setAllowFileAccessFromFileURLs(false);
