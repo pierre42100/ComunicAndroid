@@ -56,7 +56,7 @@ public class GetUsersHelper {
      * @param udbHelper User database helper
      */
     public GetUsersHelper(@NonNull Context context, @NonNull UsersInfosDbHelper udbHelper){
-        mContext = context;
+        mContext = context.getApplicationContext();
         this.udbHelper = udbHelper;
     }
 
@@ -304,11 +304,11 @@ public class GetUsersHelper {
 
 
         //Convert the IDs into a string
-        String id_string = "";
+        StringBuilder id_string = new StringBuilder();
         for(int id : IDs) {
-            id_string += id + ",";
+            id_string.append(id).append(",");
         }
-        requestParameters.addString("usersID", id_string);
+        requestParameters.addString("usersID", id_string.toString());
 
 
         try {

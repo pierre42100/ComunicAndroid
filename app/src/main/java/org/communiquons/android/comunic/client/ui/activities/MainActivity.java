@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.BuildConfig;
@@ -28,6 +29,8 @@ import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.DebugHelper;
+import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
@@ -46,6 +49,7 @@ import org.communiquons.android.comunic.client.ui.listeners.onPostOpenListener;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 import org.communiquons.android.comunic.client.ui.listeners.updateConversationListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 
 /**
@@ -71,11 +75,6 @@ public class MainActivity extends AppCompatActivity implements
      * Account object
      */
     private AccountHelper accountHelper;
-
-    /**
-     * Account utils object
-     */
-    private AccountUtils aUtils;
 
     /**
      * Friends list refresh thread
@@ -251,6 +250,44 @@ public class MainActivity extends AppCompatActivity implements
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Get information about the user
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final UserInfo info = new GetUsersHelper(getApplicationContext()).getSingle(
+                        new AccountUtils(getApplicationContext()).get_current_user_id(), false);
+
+                //Apply user information
+                if(mDrawer != null){
+                    mDrawer.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            applyUserInfoInDrawer(info);
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * Apply current user information in the drawer
+     *
+     * @param info Information about the user to apply
+     */
+    private void applyUserInfoInDrawer(@Nullable UserInfo info){
+
+        //Check for errors
+        if(info == null){
+            Toast.makeText(MainActivity.this, R.string.err_get_user_info,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Apply user information
+        ((TextView)findViewById(R.id.current_user_name)).setText(info.getDisplayFullName());
+        ((WebUserAccountImage)findViewById(R.id.current_user_account_image)).setUser(info);
     }
 
     @Override
