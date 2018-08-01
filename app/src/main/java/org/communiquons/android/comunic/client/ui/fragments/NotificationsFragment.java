@@ -22,6 +22,7 @@ import android.widget.Toast;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.enums.NotifElemType;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
+import org.communiquons.android.comunic.client.data.helpers.GroupsHelper;
 import org.communiquons.android.comunic.client.data.helpers.NotificationsHelper;
 import org.communiquons.android.comunic.client.data.arrays.NotifsList;
 import org.communiquons.android.comunic.client.data.models.Notif;
@@ -49,6 +50,11 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
      * Get users helper
      */
     private GetUsersHelper mUsersInfoHelper;
+
+    /**
+     * Groups heper
+     */
+    private GroupsHelper mGroupsHelper;
 
     /**
      * Notifications list
@@ -94,11 +100,10 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Create notifications helper
+        //Initialize helpers
         mNotificationsHelper = new NotificationsHelper(getActivity());
-
-        //Create get users helper
         mUsersInfoHelper = new GetUsersHelper(getActivity());
+        mGroupsHelper = new GroupsHelper(getActivity());
     }
 
     @Nullable
@@ -228,8 +233,10 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
                 NotifsList list = mNotificationsHelper.getListUnread();
 
                 //If we got the list of notifications, fetch users information
-                if(list != null)
+                if(list != null) {
                     list.setUsersInfo(mUsersInfoHelper.getMultiple(list.getUsersID()));
+                    list.setGroupsInfo(mGroupsHelper.getInfoMultiple(list.getGroupsID()));
+                }
 
                 return list;
 

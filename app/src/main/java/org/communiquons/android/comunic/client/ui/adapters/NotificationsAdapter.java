@@ -13,11 +13,14 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
+import org.communiquons.android.comunic.client.data.models.GroupInfo;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.data.arrays.NotifsList;
 import org.communiquons.android.comunic.client.data.utils.NotifsUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
+
+import java.lang.reflect.Array;
 
 /**
  * Notifications list adapter
@@ -39,6 +42,11 @@ public class NotificationsAdapter extends ArrayAdapter<Notif>{
     private ArrayMap<Integer, UserInfo> mUsersInfo;
 
     /**
+     * Information about the groups related to the notifications
+     */
+    private ArrayMap<Integer, GroupInfo> mGroupsInfo;
+
+    /**
      * Public adapter constructor
      *
      * @param context The context of the application
@@ -47,8 +55,9 @@ public class NotificationsAdapter extends ArrayAdapter<Notif>{
     public NotificationsAdapter(Context context, NotifsList list){
         super(context, 0, list);
 
-        //Save user information
+        //Save users and groups information
         mUsersInfo = list.getUsersInfo();
+        mGroupsInfo = list.getGroupsInfo();
 
         mUtils = new Utilities(context);
     }
@@ -75,7 +84,8 @@ public class NotificationsAdapter extends ArrayAdapter<Notif>{
 
         //Update the message of the notification
         TextView message = convertView.findViewById(R.id.notification_message);
-        message.setText(NotifsUtils.getNotificationMessage(getContext(), notif, mUsersInfo));
+        message.setText(NotifsUtils.getNotificationMessage(getContext(), notif,
+                mUsersInfo, mGroupsInfo));
 
         //Update the date of the notification
         TextView date = convertView.findViewById(R.id.notification_date);

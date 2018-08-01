@@ -6,9 +6,12 @@ import android.util.ArrayMap;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.enums.NotifElemType;
 import org.communiquons.android.comunic.client.data.enums.NotificationTypes;
+import org.communiquons.android.comunic.client.data.models.GroupInfo;
 import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+
+import java.security.acl.Group;
 
 /**
  * Notifications utilities
@@ -25,10 +28,12 @@ public class NotifsUtils {
      * @param context The context of the application
      * @param notif The target notification
      * @param userInfos Information about the user of the notification
+     * @param groupsInfo Information about related groups
      * @return The message associated to the notification
      */
     public static String getNotificationMessage(Context context, Notif notif,
-                                                ArrayMap<Integer, UserInfo> userInfos){
+                                                ArrayMap<Integer, UserInfo> userInfos,
+                                                ArrayMap<Integer, GroupInfo> groupsInfo){
 
         //First, put the name of the user
         String message = userInfos.get(notif.getFrom_user_id()).getDisplayFullName();
@@ -74,7 +79,8 @@ public class NotifsUtils {
 
         //Group page
         else if(notif.getFrom_container_type() == NotifElemType.GROUP_PAGE){
-            message += UiUtils.getString(context, R.string.notif_on_group_page);
+            message += UiUtils.getString(context, R.string.notif_on_group_page,
+                    groupsInfo.get(notif.getFrom_container_id()).getName());
         }
 
         //Return the message
