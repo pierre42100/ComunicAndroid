@@ -200,4 +200,5 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_personal_page">My Page</string>
+    <string name="notif_on_group_page">on the page of the group %1$s</string>
 </resources>

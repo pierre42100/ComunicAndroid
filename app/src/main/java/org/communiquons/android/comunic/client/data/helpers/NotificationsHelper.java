@@ -195,6 +195,9 @@ public class NotificationsHelper {
             case "user_page":
                 return NotifElemType.USER_PAGE;
 
+            case "group_page":
+                return NotifElemType.GROUP_PAGE;
+
             case "conversation":
                 return NotifElemType.CONVERSATION;
 

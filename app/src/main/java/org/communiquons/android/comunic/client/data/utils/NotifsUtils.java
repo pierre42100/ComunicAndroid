@@ -61,6 +61,7 @@ public class NotifsUtils {
 
 
         //Notification target
+        //User page
         if(notif.getFrom_container_type() == NotifElemType.USER_PAGE){
 
             if(notif.getFrom_user_id() == notif.getFrom_container_id())
@@ -69,6 +70,11 @@ public class NotifsUtils {
                 message += UiUtils.getString(context, R.string.notif_on_user_page,
                         userInfos.get(notif.getFrom_container_id()).getDisplayFullName());
 
+        }
+
+        //Group page
+        else if(notif.getFrom_container_type() == NotifElemType.GROUP_PAGE){
+            message += UiUtils.getString(context, R.string.notif_on_group_page);
         }
 
         //Return the message

@@ -30,6 +30,11 @@ public enum NotifElemType {
     USER_PAGE,
 
     /**
+     * On a group page
+     */
+    GROUP_PAGE,
+
+    /**
      * On a comment
      */
     COMMENT,
