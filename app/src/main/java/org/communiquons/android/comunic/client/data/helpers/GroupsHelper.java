@@ -23,6 +23,11 @@ import java.util.ArrayList;
 public class GroupsHelper extends BaseHelper {
 
     /**
+     * Groups information cache
+     */
+    private static ArrayMap<Integer, GroupInfo> mInfoCache = new ArrayMap<>();
+
+    /**
      * Groups constructor
      *
      * @param context The context of the application
@@ -40,7 +45,31 @@ public class GroupsHelper extends BaseHelper {
      */
     @Nullable
     public ArrayMap<Integer, GroupInfo> getInfoMultiple(ArrayList<Integer> IDs){
-        return downloadMultiple(IDs);
+
+        //Process each group to check if its information are available in the cache or not
+        ArrayList<Integer> toGet = new ArrayList<>();
+
+        for(int id : IDs){
+            if(!mInfoCache.containsKey(id))
+                toGet.add(id);
+        }
+
+        if(toGet.size() > 0){
+
+            ArrayMap<Integer, GroupInfo> downloaded = downloadMultiple(toGet);
+
+            if(downloaded == null)
+                return null; // Can not get information about all the groups
+
+            for(int id : toGet)
+                mInfoCache.put(id, downloaded.get(id));
+        }
+
+        //Extract groups information from cache
+        ArrayMap<Integer, GroupInfo> list = new ArrayMap<>();
+        for(int id : IDs)
+            list.put(id, mInfoCache.get(id));
+        return list;
     }
 
     /**
