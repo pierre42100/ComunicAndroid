@@ -1,8 +1,9 @@
 package org.communiquons.android.comunic.client.ui.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.asynctasks.APIRequestTask;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
@@ -45,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        assert getSupportActionBar() != null;
+        getSupportActionBar().hide();
 
         //Create utilities object
         utils = new Utilities(this);
@@ -84,8 +86,8 @@ public class LoginActivity extends AppCompatActivity {
     void submitLogin(){
 
         //Get the fields
-        final EditText login_mail = (EditText) findViewById(R.id.email_field);
-        EditText login_password = (EditText) findViewById(R.id.password_field);
+        EditText login_mail = findViewById(R.id.email_field);
+        EditText login_password = findViewById(R.id.password_field);
 
 
         int stop = 0;
@@ -120,39 +122,78 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //Perform a request on the API to check user credentials and get login tokens
-        APIRequest params = new APIRequest(this, "user/connectUSER");
+        final APIRequest params = new APIRequest(this, "user/connectUSER");
         params.addString("userMail", ""+login_mail.getText());
         params.addString("userPassword", ""+login_password.getText());
 
         //Create Request
-        new APIRequestTask(){
-            @Override
-            protected void onPostExecute(APIResponse result) {
+        new Thread(new SubmitLoginRequest(params)).start();
 
-                //Check for errors
-                if(result == null) {
-
-                    //Hide loading wheel
-                    enter_loading_state(false);
-
-                    //Put the error on the login mail field
-                    show_form_error(getString(R.string.activity_login_err_invalid_credentials));
-                }
-
-                else
-                    //Perform next actions
-                    handle_server_response(result);
-
-            }
-        }.execute(params);
     }
 
+
     /**
-     * Handle server responses that seems to accept a response
-     *
-     * @param response The server reponse
+     * Runnable used to submit login request and retrieve login tokens
      */
-    void handle_server_response(APIResponse response){
+    private class SubmitLoginRequest implements Runnable {
+
+        private APIRequest mRequest;
+
+        SubmitLoginRequest(APIRequest request){
+            mRequest = request;
+        }
+
+        @Override
+        public void run() {
+
+            APIResponse response = null;
+            try {
+                response = new APIRequestHelper().exec(mRequest);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if(!isFinishing()){
+                findViewById(R.id.email_field).post(new ServerResponseRunnable(response));
+            }
+
+        }
+    }
+
+
+    /**
+     * Runnable used on the UI Thread to pre-process server response
+     */
+    private class ServerResponseRunnable implements Runnable {
+
+        private APIResponse mResponse;
+
+        ServerResponseRunnable(APIResponse response){
+            mResponse = response;
+        }
+
+        @Override
+        public void run() {
+            handle_server_response(mResponse);
+        }
+    }
+
+
+    /**
+     * Handle server response
+     *
+     * @param response The server response
+     */
+    void handle_server_response(@Nullable APIResponse response){
+
+        if(response == null){
+            //Hide loading wheel
+            enter_loading_state(false);
+
+            //Put the error on the login mail field
+            show_form_error(getString(R.string.activity_login_err_invalid_credentials));
+            return;
+        }
 
         JSONObject data = response.getJSONObject();
 
@@ -214,12 +255,12 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Switch between loading state and ready state for the login form
      *
-     * @param show_progress Specify wether a progress bar should be shown or not
+     * @param show_progress Specify whether a progress bar should be shown or not
      */
     void enter_loading_state(boolean show_progress){
         //Grab elements
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        ScrollView login_form = (ScrollView) findViewById(R.id.login_form);
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
+        ScrollView login_form = findViewById(R.id.login_form);
 
         progressBar.setVisibility(show_progress ? View.VISIBLE : View.GONE);
         login_form.setVisibility(show_progress ? View.GONE : View.VISIBLE);
@@ -233,7 +274,7 @@ public class LoginActivity extends AppCompatActivity {
     void show_form_error(String message){
 
         //Retrieve error field
-        TextView v_error = (TextView) findViewById(R.id.login_error_message);
+        TextView v_error = findViewById(R.id.login_error_message);
 
         //Check what to do
         boolean display = message.length() > 0;

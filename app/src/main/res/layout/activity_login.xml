@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
-    android:layout_marginBottom="16dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="16dp"
+    android:paddingBottom="16dp"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    android:paddingTop="16dp"
     android:orientation="vertical"
+    android:background="@drawable/activity_login_bg"
     tools:context="org.communiquons.android.comunic.client.ui.activities.LoginActivity">
+
+    <!-- Login form -->
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="24sp" />
 
     <!-- Login loading progress -->
     <ProgressBar
@@ -17,14 +30,19 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:visibility="gone"/>
+        android:layout_centerVertical="true"
+        android:scrollbarAlwaysDrawVerticalTrack="false"
+        android:visibility="gone" />
 
-    <!-- Login form -->
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_centerVertical="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,22 +55,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:textColor="#FF2222"
-                tools:text="Error content"
-                android:visibility="gone"/>
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="Error content" />
 
             <!-- Email field -->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                style="@style/LoginInput">
 
                 <EditText
                     android:id="@+id/email_field"
+                    style="@style/LoginInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/activity_login_email_hint"
-                    android:inputType="textEmailAddress"
-                    />
+                    android:inputType="textEmailAddress" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -60,7 +80,8 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                style="@style/LoginInput">
 
                 <EditText
                     android:id="@+id/password_field"
@@ -68,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/activity_login_password_hint"
                     android:inputType="textPassword"
-                    />
+                    style="@style/LoginInput" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -85,4 +106,4 @@
 
     </ScrollView>
 
-</LinearLayout>
+</RelativeLayout>

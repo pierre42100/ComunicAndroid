@@ -12,6 +12,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <!-- Login activity -->
+    <style name="LoginInput">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="android:textColorLink">@android:color/white</item>
+        <item name="android:textColorHighlight">@android:color/white</item>
+    </style>
+
     <!-- User page fragment -->
     <!-- User page header -->
     <style name="UserPageHeader">
