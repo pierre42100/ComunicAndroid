@@ -212,23 +212,7 @@ public class PostsHelper {
         }
 
         //Determine the visibility level of the post
-        switch (post.getVisibilityLevel()){
-
-            case PUBLIC:
-                req.addString("visibility", "public");
-                break;
-
-            case FRIENDS:
-                req.addString("visibility", "friends");
-                break;
-
-            case PRIVATE:
-                req.addString("visibility", "private");
-                break;
-
-            default:
-                throw new RuntimeException("Unsupported kind of Visibility level!");
-        }
+        req.addString("visibility", visibility_level_to_api(post.getVisibilityLevel()));
 
         //Set the kind of target page
         switch (post.getPage_type()){
@@ -406,5 +390,28 @@ public class PostsHelper {
         }
 
         return post;
+    }
+
+    /**
+     * Turn a POST visibility level into a string ready for the API
+     *
+     * @param level The level to convert
+     * @return Generated API string
+     */
+    private String visibility_level_to_api(PostVisibilityLevels level){
+        switch (level){
+
+            case PUBLIC:
+                return "public";
+
+            case FRIENDS:
+                return "friends";
+
+            case PRIVATE:
+                return "private";
+
+            default:
+                throw new RuntimeException("Unsupported kind of Visibility level!");
+        }
     }
 }
