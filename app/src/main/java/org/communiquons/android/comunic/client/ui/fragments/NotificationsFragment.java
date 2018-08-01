@@ -263,6 +263,12 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
                     return;
                 }
 
+                //Check if we could not get information about related gropus
+                if(notifs.getGroupsInfo() == null){
+                    Toast.makeText(getActivity(), R.string.err_get_groups_info, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 //Save the list of notifications and display it
                 mNotificationsList = notifs;
                 displayNotificationsList();
