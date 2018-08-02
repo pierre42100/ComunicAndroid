@@ -47,6 +47,20 @@ public class NotifsUtils {
         if(notif.getType() == NotificationTypes.REJECTED_FRIEND_REQUEST)
             message += UiUtils.getString(context, R.string.notif_rejected_friend_request);
 
+        //For group membership
+        if(notif.getType() == NotificationTypes.SENT_GROUP_MEMBERSHIP_INVITATION)
+            message += UiUtils.getString(context, R.string.notif_sent_group_membership_invitation);
+        if(notif.getType() == NotificationTypes.ACCEPTED_GROUP_MEMBERSHIP_INVITATION)
+            message += UiUtils.getString(context, R.string.notif_accepted_group_membership_invitation);
+        if(notif.getType() == NotificationTypes.REJECTED_GROUP_MEMBERSHIP_INVITATION)
+            message += UiUtils.getString(context, R.string.notif_rejected_group_membership_invitation);
+        if(notif.getType() == NotificationTypes.SENT_GROUP_MEMBERSHIP_REQUEST)
+            message += UiUtils.getString(context, R.string.notif_sent_group_membership_request);
+        if(notif.getType() == NotificationTypes.ACCEPTED_GROUP_MEMBERSHIP_REQUEST)
+            message += UiUtils.getString(context, R.string.notif_accepted_group_membership_request);
+        if(notif.getType() == NotificationTypes.REJECTED_GROUP_MEMBERSHIP_REQUEST)
+            message += UiUtils.getString(context, R.string.notif_rejected_group_membership_request);
+
         //In case of creation of an element
         if(notif.getType() == NotificationTypes.ELEM_CREATED){
 
@@ -81,6 +95,11 @@ public class NotifsUtils {
         else if(notif.getFrom_container_type() == NotifElemType.GROUP_PAGE){
             message += UiUtils.getString(context, R.string.notif_on_group_page,
                     groupsInfo.get(notif.getFrom_container_id()).getName());
+        }
+
+        //Group membership
+        else if(notif.getOn_elem_type() == NotifElemType.GROUPS_MEMBERSHIP){
+            message += groupsInfo.get(notif.getOn_elem_id()).getName();
         }
 
         //Return the message

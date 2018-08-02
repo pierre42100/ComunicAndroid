@@ -40,6 +40,20 @@ public enum NotificationTypes {
     ELEM_UPDATED,
 
     /**
+     * Group membership invitations
+     */
+    SENT_GROUP_MEMBERSHIP_INVITATION,
+    ACCEPTED_GROUP_MEMBERSHIP_INVITATION,
+    REJECTED_GROUP_MEMBERSHIP_INVITATION,
+
+    /**
+     * Group membership requests
+     */
+    SENT_GROUP_MEMBERSHIP_REQUEST,
+    ACCEPTED_GROUP_MEMBERSHIP_REQUEST,
+    REJECTED_GROUP_MEMBERSHIP_REQUEST,
+
+    /**
      * Unknown notification type
      */
     UNKNOWN

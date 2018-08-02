@@ -45,6 +45,11 @@ public enum NotifElemType {
     FRIEND_REQUEST,
 
     /**
+     * Notifications related to group memberships
+     */
+    GROUPS_MEMBERSHIP,
+
+    /**
      * Unknown type
      */
     UNKNOWN

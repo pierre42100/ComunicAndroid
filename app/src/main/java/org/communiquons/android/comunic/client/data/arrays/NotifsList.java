@@ -86,6 +86,10 @@ public class NotifsList extends ArrayList<Notif> {
                     && !IDs.contains(notif.getFrom_container_id()))
                 IDs.add(notif.getFrom_container_id());
 
+            if(notif.getOn_elem_type() == NotifElemType.GROUPS_MEMBERSHIP
+                    && !IDs.contains(notif.getOn_elem_id()))
+                IDs.add(notif.getOn_elem_id());
+
         }
 
         return IDs;

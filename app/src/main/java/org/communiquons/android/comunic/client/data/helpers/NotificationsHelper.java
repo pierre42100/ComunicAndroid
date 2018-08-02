@@ -213,6 +213,9 @@ public class NotificationsHelper {
             case "friend_request":
                 return NotifElemType.FRIEND_REQUEST;
 
+            case "group_membership":
+                return NotifElemType.GROUPS_MEMBERSHIP;
+
             //Default : unknown type of elem
             default:
                 return NotifElemType.UNKNOWN;
@@ -247,6 +250,24 @@ public class NotificationsHelper {
 
             case "elem_updated":
                 return NotificationTypes.ELEM_UPDATED;
+
+            case "sent_group_membership_invitation":
+                return NotificationTypes.SENT_GROUP_MEMBERSHIP_INVITATION;
+
+            case "accepted_group_membership_invitation":
+                return NotificationTypes.ACCEPTED_GROUP_MEMBERSHIP_INVITATION;
+
+            case "rejected_group_membership_invitation":
+                return NotificationTypes.REJECTED_GROUP_MEMBERSHIP_INVITATION;
+
+            case "sent_group_membership_request":
+                return NotificationTypes.SENT_GROUP_MEMBERSHIP_REQUEST;
+
+            case "accepted_group_membership_request":
+                return NotificationTypes.ACCEPTED_GROUP_MEMBERSHIP_REQUEST;
+
+            case "rejected_group_membership_request":
+                return NotificationTypes.REJECTED_GROUP_MEMBERSHIP_REQUEST;
 
             //Default : Unknown notification type
             default:
