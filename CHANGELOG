@@ -4,7 +4,16 @@ V 1.4:
 * Intend to fix Bitmap crashes with a lock
 * Added latest posts thread
 * Can create posts with images
-* Can enlarge posts images
+* Can enlarge posts and comments images
+* Post with PDF are supported
+* Post with movies are supported
+* User can disable crash reporting
+* New navigation bar (drawer) replaces the bottom bar
+* New interface for the login activity
+* Catch invalid login tokens
+* Created latest posts activity
+* Notification system supports groups
+
 
 V1.3 :
 * Try to fix Bitmap crashes
