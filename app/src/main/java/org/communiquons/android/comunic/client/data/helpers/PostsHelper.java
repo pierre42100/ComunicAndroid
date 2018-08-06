@@ -15,6 +15,7 @@ import org.communiquons.android.comunic.client.data.enums.PostTypes;
 import org.communiquons.android.comunic.client.data.enums.PostUserAccess;
 import org.communiquons.android.comunic.client.data.enums.PostVisibilityLevels;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.data.models.WebLink;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -329,28 +330,7 @@ public class PostsHelper {
         post.setVisibilityLevel(api_to_visibility_levels(json.getString("visibility_level")));
 
         //Determine the type of the post
-        switch (json.getString("kind")){
-
-            case "text":
-                post.setType(PostTypes.TEXT);
-                break;
-
-            case "image":
-                post.setType(PostTypes.IMAGE);
-                break;
-
-            case "movie":
-                post.setType(PostTypes.MOVIE);
-                break;
-
-            case "pdf":
-                post.setType(PostTypes.PDF);
-                break;
-
-            default:
-                post.setType(PostTypes.UNKNOWN);
-
-        }
+        post.setType(api_to_post_types(json.getString("kind")));
 
         //Determine the user access level to the post
         switch (json.getString("user_access")){
@@ -385,6 +365,16 @@ public class PostsHelper {
             post.setMovie(new MoviesHelper(mContext)
                     .parse_json_object(json.getJSONObject("video_info")));
 
+        //Get information about web link (if any)
+        if(post.getType() == PostTypes.WEBLINK){
+            WebLink webLink = new WebLink();
+            webLink.setUrl(json.getString("link_url"));
+            webLink.setTitle(json.getString("link_title"));
+            webLink.setDescription(json.getString("link_description"));
+            webLink.setImageURL(json.getString("link_image"));
+            post.setWebLink(webLink);
+        }
+
         return post;
     }
 
@@ -413,6 +403,37 @@ public class PostsHelper {
                 throw new RuntimeException("Unsupported kind of post visibility " +
                         "level: '"+level+"' !");
         }
+    }
+
+    /**
+     * Turn API post kind to PostTypes
+     *
+     * @param kind The kind to match
+     */
+    private PostTypes api_to_post_types(String kind){
+
+        switch (kind){
+
+            case "text":
+                return PostTypes.TEXT;
+
+            case "image":
+                return PostTypes.IMAGE;
+
+            case "movie":
+                return PostTypes.MOVIE;
+
+            case "weblink":
+                return PostTypes.WEBLINK;
+
+            case "pdf":
+                return PostTypes.PDF;
+
+            default:
+                return PostTypes.UNKNOWN;
+
+        }
+
     }
 
     /**

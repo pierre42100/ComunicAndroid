@@ -88,6 +88,12 @@
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
+    <!-- Post Weblink (if any) -->
+    <style name="PostWebLink">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
     <!-- Post PDF button (when required) -->
     <style name="PostPDFButton">
         <item name="android:layout_gravity">center_horizontal</item>

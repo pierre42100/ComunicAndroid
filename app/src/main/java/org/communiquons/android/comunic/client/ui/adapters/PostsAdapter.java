@@ -30,6 +30,7 @@ import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
 import org.communiquons.android.comunic.client.ui.views.MovieView;
 import org.communiquons.android.comunic.client.ui.views.PDFLinkButtonView;
 import org.communiquons.android.comunic.client.ui.views.WebImageView;
+import org.communiquons.android.comunic.client.ui.views.WebLinkView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 import java.util.ArrayList;
@@ -189,6 +190,18 @@ public class PostsAdapter extends ArrayAdapter<Post>{
 
         else {
             movieView.setVisibility(View.GONE);
+        }
+
+
+        //Set post weblink (if any)
+        WebLinkView webLinkView = convertView.findViewById(R.id.post_web_link);
+
+        if(post.hasWebLink()){
+            webLinkView.setVisibility(View.VISIBLE);
+            webLinkView.setLink(post.getWebLink());
+        }
+        else {
+            webLinkView.setVisibility(View.GONE);
         }
 
 

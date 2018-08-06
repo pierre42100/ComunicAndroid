@@ -46,6 +46,9 @@ public class Post {
     //Movie
     private Movie movie;
 
+    //Web link
+    private WebLink webLink;
+
 
     //Set and get the ID of the post
     public void setId(int id) {
@@ -210,6 +213,20 @@ public class Post {
 
     public void setMovie(Movie movie) {
         this.movie = movie;
+    }
+
+
+    //Set and get web link information
+    public WebLink getWebLink() {
+        return webLink;
+    }
+
+    public boolean hasWebLink() {
+        return webLink != null;
+    }
+
+    public void setWebLink(WebLink webLink) {
+        this.webLink = webLink;
     }
 }
 

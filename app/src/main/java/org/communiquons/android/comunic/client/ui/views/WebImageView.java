@@ -57,7 +57,7 @@ public class WebImageView extends android.support.v7.widget.AppCompatImageView {
 
         //Reset image loader
         ImageLoadHelper.remove(this);
-        setImageDrawable(UiUtils.getDrawable(getContext(), mDefaultDrawable));
+        applyDefaultDrawable();
         ImageLoadHelper.load(getContext(), url, this);
 
         //Save image URL
@@ -89,6 +89,13 @@ public class WebImageView extends android.support.v7.widget.AppCompatImageView {
      */
     public void setDefaultDrawable(int defaultDrawable) {
         this.mDefaultDrawable = defaultDrawable;
+    }
+
+    /**
+     * Apply the default drawable to the view
+     */
+    public void applyDefaultDrawable() {
+        setImageDrawable(UiUtils.getDrawable(getContext(), mDefaultDrawable));
     }
 
     /**

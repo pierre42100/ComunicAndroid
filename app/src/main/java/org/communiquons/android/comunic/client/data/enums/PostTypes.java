@@ -25,6 +25,11 @@ public enum PostTypes {
     MOVIE,
 
     /**
+     * Web link
+     */
+    WEBLINK,
+
+    /**
      * PDF
      */
     PDF,
