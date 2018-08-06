@@ -16,4 +16,11 @@
         android:title="@string/preference_debug_mode_title"
         android:summary="@string/preference_debug_mode_summary" />
 
+    <!-- Enable or disable crash reporting -->
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="enable_crash_reporting"
+        android:title="@string/preference_crash_reporting_title"
+        android:summary="@string/preference_crash_reporting_summary"/>
+
 </PreferenceScreen>

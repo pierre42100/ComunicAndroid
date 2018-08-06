@@ -209,4 +209,6 @@
     <string name="notif_sent_group_membership_request">sent a request to join the group</string>
     <string name="notif_accepted_group_membership_request">accepted your request to join the group</string>
     <string name="notif_rejected_group_membership_request">rejected your request to join the group</string>
+    <string name="preference_crash_reporting_title">Send crash reports</string>
+    <string name="preference_crash_reporting_summary">Help us improve Comunic by sending anonymous reports when the application crash.</string>
 </resources>

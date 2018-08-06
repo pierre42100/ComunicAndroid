@@ -100,11 +100,13 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Initialize crash reporter
-        CrashReporter reporter = new CrashReporter(this, BuildConfig.crash_reporter_url,
-                BuildConfig.crash_reporter_key);
-        reporter.uploadAwaitingReport();
-        Thread.setDefaultUncaughtExceptionHandler(reporter);
+        //Initialize crash reporter (if enabled)
+        if(PreferencesUtils.getBoolean(this, "enable_crash_reporting", true)){
+            CrashReporter reporter = new CrashReporter(this, BuildConfig.crash_reporter_url,
+                    BuildConfig.crash_reporter_key);
+            reporter.uploadAwaitingReport();
+            Thread.setDefaultUncaughtExceptionHandler(reporter);
+        }
 
         //Initialize account objects
         accountHelper = new AccountHelper(this);
