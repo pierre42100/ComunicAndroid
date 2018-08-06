@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
+import org.communiquons.android.comunic.client.ui.views.MovieView;
 import org.communiquons.android.comunic.client.ui.views.PDFLinkButtonView;
 import org.communiquons.android.comunic.client.ui.views.WebImageView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
@@ -175,6 +177,20 @@ public class PostsAdapter extends ArrayAdapter<Post>{
             postImage.removeImage();
 
         }
+
+
+        //Set post movie (if any)
+        MovieView movieView = convertView.findViewById(R.id.post_movie);
+
+        if(post.getType() == PostTypes.MOVIE){
+            movieView.setVisibility(View.VISIBLE);
+            movieView.setMovie(post.getMovie());
+        }
+
+        else {
+            movieView.setVisibility(View.GONE);
+        }
+
 
         //Set post file PDF (if any)
         PDFLinkButtonView pdfLinkButtonView = convertView.findViewById(R.id.btn_pdf_link);

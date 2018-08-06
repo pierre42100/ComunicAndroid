@@ -43,6 +43,9 @@ public class Post {
     //Files specific
     private String file_path_url;
 
+    //Movie
+    private Movie movie;
+
 
     //Set and get the ID of the post
     public void setId(int id) {
@@ -193,6 +196,20 @@ public class Post {
 
     public String getFile_path_url() {
         return file_path_url;
+    }
+
+
+    //Set and get movie information
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public boolean hasMovie(){
+        return movie != null;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 }
 

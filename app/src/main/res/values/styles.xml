@@ -82,6 +82,12 @@
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 
+    <!-- Post Movie (when required) -->
+    <style name="PostMovie">
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
     <!-- Post PDF button (when required) -->
     <style name="PostPDFButton">
         <item name="android:layout_gravity">center_horizontal</item>

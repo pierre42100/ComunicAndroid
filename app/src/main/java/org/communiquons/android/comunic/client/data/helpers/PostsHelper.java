@@ -380,6 +380,11 @@ public class PostsHelper {
             post.setFile_path_url(json.getString("file_path_url"));
         }
 
+        //Get information about movie (if any)
+        if(!json.isNull("video_info"))
+            post.setMovie(new MoviesHelper(mContext)
+                    .parse_json_object(json.getJSONObject("video_info")));
+
         return post;
     }
 

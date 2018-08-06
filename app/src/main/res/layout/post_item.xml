@@ -78,6 +78,13 @@
         android:contentDescription="@string/post_image_description"
         android:scaleType="centerInside" />
 
+    <!-- Post related movie (if any) -->
+    <org.communiquons.android.comunic.client.ui.views.MovieView
+        android:id="@+id/post_movie"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        style="@style/PostMovie"/>
+
     <!-- Related PDF (if any) -->
     <org.communiquons.android.comunic.client.ui.views.PDFLinkButtonView
         android:id="@+id/btn_pdf_link"
