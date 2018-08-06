@@ -12,6 +12,11 @@ public enum PageType {
     /**
      * User page
      */
-    USER_PAGE
+    USER_PAGE,
+
+    /**
+     * Group page
+     */
+    GROUP_PAGE
 
 }

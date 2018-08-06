@@ -315,6 +315,12 @@ public class PostsHelper {
             post.setPage_id(json.getInt("user_page_id"));
         }
 
+        else if(json.getInt("group_id") != 0){
+            //Set information about the user
+            post.setPage_type(PageType.GROUP_PAGE);
+            post.setPage_id(json.getInt("group_id"));
+        }
+
 
         post.setContent(json.getString("content"));
         post.setComments_list(CommentsHelper.parse_json_array(json.getJSONArray("comments")));
