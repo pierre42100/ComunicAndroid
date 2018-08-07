@@ -32,11 +32,6 @@ import java.util.ArrayList;
 public class LoginActivity extends AppCompatActivity {
 
     /**
-     * Utilities object
-     */
-    private Utilities utils;
-
-    /**
      * Account utilities object
      */
     private AccountUtils aUtils;
@@ -47,9 +42,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         assert getSupportActionBar() != null;
         getSupportActionBar().hide();
-
-        //Create utilities object
-        utils = new Utilities(this);
 
         //Create account utilities object
         aUtils = new AccountUtils(this);
@@ -69,6 +61,15 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+        //Make create account button lives
+        findViewById(R.id.btn_create_account).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this,
+                        CreateAccountActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -100,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         //Check email address
-        if(login_mail.length() < 3 || !utils.isValidMail(login_mail.getText())){
+        if(login_mail.length() < 3 || !Utilities.isValidMail(login_mail.getText())){
             login_mail.setError(getString(R.string.activity_login_err_invalid_email));
             login_mail.requestFocus();
             stop = 1;

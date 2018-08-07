@@ -29,6 +29,11 @@
             android:name=".ui.activities.LoginActivity"
             android:label="@string/activity_login_header" />
 
+        <!-- Create account activity -->
+        <activity
+            android:name=".ui.activities.CreateAccountActivity"
+            android:label="@string/activity_create_account_label"/>
+
         <!-- Search user activity -->
         <activity
             android:name=".ui.activities.SearchUserActivity"
@@ -47,7 +52,8 @@
         <!-- Settings activity -->
         <activity
             android:name=".ui.activities.SettingsActivity"
-            android:label="@string/title_activity_settings"/>
+            android:label="@string/title_activity_settings" />
+
     </application>
 
 </manifest>

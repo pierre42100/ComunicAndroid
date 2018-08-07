@@ -19,6 +19,9 @@ android {
             buildConfigField "String", "api_service_name", "\"ComunicAndroid\""
             buildConfigField "String", "api_service_token", "\"5eQ8WGAeDTTyY\""
 
+            //Links to Comunic pages
+            buildConfigField "String", "comunic_terms_url", "\"http://devweb.local:4000/about/terms/\""
+
             //Connexion to Crash Reporter
             buildConfigField "String", "crash_reporter_url", "\"http://devweb.local/CrashReporterWeb/project/api/v1/push\""
             buildConfigField "String", "crash_reporter_key", "\"KSyqOzkfJasDTxE0wrXYnUPl8dV1veBc\""

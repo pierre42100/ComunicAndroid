@@ -3,6 +3,9 @@ package org.communiquons.android.comunic.client.data.helpers;
 import android.content.Context;
 import android.util.Log;
 
+import org.communiquons.android.comunic.client.data.models.APIRequest;
+import org.communiquons.android.comunic.client.data.models.APIResponse;
+import org.communiquons.android.comunic.client.data.models.NewAccount;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -177,5 +180,30 @@ public class AccountHelper {
 
         //Success
         return true;
+    }
+
+    /**
+     * Create a new account
+     *
+     * @param newAccount Information about the new account to create
+     * @return TRUE for a success / FALSE else
+     */
+    public boolean createAccount(NewAccount newAccount) {
+
+        APIRequest request = new APIRequest(mContext, "account/create");
+        request.addString("firstName", newAccount.getFirstName());
+        request.addString("lastName", newAccount.getLastName());
+        request.addString("emailAddress", newAccount.getEmail());
+        request.addString("password", newAccount.getPassword());
+
+        //Perform the request
+        try {
+            APIResponse response = new APIRequestHelper().exec(request);
+            return response.getResponse_code() == 200;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

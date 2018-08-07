@@ -21,6 +21,31 @@
         <item name="android:textColorHighlight">@android:color/white</item>
     </style>
 
+
+
+    <!-- Create account activity -->
+    <!-- Error -->
+    <style name="CreateAccountError">
+        <item name="android:textColor">@android:color/holo_red_light</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <!-- Texts general style -->
+    <style name="TextGeneralStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="android:textColorLink">@android:color/white</item>
+        <item name="android:textColorHighlight">@android:color/white</item>
+    </style>
+
+    <!-- Inputs general style -->
+    <style name="CreateAccountInput" parent="TextGeneralStyle">
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+
+
     <!-- User page fragment -->
     <!-- User page header -->
     <style name="UserPageHeader">

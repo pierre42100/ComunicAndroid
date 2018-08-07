@@ -116,7 +116,7 @@ public class Utilities {
      * @param mail The E-Mail address to check
      * @return True if the mail is valid / false else
      */
-    public boolean isValidMail(CharSequence mail){
+    public static boolean isValidMail(CharSequence mail){
         return !TextUtils.isEmpty(mail) && Patterns.EMAIL_ADDRESS.matcher(mail).matches();
     }
 

@@ -211,4 +211,25 @@
     <string name="notif_rejected_group_membership_request">rejected your request to join the group</string>
     <string name="preference_crash_reporting_title">Send crash reports</string>
     <string name="preference_crash_reporting_summary">Help us improve Comunic by sending anonymous reports when the application crash.</string>
+    <string name="action_create_account">Create an account</string>
+    <string name="activity_create_account_label">New account</string>
+    <string name="form_create_account_notice">Please fill the following fields to create your account:</string>
+    <string name="form_create_account_first_name">First name</string>
+    <string name="form_create_account_last_name">Last name</string>
+    <string name="form_create_account_email">Your email address</string>
+    <string name="form_create_account_password">Password</string>
+    <string name="form_create_account_confirm_password">Repeat password</string>
+    <string name="form_create_account_terms">I have read and accepted the terms of use of Comunic.</string>
+    <string name="form_create_account_terms_open">Open</string>
+    <string name="err_invalid_first_name">Specified first name is invalid!</string>
+    <string name="err_invalid_last_name">Please specify a valid last name.</string>
+    <string name="err_no_email">Please specify an email address!</string>
+    <string name="err_invalid_email">Please specify a valid email address!</string>
+    <string name="err_invalid_password">Please specify a valid password!</string>
+    <string name="err_password_confirmation_not_identical">The password and its confirmation are not the same!</string>
+    <string name="err_need_accept_terms">Please accept the terms of use of Comunic !</string>
+    <string name="err_while_creating_account">An error occurred while trying to create your account! Maybe an account with the same email address already exists!</string>
+    <string name="account_created_title">Congratulations</string>
+    <string name="account_created_message">Your account has been created. You can now sign into your new account to use all the features of Comunic.</string>
+    <string name="account_created_sign_in">Sign in</string>
 </resources>

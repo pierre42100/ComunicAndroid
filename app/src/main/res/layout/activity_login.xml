@@ -102,6 +102,14 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/activity_login_submit_form"/>
 
+            <Button
+                android:id="@+id/btn_create_account"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/action_create_account" />
+
         </LinearLayout>
 
     </ScrollView>
