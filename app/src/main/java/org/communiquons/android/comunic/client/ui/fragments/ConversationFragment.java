@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.arrays.ConversationMessagesList;
 import org.communiquons.android.comunic.client.data.helpers.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
@@ -37,7 +38,6 @@ import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAd
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
-import org.communiquons.android.comunic.client.ui.views.ScrollListView;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -90,12 +90,7 @@ public class ConversationFragment extends Fragment
     /**
      * The list of messages of the conversation
      */
-    private ArrayList<ConversationMessage> messagesList = new ArrayList<>();
-
-    /**
-     * Informations about the users of the conversation
-     */
-    private ArrayMap<Integer, UserInfo> users = new ArrayMap<>();
+    private ConversationMessagesList messagesList = new ConversationMessagesList();
 
     /**
      * Conversation refresh runnable
@@ -181,6 +176,7 @@ public class ConversationFragment extends Fragment
         convListHelper = new ConversationsListHelper(getActivity(), dbHelper);
 
         //Get the conversation ID
+        assert getArguments() != null;
         conversation_id = getArguments().getInt(ARG_CONVERSATION_ID);
 
         //Get user helper
@@ -232,7 +228,7 @@ public class ConversationFragment extends Fragment
 
         //Create the adapter
         convMessAdapter = new ConversationMessageAdapter(getActivity(),
-                messagesList, userID, users);
+                messagesList, userID);
 
         //Apply adapter
         convMessRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -319,12 +315,12 @@ public class ConversationFragment extends Fragment
 
                 @Override
                 protected void onPostExecute(ConversationsInfo conversationsInfo) {
-                    onGotConversationInfos(conversationsInfo);
+                    onGotConversationInfo(conversationsInfo);
                 }
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         else
-            onGotConversationInfos(conversationInfo);
+            onGotConversationInfo(conversationInfo);
     }
 
     @Override
@@ -378,17 +374,7 @@ public class ConversationFragment extends Fragment
         if(messagesList == null)
             return;
 
-        final ArrayList<Integer> usersToFetch = new ArrayList<>();
-
-        //Process the list of messages
-        for(ConversationMessage message : messagesList){
-
-            if(!users.containsKey(message.getUser_id())){
-                if(!usersToFetch.contains(message.getUser_id()))
-                    usersToFetch.add(message.getUser_id());
-            }
-
-        }
+        final ArrayList<Integer> usersToFetch = messagesList.getMissingUsersList();
 
 
         //Fetch user information if required
@@ -424,7 +410,7 @@ public class ConversationFragment extends Fragment
         //Process the list of users
         for(UserInfo user : info.values()){
             if(user != null){
-                users.put(user.getId(), user);
+                messagesList.getUsersInfo().put(user.getId(), user);
             }
         }
 
@@ -433,25 +419,25 @@ public class ConversationFragment extends Fragment
     }
 
     /**
-     * What to do once we got conversation informations
+     * What to do once we got conversation information
      *
-     * @param infos Informations about the conversation
+     * @param info Information about the conversation
      */
-    private void onGotConversationInfos(ConversationsInfo infos){
+    private void onGotConversationInfo(ConversationsInfo info){
 
         //Check for errors
-        if(infos == null){
+        if(info == null){
             Toast.makeText(getActivity(), R.string.fragment_conversation_err_getconvinfos,
                     Toast.LENGTH_SHORT).show();
             return;
         }
 
 
-        //Save conversation informations
-        conversationInfo = infos;
+        //Save conversation information
+        conversationInfo = info;
 
         //Update the name of the conversation
-        getActivity().setTitle(infos.getDisplayName());
+        getActivity().setTitle(info.getDisplayName());
 
     }
 

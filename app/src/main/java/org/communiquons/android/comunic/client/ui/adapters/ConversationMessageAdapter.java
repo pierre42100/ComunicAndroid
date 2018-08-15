@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.arrays.ConversationMessagesList;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
@@ -43,11 +44,6 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
     private int userID;
 
     /**
-     * Information about users
-     */
-    private ArrayMap<Integer, UserInfo> usersInfo;
-
-    /**
      * Activity context
      */
     private Context mContext;
@@ -55,22 +51,20 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
     /**
      * Conversation messages
      */
-    private ArrayList<ConversationMessage> mList;
+    private ConversationMessagesList mList;
 
     /**
      * Public class constructor
      *
      * @param context The context of execution of the application
-     * @param list The dataset
+     * @param list The list of message
      * @param userID The ID of the current user
      */
-    public ConversationMessageAdapter(Context context, ArrayList<ConversationMessage> list,
-                                      int userID, ArrayMap<Integer, UserInfo> usersInfo){
+    public ConversationMessageAdapter(Context context, ConversationMessagesList list, int userID){
         super();
 
         //Set values
         this.userID = userID;
-        this.usersInfo = usersInfo;
         this.mContext = context;
         this.mList = list;
 
@@ -79,10 +73,6 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return mList.size();
-    }
-
-    public ConversationMessage getAt(int pos){
-        return mList.get(pos);
     }
 
     @Override
@@ -145,7 +135,7 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
          */
         @CallSuper
         void bind(int pos){
-            mMessage.setText(getAt(pos).getContent());
+            mMessage.setText(mList.get(pos).getContent());
         }
     }
 
@@ -186,8 +176,8 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
             mUserAccountImage.removeUser();
             mUserName.setText("");
 
-            if(usersInfo.containsKey(getAt(pos).getUser_id())){
-                UserInfo info = usersInfo.get(getAt(pos).getUser_id());
+            if(mList.hasUserForMessage(pos)){
+                UserInfo info = mList.getUserForMessage(pos);
                 mUserAccountImage.setUser(info);
                 mUserName.setText(info.getDisplayFullName());
             }
@@ -195,7 +185,7 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
             if(pos < 2)
                 setUserInfoVisibility(true);
             else
-                if(getAt(pos).getUser_id() == getAt(pos-1).getUser_id())
+                if(mList.get(pos).getUser_id() == mList.get(pos-1).getUser_id())
                     setUserInfoVisibility(false);
         }
     }
