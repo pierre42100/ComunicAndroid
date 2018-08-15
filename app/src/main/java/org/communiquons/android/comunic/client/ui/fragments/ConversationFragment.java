@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -31,7 +33,6 @@ import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.runnables.ConversationRefreshRunnable;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
-import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
@@ -114,7 +115,7 @@ public class ConversationFragment extends Fragment
     /**
      * Conversation message listView
      */
-    private ScrollListView convMessListView;
+    private RecyclerView convMessRecyclerView;
 
     /**
      * Conversation messages helper
@@ -224,7 +225,7 @@ public class ConversationFragment extends Fragment
         display_not_msg_notice(false);
 
         //Conversation messages listView
-        convMessListView = view.findViewById(R.id.fragment_conversation_messageslist);
+        convMessRecyclerView = view.findViewById(R.id.fragment_conversation_messageslist);
 
         //Need user ID
         int userID = new AccountUtils(getActivity()).get_current_user_id();
@@ -234,7 +235,8 @@ public class ConversationFragment extends Fragment
                 messagesList, userID, users);
 
         //Apply adapter
-        convMessListView.setAdapter(convMessAdapter);
+        convMessRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        convMessRecyclerView.setAdapter(convMessAdapter);
 
         //Get new messages input fields
         new_message_content = view.findViewById(R.id.fragment_conversation_newmessage_content);
@@ -285,7 +287,7 @@ public class ConversationFragment extends Fragment
 
 
         //Set a listener to detect when the user reaches the top of the conversation
-        convMessListView.setOnScrollChangeDetectListener(this);
+        //convMessRecyclerView.setOnScrollChangeDetectListener(this);
     }
 
     @Override
@@ -407,9 +409,9 @@ public class ConversationFragment extends Fragment
     }
 
     /**
-     * This method is called when we get informations about users
+     * This method is called when we get information about users
      *
-     * @param info Informations about the user
+     * @param info Information about the user
      */
     public void onGotUserInfo(@Nullable ArrayMap<Integer, UserInfo> info ){
 

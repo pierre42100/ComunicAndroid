@@ -1,24 +1,18 @@
 package org.communiquons.android.comunic.client.ui.adapters;
 
 import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.ArrayMap;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
-import org.communiquons.android.comunic.client.ui.utils.UiUtils;
-import org.communiquons.android.comunic.client.ui.views.WebImageView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 import java.util.ArrayList;
@@ -30,12 +24,18 @@ import java.util.ArrayList;
  * Created by pierre on 12/18/17.
  */
 
-public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage> {
+public class ConversationMessageAdapter extends RecyclerView.Adapter {
+
+    /**
+     * View messages types
+     */
+    private static final int VIEW_TYPE_MESSAGE_SENT = 1;
+    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
     /**
      * Debug tag
      */
-    private static final String TAG = "ConversationMessageAdap";
+    private static final String TAG = ConversationMessageAdapter.class.getCanonicalName();
 
     /**
      * The ID of the current user
@@ -48,6 +48,16 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
     private ArrayMap<Integer, UserInfo> usersInfo;
 
     /**
+     * Activity context
+     */
+    private Context mContext;
+
+    /**
+     * Conversation messages
+     */
+    private ArrayList<ConversationMessage> mList;
+
+    /**
      * Public class constructor
      *
      * @param context The context of execution of the application
@@ -56,177 +66,137 @@ public class ConversationMessageAdapter extends ArrayAdapter<ConversationMessage
      */
     public ConversationMessageAdapter(Context context, ArrayList<ConversationMessage> list,
                                       int userID, ArrayMap<Integer, UserInfo> usersInfo){
-        super(context, 0, list);
+        super();
 
-        //Set user ID
+        //Set values
         this.userID = userID;
-
-        //Set user information list
         this.usersInfo = usersInfo;
+        this.mContext = context;
+        this.mList = list;
 
     }
 
+    @Override
+    public int getItemCount() {
+        return mList.size();
+    }
+
+    public ConversationMessage getAt(int pos){
+        return mList.get(pos);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mList.get(position).getUser_id() == userID ? VIEW_TYPE_MESSAGE_SENT
+                : VIEW_TYPE_MESSAGE_RECEIVED;
+    }
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int type) {
+        View view;
 
-        //Inflate view if required
-        if(convertView == null)
-            convertView = LayoutInflater.from(getContext()).
-                inflate(R.layout.fragment_conversation_message_item, parent, false);
-
-
-        //Get the content of the message
-        ConversationMessage message = getItem(position);
-        assert message != null;
-
-        //Get the previous message
-        ConversationMessage previousMessage = null;
-        if(position > 0){
-            previousMessage = getItem(position-1);
+        if(type == VIEW_TYPE_MESSAGE_SENT){
+            view = LayoutInflater.from(mContext).inflate(R.layout.conversation_message_item_sent,
+                    viewGroup, false);
+            return new SentMessageHolder(view);
         }
 
-        /*
-            Get the view of the messages
-
-            Update the general layout of the message
-         */
-        //Get the views
-        LinearLayout containerView = convertView
-                .findViewById(R.id.fragment_conversation_message_item_container);
-        TextView contentView = convertView.
-                findViewById(R.id.fragment_conversation_message_item_content);
-        WebImageView messageImageView = convertView.
-                findViewById(R.id.fragment_conversation_message_item_messageimage);
-        WebUserAccountImage accountImageView;
-        TextView userNameView = convertView.
-                findViewById(R.id.fragment_conversation_message_item_username);
-
-        //Adapt the layout depending of user of the message
-        if(message.getUser_id() == userID){
-
-            //Message appears on the right
-            ((LinearLayout)convertView).setGravity(Gravity.END);
-
-            //Message appears in blue
-            containerView.setBackground(getContext().
-                    getDrawable(R.drawable.fragment_conversation_message_currentuser_bg));
-
-            //User account image appears on the right
-            accountImageView = convertView.
-                    findViewById(R.id.fragment_conversation_message_item_right_account_image);
-            accountImageView.setVisibility(View.VISIBLE);
-
-            //Hide left image
-            convertView
-                    .findViewById(R.id.fragment_conversation_message_item_left_account_image)
-                    .setVisibility(View.GONE);
-
-            //Align text on the right
-            contentView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-
-        }
-        else {
-
-
-
-            //Message appears on the right
-            ((LinearLayout)convertView).setGravity(Gravity.START);
-
-            //Message appears in blue
-            containerView.setBackground(getContext().
-                    getDrawable(R.drawable.fragment_conversation_message_otheruser_bg));
-
-            //User account image appears on the left
-            accountImageView = convertView.
-                    findViewById(R.id.fragment_conversation_message_item_left_account_image);
-            accountImageView.setVisibility(View.VISIBLE);
-
-            //Hide right image
-            convertView
-                    .findViewById(R.id.fragment_conversation_message_item_right_account_image)
-                    .setVisibility(View.GONE);
-
-            //Align text on the left
-            contentView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+        else if(type == VIEW_TYPE_MESSAGE_RECEIVED){
+            view = LayoutInflater.from(mContext).inflate(R.layout.conversation_message_item_received,
+                    viewGroup, false);
+            return new ReceivedMessageHolder(view);
         }
 
-        /*
-            Check for user information
-         */
-        UserInfo user = null;
-        if(usersInfo.containsKey(message.getUser_id())){
-            user = usersInfo.get(message.getUser_id());
-        }
-
-
-        /*
-            Update message content
-         */
-        //Set the text of the message
-        contentView.setText(message.getContent());
-
-        //Change the color of the text
-        if(message.getUser_id() == userID){
-            contentView.setTextColor(UiUtils.getColor(getContext(),
-                    R.color.conversation_user_messages_textColor));
-        }
-        else {
-            contentView.setTextColor(UiUtils.getColor(getContext(),
-                    R.color.conversation_otheruser_messages_textColor));
-        }
-
-        /*
-            Update message image
-         */
-        if(message.hasImage()){
-            //Load the image
-            messageImageView.loadURL(message.getImage_path());
-
-            //Make the image visible
-            messageImageView.setVisibility(View.VISIBLE);
-        }
-        else {
-            messageImageView.setVisibility(View.GONE);
-        }
-
-        /*
-            Update user name
-         */
-        if(userNameView != null){
-
-            //Hide user name by default
-            userNameView.setVisibility(View.GONE);
-
-            if(user != null){
-                if(userID != user.getId()) {
-                    //Set the name of the user
-                    userNameView.setText(user.getFullName());
-                    userNameView.setVisibility(View.VISIBLE);
-                }
-            }
-
-            if(previousMessage != null){
-                if (message.getUser_id() == previousMessage.getUser_id()){
-                    userNameView.setVisibility(View.GONE);
-                }
-            }
-
-        }
-
-        /*
-            Update account image
-         */
-
-        //Check if we can load a specific image
-        if(user != null) {
-            accountImageView.setUser(user);
-        }
         else
-            accountImageView.removeUser();
+            throw new RuntimeException("Could not determine view type!");
+    }
 
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+        switch (viewHolder.getItemViewType()){
+            case VIEW_TYPE_MESSAGE_SENT:
+                ((SentMessageHolder) viewHolder).bind(position);
+                break;
 
-        return convertView;
+            case VIEW_TYPE_MESSAGE_RECEIVED:
+                ((ReceivedMessageHolder) viewHolder).bind(position);
+                break;
+        }
+    }
+
+    /**
+     * Base messages holder
+     */
+    private class BaseMessageHolder extends RecyclerView.ViewHolder {
+
+        private TextView mMessage;
+
+        BaseMessageHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mMessage = itemView.findViewById(R.id.message_body);
+        }
+
+        /**
+         * Bind view for a conversation message
+         *
+         * @param pos The message to bind
+         */
+        @CallSuper
+        void bind(int pos){
+            mMessage.setText(getAt(pos).getContent());
+        }
+    }
+
+    /**
+     * Sent messages holder
+     */
+    private class SentMessageHolder extends BaseMessageHolder {
+
+        SentMessageHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
+
+    /**
+     * Received messages holder
+     */
+    private class ReceivedMessageHolder extends BaseMessageHolder {
+
+        WebUserAccountImage mUserAccountImage;
+        TextView mUserName;
+
+        ReceivedMessageHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mUserAccountImage = itemView.findViewById(R.id.account_image);
+            mUserName = itemView.findViewById(R.id.user_name);
+        }
+
+        void setUserInfoVisibility(boolean visible){
+            mUserAccountImage.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+            mUserName.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+
+        void bind(int pos) {
+            super.bind(pos);
+
+            //Apply user information
+            mUserAccountImage.removeUser();
+            mUserName.setText("");
+
+            if(usersInfo.containsKey(getAt(pos).getUser_id())){
+                UserInfo info = usersInfo.get(getAt(pos).getUser_id());
+                mUserAccountImage.setUser(info);
+                mUserName.setText(info.getDisplayFullName());
+            }
+
+            if(pos < 2)
+                setUserInfoVisibility(true);
+            else
+                if(getAt(pos).getUser_id() == getAt(pos-1).getUser_id())
+                    setUserInfoVisibility(false);
+        }
     }
 }
