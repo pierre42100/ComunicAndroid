@@ -7,7 +7,7 @@
     android:orientation="horizontal">
 
     <!-- User name and image-->
-    <ImageView
+    <org.communiquons.android.comunic.client.ui.views.WebUserAccountImage
         style="@style/CommentUserImage"
         android:id="@+id/user_account_image"
         android:layout_width="@dimen/account_image_small_width"

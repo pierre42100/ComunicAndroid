@@ -10,13 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.Comment;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
-import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
+import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 import java.util.ArrayList;
 
@@ -75,15 +74,14 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
                                  @Nullable UserInfo user, final onPostUpdateListener listener) {
 
         //Update user name and account image
-        ImageView accountImage = view.findViewById(R.id.user_account_image);
+        WebUserAccountImage accountImage = view.findViewById(R.id.user_account_image);
         TextView accountName = view.findViewById(R.id.user_account_name);
 
         if (user == null) {
-            accountImage.setImageDrawable(UiUtils.getDrawable(context,
-                    R.drawable.default_account_image));
+            accountImage.removeUser();
             accountName.setText("");
         } else {
-            ImageLoadHelper.load(context, user.getAcountImageURL(), accountImage);
+            accountImage.setUser(user);
             accountName.setText(user.getDisplayFullName());
         }
 
