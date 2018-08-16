@@ -38,6 +38,7 @@ import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAd
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.ScrollRecyclerView;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class ConversationFragment extends Fragment
     /**
      * Conversation message listView
      */
-    private RecyclerView convMessRecyclerView;
+    private ScrollRecyclerView convMessRecyclerView;
 
     /**
      * Conversation messages layout manager
@@ -291,7 +292,7 @@ public class ConversationFragment extends Fragment
 
 
         //Set a listener to detect when the user reaches the top of the conversation
-        //TODO : add reach top listener
+        convMessRecyclerView.setOnScrollChangeDetectListener(this);
     }
 
     @Override

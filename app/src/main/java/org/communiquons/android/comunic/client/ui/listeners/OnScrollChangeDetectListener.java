@@ -4,6 +4,7 @@ package org.communiquons.android.comunic.client.ui.listeners;
  * On Scroll change listener
  *
  * This listener works with {@link org.communiquons.android.comunic.client.ui.views.ScrollListView}
+ * and {@link org.communiquons.android.comunic.client.ui.views.ScrollRecyclerView}
  *
  * @author Pierre HUBERT
  * Created by pierre on 4/28/18.

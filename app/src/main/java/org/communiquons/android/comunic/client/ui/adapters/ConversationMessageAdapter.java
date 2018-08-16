@@ -182,7 +182,7 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
                 mUserName.setText(info.getDisplayFullName());
             }
 
-            if(pos < 2)
+            if(pos < 1)
                 setUserInfoVisibility(true);
             else
                 setUserInfoVisibility(
