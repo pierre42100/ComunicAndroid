@@ -35,6 +35,7 @@
             android:divider="@null"
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll"
+            android:layout_marginBottom="5dp"
             />
 
         <!-- Send messages form -->

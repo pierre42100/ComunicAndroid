@@ -185,8 +185,8 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
             if(pos < 2)
                 setUserInfoVisibility(true);
             else
-                if(mList.get(pos).getUser_id() == mList.get(pos-1).getUser_id())
-                    setUserInfoVisibility(false);
+                setUserInfoVisibility(
+                        !(mList.get(pos).getUser_id() == mList.get(pos-1).getUser_id()));
         }
     }
 }

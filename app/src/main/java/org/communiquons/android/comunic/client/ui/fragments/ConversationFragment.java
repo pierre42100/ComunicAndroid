@@ -113,6 +113,11 @@ public class ConversationFragment extends Fragment
     private RecyclerView convMessRecyclerView;
 
     /**
+     * Conversation messages layout manager
+     */
+    private LinearLayoutManager mLinearLayoutManager;
+
+    /**
      * Conversation messages helper
      */
     private ConversationMessagesHelper convMessHelper;
@@ -231,8 +236,11 @@ public class ConversationFragment extends Fragment
                 messagesList, userID);
 
         //Apply adapter
-        convMessRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        convMessRecyclerView.setLayoutManager(mLinearLayoutManager);
         convMessRecyclerView.setAdapter(convMessAdapter);
+        mLinearLayoutManager.setStackFromEnd(true);
+
 
         //Get new messages input fields
         new_message_content = view.findViewById(R.id.fragment_conversation_newmessage_content);
@@ -283,7 +291,7 @@ public class ConversationFragment extends Fragment
 
 
         //Set a listener to detect when the user reaches the top of the conversation
-        //convMessRecyclerView.setOnScrollChangeDetectListener(this);
+        //TODO : add reach top listener
     }
 
     @Override
@@ -357,6 +365,9 @@ public class ConversationFragment extends Fragment
 
         //Make sure we have got information about all the members of the conversation
         refreshUserInfo();
+
+        //Scroll to bottom
+        convMessRecyclerView.scrollToPosition(messagesList.size() - 1);
     }
 
     @Override
