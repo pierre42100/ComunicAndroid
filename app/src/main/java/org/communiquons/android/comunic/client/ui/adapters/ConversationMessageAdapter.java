@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +11,10 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.ConversationMessagesList;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
-
-import java.util.ArrayList;
 
 /**
  * Conversation messages adapter
@@ -121,11 +119,13 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
     private class BaseMessageHolder extends RecyclerView.ViewHolder {
 
         private TextView mMessage;
+        private EnlargeableWebImageView mImage;
 
         BaseMessageHolder(@NonNull View itemView) {
             super(itemView);
 
             mMessage = itemView.findViewById(R.id.message_body);
+            mImage = itemView.findViewById(R.id.messageImage);
         }
 
         /**
@@ -135,7 +135,16 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
          */
         @CallSuper
         void bind(int pos){
-            mMessage.setText(mList.get(pos).getContent());
+            ConversationMessage message = mList.get(pos);
+
+            mMessage.setText(message.getContent());
+            mMessage.setVisibility(mMessage.getText().length() > 0 ? View.VISIBLE : View.GONE);
+
+            mImage.setVisibility(message.hasImage() ? View.VISIBLE : View.GONE);
+            if(message.hasImage())
+                mImage.loadURL(message.getImage_path());
+            else
+                mImage.removeImage();
         }
     }
 
