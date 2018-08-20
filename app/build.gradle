@@ -39,9 +39,15 @@ android {
             buildConfigField "String", "api_service_name", "\"ComunicAndroid\""
             buildConfigField "String", "api_service_token", "\"cWHlmMS5A1\""
 
+            //Links to Comunic pages
+            buildConfigField "String", "comunic_terms_url", "\"https://about.comunic.io/about/terms/\""
+
             //Connexion to Crash Reporter
             buildConfigField "String", "crash_reporter_url", "\"https://crashreporter.communiquons.org/api/v1/push\""
             buildConfigField "String", "crash_reporter_key", "\"z38jtULRuKHb2BOyvG4VTXDhn9gwelZ1\""
+
+            //Connexion to PDF viewer
+            buildConfigField "String", "pdf_view_url", "\"https://pdfviewer.communiquons.org/?file=\""
         }
     }
 }
