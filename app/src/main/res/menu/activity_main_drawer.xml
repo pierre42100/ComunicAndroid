@@ -9,7 +9,7 @@
     <item
         android:id="@+id/action_friendslist"
         android:title="@string/navigation_bottom_friends_item"
-        android:icon="@drawable/ic_menu_allfriends"
+        android:icon="@drawable/ic_friends"
         />
 
     <item

@@ -33,7 +33,7 @@
                 <ImageView
                     android:layout_width="@dimen/fragment_conversations_list_icon_width"
                     android:layout_height="@dimen/fragment_conversations_list_icon_height"
-                    android:src="@drawable/ic_menu_allfriends" />
+                    android:src="@drawable/ic_friends" />
 
                 <TextView
                     android:id="@+id/fragment_conversationslist_item_number_members"
