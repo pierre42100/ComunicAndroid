@@ -154,6 +154,9 @@ public class UserPostsFragment extends Fragment
             @Override
             public void run() {
 
+                if(mPostsList == null)
+                    return;
+
                 //Get the list of posts of the user
                 mPostsList.addAll(mPostsHelper.get_user(mUserID));
 
