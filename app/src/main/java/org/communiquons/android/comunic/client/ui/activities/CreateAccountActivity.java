@@ -250,6 +250,11 @@ public class CreateAccountActivity extends AppCompatActivity
             int message = R.string.err_while_creating_account;
             switch (result){
 
+                //Too many account creation requests
+                case ERROR_TOO_MANY_REQUESTS:
+                    message = R.string.err_create_account_too_many_requests;
+                    break;
+
                 //Existing email address
                 case ERROR_EXISTING_EMAIL:
                     message = R.string.err_create_account_existing_email;

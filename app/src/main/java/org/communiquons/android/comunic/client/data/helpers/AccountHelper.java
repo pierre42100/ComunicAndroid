@@ -209,6 +209,9 @@ public class AccountHelper {
                 case 409:
                     return CreateAccountResult.ERROR_EXISTING_EMAIL;
 
+                case 429:
+                    return CreateAccountResult.ERROR_TOO_MANY_REQUESTS;
+
                 default:
                     return CreateAccountResult.ERROR;
 

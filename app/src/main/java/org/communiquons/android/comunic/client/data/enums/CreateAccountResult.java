@@ -13,6 +13,11 @@ public enum CreateAccountResult {
     SUCCESS,
 
     /**
+     * Too many account creation requests
+     */
+    ERROR_TOO_MANY_REQUESTS,
+
+    /**
      * Trying to login with an existing email address
      */
     ERROR_EXISTING_EMAIL,

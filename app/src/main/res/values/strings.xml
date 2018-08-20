@@ -234,4 +234,5 @@
     <string name="account_created_sign_in">Sign in</string>
     <string name="activity_login_too_many_request">Too many failed login requests. Please try again later…</string>
     <string name="err_create_account_existing_email">This email address is already associated with an account!</string>
+    <string name="err_create_account_too_many_requests">Too many account creation requests. Please try again later...</string>
 </resources>
