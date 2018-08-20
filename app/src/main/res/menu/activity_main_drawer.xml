@@ -15,7 +15,7 @@
     <item
         android:id="@+id/action_personal_page"
         android:title="@string/action_personal_page"
-        android:icon="@drawable/perm_group_personal_info" />
+        android:icon="@drawable/ic_user" />
 
     <item
         android:id="@+id/action_latest_posts"
