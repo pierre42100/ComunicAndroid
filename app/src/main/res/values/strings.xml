@@ -232,4 +232,5 @@
     <string name="account_created_title">Congratulations</string>
     <string name="account_created_message">Your account has been created. You can now sign into your new account to use all the features of Comunic.</string>
     <string name="account_created_sign_in">Sign in</string>
+    <string name="activity_login_too_many_request">Too many failed login requests. Please try again later…</string>
 </resources>

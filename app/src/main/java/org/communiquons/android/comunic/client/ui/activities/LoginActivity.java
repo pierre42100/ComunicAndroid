@@ -124,6 +124,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //Perform a request on the API to check user credentials and get login tokens
         final APIRequest params = new APIRequest(this, "user/connectUSER");
+        params.setTryContinueOnError(true);
         params.addString("userMail", ""+login_mail.getText());
         params.addString("userPassword", ""+login_password.getText());
 
@@ -188,11 +189,19 @@ public class LoginActivity extends AppCompatActivity {
     void handle_server_response(@Nullable APIResponse response){
 
         if(response == null){
-            //Hide loading wheel
+           show_err_server_response();
+            return;
+        }
+
+        if(response.getResponse_code() != 200){
+
             enter_loading_state(false);
 
-            //Put the error on the login mail field
-            show_form_error(getString(R.string.activity_login_err_invalid_credentials));
+            if(response.getResponse_code() == 429)
+                show_form_error(getString(R.string.activity_login_too_many_request));
+            else
+                show_form_error(getString(R.string.activity_login_err_invalid_credentials));
+
             return;
         }
 
