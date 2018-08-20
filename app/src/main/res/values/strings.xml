@@ -228,9 +228,10 @@
     <string name="err_invalid_password">Please specify a valid password!</string>
     <string name="err_password_confirmation_not_identical">The password and its confirmation are not the same!</string>
     <string name="err_need_accept_terms">Please accept the terms of use of Comunic !</string>
-    <string name="err_while_creating_account">An error occurred while trying to create your account! Maybe an account with the same email address already exists!</string>
+    <string name="err_while_creating_account">An error occurred while trying to create your account!</string>
     <string name="account_created_title">Congratulations</string>
     <string name="account_created_message">Your account has been created. You can now sign into your new account to use all the features of Comunic.</string>
     <string name="account_created_sign_in">Sign in</string>
     <string name="activity_login_too_many_request">Too many failed login requests. Please try again later…</string>
+    <string name="err_create_account_existing_email">This email address is already associated with an account!</string>
 </resources>

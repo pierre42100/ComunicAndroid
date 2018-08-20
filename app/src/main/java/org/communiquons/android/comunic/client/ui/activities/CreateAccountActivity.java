@@ -12,11 +12,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
+import org.communiquons.android.comunic.client.data.enums.CreateAccountResult;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.models.NewAccount;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
@@ -29,13 +31,13 @@ import static android.os.AsyncTask.Status.FINISHED;
  * @author Pierre HUBERT
  */
 public class CreateAccountActivity extends AppCompatActivity
-    implements SafeAsyncTask.OnPostExecuteListener<Boolean> {
+    implements SafeAsyncTask.OnPostExecuteListener<CreateAccountResult> {
 
     /**
      * Input fields
      */
     private ProgressBar mProgress;
-    private View mForm;
+    private ScrollView mForm;
     private TextView mError;
     private EditText mFirstName;
     private EditText mLastName;
@@ -238,12 +240,24 @@ public class CreateAccountActivity extends AppCompatActivity
     }
 
     @Override
-    public void OnPostExecute(Boolean result) {
+    public void OnPostExecute(CreateAccountResult result) {
         setLoading(false);
 
         //Check for errors
-        if(!result){
-            setError(getString(R.string.err_while_creating_account));
+        if(result != CreateAccountResult.SUCCESS){
+
+            //Find the right error to display
+            int message = R.string.err_while_creating_account;
+            switch (result){
+
+                //Existing email address
+                case ERROR_EXISTING_EMAIL:
+                    message = R.string.err_create_account_existing_email;
+                    break;
+            }
+
+            mForm.scrollTo(1, 1);
+            setError(getString(message));
             return;
         }
 
@@ -261,14 +275,14 @@ public class CreateAccountActivity extends AppCompatActivity
     /**
      * Class used to create an account across activities
      */
-    private static class CreateAccountTask extends SafeAsyncTask<NewAccount, Void, Boolean> {
+    private static class CreateAccountTask extends SafeAsyncTask<NewAccount, Void, CreateAccountResult> {
 
         CreateAccountTask(Context context) {
             super(context);
         }
 
         @Override
-        protected Boolean doInBackground(NewAccount... newAccounts) {
+        protected CreateAccountResult doInBackground(NewAccount... newAccounts) {
             return new AccountHelper(getContext()).createAccount(newAccounts[0]);
         }
 

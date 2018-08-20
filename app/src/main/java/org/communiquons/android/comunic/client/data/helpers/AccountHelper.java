@@ -3,6 +3,7 @@ package org.communiquons.android.comunic.client.data.helpers;
 import android.content.Context;
 import android.util.Log;
 
+import org.communiquons.android.comunic.client.data.enums.CreateAccountResult;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.NewAccount;
@@ -188,9 +189,10 @@ public class AccountHelper {
      * @param newAccount Information about the new account to create
      * @return TRUE for a success / FALSE else
      */
-    public boolean createAccount(NewAccount newAccount) {
+    public CreateAccountResult createAccount(NewAccount newAccount) {
 
         APIRequest request = new APIRequest(mContext, "account/create");
+        request.setTryContinueOnError(true);
         request.addString("firstName", newAccount.getFirstName());
         request.addString("lastName", newAccount.getLastName());
         request.addString("emailAddress", newAccount.getEmail());
@@ -199,11 +201,22 @@ public class AccountHelper {
         //Perform the request
         try {
             APIResponse response = new APIRequestHelper().exec(request);
-            return response.getResponse_code() == 200;
+
+            switch (response.getResponse_code()) {
+                case 200:
+                    return CreateAccountResult.SUCCESS;
+
+                case 409:
+                    return CreateAccountResult.ERROR_EXISTING_EMAIL;
+
+                default:
+                    return CreateAccountResult.ERROR;
+
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return CreateAccountResult.ERROR;
         }
     }
 }
