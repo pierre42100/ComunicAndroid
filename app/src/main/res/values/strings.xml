@@ -65,7 +65,7 @@
     <string name="fragment_friendslist_title">Friends</string>
     <string name="fragment_conversationslist_title">Conversations</string>
     <string name="fragment_userinfos_title">About me</string>
-    <string name="fragment_conversation_title">Title</string>
+    <string name="fragment_conversation_title">Conversation</string>
     <string name="fragment_conversation_err_getconvinfos">Could not get information about the conversation !</string>
     <string name="action_conversation_delete">Delete</string>
     <string name="action_conversation_update">Update</string>

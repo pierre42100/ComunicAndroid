@@ -107,6 +107,15 @@ public class NavigationBar extends BaseFrameLayoutView implements NavigationBarI
 
     }
 
+    /**
+     * Set the currently selected item by its identifier in the list
+     *
+     * @param id The index of the item to mark as selected
+     */
+    public void setIdentifierSelected(int id){
+        setIndexSelected(MenuUtils.MenuIdentifierToIndex(mMenu, id));
+    }
+
     public void setOnNavigationItemSelectedListener(OnNavigationItemSelectedListener onNavigationItemSelectedListener) {
         this.mOnNavigationItemSelectedListener = onNavigationItemSelectedListener;
     }

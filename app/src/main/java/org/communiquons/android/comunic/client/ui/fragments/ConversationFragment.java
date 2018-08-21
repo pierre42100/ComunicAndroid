@@ -34,6 +34,7 @@ import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.runnables.ConversationRefreshRunnable;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
+import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
@@ -307,6 +308,7 @@ public class ConversationFragment extends Fragment
 
         //Update conversation title
         getActivity().setTitle(R.string.fragment_conversation_title);
+        MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_conversations);
 
 
         //Check for conversation information

@@ -115,6 +115,8 @@ public class UserPageFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_personal_page);
+
         //Check if we got information about the user
         if(userInfo == null || mTabLayout.getTabCount() < 2){
 

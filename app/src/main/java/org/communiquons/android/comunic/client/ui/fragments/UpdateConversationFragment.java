@@ -235,6 +235,7 @@ public class UpdateConversationFragment extends Fragment {
             getActivity().setTitle(R.string.fragment_update_conversation_title_create);
         else
             getActivity().setTitle(R.string.fragment_update_conversation_title_update);
+        MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_conversations);
     }
 
     /**

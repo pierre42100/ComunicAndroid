@@ -109,6 +109,7 @@ public class LatestPostsFragment extends Fragment
 
         //Update dock and activity title
         getActivity().setTitle(R.string.fragment_latestposts_title);
+        MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_latest_posts);
 
         //Refresh the list of posts of the user
         refresh_posts_list();

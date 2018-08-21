@@ -142,6 +142,7 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
 
         //Update the title of the application
         getActivity().setTitle(R.string.fragment_notifications_title);
+        MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_notifications);
 
         //Get user page opener
         mUserPageOpener = (onOpenUsersPageListener) getActivity();

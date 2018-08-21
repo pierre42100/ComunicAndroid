@@ -166,6 +166,7 @@ public class FriendsListFragment extends Fragment
 
         //Update the title of the application
         getActivity().setTitle(R.string.fragment_friendslist_title);
+        MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_friendslist);
 
         //Refresh the friends list
         refresh_friend_list();

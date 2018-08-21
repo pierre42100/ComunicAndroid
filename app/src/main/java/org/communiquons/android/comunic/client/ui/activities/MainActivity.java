@@ -280,7 +280,20 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
+    /**
+     * Specify what is the selected
+     *
+     * @param activity An instance of {@link MainActivity}
+     * @param id The identifier of the menu to choose
+     */
+    public static void SetNavbarSelectedOption(@NonNull Activity activity, int id){
 
+        if(!(activity instanceof MainActivity))
+            throw new RuntimeException("Specified activity is not an instance of activity!");
+
+        ((MainActivity)activity).mNavBar.setIdentifierSelected(id);
+
+    }
 
 
 
