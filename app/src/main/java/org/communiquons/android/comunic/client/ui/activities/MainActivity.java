@@ -127,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements
         conversationsListHelper = new ConversationsListHelper(this, dbHelper);
 
         //Use navigation bar
+        assert getSupportActionBar() != null;
+        getSupportActionBar().hide();
         mNavBar = findViewById(R.id.nav_bar);
         mNavBar.setOnNavigationItemSelectedListener(this);
 
