@@ -12,8 +12,11 @@
     <color name="default_drawable_color">#000000</color>
 
     <!-- Navigation bar -->
-    <color name="navbar_default">#FFFFFF</color>
-    <color name="navbar_selected">@color/colorPrimary</color>
+    <color name="navbar_fg_default">#FFFFFF</color>
+    <color name="navbar_fg_selected">@color/colorPrimary</color>
+    <color name="navbar_bg_default">@color/colorPrimary</color>
+    <color name="navbar_bg_selected">#FFFFFF</color>
+
 
     <!-- Conversation messages -->
     <color name="conversation_user_messages_background">#3F51B5</color>

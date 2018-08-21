@@ -13,12 +13,14 @@ import android.widget.PopupMenu;
 
 import org.communiquons.android.comunic.client.R;
 
+import java.util.ArrayList;
+
 /**
  * Application navigation bar
  *
  * @author Pierre HUBERT
  */
-public class NavigationBar extends BaseFrameLayoutView {
+public class NavigationBar extends BaseFrameLayoutView implements NavigationBarItem.OnNavigationBarItemClickListener {
 
     /**
      * Navigation bar items container
@@ -31,9 +33,19 @@ public class NavigationBar extends BaseFrameLayoutView {
     private PopupMenu mPopupMenu;
 
     /**
-     * Associated mMenu
+     * Associated menu
      */
     private Menu mMenu;
+
+    /**
+     * Navigation bar items
+     */
+    private ArrayList<NavigationBarItem> mItems = new ArrayList<>();
+
+    /**
+     * Navigation selected item listener
+     */
+    private OnNavigationItemSelectedListener mOnNavigationItemSelectedListener;
 
     public NavigationBar(@NonNull Context context) {
         super(context);
@@ -59,7 +71,7 @@ public class NavigationBar extends BaseFrameLayoutView {
         View view = inflate(getContext(), R.layout.navigation_bar, this);
         mLinearLayout = view.findViewById(R.id.container);
 
-        //Process mMenu
+        //Inflate menu
         mPopupMenu = new PopupMenu(getContext(), null);
         mMenu = mPopupMenu.getMenu();
         getActivity().getMenuInflater().inflate(R.menu.navigation_bar, mMenu);
@@ -70,10 +82,55 @@ public class NavigationBar extends BaseFrameLayoutView {
             NavigationBarItem itemView = new NavigationBarItem(getContext());
             mLinearLayout.addView(itemView,
                     new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
+            mItems.add(itemView);
 
             MenuItem item = mMenu.getItem(i);
 
             itemView.setIconDrawable(item.getIcon());
+            itemView.setItemIndex(i);
+            itemView.setOnNavigationBarItemClickListener(this);
+
         }
+    }
+
+    /**
+     * Set the currently selected item by its index in the list
+     *
+     * @param index The index of the item to mark as selected
+     */
+    public void setIndexSelected(int index){
+
+        //Process the list of items
+        for(NavigationBarItem item : mItems)
+            item.setSelected(index == item.getItemIndex());
+
+    }
+
+    public void setOnNavigationItemSelectedListener(OnNavigationItemSelectedListener onNavigationItemSelectedListener) {
+        this.mOnNavigationItemSelectedListener = onNavigationItemSelectedListener;
+    }
+
+    @Override
+    public void onItemClick(int index) {
+        if(mOnNavigationItemSelectedListener == null)
+            return;
+
+        if(mOnNavigationItemSelectedListener.onNavigationItemSelected(mMenu.getItem(index)))
+            setIndexSelected(index);
+    }
+
+    /**
+     * Navigation item selected listener
+     */
+    public interface OnNavigationItemSelectedListener {
+
+        /**
+         * When an item is selected by the user
+         *
+         * @param item Selected MenuItem
+         * @return True to keep the item selected (and deselect other ones), false else
+         */
+        boolean onNavigationItemSelected(MenuItem item);
+
     }
 }

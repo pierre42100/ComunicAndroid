@@ -49,6 +49,7 @@ import org.communiquons.android.comunic.client.ui.listeners.onPostOpenListener;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 import org.communiquons.android.comunic.client.ui.listeners.updateConversationListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.NavigationBar;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 
@@ -58,8 +59,8 @@ import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
  * @author Pierre HUBERT
  */
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener, openConversationListener,
-        updateConversationListener, onOpenUsersPageListener, onPostOpenListener {
+        openConversationListener, updateConversationListener, onOpenUsersPageListener,
+        onPostOpenListener, NavigationBar.OnNavigationItemSelectedListener {
 
     /**
      * Debug tag
@@ -91,6 +92,11 @@ public class MainActivity extends AppCompatActivity implements
      */
     private ConversationsListHelper conversationsListHelper;
 
+    /**
+     * Main navigation bar
+     */
+    private NavigationBar mNavBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,9 +122,6 @@ public class MainActivity extends AppCompatActivity implements
         //Set the content of the activity
         setContentView(R.layout.activity_main);
 
-        //Enable drawer
-        init_drawer();
-
         //Check for connectivity
         if (!APIRequestHelper.isAPIavailable(this)) {
             Toast.makeText(this, R.string.err_no_internet_connection, Toast.LENGTH_SHORT).show();
@@ -129,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements
 
         //Initialize conversation list helper
         conversationsListHelper = new ConversationsListHelper(this, dbHelper);
+
+        //Use navigation bar
+        mNavBar = findViewById(R.id.nav_bar);
+        mNavBar.setOnNavigationItemSelectedListener(this);
 
         //If it is the first time the application is launched, open notifications fragment
         if (savedInstanceState == null){
@@ -221,18 +228,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
-
-
-
-    /**
-     * Drawer menu
-     */
-    void init_drawer() {
-
-       //TODO : remove
-
-    }
 
 
     @Override

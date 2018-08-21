@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -18,7 +16,7 @@ import org.communiquons.android.comunic.client.ui.utils.UiUtils;
  *
  * @author Pierre HUBERT
  */
-class NavigationBarItem extends BaseFrameLayoutView {
+class NavigationBarItem extends BaseFrameLayoutView implements View.OnClickListener {
 
     /**
      * Debug tag
@@ -36,6 +34,16 @@ class NavigationBarItem extends BaseFrameLayoutView {
     private Drawable mSrcDrawable;
 
     /**
+     * Item index
+     */
+    private int mItemIndex;
+
+    /**
+     * Click listener
+     */
+    private OnNavigationBarItemClickListener mOnNavigationBarItemClickListener;
+
+    /**
      * Selected state of the drawable
      */
     private boolean mSelected;
@@ -46,7 +54,7 @@ class NavigationBarItem extends BaseFrameLayoutView {
         //Inflate view
         View view = inflate(getContext(), R.layout.navigation_bar_item, this);
         mIcon = view.findViewById(R.id.icon);
-
+        view.setOnClickListener(this);
     }
 
     /**
@@ -65,8 +73,12 @@ class NavigationBarItem extends BaseFrameLayoutView {
     public void draw(){
         Drawable drawable = DrawableUtils.DuplicateDrawable(mSrcDrawable);
 
-        int color = isSelected() ? R.color.navbar_selected : R.color.navbar_default;
-        drawable.setColorFilter(UiUtils.getColor(getContext(), color), PorterDuff.Mode.SRC_IN);
+        int fgColor = isSelected() ? R.color.navbar_fg_selected : R.color.navbar_fg_default;
+        int bgColor = isSelected() ? R.color.navbar_bg_selected : R.color.navbar_bg_default;
+
+        drawable.setColorFilter(UiUtils.getColor(getContext(), fgColor), PorterDuff.Mode.SRC_IN);
+        setBackgroundColor(UiUtils.getColor(getContext(), bgColor));
+
 
         mIcon.setImageDrawable(drawable);
     }
@@ -77,5 +89,36 @@ class NavigationBarItem extends BaseFrameLayoutView {
 
     public void setSelected(boolean selected) {
         this.mSelected = selected;
+        draw();
+    }
+
+    public int getItemIndex() {
+        return mItemIndex;
+    }
+
+    public void setItemIndex(int itemIndex) {
+        this.mItemIndex = itemIndex;
+    }
+
+    public void setOnNavigationBarItemClickListener(OnNavigationBarItemClickListener onNavigationBarItemClickListener) {
+        this.mOnNavigationBarItemClickListener = onNavigationBarItemClickListener;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(mOnNavigationBarItemClickListener != null)
+            mOnNavigationBarItemClickListener.onItemClick(getItemIndex());
+    }
+
+    /**
+     * Interface used to handle navigation bar items click
+     */
+    interface OnNavigationBarItemClickListener {
+        /**
+         * Called on item click
+         *
+         * @param index The index of the clicked item
+         */
+        void onItemClick(int index);
     }
 }
