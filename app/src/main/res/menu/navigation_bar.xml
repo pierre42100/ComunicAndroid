@@ -26,4 +26,9 @@
         android:id="@+id/action_conversations"
         android:title="@string/navigation_bottom_conversations_item"
         android:icon="@drawable/ic_menu_conversations" />
+
+    <item
+        android:id="@+id/action_more"
+        android:title="@string/action_more"
+        android:icon="@drawable/ic_more"/>
 </menu>

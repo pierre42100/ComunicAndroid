@@ -8,17 +8,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
-import android.widget.TextView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.BuildConfig;
@@ -29,8 +25,6 @@ import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.DebugHelper;
-import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
@@ -50,7 +44,6 @@ import org.communiquons.android.comunic.client.ui.listeners.openConversationList
 import org.communiquons.android.comunic.client.ui.listeners.updateConversationListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.views.NavigationBar;
-import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 
 /**
@@ -178,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     /**
-     * Top menu creation
+     * Activity context menu
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -230,6 +223,12 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
+    /**
+     * Navigation bar options
+     *
+     * @param menuItem Selected item
+     * @return TRUE if the event is consumed / FALSE else
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
@@ -258,6 +257,25 @@ public class MainActivity extends AppCompatActivity implements
         else if(id == R.id.action_conversations) {
             openConversationsListFragment();
         }
+
+        //More options
+        else if(id == R.id.action_more){
+            PopupMenu popupMenu = new PopupMenu(this,
+                    mNavBar.getItemIdentifierView(R.id.action_more));
+            onCreateOptionsMenu(popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    return onOptionsItemSelected(item);
+                }
+            });
+            popupMenu.show();
+            return false;
+        }
+
+        else
+            //Option not found
+            return false;
 
         return true;
     }

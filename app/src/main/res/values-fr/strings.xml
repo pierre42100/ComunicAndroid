@@ -236,4 +236,5 @@
     <string name="activity_login_too_many_request">Trop de tentative de connexion ont échouées. Veuillez réessayer ultérieurement.</string>
     <string name="err_create_account_existing_email">Cette adresse est déjà associée à un compte Comunic existant !</string>
     <string name="err_create_account_too_many_requests">Trop de création de compte. Veuillez réessayer ultérieurement.</string>
+    <string name="action_more">Plus</string>
 </resources>

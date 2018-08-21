@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.ui.utils.MenuUtils;
 
 import java.util.ArrayList;
 
@@ -109,6 +110,27 @@ public class NavigationBar extends BaseFrameLayoutView implements NavigationBarI
     public void setOnNavigationItemSelectedListener(OnNavigationItemSelectedListener onNavigationItemSelectedListener) {
         this.mOnNavigationItemSelectedListener = onNavigationItemSelectedListener;
     }
+
+    /**
+     * Get the view associated to an index
+     *
+     * @param index The index of the item to get
+     * @return Related view
+     */
+    public View getItemIndexView(int index){
+        return mItems.get(index);
+    }
+
+    /**
+     * Get the view associated to an identifier
+     *
+     * @param id The identifier of the item to get
+     * @return Related view
+     */
+    public View getItemIdentifierView(int id){
+        return getItemIndexView(MenuUtils.MenuIdentifierToIndex(mMenu, id));
+    }
+
 
     @Override
     public void onItemClick(int index) {
