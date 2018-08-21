@@ -356,6 +356,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
+     * Go backward in the application
+     *
+     * @param activity Activity object
+     */
+    public static void goBackward(@NonNull Activity activity){
+        if(!(activity instanceof MainActivity))
+            throw new RuntimeException("Called goBackward using an Activity different " +
+                    "from MainActivity!");
+
+        ((MainActivity)activity).getSupportFragmentManager().popBackStack();
+    }
+
+    /**
      * Open the friends list fragment
      */
     void openFriendsFragment() {

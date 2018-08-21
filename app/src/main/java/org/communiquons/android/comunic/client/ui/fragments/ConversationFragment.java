@@ -1,6 +1,9 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,8 +12,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -98,6 +103,11 @@ public class ConversationFragment extends Fragment
      * Conversation refresh runnable
      */
     private ConversationRefreshRunnable refreshRunnable;
+
+    /**
+     * Fragment toolbar
+     */
+    private Toolbar mToolbar;
 
     /**
      * Fragment main progress bar
@@ -227,11 +237,25 @@ public class ConversationFragment extends Fragment
         no_msg_notice = view.findViewById(R.id.fragment_conversation_noMsgYet);
         display_not_msg_notice(false);
 
-        //Conversation messages listView
+        //Get views
         convMessRecyclerView = view.findViewById(R.id.fragment_conversation_messageslist);
+        mToolbar = view.findViewById(R.id.toolbar);
 
         //Need user ID
         int userID = new AccountUtils(getActivity()).get_current_user_id();
+
+        //Initialize toolbar
+        Drawable backDrawable = UiUtils.getDrawable(getActivity(), R.drawable.ic_back);
+        backDrawable.setColorFilter(UiUtils.getColor(getActivity(), android.R.color.white),
+                PorterDuff.Mode.SRC_IN);
+        mToolbar.setNavigationIcon(backDrawable);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.goBackward(getActivity());
+            }
+        });
+
 
         //Create the adapter
         convMessAdapter = new ConversationMessageAdapter(getActivity(),
@@ -291,7 +315,6 @@ public class ConversationFragment extends Fragment
         //Hide new message sending wheel
         new_message_progress_bar.setVisibility(View.GONE);
 
-
         //Set a listener to detect when the user reaches the top of the conversation
         convMessRecyclerView.setOnScrollChangeDetectListener(this);
     }
@@ -307,7 +330,7 @@ public class ConversationFragment extends Fragment
         new Thread(refreshRunnable).start();
 
         //Update conversation title
-        getActivity().setTitle(R.string.fragment_conversation_title);
+        setTitle(UiUtils.getString(getActivity(), R.string.fragment_conversation_title));
         MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_conversations);
 
 
@@ -451,7 +474,7 @@ public class ConversationFragment extends Fragment
         conversationInfo = info;
 
         //Update the name of the conversation
-        getActivity().setTitle(info.getDisplayName());
+        setTitle(info.getDisplayName());
 
     }
 
@@ -610,6 +633,19 @@ public class ConversationFragment extends Fragment
      */
     private void display_not_msg_notice(boolean visible){
         no_msg_notice.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    /**
+     * Update the title of the fragment
+     *
+     * @param title New title
+     */
+    private void setTitle(String title){
+        if(getActivity() == null)
+            return;
+
+        getActivity().setTitle(title);
+        mToolbar.setTitle(title);
     }
 
     /**
