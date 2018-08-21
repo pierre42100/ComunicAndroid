@@ -29,4 +29,7 @@
     <!-- Dimensions for the comments options button -->
     <dimen name="comment_options_btn_width">20dp</dimen>
     <dimen name="comment_options_btn_height">20dp</dimen>
+
+    <!-- Navigation bar -->
+    <dimen name="nav_bar_ic_height">30dp</dimen>
 </resources>

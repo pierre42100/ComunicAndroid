@@ -91,11 +91,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     private ConversationsListHelper conversationsListHelper;
 
-    /**
-     * Bottom navigation view
-     */
-    private DrawerLayout mDrawer;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -197,12 +192,6 @@ public class MainActivity extends AppCompatActivity implements
         //Get action id
         int id = item.getItemId();
 
-        //To toggle drawer
-        if (id == android.R.id.home) {
-            toggleDrawer();
-            return true;
-        }
-
         //To search a user
         if (id == R.id.action_search_user) {
             searchUser();
@@ -241,65 +230,10 @@ public class MainActivity extends AppCompatActivity implements
      */
     void init_drawer() {
 
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       //TODO : remove
 
-        mDrawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawer, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        //Get information about the user
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final UserInfo info = new GetUsersHelper(getApplicationContext()).getSingle(
-                        new AccountUtils(getApplicationContext()).get_current_user_id(), false);
-
-                //Apply user information
-                if(mDrawer != null){
-                    mDrawer.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            applyUserInfoInDrawer(info);
-                        }
-                    });
-                }
-            }
-        }).start();
     }
 
-    /**
-     * Apply current user information in the drawer
-     *
-     * @param info Information about the user to apply
-     */
-    private void applyUserInfoInDrawer(@Nullable UserInfo info){
-
-        //Check for errors
-        if(info == null){
-            Toast.makeText(MainActivity.this, R.string.err_get_user_info,
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        //Apply user information
-        ((TextView)findViewById(R.id.current_user_name)).setText(info.getDisplayFullName());
-        ((WebUserAccountImage)findViewById(R.id.current_user_account_image)).setUser(info);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
-            mDrawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -330,21 +264,10 @@ public class MainActivity extends AppCompatActivity implements
             openConversationsListFragment();
         }
 
-
-        mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    /**
-     * Toggle drawer state
-     */
-    void toggleDrawer(){
-        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
-            mDrawer.closeDrawer(GravityCompat.START);
-        } else {
-            mDrawer.openDrawer(GravityCompat.START);
-        }
-    }
+
 
 
 

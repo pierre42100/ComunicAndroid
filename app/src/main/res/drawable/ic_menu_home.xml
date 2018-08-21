@@ -5,7 +5,7 @@
     android:viewportWidth="48.0">
 
     <path
-        android:fillColor="#FF000000"
+        android:fillColor="@color/default_drawable_color"
         android:pathData="M20 40V28h8v12h10V24h6L24 6 4 24h6v16z" />
 
 </vector>

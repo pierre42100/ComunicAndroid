@@ -9,6 +9,12 @@
     <color name="darker_darker_gray">#5b5b5b</color>
     <color name="dark_blue">#303f9f</color>
 
+    <color name="default_drawable_color">#000000</color>
+
+    <!-- Navigation bar -->
+    <color name="navbar_default">#FFFFFF</color>
+    <color name="navbar_selected">@color/colorPrimary</color>
+
     <!-- Conversation messages -->
     <color name="conversation_user_messages_background">#3F51B5</color>
     <color name="conversation_user_messages_textColor">#FFFFFF</color>
