@@ -215,6 +215,9 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
                 //Success
                 Toast.makeText(getActivity(), R.string.success_delete_all_notifs,
                         Toast.LENGTH_SHORT).show();
+
+                //Refresh the list of notifications
+                getListNotifications();
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
