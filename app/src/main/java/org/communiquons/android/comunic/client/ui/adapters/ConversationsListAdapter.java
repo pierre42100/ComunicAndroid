@@ -1,7 +1,7 @@
 package org.communiquons.android.comunic.client.ui.adapters;
 
 import android.content.Context;
-import android.os.Build;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
 import java.util.ArrayList;
 
@@ -68,20 +69,13 @@ public class ConversationsListAdapter extends ArrayAdapter<ConversationsInfo> {
                 .findViewById(R.id.fragment_conversationslist_item_name);
         conversationName.setText(infos.getDisplayName());
 
-        //Retrieve colors
-        int blue, grey;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            grey = getContext().getResources().getColor(R.color.darker_darker_gray,
-                    getContext().getTheme());
-            blue = getContext().getResources().getColor(R.color.dark_blue, getContext().getTheme());
-        } else {
-            grey = getContext().getResources().getColor(R.color.darker_darker_gray);
-            blue = getContext().getResources().getColor(R.color.dark_blue);
-        }
-
-
-        //Check whether the conversation has new messages or not and update conversation name color
-        conversationName.setTextColor(infos.hasSaw_last_message() ? grey : blue);
+        //Set drawable associated with TextView (if required = unread conversation)
+        Drawable drawable = UiUtils.getDrawable(getContext(), R.drawable.ic_circle);
+        drawable.setBounds(0, 0, 16, 16);
+        conversationName.setCompoundDrawables(
+                infos.hasSaw_last_message() ? null :
+                        drawable,
+                null, null, null);
 
 
         //Update the number of members of the conversation
