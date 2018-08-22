@@ -13,6 +13,8 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.ConversationMessagesList;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.utils.StringsUtils;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
@@ -51,6 +53,8 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
      */
     private ConversationMessagesList mList;
 
+    private Utilities utils;
+
     /**
      * Public class constructor
      *
@@ -65,6 +69,8 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
         this.userID = userID;
         this.mContext = context;
         this.mList = list;
+
+        utils = new Utilities(mContext);
 
     }
 
@@ -119,6 +125,7 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
     private class BaseMessageHolder extends RecyclerView.ViewHolder {
 
         private TextView mMessage;
+        private TextView mSentDate;
         private EnlargeableWebImageView mImage;
 
         BaseMessageHolder(@NonNull View itemView) {
@@ -126,6 +133,17 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
 
             mMessage = itemView.findViewById(R.id.message_body);
             mImage = itemView.findViewById(R.id.messageImage);
+            mSentDate = itemView.findViewById(R.id.text_message_time);
+        }
+
+        /**
+         * Get the time a message was sent as a string
+         *
+         * @param message Information about the message
+         * @return Generated sent string
+         */
+        String messageDate(ConversationMessage message){
+            return StringsUtils.FormatDate(message.getTime_insert());
         }
 
         /**
@@ -145,6 +163,16 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
                 mImage.loadURL(message.getImage_path());
             else
                 mImage.removeImage();
+
+
+            mSentDate.setText(messageDate(message));
+
+            if(pos < 1)
+                mSentDate.setVisibility(View.VISIBLE);
+            else if(messageDate(mList.get(pos-1)).equals(messageDate(message)))
+                mSentDate.setVisibility(View.GONE);
+            else
+                mSentDate.setVisibility(View.VISIBLE);
         }
     }
 

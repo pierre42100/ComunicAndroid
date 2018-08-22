@@ -1,5 +1,7 @@
 package org.communiquons.android.comunic.client.data.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -47,4 +49,15 @@ public class StringsUtils {
 
     }
 
+    /**
+     * Format timestamp to string
+     *
+     * @param time The time to format
+     * @return Generated string
+     */
+    public static String FormatDate(int time){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd",
+                Locale.getDefault());
+        return simpleDateFormat.format((long)1000*time);
+    }
 }
