@@ -1,11 +1,13 @@
 package org.communiquons.android.comunic.client.ui.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.ui.utils.DrawableUtils;
@@ -16,12 +18,17 @@ import org.communiquons.android.comunic.client.ui.utils.UiUtils;
  *
  * @author Pierre HUBERT
  */
-class NavigationBarItem extends BaseFrameLayoutView implements View.OnClickListener {
+public class NavigationBarItem extends BaseFrameLayoutView implements View.OnClickListener {
 
     /**
      * Debug tag
      */
     private static final String TAG = NavigationBarItem.class.getCanonicalName();
+
+    /**
+     * News number icon
+     */
+    private TextView mNumberNews;
 
     /**
      * Image icon
@@ -48,13 +55,27 @@ class NavigationBarItem extends BaseFrameLayoutView implements View.OnClickListe
      */
     private boolean mSelected;
 
-    public NavigationBarItem(@NonNull Context context) {
+    NavigationBarItem(@NonNull Context context) {
         super(context);
 
         //Inflate view
-        View view = inflate(getContext(), R.layout.navigation_bar_item, this);
+        View view = inflate(getContext(), R.layout.view_navigation_bar_item, this);
         mIcon = view.findViewById(R.id.icon);
+        mNumberNews = view.findViewById(R.id.numberNews);
         view.setOnClickListener(this);
+
+        setNumberNews(0);
+    }
+
+    /**
+     * Set the number of news
+     *
+     * @param number The number of news to display
+     */
+    @SuppressLint("SetTextI18n")
+    public void setNumberNews(Integer number){
+        mNumberNews.setText(""+number);
+        mNumberNews.setVisibility(number == 0 ? View.GONE : View.VISIBLE);
     }
 
     /**

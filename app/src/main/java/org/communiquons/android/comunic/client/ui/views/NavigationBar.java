@@ -69,7 +69,7 @@ public class NavigationBar extends BaseFrameLayoutView implements NavigationBarI
     private void init(){
 
         //Inflate main view
-        View view = inflate(getContext(), R.layout.navigation_bar, this);
+        View view = inflate(getContext(), R.layout.view_navigation_bar, this);
         mLinearLayout = view.findViewById(R.id.container);
 
         //Inflate menu
