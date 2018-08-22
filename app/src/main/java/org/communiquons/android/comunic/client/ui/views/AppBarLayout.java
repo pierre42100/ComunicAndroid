@@ -46,6 +46,15 @@ public class AppBarLayout extends BaseFrameLayoutView {
     }
 
     /**
+     * Update (set) the title of the conversatoin
+     *
+     * @param resId The ID of the target ressource
+     */
+    public void setTitle(int resId){
+        setTitle(UiUtils.getString(getContext(), resId));
+    }
+
+    /**
      * Update the title of the appbar
      *
      * @param title The new title
@@ -81,7 +90,7 @@ public class AppBarLayout extends BaseFrameLayoutView {
 
         AppCompatImageButton btn = new AppCompatImageButton(getActivity(),
                 null, android.support.v7.appcompat.R.attr.toolbarStyle);
-        btn.setPadding(5, 0, 5, 0);
+        btn.setPadding(10, 0, 10, 0);
         btn.setImageDrawable(drawable);
         btn.setOnClickListener(listener);
         getToolbar().addView(btn);

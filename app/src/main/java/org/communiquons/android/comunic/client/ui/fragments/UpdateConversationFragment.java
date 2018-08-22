@@ -33,6 +33,7 @@ import org.communiquons.android.comunic.client.ui.adapters.UsersAsysncInfoAdapte
 import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
+import org.communiquons.android.comunic.client.ui.views.AppBarLayout;
 
 import java.util.ArrayList;
 
@@ -84,6 +85,11 @@ public class UpdateConversationFragment extends Fragment {
      * Specify whether the user is the owner of the conversation or not
      */
     private boolean conversation_owner = true;
+
+    /**
+     * Application bar
+     */
+    private AppBarLayout mAppBar;
 
     /**
      * The name of the conversation
@@ -193,6 +199,7 @@ public class UpdateConversationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         //Get the views
+        mAppBar = view.findViewById(R.id.appbar);
         progressBar = view.findViewById(R.id.progress_bar);
         nameView = view.findViewById(R.id.fragment_update_conversation_name);
         followCheckbox = view.findViewById(R.id.fragment_update_conversation_follow);
@@ -222,7 +229,13 @@ public class UpdateConversationFragment extends Fragment {
         //Set members list context menu
         membersList.setOnCreateContextMenuListener(membersListContext);
 
-
+        //Add back buttn
+        mAppBar.addBackButton(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.goBackward(getActivity());
+            }
+        });
     }
 
 
@@ -232,9 +245,9 @@ public class UpdateConversationFragment extends Fragment {
 
         //Set the adapted title
         if(current_action == ACTION_CREATE_CONVERSATION)
-            getActivity().setTitle(R.string.fragment_update_conversation_title_create);
+            mAppBar.setTitle(R.string.fragment_update_conversation_title_create);
         else
-            getActivity().setTitle(R.string.fragment_update_conversation_title_update);
+            mAppBar.setTitle(R.string.fragment_update_conversation_title_update);
         MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_conversations);
     }
 
