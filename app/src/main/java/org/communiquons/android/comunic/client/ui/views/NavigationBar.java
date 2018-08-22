@@ -126,7 +126,7 @@ public class NavigationBar extends BaseFrameLayoutView implements NavigationBarI
      * @param index The index of the item to get
      * @return Related view
      */
-    public View getItemIndexView(int index){
+    public NavigationBarItem getItemIndexView(int index){
         return mItems.get(index);
     }
 
@@ -136,7 +136,7 @@ public class NavigationBar extends BaseFrameLayoutView implements NavigationBarI
      * @param id The identifier of the item to get
      * @return Related view
      */
-    public View getItemIdentifierView(int id){
+    public NavigationBarItem getItemIdentifierView(int id){
         return getItemIndexView(MenuUtils.MenuIdentifierToIndex(mMenu, id));
     }
 

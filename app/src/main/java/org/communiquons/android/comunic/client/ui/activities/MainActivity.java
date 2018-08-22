@@ -2,13 +2,17 @@ package org.communiquons.android.comunic.client.ui.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -25,6 +29,7 @@ import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.DebugHelper;
+import org.communiquons.android.comunic.client.data.models.NotificationsCount;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
@@ -90,6 +95,29 @@ public class MainActivity extends AppCompatActivity implements
      */
     private NavigationBar mNavBar;
 
+    /**
+     * Broadcast receiver
+     */
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent.getAction() == null)
+                return;
+
+            //Notifications number update
+            if(intent.getAction().equals(NotificationsService.BROADCAST_ACTION)){
+                NotificationsCount count = new NotificationsCount();
+                assert intent.getExtras() != null;
+                count.setNotificationsCount(intent.getExtras().getInt(
+                        NotificationsService.BROADCAST_EXTRA_NUMBER_NOTIFICATIONS));
+                count.setConversationsCount(intent.getExtras().getInt(
+                        NotificationsService.BROADCAST_EXTRACT_UNREAD_CONVERSATIONS));
+                updateNumberNotifications(count);
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +164,10 @@ public class MainActivity extends AppCompatActivity implements
         if (savedInstanceState == null){
             openNotificationsFragment(false);
         }
+
+        //Receive broadcasts
+        IntentFilter intentFilter = new IntentFilter(NotificationsService.BROADCAST_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, intentFilter);
     }
 
     @Override
@@ -302,7 +334,18 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * Update the number of unread notifications
+     *
+     * @param count New number of notifications
+     */
+    public void updateNumberNotifications(NotificationsCount count){
+        mNavBar.getItemIdentifierView(R.id.action_notifications).setNumberNews(
+                count.getNotificationsCount());
 
+        mNavBar.getItemIdentifierView(R.id.action_conversations).setNumberNews(
+                count.getConversationsCount());
+    }
 
 
 

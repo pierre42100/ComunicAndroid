@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.communiquons.android.comunic.client.R;
@@ -15,6 +16,8 @@ import org.communiquons.android.comunic.client.data.models.NotificationsCount;
 import org.communiquons.android.comunic.client.data.helpers.NotificationsHelper;
 import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
+
+import java.util.Objects;
 
 /**
  * Notifications service
@@ -29,6 +32,18 @@ public class NotificationsService extends IntentService {
      * Debug tag
      */
     private static final String TAG = "NotificationsService";
+
+    /**
+     * Broadcast action
+     */
+    public static final String BROADCAST_ACTION =
+            "org.communiquons.android.comunic.NotificationService.BROADCAST";
+
+    /**
+     * Notification extras
+     */
+    public static final String BROADCAST_EXTRA_NUMBER_NOTIFICATIONS = "NumberNotifications";
+    public static final String BROADCAST_EXTRACT_UNREAD_CONVERSATIONS = "UnreadConversations";
 
     /**
      * Notification channel ID
@@ -54,7 +69,7 @@ public class NotificationsService extends IntentService {
     /**
      * Last notification count
      */
-    private NotificationsCount mLastCount;
+    private static NotificationsCount mLastCount;
 
 
     /**
@@ -136,6 +151,12 @@ public class NotificationsService extends IntentService {
             //Save last notifications count
             mLastCount = count;
 
+            //Create an intent and push nut data
+            Intent pushIntent = new Intent(BROADCAST_ACTION)
+                    .putExtra(BROADCAST_EXTRA_NUMBER_NOTIFICATIONS, count.getNotificationsCount())
+                    .putExtra(BROADCAST_EXTRACT_UNREAD_CONVERSATIONS, count.getConversationsCount());
+
+            LocalBroadcastManager.getInstance(this).sendBroadcast(pushIntent);
         }
 
         Log.v(TAG, "Stop service");
@@ -166,6 +187,7 @@ public class NotificationsService extends IntentService {
             // or other notification behaviors after this
             NotificationManager notificationManager = (NotificationManager) getSystemService(
                     NOTIFICATION_SERVICE);
+            assert notificationManager != null;
             notificationManager.createNotificationChannel(mChannel);
 
             //Create notification builder
@@ -189,7 +211,7 @@ public class NotificationsService extends IntentService {
         mBuilder.setContentIntent(pendingIntent);
 
         //Get notification manager to push notification
-        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(
+        ((NotificationManager) Objects.requireNonNull(getSystemService(NOTIFICATION_SERVICE))).notify(
                 MAIN_NOTIFICATION_ID, mBuilder.build());
     }
 
@@ -197,7 +219,8 @@ public class NotificationsService extends IntentService {
      * Remove the notification
      */
     private void removeNotification(){
-        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(MAIN_NOTIFICATION_ID);
+        ((NotificationManager) Objects.requireNonNull(getSystemService(NOTIFICATION_SERVICE)))
+                .cancel(MAIN_NOTIFICATION_ID);
     }
 
     @Override
