@@ -1,10 +1,6 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,10 +8,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -44,6 +38,7 @@ import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAd
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.AppBarLayout;
 import org.communiquons.android.comunic.client.ui.views.ScrollRecyclerView;
 
 import java.io.FileNotFoundException;
@@ -107,7 +102,7 @@ public class ConversationFragment extends Fragment
     /**
      * Fragment toolbar
      */
-    private Toolbar mToolbar;
+    private AppBarLayout mAppBar;
 
     /**
      * Fragment main progress bar
@@ -239,20 +234,23 @@ public class ConversationFragment extends Fragment
 
         //Get views
         convMessRecyclerView = view.findViewById(R.id.fragment_conversation_messageslist);
-        mToolbar = view.findViewById(R.id.toolbar);
+        mAppBar = view.findViewById(R.id.appbar);
 
         //Need user ID
         int userID = new AccountUtils(getActivity()).get_current_user_id();
 
         //Initialize toolbar
-        Drawable backDrawable = UiUtils.getDrawable(getActivity(), R.drawable.ic_back);
-        backDrawable.setColorFilter(UiUtils.getColor(getActivity(), android.R.color.white),
-                PorterDuff.Mode.SRC_IN);
-        mToolbar.setNavigationIcon(backDrawable);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mAppBar.addBackButton(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainActivity.goBackward(getActivity());
+            }
+        });
+
+        mAppBar.addButton(R.drawable.ic_settings, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).updateConversation(conversation_id);
             }
         });
 
@@ -317,6 +315,7 @@ public class ConversationFragment extends Fragment
 
         //Set a listener to detect when the user reaches the top of the conversation
         convMessRecyclerView.setOnScrollChangeDetectListener(this);
+
     }
 
     @Override
@@ -645,7 +644,7 @@ public class ConversationFragment extends Fragment
             return;
 
         getActivity().setTitle(title);
-        mToolbar.setTitle(title);
+        mAppBar.setTitle(title);
     }
 
     /**
