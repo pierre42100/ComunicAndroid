@@ -354,6 +354,11 @@ public class ConversationFragment extends Fragment
         }
         else
             onGotConversationInfo(conversationInfo);
+
+        //Remove progress if we already have messages
+        if(messagesList != null)
+            if(messagesList.size() > 0)
+                display_main_progress_bar(false);
     }
 
     @Override
@@ -450,7 +455,7 @@ public class ConversationFragment extends Fragment
             }
         }
 
-        //Inform about dataset update
+        //Inform about data set update
         convMessAdapter.notifyDataSetChanged();
     }
 
