@@ -207,6 +207,11 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
 
+        //To learn more about the application
+        if(id == R.id.action_about){
+            startActivity(new Intent(this, AboutActivity.class));
+        }
+
         //Check for logout request
         if (id == R.id.action_logout) {
             confirmUserLogout();

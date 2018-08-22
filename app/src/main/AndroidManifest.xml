@@ -32,7 +32,7 @@
         <!-- Create account activity -->
         <activity
             android:name=".ui.activities.CreateAccountActivity"
-            android:label="@string/activity_create_account_label"/>
+            android:label="@string/activity_create_account_label" />
 
         <!-- Search user activity -->
         <activity
@@ -53,6 +53,11 @@
         <activity
             android:name=".ui.activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
+
+        <!-- About activity -->
+        <activity
+            android:name=".ui.activities.AboutActivity"
+            android:label="@string/activity_about_title"/>
 
     </application>
 
