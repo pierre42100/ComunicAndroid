@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
@@ -155,12 +156,17 @@ public class FriendsAdapter extends BaseRecyclerViewAdapter {
     /**
      * Accepted friend holder
      */
-    private class AcceptedFriendHolder extends BaseFriendHolder implements View.OnLongClickListener {
+    private class AcceptedFriendHolder extends BaseFriendHolder implements View.OnLongClickListener, View.OnClickListener {
+
+        private ImageView mMoreBtn;
 
         AcceptedFriendHolder(@NonNull View itemView) {
             super(itemView);
 
+            mMoreBtn = itemView.findViewById(R.id.more_btn);
+
             itemView.setOnLongClickListener(this);
+            mMoreBtn.setOnClickListener(this);
         }
 
         @Override
@@ -171,6 +177,12 @@ public class FriendsAdapter extends BaseRecyclerViewAdapter {
 
             mListener.onOpenContextMenuForFriend(itemView, getLayoutPosition());
             return true;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(v.equals(mMoreBtn))
+                mListener.onOpenContextMenuForFriend(v, getLayoutPosition());
         }
     }
 
