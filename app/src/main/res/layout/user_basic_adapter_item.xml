@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <org.communiquons.android.comunic.client.ui.views.WebUserAccountImage
         android:id="@+id/user_account_image"
         android:layout_width="@dimen/account_image_default_width"
         android:layout_height="@dimen/account_image_default_height"

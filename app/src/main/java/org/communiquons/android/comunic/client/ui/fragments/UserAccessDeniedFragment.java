@@ -1,15 +1,14 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,11 +16,10 @@ import android.widget.Toast;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.helpers.FriendsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
 import org.communiquons.android.comunic.client.data.models.FriendshipStatus;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
+import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 /**
  * User access denied fragment
@@ -70,7 +68,7 @@ public class UserAccessDeniedFragment extends Fragment implements View.OnClickLi
     /**
      * User account image
      */
-    private ImageView mUserImage;
+    private WebUserAccountImage mUserImage;
 
     /**
      * User account name
@@ -204,7 +202,7 @@ public class UserAccessDeniedFragment extends Fragment implements View.OnClickLi
 
         //Append user information
         mUserName.setText(mUserInfo.getDisplayFullName());
-        ImageLoadHelper.load(getActivity(), mUserInfo.getAcountImageURL(), mUserImage);
+        mUserImage.setUser(mUserInfo);
 
         //Check if we have got the friends
         if(mFriendshipStatus == null){

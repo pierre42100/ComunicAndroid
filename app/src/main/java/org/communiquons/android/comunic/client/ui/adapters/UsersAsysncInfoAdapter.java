@@ -8,14 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 import java.util.ArrayList;
 
@@ -34,21 +31,21 @@ public class UsersAsysncInfoAdapter extends ArrayAdapter<Integer> {
     /**
      * Informations about the members of the conversation
      */
-    private ArrayMap<Integer, UserInfo> usersInfos;
+    private ArrayMap<Integer, UserInfo> usersInfo;
 
     /**
      * Constructor
      * @param context The context of the application
      * @param IDs The list of IDs of users
-     * @param usersInfos Informations about the users (can be updated asynchronously with the list
+     * @param usersInfo Information about the users (can be updated asynchronously with the list
      *                   of users ID)
      */
     public UsersAsysncInfoAdapter(Context context, @NonNull ArrayList<Integer> IDs,
-                                  @NonNull ArrayMap<Integer, UserInfo> usersInfos){
+                                  @NonNull ArrayMap<Integer, UserInfo> usersInfo){
         super(context, 0, IDs);
 
         //Save user information array map
-        this.usersInfos = usersInfos;
+        this.usersInfo = usersInfo;
     }
 
     @NonNull
@@ -60,25 +57,23 @@ public class UsersAsysncInfoAdapter extends ArrayAdapter<Integer> {
                     .inflate(R.layout.user_basic_adapter_item, parent, false);
 
         //Get the views
-        ImageView account_image = convertView.findViewById(R.id.user_account_image);
+        WebUserAccountImage account_image = convertView.findViewById(R.id.user_account_image);
         TextView account_name = convertView.findViewById(R.id.user_name);
 
         //Empty the entry
-        ImageLoadHelper.remove(account_image);
-        account_image.setImageDrawable(UiUtils.getDrawable(getContext(),
-                R.drawable.default_account_image));
+        account_image.removeUser();
         account_name.setText("");
 
         //Get user ID
         int userID = getItem(position);
 
-        //Check if we go user informations
-        if(usersInfos.containsKey(userID)){
+        //Check if we go user information
+        if(usersInfo.containsKey(userID)){
 
-            UserInfo user = usersInfos.get(userID);
+            UserInfo user = usersInfo.get(userID);
 
             account_name.setText(user.getDisplayFullName());
-            ImageLoadHelper.load(getContext(), user.getAcountImageURL(), account_image);
+            account_image.setUser(user);
         }
 
         return convertView;

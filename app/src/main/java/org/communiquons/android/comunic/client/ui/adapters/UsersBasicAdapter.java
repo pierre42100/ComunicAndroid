@@ -7,13 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 import java.util.ArrayList;
 
@@ -57,11 +55,8 @@ public class UsersBasicAdapter extends ArrayAdapter<UserInfo> {
                     setText(userInfos.getDisplayFullName());
 
             //Set account image
-            ImageView account_image = convertView.findViewById(R.id.user_account_image);
-            ImageLoadHelper.remove(account_image);
-            account_image.setImageDrawable(UiUtils.getDrawable(getContext(),
-                    R.drawable.default_account_image));
-            ImageLoadHelper.load(getContext(), userInfos.getAcountImageURL(), account_image);
+            WebUserAccountImage account_image = convertView.findViewById(R.id.user_account_image);
+            account_image.setUser(userInfos);
         }
 
         return convertView;

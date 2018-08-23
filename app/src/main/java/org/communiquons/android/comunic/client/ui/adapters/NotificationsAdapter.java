@@ -8,19 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
-import org.communiquons.android.comunic.client.data.models.GroupInfo;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.data.arrays.NotifsList;
+import org.communiquons.android.comunic.client.data.models.GroupInfo;
+import org.communiquons.android.comunic.client.data.models.Notif;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.NotifsUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
-
-import java.lang.reflect.Array;
+import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 /**
  * Notifications list adapter
@@ -77,10 +74,8 @@ public class NotificationsAdapter extends ArrayAdapter<Notif>{
         assert notif != null;
 
         //Update the user account image
-        ImageView image = convertView.findViewById(R.id.user_account_image);
-        ImageLoadHelper.remove(image);
-        ImageLoadHelper.load(getContext(),
-                mUsersInfo.get(notif.getFrom_user_id()).getAcountImageURL(), image);
+        WebUserAccountImage accountImage = convertView.findViewById(R.id.user_account_image);
+        accountImage.setUser(mUsersInfo.get(notif.getFrom_user_id()));
 
         //Update the message of the notification
         TextView message = convertView.findViewById(R.id.notification_message);
