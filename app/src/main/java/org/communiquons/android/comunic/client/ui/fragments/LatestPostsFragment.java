@@ -112,7 +112,8 @@ public class LatestPostsFragment extends Fragment
         MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_latest_posts);
 
         //Refresh the list of posts of the user
-        refresh_posts_list();
+        if(mPostsList == null)
+            refresh_posts_list();
     }
 
     /**
