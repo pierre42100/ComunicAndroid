@@ -243,4 +243,5 @@
     <string name="action_reject_friend_request">Reject</string>
     <string name="notice_request">Requested</string>
     <string name="action_more_description">Get more options</string>
+    <string name="action_follow">Follow</string>
 </resources>

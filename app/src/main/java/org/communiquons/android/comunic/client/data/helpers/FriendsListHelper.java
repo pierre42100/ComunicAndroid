@@ -30,7 +30,7 @@ public class FriendsListHelper {
     //Debug tag
     private static final String TAG = "FriendsList";
 
-    private FriendsListDbHelper fdbHelper;
+    private FriendsListDbHelper mDbHelper;
     private Context mContext;
 
     //Friends list access lock
@@ -42,7 +42,7 @@ public class FriendsListHelper {
      * @param context The context of the application
      */
     public FriendsListHelper(Context context){
-        this.fdbHelper = new FriendsListDbHelper(DatabaseHelper.getInstance(context));
+        this.mDbHelper = new FriendsListDbHelper(DatabaseHelper.getInstance(context));
         this.mContext = context;
     }
 
@@ -53,7 +53,7 @@ public class FriendsListHelper {
      * @param context the context of the application
      */
     public FriendsListHelper(DatabaseHelper dbHelper, Context context){
-        this.fdbHelper = new FriendsListDbHelper(dbHelper);
+        this.mDbHelper = new FriendsListDbHelper(dbHelper);
         this.mContext = context.getApplicationContext();
     }
 
@@ -70,7 +70,7 @@ public class FriendsListHelper {
         //Fetch the list
         ArrayList<Friend> list;
         try {
-            list = fdbHelper.get_list();
+            list = mDbHelper.get_list();
         } finally {
             FriendsListHelper.ListAccessLock.unlock();
         }
@@ -135,7 +135,7 @@ public class FriendsListHelper {
                 //Set friend information
                 friend.setId(friendship_infos.getInt("ID_friend"));
                 friend.setAccepted(friendship_infos.getInt("accepted") == 1);
-                friend.setFollowing(friendship_infos.getInt("ID_friend") == 1);
+                friend.setFollowing(friendship_infos.getInt("following") == 1);
                 friend.setLast_activity(friendship_infos.getInt("time_last_activity"));
 
                 //Add the friend to the list
@@ -165,7 +165,7 @@ public class FriendsListHelper {
             new APIRequestHelper().exec(delparams);
 
             //Remove the friend from the local database
-            fdbHelper.delete_friend(friend);
+            mDbHelper.delete_friend(friend);
 
         } catch (Exception e){
             Log.e(TAG, "Couldn't delete friend !");
@@ -233,10 +233,10 @@ public class FriendsListHelper {
             //Update the friend in the local database
             if(accept) {
                 friend.setAccepted(true);
-                fdbHelper.update_friend(friend);
+                mDbHelper.update_friend(friend);
             }
             else {
-                fdbHelper.delete_friend(friend);
+                mDbHelper.delete_friend(friend);
             }
 
         } catch(Exception e){
@@ -310,5 +310,37 @@ public class FriendsListHelper {
             return null;
         }
 
+    }
+
+    /**
+     * Update follow status of a user
+     *
+     * @param friendID The ID of the user to update
+     * @param following TRUE to follow / FALSE else
+     * @return The result of the operation
+     */
+    public boolean setFollowing(int friendID, boolean following){
+
+        //Get information about the friend
+        Friend friend = mDbHelper.getSingleFriend(friendID);
+        if(friend == null)
+            return false;
+        friend.setFollowing(following);
+
+        //Update friend information locally
+        mDbHelper.update_friend(friend);
+
+        //Update the friend on the server too
+        APIRequest request = new APIRequest(mContext, "friends/setFollowing");
+        request.addInt("friendID", friendID);
+        request.addBoolean("follow", following);
+
+        //Perform request on the server
+        try {
+            return new APIRequestHelper().exec(request).getResponse_code() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

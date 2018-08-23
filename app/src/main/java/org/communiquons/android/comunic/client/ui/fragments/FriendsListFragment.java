@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.FriendsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
@@ -65,32 +66,32 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
     /**
      * Get user helper
      */
-    private GetUsersHelper usersHelper;
+    private GetUsersHelper mUsersHelper;
 
     /**
      * The current list of friends
      */
-    private ArrayList<FriendUser> friendsList;
+    private ArrayList<FriendUser> mList;
 
     /**
      * Friend list operations object
      */
-    private FriendsListHelper flistHelper;
+    private FriendsListHelper mFriendsHelper;
 
     /**
      * Conversation opener
      */
-    private openConversationListener convOpener;
+    private openConversationListener mConvOpener;
 
     /**
      * Users page opener
      */
-    private onOpenUsersPageListener usersPageOpener;
+    private onOpenUsersPageListener mUsersPageOpener;
 
     /**
      * Friend adapter
      */
-    private FriendsAdapter fAdapter;
+    private FriendsAdapter mAdapter;
 
     /**
      * Loading progress bar
@@ -123,15 +124,15 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
         mDbHelper = DatabaseHelper.getInstance(mContext);
 
         //Create friend list helper object
-        flistHelper = new FriendsListHelper(mDbHelper, mContext);
+        mFriendsHelper = new FriendsListHelper(mDbHelper, mContext);
 
         //Create get user helper
-        usersHelper = new GetUsersHelper(mContext, mDbHelper);
+        mUsersHelper = new GetUsersHelper(mContext, mDbHelper);
 
-        //Cast activity to convOpener
+        //Cast activity to mConvOpener
         try {
-            convOpener = (openConversationListener) getActivity();
-            usersPageOpener = (onOpenUsersPageListener) getActivity();
+            mConvOpener = (openConversationListener) getActivity();
+            mUsersPageOpener = (onOpenUsersPageListener) getActivity();
         } catch (ClassCastException e) {
             e.printStackTrace();
 
@@ -193,22 +194,22 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
             protected ArrayList<FriendUser> doInBackground(Void... params) {
 
                 //Fetch the list of friends
-                ArrayList<Friend> friendsList = flistHelper.get();
+                ArrayList<Friend> friendsList = mFriendsHelper.get();
 
                 //Check for errors
                 if (friendsList == null)
                     return null;
 
                 //Get user info
-                ArrayMap<Integer, UserInfo> userInfos = usersHelper.getMultiple(
+                ArrayMap<Integer, UserInfo> userInfo = mUsersHelper.getMultiple(
                         FriendsUtils.getFriendsIDs(friendsList));
 
                 //Check for errors
-                if (userInfos == null)
+                if (userInfo == null)
                     return null;
 
                 //Merge friend and user and return result
-                return FriendsUtils.merge_friends_user_infos_list(friendsList, userInfos);
+                return FriendsUtils.merge_friends_user_infos_list(friendsList, userInfo);
 
             }
 
@@ -242,17 +243,17 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
         }
 
         //Save the list of friends
-        this.friendsList = friendsList;
+        this.mList = friendsList;
 
         //Update the visibility of the no friend notice
         updateNoFriendNoticeVisibility();
 
         //Set the adapter
-        fAdapter = new FriendsAdapter(getActivity(), friendsList, this);
+        mAdapter = new FriendsAdapter(getActivity(), friendsList, this);
         mFriendsList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFriendsList.addItemDecoration(new DividerItemDecoration(mFriendsList.getContext(),
                 DividerItemDecoration.VERTICAL));
-        mFriendsList.setAdapter(fAdapter);
+        mFriendsList.setAdapter(mAdapter);
 
         //Register the view for the context menu
         registerForContextMenu(mFriendsList);
@@ -275,11 +276,11 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
             public void onClick(DialogInterface dialog, int which) {
 
                 //Get the friend to delete
-                final Friend toDelete = friendsList.get(pos).getFriend();
+                final Friend toDelete = mList.get(pos).getFriend();
 
                 //Apply new list version
-                friendsList.remove(pos);
-                fAdapter.notifyDataSetChanged();
+                mList.remove(pos);
+                mAdapter.notifyDataSetChanged();
 
                 //Remove the friend list on a parallel thread
                 new AsyncTask<Integer, Void, Void>() {
@@ -287,7 +288,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
                     protected Void doInBackground(Integer[] params) {
 
                         //Delete the friend from the list
-                        flistHelper.remove(toDelete);
+                        mFriendsHelper.remove(toDelete);
 
                         return null;
                     }
@@ -303,30 +304,30 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
 
     @Override
     public void onOpenUserPage(int userID) {
-        usersPageOpener.openUserPage(userID);
+        mUsersPageOpener.openUserPage(userID);
     }
 
     @Override
     public void onRespondFrienshipRequest(int pos, final boolean response) {
 
         //Get the Friend object
-        Friend targetFriend = friendsList.get(pos).getFriend();
+        Friend targetFriend = mList.get(pos).getFriend();
 
         if (response)
             //Mark the friend as accepted
             targetFriend.setAccepted(true);
         else
             //Remove the friend from the list
-            friendsList.remove(pos);
+            mList.remove(pos);
 
         //Inform the adapter the list has changed
-        fAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
 
         //Accept the request on a separate thread
         new AsyncTask<Friend, Void, Void>() {
             @Override
             protected Void doInBackground(Friend... params) {
-                flistHelper.respondRequest(params[0], response);
+                mFriendsHelper.respondRequest(params[0], response);
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, targetFriend);
@@ -339,10 +340,16 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
         //Save selected position
         mPosInContextMenu = pos;
 
-        //Initialize and show menu
+        //Initialize menu
         PopupMenu menu = new PopupMenu(getActivity(), view);
-        menu.inflate(R.menu.menu_fragment_friendslist_item);
+        menu.inflate(R.menu.menu_friend);
         menu.setOnMenuItemClickListener(this);
+
+
+        //Update following checkbox
+        menu.getMenu().findItem(R.id.action_follow).setChecked(mList.get(pos).getFriend()
+                .isFollowing());
+
         menu.show();
     }
 
@@ -352,18 +359,58 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
         switch (item.getItemId()) {
 
             //To open a private conversation with the friend
-            case R.id.menu_fragment_friendslist_private_conversation:
-                convOpener.openPrivateConversation(friendsList.get(mPosInContextMenu).getFriend().getId());
+            case R.id.action_private_conversation:
+                mConvOpener.openPrivateConversation(mList.get(mPosInContextMenu).getFriend().getId());
                 return true;
 
             //To delete the friend
-            case R.id.menu_fragment_friendslist_delete_friend:
+            case R.id.action_delete_friend:
                 delete_friend(mPosInContextMenu);
+                return true;
+
+            case R.id.action_follow:
+                onSetFollowing(mPosInContextMenu,
+                        !mList.get(mPosInContextMenu).getFriend().isFollowing());
                 return true;
         }
 
 
         return false;
+    }
+
+    @Override
+    public void onSetFollowing(int pos, boolean following) {
+
+        Friend friend = mList.get(pos).getFriend();
+        friend.setFollowing(following);
+
+        mAdapter.notifyDataSetChanged();
+
+        //Perform update
+        new SetFollowingTask(getActivity(), friend.getId(), friend.isFollowing())
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    /**
+     * Class used to update following status
+     */
+    static class SetFollowingTask extends SafeAsyncTask<Void, Void, Void> {
+
+        private int friendID;
+        private boolean follow;
+
+        SetFollowingTask(Context context, int friendID, boolean follow) {
+            super(context);
+            this.friendID = friendID;
+            this.follow = follow;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            new FriendsListHelper(getContext()).setFollowing(friendID, follow);
+            return null;
+        }
     }
 
     /**
@@ -379,7 +426,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
      * Update the visibility of the no friend notice
      */
     private void updateNoFriendNoticeVisibility() {
-        if (friendsList != null)
-            mNoFriendNotice.setVisibility(friendsList.size() == 0 ? View.VISIBLE : View.GONE);
+        if (mList != null)
+            mNoFriendNotice.setVisibility(mList.size() == 0 ? View.VISIBLE : View.GONE);
     }
 }

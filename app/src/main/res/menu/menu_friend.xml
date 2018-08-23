@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Update following state -->
+    <item
+        android:id="@+id/action_follow"
+        android:title="@string/action_follow"
+        android:checkable="true" />
+
     <!-- Start private conversation -->
     <item
-        android:id="@+id/menu_fragment_friendslist_private_conversation"
+        android:id="@+id/action_private_conversation"
         android:title="@string/action_friends_start_private_conversation" />
 
     <!-- Delete the friend -->
     <item
-        android:id="@+id/menu_fragment_friendslist_delete_friend"
+        android:id="@+id/action_delete_friend"
         android:title="@string/action_friends_delete" />
 
 </menu>

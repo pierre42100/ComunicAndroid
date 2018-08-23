@@ -23,6 +23,16 @@ import java.util.ArrayList;
 public class FriendsListDbHelper {
 
     /**
+     * Required database columns
+     */
+    private static final String[] mColumns = {
+            FriendsListSchema.COLUMN_NAME_FRIEND_ID,
+            FriendsListSchema.COLUMN_NAME_FRIEND_ACCEPTED,
+            FriendsListSchema.COLUMN_NAME_FRIEND_FOLLOWING,
+            FriendsListSchema.COLUMN_NAME_FRIEND_LAST_ACTIVITY
+    };
+
+    /**
      * Database helper
      */
     private DatabaseHelper dbHelper;
@@ -49,16 +59,10 @@ public class FriendsListDbHelper {
 
         //Prepare the request on the database
         String table_name = FriendsListSchema.TABLE_NAME;
-        String[] columns = {
-                FriendsListSchema.COLUMN_NAME_FRIEND_ID,
-                FriendsListSchema.COLUMN_NAME_FRIEND_ACCEPTED,
-                FriendsListSchema.COLUMN_NAME_FRIEND_FOLLOWING,
-                FriendsListSchema.COLUMN_NAME_FRIEND_LAST_ACTIVITY
-        };
         String order = FriendsListSchema._ID;
 
         //Perform the request
-        Cursor c = db.query(table_name, columns, null, null, null, null, order);
+        Cursor c = db.query(table_name, mColumns, null, null, null, null, order);
 
         //Check if the request echoed
         if(c == null)
@@ -70,23 +74,8 @@ public class FriendsListDbHelper {
         c.moveToFirst();
         for(int i = 0; i < c.getCount(); i++){
 
-            //Get information about the friend
-            Friend friend = new Friend();
-
-            friend.setId(c.getInt(c.getColumnIndexOrThrow(
-                    FriendsListSchema.COLUMN_NAME_FRIEND_ID)));
-
-            friend.setAccepted(c.getInt(c.getColumnIndexOrThrow(
-                    FriendsListSchema.COLUMN_NAME_FRIEND_ACCEPTED)) == 1);
-
-            friend.setFollowing(c.getInt(c.getColumnIndexOrThrow(
-                    FriendsListSchema.COLUMN_NAME_FRIEND_FOLLOWING)) == 1);
-
-            friend.setLast_activity(c.getInt(c.getColumnIndexOrThrow(
-                    FriendsListSchema.COLUMN_NAME_FRIEND_LAST_ACTIVITY)));
-
             //Add the friend to the list
-            friendsList.add(friend);
+            friendsList.add(parseDbEntryToFriend(c));
 
             //Move to the next friend
             if(!c.moveToNext())
@@ -97,6 +86,32 @@ public class FriendsListDbHelper {
         c.close();
 
         return friendsList;
+    }
+
+    /**
+     * Get a single friend entry
+     *
+     * @param friendID The ID of the friend to get
+     * @return Information about the friend / null in case of failure
+     */
+    @Nullable
+    Friend getSingleFriend(int friendID){
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] selectionArgs = {friendID+""};
+        Cursor c = db.query(FriendsListSchema.TABLE_NAME, mColumns,
+                FriendsListSchema.COLUMN_NAME_FRIEND_ID + " = ?", selectionArgs,
+                null, null, null);
+
+        c.moveToFirst();
+        if(c.getCount() < 1)
+            return null;
+
+        Friend friend = parseDbEntryToFriend(c);
+        c.close();
+
+        return friend;
     }
 
     /**
@@ -233,5 +248,30 @@ public class FriendsListDbHelper {
         values.put(FriendsListSchema.COLUMN_NAME_FRIEND_LAST_ACTIVITY, friend.getLast_activity());
 
         return values;
+    }
+
+    /**
+     * Parse a database entry into a cursor object
+     *
+     * @param c Database cursor
+     * @return Generated Friend object
+     */
+    private Friend parseDbEntryToFriend(Cursor c){
+
+        Friend friend = new Friend();
+
+        friend.setId(c.getInt(c.getColumnIndexOrThrow(
+                FriendsListSchema.COLUMN_NAME_FRIEND_ID)));
+
+        friend.setAccepted(c.getInt(c.getColumnIndexOrThrow(
+                FriendsListSchema.COLUMN_NAME_FRIEND_ACCEPTED)) == 1);
+
+        friend.setFollowing(c.getInt(c.getColumnIndexOrThrow(
+                FriendsListSchema.COLUMN_NAME_FRIEND_FOLLOWING)) == 1);
+
+        friend.setLast_activity(c.getInt(c.getColumnIndexOrThrow(
+                FriendsListSchema.COLUMN_NAME_FRIEND_LAST_ACTIVITY)));
+
+        return friend;
     }
 }

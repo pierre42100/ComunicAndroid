@@ -19,7 +19,7 @@ public interface OnFriendListActionListener {
     /**
      * Respond to a friendship request
      *
-     * @param pos Position of the friend on the list
+     * @param pos      Position of the friend on the list
      * @param response TRUE to accept / FALSE else
      */
     void onRespondFrienshipRequest(int pos, boolean response);
@@ -30,4 +30,12 @@ public interface OnFriendListActionListener {
      * @param pos The position of the friend in the list
      */
     void onOpenContextMenuForFriend(View view, int pos);
+
+    /**
+     * Specify whether a friend should be followed or not
+     *
+     * @param pos       The position of the friend to update
+     * @param following New following status
+     */
+    void onSetFollowing(int pos, boolean following);
 }
