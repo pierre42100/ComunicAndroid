@@ -238,4 +238,6 @@
     <string name="err_create_account_too_many_requests">Trop de création de compte. Veuillez réessayer ultérieurement.</string>
     <string name="action_more">Plus</string>
     <string name="action_about">A propos</string>
+    <string name="action_reject_friend_request">Rejeter</string>
+    <string name="notice_request">Demande</string>
 </resources>

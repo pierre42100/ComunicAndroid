@@ -1,37 +1,39 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.ArrayMap;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
+import org.communiquons.android.comunic.client.data.helpers.FriendsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.Friend;
 import org.communiquons.android.comunic.client.data.models.FriendUser;
-import org.communiquons.android.comunic.client.ui.adapters.FriendsAdapter;
-import org.communiquons.android.comunic.client.data.helpers.FriendsListHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.FriendsUtils;
+import org.communiquons.android.comunic.client.ui.activities.MainActivity;
+import org.communiquons.android.comunic.client.ui.adapters.FriendsAdapter;
+import org.communiquons.android.comunic.client.ui.listeners.OnFriendListActionListener;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
+import org.communiquons.android.comunic.client.ui.views.ScrollRecyclerView;
 
 import java.util.ArrayList;
 
@@ -42,8 +44,8 @@ import java.util.ArrayList;
  * Created by pierre on 11/11/17.
  */
 
-public class FriendsListFragment extends Fragment
-    implements AdapterView.OnItemClickListener{
+public class FriendsListFragment extends Fragment implements OnFriendListActionListener,
+        PopupMenu.OnMenuItemClickListener {
 
     /**
      * Debug tag
@@ -103,7 +105,12 @@ public class FriendsListFragment extends Fragment
     /**
      * Friends list view
      */
-    private ListView mFriendsListView;
+    private ScrollRecyclerView mFriendsList;
+
+    /**
+     * Current friend on context menu
+     */
+    private int mPosInContextMenu;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,7 +132,7 @@ public class FriendsListFragment extends Fragment
         try {
             convOpener = (openConversationListener) getActivity();
             usersPageOpener = (onOpenUsersPageListener) getActivity();
-        } catch (ClassCastException e){
+        } catch (ClassCastException e) {
             e.printStackTrace();
 
             throw new RuntimeException(getActivity().getClass().getName() + " must implement" +
@@ -136,13 +143,13 @@ public class FriendsListFragment extends Fragment
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_friendslist, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         //Get loading progress bar
@@ -152,8 +159,8 @@ public class FriendsListFragment extends Fragment
         mNoFriendNotice = view.findViewById(R.id.no_friend_notice);
         mNoFriendNotice.setVisibility(View.GONE);
 
-        //Get friends listview
-        mFriendsListView = view.findViewById(R.id.fragment_friendslist_listview);
+        //Get friends RecyclerView
+        mFriendsList = view.findViewById(R.id.friendslist);
 
         //Retain the fragment
         //setRetainInstance(true);
@@ -175,12 +182,12 @@ public class FriendsListFragment extends Fragment
     /**
      * Refresh the friend list
      */
-    void refresh_friend_list(){
+    void refresh_friend_list() {
 
         //Display loading bar
         display_progress_bar(true);
 
-        new AsyncTask<Void, Void, ArrayList<FriendUser>>(){
+        new AsyncTask<Void, Void, ArrayList<FriendUser>>() {
 
             @Override
             protected ArrayList<FriendUser> doInBackground(Void... params) {
@@ -189,15 +196,15 @@ public class FriendsListFragment extends Fragment
                 ArrayList<Friend> friendsList = flistHelper.get();
 
                 //Check for errors
-                if(friendsList == null)
+                if (friendsList == null)
                     return null;
 
-                //Get user infos
+                //Get user info
                 ArrayMap<Integer, UserInfo> userInfos = usersHelper.getMultiple(
                         FriendsUtils.getFriendsIDs(friendsList));
 
                 //Check for errors
-                if(userInfos == null)
+                if (userInfos == null)
                     return null;
 
                 //Merge friend and user and return result
@@ -209,7 +216,7 @@ public class FriendsListFragment extends Fragment
             protected void onPostExecute(ArrayList<FriendUser> friendUsers) {
 
                 //Check the activity still exists
-                if(getActivity() == null)
+                if (getActivity() == null)
                     return;
 
                 apply_friends_list(friendUsers);
@@ -222,13 +229,13 @@ public class FriendsListFragment extends Fragment
      *
      * @param friendsList The friends list to apply
      */
-    private void apply_friends_list(@Nullable ArrayList<FriendUser> friendsList){
+    private void apply_friends_list(@Nullable ArrayList<FriendUser> friendsList) {
 
         //Remove progress bar
         display_progress_bar(false);
 
         //Check for errors
-        if(friendsList == null){
+        if (friendsList == null) {
             Toast.makeText(mContext, R.string.fragment_friendslist_err_refresh,
                     Toast.LENGTH_LONG).show();
             return;
@@ -241,47 +248,15 @@ public class FriendsListFragment extends Fragment
         updateNoFriendNoticeVisibility();
 
         //Set the adapter
-        fAdapter = new FriendsAdapter(this, getActivity(), friendsList);
-        mFriendsListView.setAdapter(fAdapter);
+        fAdapter = new FriendsAdapter(getActivity(), friendsList, this);
+        mFriendsList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mFriendsList.addItemDecoration(new DividerItemDecoration(mFriendsList.getContext(),
+                DividerItemDecoration.VERTICAL));
+        mFriendsList.setAdapter(fAdapter);
 
         //Register the view for the context menu
-        registerForContextMenu(mFriendsListView);
+        registerForContextMenu(mFriendsList);
 
-        mFriendsListView.setOnItemClickListener(this);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.menu_fragment_friendslist_item, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-
-        AdapterView.AdapterContextMenuInfo info =
-                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-
-        //Get the friend position in the list
-        int friendPos = info.position;
-
-        switch (item.getItemId()){
-
-            //To open a private conversation with the friend
-            case R.id.menu_fragment_friendslist_private_conversation:
-                convOpener.openPrivateConversation(friendsList.get(friendPos).getFriend().getId());
-                return true;
-
-            //To delete the friend
-            case R.id.menu_fragment_friendslist_delete_friend:
-                delete_friend(friendPos);
-                return true;
-        }
-
-        //If it is not for us, it is for someone else
-        return super.onContextItemSelected(item);
     }
 
     /**
@@ -289,7 +264,7 @@ public class FriendsListFragment extends Fragment
      *
      * @param pos the position of the friend to delete
      */
-    private void delete_friend(final int pos){
+    private void delete_friend(final int pos) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.popup_deletefriend_title)
@@ -307,7 +282,7 @@ public class FriendsListFragment extends Fragment
                 fAdapter.notifyDataSetChanged();
 
                 //Remove the friend list on a parallel thread
-                new AsyncTask<Integer, Void, Void>(){
+                new AsyncTask<Integer, Void, Void>() {
                     @Override
                     protected Void doInBackground(Integer[] params) {
 
@@ -325,48 +300,19 @@ public class FriendsListFragment extends Fragment
 
     }
 
-    /**
-     * Show a popup to offer the user to respond to a friendship request
-     *
-     * @param pos The position of the friend in the list
-     */
-    public void showPopupRequestResponse(final int pos){
 
-        new AlertDialog.Builder(getActivity())
-
-                .setTitle(R.string.popup_respond_friendship_request_title)
-                .setMessage(R.string.popup_respond_friendship_request_message)
-
-                .setNegativeButton(R.string.action_friends_deny_request, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        respondRequest(pos, false);
-                    }
-                })
-
-                .setPositiveButton(R.string.action_friends_accept_request, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        respondRequest(pos, true);
-                    }
-                })
-
-                .show();
-
+    @Override
+    public void onOpenUserPage(int userID) {
+        usersPageOpener.openUserPage(userID);
     }
 
-    /**
-     * Respond to a friendship request
-     *
-     * @param pos The position of the friend respond the request
-     * @param accept Specify wether the user accepted the request or not
-     */
-    private void respondRequest(int pos, final boolean accept){
+    @Override
+    public void onRespondFrienshipRequest(int pos, final boolean response) {
 
         //Get the Friend object
         Friend targetFriend = friendsList.get(pos).getFriend();
 
-        if(accept)
+        if (response)
             //Mark the friend as accepted
             targetFriend.setAccepted(true);
         else
@@ -377,13 +323,47 @@ public class FriendsListFragment extends Fragment
         fAdapter.notifyDataSetChanged();
 
         //Accept the request on a separate thread
-        new AsyncTask<Friend, Void, Void>(){
+        new AsyncTask<Friend, Void, Void>() {
             @Override
             protected Void doInBackground(Friend... params) {
-                flistHelper.respondRequest(params[0], accept);
+                flistHelper.respondRequest(params[0], response);
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, targetFriend);
+
+    }
+
+    @Override
+    public void onOpenContextMenuForFriend(View view, int pos) {
+
+        //Save selected position
+        mPosInContextMenu = pos;
+
+        //Initialize and show menu
+        PopupMenu menu = new PopupMenu(getActivity(), view);
+        menu.inflate(R.menu.menu_fragment_friendslist_item);
+        menu.setOnMenuItemClickListener(this);
+        menu.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            //To open a private conversation with the friend
+            case R.id.menu_fragment_friendslist_private_conversation:
+                convOpener.openPrivateConversation(friendsList.get(mPosInContextMenu).getFriend().getId());
+                return true;
+
+            //To delete the friend
+            case R.id.menu_fragment_friendslist_delete_friend:
+                delete_friend(mPosInContextMenu);
+                return true;
+        }
+
+
+        return false;
     }
 
     /**
@@ -391,25 +371,15 @@ public class FriendsListFragment extends Fragment
      *
      * @param display Specify whether the loading bar has to be shown or not
      */
-    private void display_progress_bar(boolean display){
+    private void display_progress_bar(boolean display) {
         mProgressBar.setVisibility(display ? View.VISIBLE : View.GONE);
     }
 
     /**
      * Update the visibility of the no friend notice
      */
-    private void updateNoFriendNoticeVisibility(){
-        if(friendsList != null)
+    private void updateNoFriendNoticeVisibility() {
+        if (friendsList != null)
             mNoFriendNotice.setVisibility(friendsList.size() == 0 ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        //Get clicked user ID
-        int userID = friendsList.get(position).get_user_id();
-
-        //Open user page
-        usersPageOpener.openUserPage(userID);
     }
 }

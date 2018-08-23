@@ -1,21 +1,22 @@
 package org.communiquons.android.comunic.client.ui.adapters;
 
-import android.app.Activity;
+import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
+import org.communiquons.android.comunic.client.data.models.Friend;
 import org.communiquons.android.comunic.client.data.models.FriendUser;
-import org.communiquons.android.comunic.client.data.utils.Utilities;
-import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.ui.listeners.OnFriendListActionListener;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 import java.util.ArrayList;
 
@@ -26,100 +27,188 @@ import java.util.ArrayList;
  * Created by pierre on 11/15/17.
  */
 
-public class FriendsAdapter extends ArrayAdapter<FriendUser> {
+public class FriendsAdapter extends BaseRecyclerViewAdapter {
 
     /**
-     * The fragment creating the adapter
+     * View type
      */
-    private FriendsListFragment mFLfragment;
+    private static final int VIEW_TYPE_ACCEPTED_FRIEND = 1;
+    private static final int VIEW_TYPE_PENDING_FRIEND = 2;
+
+    /**
+     * The list of friends, with their information
+     */
+    private ArrayList<FriendUser> mList;
+
+    /**
+     * Actions listener
+     */
+    private OnFriendListActionListener mListener;
 
     /**
      * Class constructor
      *
-     * @param friendsListFragment Friends list fragment object
      * @param context The context of execution of the application
      * @param friendsList The list of friends to display (with user information)
+     * @param listener Actions on friendlist listener
      */
-    public FriendsAdapter(FriendsListFragment friendsListFragment,
-                          Activity context, ArrayList<FriendUser> friendsList){
-        super(context, 0, friendsList);
-        mFLfragment = friendsListFragment;
+    public FriendsAdapter(Context context, ArrayList<FriendUser> friendsList,
+                          OnFriendListActionListener listener){
+        super(context);
+
+        mList = friendsList;
+        mListener = listener;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mList.get(position).getFriend().isAccepted() ? VIEW_TYPE_ACCEPTED_FRIEND :
+                VIEW_TYPE_PENDING_FRIEND;
     }
 
     @NonNull
     @Override
-    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View listItemView = convertView;
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int type) {
+        View view;
 
-        //Check if the view has to be created
-        if(listItemView == null){
-            listItemView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.fragment_friends_list_friend_item, parent, false);
+        if(type == VIEW_TYPE_ACCEPTED_FRIEND){
+            view = LayoutInflater.from(getContext()).inflate(R.layout.friend_accepted_item,
+                    viewGroup, false);
+            return new AcceptedFriendHolder(view);
         }
 
-        //Get friend information
-        FriendUser friendUser = getItem(position);
-
-        //Update user account image
-        ImageView user_image = listItemView.findViewById(R.id.fragment_friendslist_item_accountimage);
-        user_image.setImageDrawable(getContext().getDrawable(R.drawable.default_account_image));
-        ImageLoadHelper.load(getContext(), friendUser.getUserInfo().getAcountImageURL(), user_image);
-
-        //Update user name
-        TextView user_name = listItemView.findViewById(R.id.fragment_friendslist_item_fullname);
-        user_name.setText(Utilities.prepareStringTextView(friendUser.getUserInfo().getFullName()));
-
-        //Update user status
-        boolean signed_in = friendUser.getFriend().signed_in();
-        TextView statusView = listItemView.findViewById(R.id.fragment_friendslist_item_status);
-
-        //Set the text
-        statusView.setText(signed_in ?
-                getContext().getText(R.string.user_status_online) :
-                getContext().getText(R.string.user_status_offline)
-        );
-
-        //Set the color
-        int status_color;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            status_color = getContext().getResources().getColor(signed_in ? R.color.holo_green_dark : R.color.darker_gray, null);
-        }
-        else {
-            status_color = getContext().getResources().getColor(signed_in ? R.color.holo_green_dark : R.color.darker_gray);
-        }
-        statusView.setTextColor(status_color);
-
-        //Action button
-        Button action = listItemView.findViewById(R.id.fragment_friendslist_item_action);
-
-        //Define the action of the accept request button
-        if(!friendUser.getFriend().isAccepted()){
-
-            //Update the button
-            action.setVisibility(View.VISIBLE);
-            action.setText(R.string.action_friends_respond_request);
-
-            //Make the button lives
-            action.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    //Hide the view
-                    v.setVisibility(View.GONE);
-
-                    mFLfragment.showPopupRequestResponse(position);
-                }
-            });
-
-        }
-        else {
-
-            //Remove button actions and hide it
-            action.setVisibility(View.GONE);
-            action.setOnClickListener(null);
+        if(type == VIEW_TYPE_PENDING_FRIEND){
+            view = LayoutInflater.from(getContext()).inflate(R.layout.friend_pending_item,
+                    viewGroup, false);
+            return new PendingFriendHolder(view);
         }
 
-        return listItemView;
+        throw new RuntimeException("Undefined view type: " + type);
     }
 
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int pos) {
+        ((BaseFriendHolder)viewHolder).bind(pos);
+    }
+
+
+    /**
+     * Base Friend ViewHolder
+     */
+    private class BaseFriendHolder extends RecyclerView.ViewHolder {
+
+        private WebUserAccountImage mUserAccountImage;
+        private TextView mUserName;
+        private TextView mUserStatus;
+
+        BaseFriendHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mUserAccountImage = itemView.findViewById(R.id.account_image);
+            mUserName = itemView.findViewById(R.id.account_name);
+            mUserStatus = itemView.findViewById(R.id.user_status);
+        }
+
+        Friend getFriend(int pos){
+            return mList.get(pos).getFriend();
+        }
+
+        UserInfo getUserInfo(int pos){
+            return mList.get(pos).getUserInfo();
+        }
+
+        int getCurrentUserID(){
+            return getUserInfo(getLayoutPosition()).getId();
+        }
+
+        @CallSuper
+        void bind(int pos){
+
+            //Update user information
+            mUserAccountImage.setUser(getUserInfo(pos));
+            mUserName.setText(getUserInfo(pos).getDisplayFullName());
+
+            //Update user status
+            boolean signed_in = getFriend(pos).signed_in();
+            mUserStatus.setText(UiUtils.getString(getContext(), signed_in ?
+                    R.string.user_status_online : R.string.user_status_offline));
+            mUserStatus.setTextColor(UiUtils.getColor(getContext(),
+                    signed_in ? R.color.holo_green_dark : R.color.darker_gray));
+
+
+            //Open user page on click
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onOpenUserPage(getCurrentUserID());
+                }
+            });
+        }
+    }
+
+
+    /**
+     * Accepted friend holder
+     */
+    private class AcceptedFriendHolder extends BaseFriendHolder implements View.OnLongClickListener {
+
+        AcceptedFriendHolder(@NonNull View itemView) {
+            super(itemView);
+
+            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+
+            if(!v.equals(itemView))
+                return false;
+
+            mListener.onOpenContextMenuForFriend(itemView, getLayoutPosition());
+            return true;
+        }
+    }
+
+
+    /**
+     * Pending friend view holder
+     */
+    private class PendingFriendHolder extends BaseFriendHolder implements View.OnClickListener {
+
+        private Button mAcceptButton;
+        private Button mRejectButton;
+
+        PendingFriendHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mAcceptButton = itemView.findViewById(R.id.accept_button);
+            mRejectButton = itemView.findViewById(R.id.reject_button);
+
+            mAcceptButton.setOnClickListener(this);
+            mRejectButton.setOnClickListener(this);
+        }
+
+        @Override
+        void bind(int pos) {
+            super.bind(pos);
+
+            mAcceptButton.setVisibility(View.VISIBLE);
+            mRejectButton.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            mAcceptButton.setVisibility(View.INVISIBLE);
+            mRejectButton.setVisibility(View.INVISIBLE);
+
+            boolean accept = v.equals(mAcceptButton);
+            mListener.onRespondFrienshipRequest(getLayoutPosition(), accept);
+        }
+    }
 }
