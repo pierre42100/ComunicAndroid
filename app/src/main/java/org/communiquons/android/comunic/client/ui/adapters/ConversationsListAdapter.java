@@ -71,7 +71,8 @@ public class ConversationsListAdapter extends ArrayAdapter<ConversationsInfo> {
 
         //Set drawable associated with TextView (if required = unread conversation)
         Drawable drawable = UiUtils.getDrawable(getContext(), R.drawable.ic_circle);
-        drawable.setBounds(0, 0, 16, 16);
+        drawable.setBounds(0, 0, UiUtils.GetPixel(getContext(), 10),
+                UiUtils.GetPixel(getContext(), 10));
         conversationName.setCompoundDrawables(
                 infos.hasSaw_last_message() ? null :
                         drawable,
