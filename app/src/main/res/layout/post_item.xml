@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/PostContainer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <!-- Information about user who created the post -->
@@ -59,44 +59,21 @@
             tools:text="Public" />
 
         <ImageView
-            style="@style/PostActionsButton"
             android:id="@+id/post_actions_btn"
+            style="@style/PostActionsButton"
             android:layout_width="@dimen/post_options_btn_width"
             android:layout_height="@dimen/post_options_btn_height"
-            android:src="@android:drawable/ic_menu_manage"
-            android:contentDescription="@string/post_action_btn_description"/>
+            android:contentDescription="@string/post_action_btn_description"
+            android:src="@android:drawable/ic_menu_manage" />
 
 
     </LinearLayout>
 
-    <!-- Post image (if any) -->
-    <org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView
-        android:id="@+id/post_image"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/img_placeholder"
-        android:contentDescription="@string/post_image_description"
-        android:scaleType="centerInside" />
-
-    <!-- Post related movie (if any) -->
-    <org.communiquons.android.comunic.client.ui.views.MovieView
-        android:id="@+id/post_movie"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        style="@style/PostMovie"/>
-
-    <!-- Post Web link (if any) -->
-    <org.communiquons.android.comunic.client.ui.views.WebLinkView
-        android:id="@+id/post_web_link"
+    <!-- Additional views -->
+    <FrameLayout
+        android:id="@+id/additional_views"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <!-- Related PDF (if any) -->
-    <org.communiquons.android.comunic.client.ui.views.PDFLinkButtonView
-        android:id="@+id/btn_pdf_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/PostPDFButton"/>
 
     <!-- Post content -->
     <TextView
@@ -109,9 +86,9 @@
     <!-- Like button -->
     <org.communiquons.android.comunic.client.ui.views.LikeButtonView
         android:id="@+id/like_button"
+        style="@style/PostLikeButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/PostLikeButton"/>
+        android:layout_height="wrap_content" />
 
     <!-- Post comments -->
     <LinearLayout
@@ -130,10 +107,10 @@
         <!-- Comment hint -->
         <org.communiquons.android.comunic.client.ui.views.EditCommentContentView
             android:id="@+id/input_comment_content"
+            style="@style/TextAppearance.AppCompat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            style="@style/TextAppearance.AppCompat"
             android:hint="@string/new_comment_hint"
             android:inputType="text" />
 

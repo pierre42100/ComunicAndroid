@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.widget.AbsListView;
 
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 

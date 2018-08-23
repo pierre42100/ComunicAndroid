@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.TypedValue;
 
 import org.communiquons.android.comunic.client.R;
 
@@ -84,4 +85,15 @@ public class UiUtils {
         return builder.show();
     }
 
+    /**
+     * Get the amount of pixel matching to a dp
+     *
+     * @param context The context of the activity
+     * @param dp The number of dp to convert
+     * @return Matching number of pixel
+     */
+    public static int GetPixel(Context context, int dp){
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                context.getResources().getDisplayMetrics());
+    }
 }

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.ArrayMap;
 import android.util.Pair;
 import android.view.ContextMenu;
@@ -36,7 +37,7 @@ import org.communiquons.android.comunic.client.ui.listeners.OnPostListFragmentsU
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
-import org.communiquons.android.comunic.client.ui.views.ScrollListView;
+import org.communiquons.android.comunic.client.ui.views.ScrollRecyclerView;
 
 import java.util.ArrayList;
 
@@ -105,7 +106,7 @@ public class PostsListFragment extends Fragment
     /**
      * The list of posts
      */
-    ScrollListView mListView;
+    ScrollRecyclerView mRecyclerView;
 
     /**
      * Posts helper
@@ -137,7 +138,7 @@ public class PostsListFragment extends Fragment
     }
 
     /**
-     * Set the list of users informations
+     * Set the list of users information
      *
      * @param list The list
      */
@@ -173,8 +174,8 @@ public class PostsListFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         //Get the list view
-        mListView = view.findViewById(R.id.posts_list);
-        mListView.setOnScrollChangeDetectListener(this);
+        mRecyclerView = view.findViewById(R.id.posts_list);
+        mRecyclerView.setOnScrollChangeDetectListener(this);
 
         //Show the posts
         show();
@@ -194,7 +195,8 @@ public class PostsListFragment extends Fragment
             mPostsAdapter = new PostsAdapter(getActivity(), mPostsList, mUsersInfo, this);
 
             //Connect the adapter to the view
-            mListView.setAdapter(mPostsAdapter);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            mRecyclerView.setAdapter(mPostsAdapter);
         }
 
         //Notify data set update

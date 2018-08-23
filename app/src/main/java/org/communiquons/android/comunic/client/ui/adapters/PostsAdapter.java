@@ -1,35 +1,32 @@
 package org.communiquons.android.comunic.client.ui.adapters;
 
 import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.helpers.ImageLoadHelper;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.arrays.PostsList;
 import org.communiquons.android.comunic.client.data.models.Comment;
 import org.communiquons.android.comunic.client.data.models.Post;
-import org.communiquons.android.comunic.client.data.enums.PostTypes;
-import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
-import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
+import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
 import org.communiquons.android.comunic.client.ui.views.MovieView;
 import org.communiquons.android.comunic.client.ui.views.PDFLinkButtonView;
-import org.communiquons.android.comunic.client.ui.views.WebImageView;
 import org.communiquons.android.comunic.client.ui.views.WebLinkView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
@@ -42,22 +39,36 @@ import java.util.ArrayList;
  * Created by pierre on 1/21/18.
  */
 
-public class PostsAdapter extends ArrayAdapter<Post>{
+public class PostsAdapter extends BaseRecyclerViewAdapter {
 
     /**
      * Debug tag
      */
-    private static final String TAG = "PostsAdapter";
+    private static final String TAG = PostsAdapter.class.getCanonicalName();
+
+    /**
+     * View types
+     */
+    private static final int VIEW_TYPE_POST_TEXT = 0;
+    private static final int VIEW_TYPE_POST_IMAGE = 1;
+    private static final int VIEW_TYPE_POST_MOVIE = 2;
+    private static final int VIEW_TYPE_POST_PDF = 3;
+    private static final int VIEW_TYPE_POST_WEBLINK = 4;
+
+    /**
+     * Posts list
+     */
+    private PostsList mList;
 
     /**
      * Information about the users
      */
-    private ArrayMap<Integer, UserInfo> mUsersInfos;
+    private ArrayMap<Integer, UserInfo> mUsersInfo;
 
     /**
      * Utilities object
      */
-    private Utilities utils;
+    private Utilities mUtils;
 
     /**
      * Actions update listener
@@ -69,268 +80,354 @@ public class PostsAdapter extends ArrayAdapter<Post>{
      *
      * @param context The context of execution of the application
      * @param list The list of posts
-     * @param usersInfos Informations about the user
+     * @param usersInfo Information about the user
      * @param listener Specify the listener to perform callback actions such as create a comment
      *                 for example
      */
-    public PostsAdapter(Context context, PostsList list, ArrayMap<Integer, UserInfo> usersInfos,
+    public PostsAdapter(Context context, PostsList list, ArrayMap<Integer, UserInfo> usersInfo,
                         onPostUpdateListener listener){
-        super(context, 0, list);
+        super(context);
 
-        //Save the users info object
-        mUsersInfos = usersInfos;
+        mList = list;
+        mUsersInfo = usersInfo;
 
-        //Create utilities object
-        utils = new Utilities(getContext());
+        //Utilities
+        mUtils = new Utilities(getContext());
 
         mListener = listener;
     }
 
+    @Override
+    public int getItemCount() {
+        return mList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        switch (mList.get(position).getType()){
+
+            case IMAGE:
+                return VIEW_TYPE_POST_IMAGE;
+
+            case PDF:
+                return VIEW_TYPE_POST_PDF;
+
+            case WEBLINK:
+                return VIEW_TYPE_POST_WEBLINK;
+
+            case MOVIE:
+                return VIEW_TYPE_POST_MOVIE;
+
+            case TEXT:
+            default:
+                return VIEW_TYPE_POST_TEXT;
+        }
+    }
+
     @NonNull
     @Override
-    public View getView(final int position, @Nullable View convertView,
-                        @NonNull ViewGroup parent) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int type) {
 
-        //Check if the view has to be inflated
-        if(convertView == null)
-            convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.post_item, parent, false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.post_item, viewGroup,
+                false);
 
-        //Get information about the post and the user
-        final Post post = getItem(position);
-        assert post != null;
-        UserInfo userInfo = null;
-        if(mUsersInfos.containsKey(post.getUserID()))
-            userInfo = mUsersInfos.get(post.getUserID());
+        switch (type){
+            case VIEW_TYPE_POST_IMAGE:
+                return new ImagePostHolder(view);
 
-        //Get the views related to user Information
-        WebUserAccountImage userAccountImage = convertView.findViewById(R.id.user_account_image);
-        TextView userAccountName = convertView.findViewById(R.id.user_account_name);
+            case VIEW_TYPE_POST_PDF:
+                return new PDFPostHolder(view);
 
-        //Set user information if available
-        if(userInfo != null){
-            userAccountName.setText(userInfo.getDisplayFullName());
-            userAccountImage.setUser(userInfo);
+            case VIEW_TYPE_POST_WEBLINK:
+                return new WebLinkPostHolder(view);
+
+            case VIEW_TYPE_POST_MOVIE:
+                return new MoviePostHolder(view);
+
+                default:
+                    return new TextPostHolder(view);
         }
-        else {
-            //Reset user information
-            userAccountName.setText("");
-            userAccountImage.removeUser();
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+        ((TextPostHolder)viewHolder).bind(position);
+    }
+
+    /**
+     * Text posts holder
+     */
+    private class TextPostHolder extends RecyclerView.ViewHolder {
+
+        private WebUserAccountImage mUserAccountImage;
+        private TextView mUserAccountName;
+        private TextView mPostDate;
+        private TextView mPostVisibility;
+        private ImageView mPostActions;
+        private FrameLayout mAdditionnalViews;
+        private TextView mPostContent;
+        private LikeButtonView mLikeButton;
+        private LinearLayout mCommentsList;
+        private LinearLayout mCreateCommentForm;
+        private EditCommentContentView mEditCommentContentView;
+        private ImageView mSendCommentButton;
+
+        TextPostHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mUserAccountImage = itemView.findViewById(R.id.user_account_image);
+            mUserAccountName = itemView.findViewById(R.id.user_account_name);
+            mPostDate = itemView.findViewById(R.id.post_creation_time);
+            mPostVisibility = itemView.findViewById(R.id.post_visibility);
+            mPostActions = itemView.findViewById(R.id.post_actions_btn);
+            mAdditionnalViews = itemView.findViewById(R.id.additional_views);
+            mPostContent = itemView.findViewById(R.id.post_content);
+            mLikeButton = itemView.findViewById(R.id.like_button);
+            mCommentsList = itemView.findViewById(R.id.comments_list);
+            mCreateCommentForm = itemView.findViewById(R.id.create_comment_form);
+            mEditCommentContentView = itemView.findViewById(R.id.input_comment_content);
+            mSendCommentButton = itemView.findViewById(R.id.comment_send_button);
         }
 
-
-        //Set post creation time
-        ((TextView) convertView.findViewById(R.id.post_creation_time)).setText(utils.
-                timeToString(Utilities.time() - post.getPost_time()));
-
-
-        //Set post visibility level
-        TextView visibilityLevel = convertView.findViewById(R.id.post_visibility);
-        switch (post.getVisibilityLevel()){
-
-            case PUBLIC:
-                visibilityLevel.setText(R.string.post_visibility_public);
-                break;
-
-            case FRIENDS:
-                visibilityLevel.setText(R.string.post_visibility_friends);
-                break;
-
-            case MEMBERS:
-                visibilityLevel.setText(R.string.post_visibility_members);
-                break;
-
-            case PRIVATE:
-            default:
-                visibilityLevel.setText(R.string.post_visibility_private);
-                break;
+        Post getPost(int position){
+            return mList.get(position);
         }
 
-        //Set post actions
-        convertView.findViewById(R.id.post_actions_btn).setOnClickListener(
-                new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.showPostActions(v, position, post);
+        /**
+         * @return Additional views container
+         */
+        FrameLayout getAdditionnalViewsLayout(){
+            return mAdditionnalViews;
+        }
+
+        @CallSuper
+        void bind(final int position){
+
+            Post post = getPost(position);
+            UserInfo user = null;
+            if(mUsersInfo.containsKey(post.getUserID()))
+                user = mUsersInfo.get(post.getUserID());
+
+
+            //Apply user information
+            if(user != null){
+                mUserAccountImage.setUser(user);
+                mUserAccountName.setText(user.getDisplayFullName());
             }
-        });
-
-
-        //Set post content
-        ((TextView) convertView.findViewById(R.id.post_content)).setText(Utilities.prepareStringTextView(post.getContent()));
-
-        //Set post image (if any)
-        WebImageView postImage = convertView.findViewById(R.id.post_image);
-        if(post.getType() == PostTypes.IMAGE){
-
-            //Make image visible
-            postImage.setVisibility(View.VISIBLE);
-
-            //Load image
-            postImage.loadURL(post.getFile_path_url());
-        }
-        else {
-
-            //Hide the image
-            postImage.setVisibility(View.GONE);
-
-            //Remove the image
-            postImage.removeImage();
-
-        }
-
-
-        //Set post movie (if any)
-        MovieView movieView = convertView.findViewById(R.id.post_movie);
-
-        if(post.getType() == PostTypes.MOVIE){
-            movieView.setVisibility(View.VISIBLE);
-            movieView.setMovie(post.getMovie());
-        }
-
-        else {
-            movieView.setVisibility(View.GONE);
-        }
-
-
-        //Set post weblink (if any)
-        WebLinkView webLinkView = convertView.findViewById(R.id.post_web_link);
-
-        if(post.hasWebLink()){
-            webLinkView.setVisibility(View.VISIBLE);
-            webLinkView.setLink(post.getWebLink());
-        }
-        else {
-            webLinkView.setVisibility(View.GONE);
-        }
-
-
-        //Set post file PDF (if any)
-        PDFLinkButtonView pdfLinkButtonView = convertView.findViewById(R.id.btn_pdf_link);
-
-        if(post.getType() != PostTypes.PDF)
-            pdfLinkButtonView.setVisibility(View.GONE);
-        else {
-            pdfLinkButtonView.setVisibility(View.VISIBLE);
-            pdfLinkButtonView.setPDFUrl(post.getFile_path_url());
-        }
-
-
-        //Set posts likes
-        LikeButtonView likeButtonView = convertView.findViewById(R.id.like_button);
-        likeButtonView.setNumberLikes(post.getNumberLike());
-        likeButtonView.setIsLiking(post.isLiking());
-        likeButtonView.setUpdateListener(new LikeButtonView.OnLikeUpdateListener() {
-            @Override
-            public void OnLikeUpdate(boolean isLiking) {
-                //Call listener
-                mListener.onPostLikeUpdate(post, isLiking);
+            else {
+                mUserAccountImage.removeUser();
+                mUserAccountName.setText("");
             }
-        });
 
-        //Process post comments
-        ArrayList<Comment> comments = post.getComments_list();
-        LinearLayout commentsView = convertView.findViewById(R.id.comments_list);
-        commentsView.removeAllViews();
-        if(comments != null) {
 
-            //Show comments list
-            convertView.findViewById(R.id.comments_list).setVisibility(View.VISIBLE);
+            //Post date
+            mPostDate.setText(mUtils.timeToString(Utilities.time() - post.getPost_time()));
 
-            for (Comment comment : comments) {
 
-                //Check if the comment has been deleted
-                if(comment.isDeleted())
-                    continue; //Skip comment
+            //Display post visibility
+            switch (post.getVisibilityLevel()){
 
-                //Try to find information about the user
-                UserInfo commentUser = mUsersInfos.containsKey(comment.getUserID()) ?
-                        mUsersInfos.get(comment.getUserID()) : null;
+                case PUBLIC:
+                    mPostVisibility.setText(R.string.post_visibility_public);
+                    break;
 
-                //Inflate the view
-                View commentView = CommentsAdapter.getInflatedView(getContext(), comment,
-                        mListener, commentUser, commentsView);
-                commentsView.addView(commentView);
+                case FRIENDS:
+                    mPostVisibility.setText(R.string.post_visibility_friends);
+                    break;
+
+                case MEMBERS:
+                    mPostVisibility.setText(R.string.post_visibility_members);
+                    break;
+
+                case PRIVATE:
+                default:
+                    mPostVisibility.setText(R.string.post_visibility_private);
+                    break;
             }
-        }
-        else {
-            //Hide comments list
-            convertView.findViewById(R.id.comments_list).setVisibility(View.GONE);
-        }
 
 
-        //Update comment creation form
-        View commentCreationForm = convertView.findViewById(R.id.create_comment_form);
-        EditCommentContentView input_comment = convertView.findViewById(R.id.input_comment_content);
-        if(comments == null){
+            //Set post actions
+            mPostActions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.showPostActions(v, position, getPost(position));
+                }
+            });
 
-            //Hide comment creation form
-            commentCreationForm.setVisibility(View.GONE);
 
-        }
-        else {
+            //Set post content
+            mPostContent.setText(Utilities.prepareStringTextView(post.getContent()));
 
-            //Display comment creation form
-            commentCreationForm.setVisibility(View.VISIBLE);
 
-            //Make sure the form is correctly set up
-            if(input_comment.getPostID() != post.getId()){
+            //Post likes
+            mLikeButton.setNumberLikes(post.getNumberLike());
+            mLikeButton.setIsLiking(post.isLiking());
+            mLikeButton.setUpdateListener(new LikeButtonView.OnLikeUpdateListener() {
+                @Override
+                public void OnLikeUpdate(boolean isLiking) {
+                    mListener.onPostLikeUpdate(getPost(position), isLiking);
+                }
+            });
 
-                //Reset input comment
-                input_comment.setPostID(post.getId());
-                input_comment.setText("");
 
-                //Make the send button lives
-                final View finalConvertView = convertView;
-                convertView.findViewById(R.id.comment_send_button)
-                        .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        sendComment(position, finalConvertView);
-                    }
-                });
+            //Post comments
+            ArrayList<Comment> comments = post.getComments_list();
+            mCommentsList.removeAllViews();
+            if(comments != null){
+                //Show list
+                mCommentsList.setVisibility(View.VISIBLE);
 
-                //Make the comment input behaves like the send button when the user hit the
-                //enter key
-                input_comment.setOnKeyListener(new View.OnKeyListener() {
+                for(Comment comment : comments){
+
+                    if(comment.isDeleted())
+                        continue;
+
+                    UserInfo commentUser = mUsersInfo.containsKey(comment.getUserID()) ?
+                            mUsersInfo.get(comment.getUserID()) : null;
+
+                    View commentView = CommentsAdapter.getInflatedView(getContext(), comment,
+                            mListener, commentUser, mCommentsList);
+                    mCommentsList.addView(commentView);
+
+                }
+            }
+            else
+                //Hide comments list
+                mCommentsList.setVisibility(View.GONE);
+
+
+            //Comments creation form
+            if(comments == null)
+                mCreateCommentForm.setVisibility(View.GONE);
+            else {
+                mCreateCommentForm.setVisibility(View.VISIBLE);
+
+                if(mEditCommentContentView.getPostID() != post.getId()){
+
+                    mEditCommentContentView.setPostID(post.getId());
+                    mEditCommentContentView.setText("");
+
+                    mSendCommentButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            sendComment();
+                        }
+                    });
+
+                }
+
+                mEditCommentContentView.setOnKeyListener(new View.OnKeyListener() {
                     @Override
                     public boolean onKey(View v, int keyCode, KeyEvent event) {
-
                         if(event.getAction() == KeyEvent.ACTION_DOWN
-                                && keyCode == KeyEvent.KEYCODE_ENTER){
-                            sendComment(position, finalConvertView);
-                        }
+                                && keyCode == KeyEvent.KEYCODE_ENTER)
+                            sendComment();
 
                         return false;
                     }
                 });
-
             }
         }
 
-        return convertView;
+        private void sendComment(){
+            mListener.onCreateComment(getLayoutPosition(), mSendCommentButton,
+                    getPost(getLayoutPosition()), mEditCommentContentView);
+        }
     }
 
     /**
-     * Intend to send a new comment to the server
-     *
-     * @param pos The position of the post to update
-     * @param container The container of the post item
+     * Image posts holder
      */
-    private void sendComment(int pos, View container){
+    private class ImagePostHolder extends TextPostHolder {
 
-        //Get post information
-        final Post post = getItem(pos);
-        if(post==null)
-            return;
+        private EnlargeableWebImageView mPostImage;
 
-        //Get view about the comment
-        final EditCommentContentView commentInput = container.findViewById(R.id.input_comment_content);
-        final ImageView sendButton = container.findViewById(R.id.comment_send_button);
+        ImagePostHolder(@NonNull View itemView) {
+            super(itemView);
 
-        //Call interface
-        mListener.onCreateComment(pos, sendButton, post, commentInput);
+            mPostImage = new EnlargeableWebImageView(getContext());
+            getAdditionnalViewsLayout().addView(mPostImage,
+                    new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            UiUtils.GetPixel(getContext(), 200)));
+        }
 
+        @Override
+        void bind(int position) {
+            super.bind(position);
+
+            mPostImage.loadURL(getPost(position).getFile_path_url());
+        }
     }
 
+    /**
+     * PDF posts holder
+     */
+    private class PDFPostHolder extends TextPostHolder {
+
+        private PDFLinkButtonView mPDFLinkButton;
+
+        PDFPostHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mPDFLinkButton = new PDFLinkButtonView(getContext(), null, R.style.PostPDFButton);
+            getAdditionnalViewsLayout().addView(mPDFLinkButton);
+        }
+
+        @Override
+        void bind(int position) {
+            super.bind(position);
+
+            mPDFLinkButton.setPDFUrl(getPost(position).getFile_path_url());
+        }
+    }
+
+    /**
+     * Web link post holder
+     */
+    private class WebLinkPostHolder extends TextPostHolder {
+
+        private WebLinkView mWebLinkView;
+
+        WebLinkPostHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mWebLinkView = new WebLinkView(getContext());
+            getAdditionnalViewsLayout().addView(mWebLinkView,
+                    new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+        }
+
+        @Override
+        void bind(int position) {
+            super.bind(position);
+
+            mWebLinkView.setLink(getPost(position).getWebLink());
+        }
+    }
+
+    /**
+     * Movie post holder
+     */
+    private class MoviePostHolder extends TextPostHolder {
+
+        MovieView mMovieView;
+
+        MoviePostHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mMovieView = new MovieView(getContext(), null, R.style.PostMovie);
+            getAdditionnalViewsLayout().addView(mMovieView, new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    UiUtils.GetPixel(getContext(), 200)
+            ));
+        }
+
+        @Override
+        void bind(int position) {
+            super.bind(position);
+
+            mMovieView.setMovie(getPost(position).getMovie());
+        }
+    }
 }
