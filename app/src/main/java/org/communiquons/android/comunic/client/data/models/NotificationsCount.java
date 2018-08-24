@@ -12,6 +12,7 @@ public class NotificationsCount {
     //Private fields
     private int notificationsCount;
     private int conversationsCount;
+    private int friendsRequestsCount;
 
 
     //Set and get notifications count
@@ -31,5 +32,14 @@ public class NotificationsCount {
 
     public int getConversationsCount() {
         return conversationsCount;
+    }
+
+    //Getter and setter for friends requests
+    public int getFriendsRequestsCount() {
+        return friendsRequestsCount;
+    }
+
+    public void setFriendsRequestsCount(int friendsRequestsCount) {
+        this.friendsRequestsCount = friendsRequestsCount;
     }
 }

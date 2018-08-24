@@ -52,6 +52,7 @@ public class NotificationsHelper {
         //Perform an API request
         APIRequest params = new APIRequest(mContext,
                 "notifications/count_all_news");
+        params.addBoolean("friends_request", true);
 
         //Try to perform the request and parse results
         try {
@@ -63,6 +64,8 @@ public class NotificationsHelper {
             NotificationsCount res = new NotificationsCount();
             res.setNotificationsCount(object.getInt("notifications"));
             res.setConversationsCount(object.getInt("conversations"));
+            res.setFriendsRequestsCount(object.getInt("friends_request"));
+
             return res;
 
         } catch (Exception e) {

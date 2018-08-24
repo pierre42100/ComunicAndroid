@@ -43,7 +43,8 @@ public class NotificationsService extends IntentService {
      * Notification extras
      */
     public static final String BROADCAST_EXTRA_NUMBER_NOTIFICATIONS = "NumberNotifications";
-    public static final String BROADCAST_EXTRACT_UNREAD_CONVERSATIONS = "UnreadConversations";
+    public static final String BROADCAST_EXTRA_UNREAD_CONVERSATIONS = "UnreadConversations";
+    public static final String BROADCAST_EXTRA_NUMBER_FRIENDSHIP_REQUESTS = "NumberFriendsRequests";
 
     /**
      * Notification channel ID
@@ -154,7 +155,8 @@ public class NotificationsService extends IntentService {
             //Create an intent and push nut data
             Intent pushIntent = new Intent(BROADCAST_ACTION)
                     .putExtra(BROADCAST_EXTRA_NUMBER_NOTIFICATIONS, count.getNotificationsCount())
-                    .putExtra(BROADCAST_EXTRACT_UNREAD_CONVERSATIONS, count.getConversationsCount());
+                    .putExtra(BROADCAST_EXTRA_UNREAD_CONVERSATIONS, count.getConversationsCount())
+                    .putExtra(BROADCAST_EXTRA_NUMBER_FRIENDSHIP_REQUESTS, count.getFriendsRequestsCount());
 
             LocalBroadcastManager.getInstance(this).sendBroadcast(pushIntent);
         }

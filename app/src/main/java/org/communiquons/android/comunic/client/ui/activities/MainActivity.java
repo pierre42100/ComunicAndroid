@@ -112,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements
                 count.setNotificationsCount(intent.getExtras().getInt(
                         NotificationsService.BROADCAST_EXTRA_NUMBER_NOTIFICATIONS));
                 count.setConversationsCount(intent.getExtras().getInt(
-                        NotificationsService.BROADCAST_EXTRACT_UNREAD_CONVERSATIONS));
+                        NotificationsService.BROADCAST_EXTRA_UNREAD_CONVERSATIONS));
+                count.setFriendsRequestsCount(intent.getExtras().getInt(
+                        NotificationsService.BROADCAST_EXTRA_NUMBER_FRIENDSHIP_REQUESTS));
                 updateNumberNotifications(count);
             }
         }
@@ -345,6 +347,9 @@ public class MainActivity extends AppCompatActivity implements
 
         mNavBar.getItemIdentifierView(R.id.action_conversations).setNumberNews(
                 count.getConversationsCount());
+
+        mNavBar.getItemIdentifierView(R.id.action_friendslist).setNumberNews(
+                count.getFriendsRequestsCount());
     }
 
 
