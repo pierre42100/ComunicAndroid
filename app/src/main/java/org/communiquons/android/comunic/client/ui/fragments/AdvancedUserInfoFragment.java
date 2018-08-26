@@ -11,12 +11,15 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.models.AdvancedUserInfo;
+import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
-import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.FriendshipStatusButton;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 /**
  * Advanced user information fragment
+ *
+ * Warning !!! This fragment is not made to work in an autonomous way !!!
  *
  * @author Pierre HUBERT
  */
@@ -41,6 +44,11 @@ public class AdvancedUserInfoFragment extends Fragment {
      * Target for the time the user has been a member of the group
      */
     private TextView mMemberSinceTarget;
+
+    /**
+     * Friendship status
+     */
+    private FriendshipStatusButton mFriendshipStatus;
 
     /**
      * Set advanced information about the user
@@ -75,6 +83,7 @@ public class AdvancedUserInfoFragment extends Fragment {
         mUserAccountImage = view.findViewById(R.id.user_account_image);
         mUserName = view.findViewById(R.id.user_name);
         mMemberSinceTarget = view.findViewById(R.id.member_since_value);
+        mFriendshipStatus = view.findViewById(R.id.friendship_status);
     }
 
     @Override
@@ -86,5 +95,19 @@ public class AdvancedUserInfoFragment extends Fragment {
         mUserName.setText(mAdvancedUserInfo.getDisplayFullName());
         mMemberSinceTarget.setText(new Utilities(getActivity()).timeToString(
                 Utilities.time() - mAdvancedUserInfo.getAccount_creation_time()));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(AccountUtils.getID(getActivity()) == mAdvancedUserInfo.getId()) {
+            mFriendshipStatus.setVisibility(View.GONE);
+        }
+        else {
+            mFriendshipStatus.setUserID(mAdvancedUserInfo.getId());
+            mFriendshipStatus.refreshIfRequired();
+        }
+
     }
 }

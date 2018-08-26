@@ -198,12 +198,13 @@ public class FriendshipStatusButton extends BaseFrameLayoutView implements View.
         else {
 
             //The two people are friends
-            mOnFriendsStatusUpdateListener.onAreFriend();
+            if(mOnFriendsStatusUpdateListener != null)
+                mOnFriendsStatusUpdateListener.onAreFriend();
 
             if(mFriendshipStatus.isFollowing())
                 mFollowingButton.setVisibility(View.VISIBLE);
             else
-                mFollowingButton.setVisibility(View.GONE);
+                mFollowButton.setVisibility(View.VISIBLE);
         }
     }
 
