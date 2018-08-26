@@ -241,4 +241,7 @@
     <string name="action_reject_friend_request">Rejeter</string>
     <string name="notice_request">Demande</string>
     <string name="action_more_description">Plus d\'options</string>
+    <string name="action_follow">Suivre</string>
+    <string name="button_follow">Suivre</string>
+    <string name="button_following">Suivi</string>
 </resources>

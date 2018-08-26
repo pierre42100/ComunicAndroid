@@ -244,4 +244,6 @@
     <string name="notice_request">Requested</string>
     <string name="action_more_description">Get more options</string>
     <string name="action_follow">Follow</string>
+    <string name="button_follow">Follow</string>
+    <string name="button_following">Following</string>
 </resources>
