@@ -56,6 +56,7 @@
             style="@style/PostVisibility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="top"
             tools:text="Public" />
 
         <ImageView
@@ -63,8 +64,8 @@
             style="@style/PostActionsButton"
             android:layout_width="@dimen/post_options_btn_width"
             android:layout_height="@dimen/post_options_btn_height"
-            android:contentDescription="@string/post_action_btn_description"
-            android:src="@android:drawable/ic_menu_manage" />
+            android:layout_gravity="top"
+            android:contentDescription="@string/post_action_btn_description" />
 
 
     </LinearLayout>

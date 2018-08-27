@@ -82,6 +82,9 @@
     <style name="PostActionsButton">
         <item name="android:padding">2dp</item>
         <item name="android:layout_gravity">center</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:src">@drawable/ic_more</item>
+        <item name="android:tint">@android:color/darker_gray</item>
     </style>
 
     <!-- Post header -->

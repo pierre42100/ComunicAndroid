@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.ArrayMap;
 import android.util.Pair;
@@ -176,6 +177,8 @@ public class PostsListFragment extends Fragment
         //Get the list view
         mRecyclerView = view.findViewById(R.id.posts_list);
         mRecyclerView.setOnScrollChangeDetectListener(this);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(),
+                DividerItemDecoration.VERTICAL));
 
         //Show the posts
         show();
