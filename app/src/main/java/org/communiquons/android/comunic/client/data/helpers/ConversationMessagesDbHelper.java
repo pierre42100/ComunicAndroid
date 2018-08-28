@@ -191,6 +191,20 @@ class ConversationMessagesDbHelper {
     }
 
     /**
+     * Delete a message from the local database
+     *
+     * @param messageID The ID of the message to delete
+     * @return The result of the operation
+     */
+    boolean deleteMessage(int messageID){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        String conditions = ConversationsMessagesSchema.COLUMN_NAME_MESSAGE_ID + " = ?";
+        String[] args = {messageID+""};
+        return db.delete(TABLE_NAME, conditions, args) > 0;
+    }
+
+    /**
      * Insert a single message into the database
      *
      * @param db Database object (with writeable access)

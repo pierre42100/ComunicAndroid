@@ -246,4 +246,10 @@
     <string name="action_follow">Follow</string>
     <string name="button_follow">Follow</string>
     <string name="button_following">Following</string>
+    <string name="action_delete">Delete</string>
+    <string name="dialog_delete_conversation_message_title">Delete message</string>
+    <string name="dialog_delete_conversation_message_message">Do you really want to delete this conversation message? Note: This may not have any effect if the other members of the conversation have already downloaded the message!</string>
+    <string name="dialog_delete_conversation_message_cancel">Cancel</string>
+    <string name="dialog_delete_conversation_message_confirm">Delete</string>
+    <string name="err_delete_conversation_message">Could not delete conversation message!</string>
 </resources>

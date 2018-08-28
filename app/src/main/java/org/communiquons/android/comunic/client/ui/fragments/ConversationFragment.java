@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,16 +15,19 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.ConversationMessagesList;
+import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
@@ -35,6 +39,8 @@ import org.communiquons.android.comunic.client.data.runnables.ConversationRefres
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAdapter;
+import org.communiquons.android.comunic.client.ui.asynctasks.DeleteConversationMessageTask;
+import org.communiquons.android.comunic.client.ui.listeners.OnConversationMessageActionsListener;
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
@@ -57,7 +63,8 @@ import static android.app.Activity.RESULT_OK;
 
 public class ConversationFragment extends Fragment
         implements ConversationRefreshRunnable.onMessagesChangeListener,
-        OnScrollChangeDetectListener {
+        OnScrollChangeDetectListener, OnConversationMessageActionsListener,
+        PopupMenu.OnMenuItemClickListener {
 
     /**
      * Pick image request number
@@ -88,6 +95,11 @@ public class ConversationFragment extends Fragment
      * The last available message id
      */
     private int last_message_id = 0;
+
+    /**
+     * Current user ID
+     */
+    private int userID;
 
     /**
      * The list of messages of the conversation
@@ -174,6 +186,16 @@ public class ConversationFragment extends Fragment
      */
     private AsyncTask mGetOlderMessagesTask;
 
+    /**
+     * Current conversation message in context menu
+     */
+    private int mMessageInContextMenu;
+
+    /**
+     * Safely delete message
+     */
+    private DeleteConversationMessageTask mDeleteMessageAsyncTask;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -237,7 +259,7 @@ public class ConversationFragment extends Fragment
         mAppBar = view.findViewById(R.id.appbar);
 
         //Need user ID
-        int userID = new AccountUtils(getActivity()).get_current_user_id();
+        userID = new AccountUtils(getActivity()).get_current_user_id();
 
         //Initialize toolbar
         mAppBar.addBackButton(new View.OnClickListener() {
@@ -258,6 +280,7 @@ public class ConversationFragment extends Fragment
         //Create the adapter
         convMessAdapter = new ConversationMessageAdapter(getActivity(),
                 messagesList, userID);
+        convMessAdapter.setOnConversationMessageActionsListener(this);
 
         //Apply adapter
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
@@ -367,6 +390,14 @@ public class ConversationFragment extends Fragment
 
         refreshRunnable.quitSafely();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(mDeleteMessageAsyncTask != null)
+            mDeleteMessageAsyncTask.setOnPostExecuteListener(null);
     }
 
     @Override
@@ -730,4 +761,92 @@ public class ConversationFragment extends Fragment
         //Refresh user information if required
         refreshUserInfo();
     }
+
+    @Override
+    public void onOpenContextMenu(int pos, View v) {
+
+        mMessageInContextMenu = pos;
+        ConversationMessage message = messagesList.get(pos);
+
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+        popup.inflate(R.menu.menu_conversation_message);
+
+        if(message.getUser_id() != userID)
+            popup.getMenu().findItem(R.id.action_delete).setEnabled(false);
+
+        popup.setOnMenuItemClickListener(this);
+
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+
+        if(item.getItemId() == R.id.action_delete){
+            onConfirmDeleteConversationMessage(mMessageInContextMenu);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onConfirmDeleteConversationMessage(final int pos) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.dialog_delete_conversation_message_title)
+                .setMessage(R.string.dialog_delete_conversation_message_message)
+                .setNegativeButton(R.string.dialog_delete_conversation_message_cancel, null)
+
+                .setPositiveButton(R.string.dialog_delete_conversation_message_confirm,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteConversationMessage(pos);
+                    }
+                })
+
+                .show();
+    }
+
+    /**
+     * Delete conversation message at a specified position
+     *
+     * @param pos The position of the message to delete
+     */
+    private void deleteConversationMessage(final int pos){
+        mDeleteMessageAsyncTask = new DeleteConversationMessageTask(getActivity());
+        mDeleteMessageAsyncTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
+            @Override
+            public void OnPostExecute(Boolean result) {
+                deleteConversationMessagesCallback(pos, result);
+            }
+        });
+
+
+        mDeleteMessageAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                messagesList.get(pos).getId());
+    }
+
+    /**
+     * Delete conversation message callback
+     *
+     * @param pos The position of the message
+     * @param result Result of the operation
+     */
+    private void deleteConversationMessagesCallback(int pos, boolean result){
+
+        if(getActivity() == null)
+           return;
+
+        if(!result) {
+            Toast.makeText(getActivity(), R.string.err_delete_conversation_message,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        messagesList.remove(pos);
+        convMessAdapter.notifyDataSetChanged();
+    }
+
+
 }

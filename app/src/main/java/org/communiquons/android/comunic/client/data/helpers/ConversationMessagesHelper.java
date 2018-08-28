@@ -2,7 +2,6 @@ package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -40,6 +39,15 @@ public class ConversationMessagesHelper {
      * Context of execution of the application
      */
     private Context mContext;
+
+    /**
+     * Constructor of the helper
+     *
+     * @param context The context of the application
+     */
+    public ConversationMessagesHelper(Context context){
+        this(context.getApplicationContext(), DatabaseHelper.getInstance(context));
+    }
 
     /**
      * Public constructor of the helper
@@ -274,6 +282,32 @@ public class ConversationMessagesHelper {
         }
 
         return list;
+    }
+
+    /**
+     * Delete a conversation message
+     *
+     * @param messageID The ID of the message to delete
+     * @return TRUE for a success / FALSE else
+     */
+    public boolean deleteMessage(int messageID){
+
+        //Make a request on the server
+        APIRequest request = new APIRequest(mContext, "conversations/deleteMessage");
+        request.addInt("messageID", messageID);
+
+        try {
+            APIResponse response = new APIRequestHelper().exec(request);
+
+            if(response.getResponse_code() != 200) return false;
+
+            //Delete the message in the local database
+            return mDbHelper.deleteMessage(messageID);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**

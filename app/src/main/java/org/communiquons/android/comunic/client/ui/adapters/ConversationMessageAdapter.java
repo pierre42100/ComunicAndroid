@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.ui.listeners.OnConversationMessageActionsListener;
 import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
@@ -53,6 +55,11 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
      */
     private ConversationMessagesList mList;
 
+    /**
+     * Conversation messages listener
+     */
+    private OnConversationMessageActionsListener mOnConversationMessageActionsListener;
+
     private Utilities utils;
 
     /**
@@ -83,6 +90,10 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         return mList.get(position).getUser_id() == userID ? VIEW_TYPE_MESSAGE_SENT
                 : VIEW_TYPE_MESSAGE_RECEIVED;
+    }
+
+    public void setOnConversationMessageActionsListener(OnConversationMessageActionsListener listener) {
+        this.mOnConversationMessageActionsListener = listener;
     }
 
     @NonNull
@@ -122,7 +133,8 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
     /**
      * Base messages holder
      */
-    private class BaseMessageHolder extends RecyclerView.ViewHolder {
+    private class BaseMessageHolder extends RecyclerView.ViewHolder
+            implements View.OnLongClickListener{
 
         private TextView mMessage;
         private TextView mSentDate;
@@ -134,6 +146,9 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
             mMessage = itemView.findViewById(R.id.message_body);
             mImage = itemView.findViewById(R.id.messageImage);
             mSentDate = itemView.findViewById(R.id.text_message_time);
+
+            itemView.setOnLongClickListener(this);
+            mImage.setOnLongClickListener(this);
         }
 
         /**
@@ -173,6 +188,15 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
                 mSentDate.setVisibility(View.GONE);
             else
                 mSentDate.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+
+            if(mOnConversationMessageActionsListener != null)
+                mOnConversationMessageActionsListener.onOpenContextMenu(getLayoutPosition(), v);
+
+            return true;
         }
     }
 
