@@ -1,7 +1,6 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -396,8 +395,7 @@ public class ConversationFragment extends Fragment
     public void onDestroy() {
         super.onDestroy();
 
-        if(mDeleteMessageAsyncTask != null)
-            mDeleteMessageAsyncTask.setOnPostExecuteListener(null);
+        unsetPendingDeleteTasksCallback();
     }
 
     @Override
@@ -433,6 +431,10 @@ public class ConversationFragment extends Fragment
 
     @Override
     public void onLoadError() {
+
+        if(getActivity() == null)
+            return;
+
         //Display a toast
         Toast.makeText(getActivity(), R.string.fragment_conversation_err_load_message,
                 Toast.LENGTH_SHORT).show();
@@ -814,6 +816,8 @@ public class ConversationFragment extends Fragment
      * @param pos The position of the message to delete
      */
     private void deleteConversationMessage(final int pos){
+        unsetPendingDeleteTasksCallback();
+
         mDeleteMessageAsyncTask = new DeleteConversationMessageTask(getActivity());
         mDeleteMessageAsyncTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
             @Override
@@ -825,6 +829,14 @@ public class ConversationFragment extends Fragment
 
         mDeleteMessageAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
                 messagesList.get(pos).getId());
+    }
+
+    /**
+     * Unset any conversation message delete pending tasks
+     */
+    private void unsetPendingDeleteTasksCallback(){
+        if(mDeleteMessageAsyncTask != null)
+            mDeleteMessageAsyncTask.setOnPostExecuteListener(null);
     }
 
     /**
