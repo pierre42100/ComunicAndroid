@@ -248,4 +248,5 @@
     <string name="activity_about_title">A propos</string>
     <string name="dialog_open_source_licenses_title">Licences Open Source</string>
     <string name="btn_open_source_licences">Licences Open Source</string>
+    <string name="date_days_short">j</string>
 </resources>

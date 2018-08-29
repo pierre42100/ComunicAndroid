@@ -252,4 +252,5 @@
     <string name="dialog_delete_conversation_message_cancel">Cancel</string>
     <string name="dialog_delete_conversation_message_confirm">Delete</string>
     <string name="err_delete_conversation_message">Could not delete conversation message!</string>
+    <string name="date_days_short">d</string>
 </resources>

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
 /**
  * CountDown view
@@ -96,7 +97,8 @@ public class CountDownView extends BaseFrameLayoutView {
         int seconds = remaining_time % 60;
 
         Log.v(TAG, days + "d " + hours + ":" + minutes + ":" + seconds);
-        return StringsUtils.EnsureZerosInNumberString(days, 2) + "d "
+        return StringsUtils.EnsureZerosInNumberString(days, 2)
+                + UiUtils.getString(getContext(), R.string.date_days_short) + " "
                 + StringsUtils.EnsureZerosInNumberString(hours, 2) + ":"
                 + StringsUtils.EnsureZerosInNumberString(minutes, 2) + ":"
                 + StringsUtils.EnsureZerosInNumberString(seconds, 2);
