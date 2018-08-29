@@ -250,4 +250,11 @@
     <string name="btn_open_source_licences">Licences Open Source</string>
     <string name="date_days_short">j</string>
     <string name="tab_friends">Amis</string>
+    <string name="dialog_delete_conversation_message_title">Supprimer le message</string>
+    <string name="dialog_delete_conversation_message_message">Voulez-vous vraiment supprimer ce message ? Note : Cette action pourrait n\'avoir aucun effet si les autres membres de la conversation l\'ont déjà téléchargé !</string>
+    <string name="dialog_delete_conversation_message_cancel">Annuler</string>
+    <string name="dialog_delete_conversation_message_confirm">Supprimer</string>
+    <string name="err_delete_conversation_message">Une erreur a survenue lors de la suppression du message !</string>
+    <string name="err_get_user_friends">Une erreur a survenu lors de la récupération de la liste des amis de l\'utilisateur !</string>
+    <string name="notice_user_has_no_friend">Ce utilisateur n\'a aucun ami pour le moment.</string>
 </resources>
