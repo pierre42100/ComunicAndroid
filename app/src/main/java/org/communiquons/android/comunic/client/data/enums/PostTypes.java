@@ -35,6 +35,11 @@ public enum PostTypes {
     PDF,
 
     /**
+     * Countdown timer
+     */
+    COUNTDOWN,
+
+    /**
      * Unknown type
      */
     UNKNOWN

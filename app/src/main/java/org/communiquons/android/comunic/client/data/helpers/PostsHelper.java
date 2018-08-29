@@ -375,6 +375,10 @@ public class PostsHelper {
             post.setWebLink(webLink);
         }
 
+        //Get information about countdown timer (if any)
+        if(!json.isNull("time_end"))
+            post.setTime_end(json.getInt("time_end"));
+
         return post;
     }
 
@@ -428,6 +432,9 @@ public class PostsHelper {
 
             case "pdf":
                 return PostTypes.PDF;
+
+            case "countdown":
+                return PostTypes.COUNTDOWN;
 
             default:
                 return PostTypes.UNKNOWN;

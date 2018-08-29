@@ -49,6 +49,9 @@ public class Post {
     //Web link
     private WebLink webLink;
 
+    //Countdown timer
+    private int time_end;
+
 
     //Set and get the ID of the post
     public void setId(int id) {
@@ -227,6 +230,15 @@ public class Post {
 
     public void setWebLink(WebLink webLink) {
         this.webLink = webLink;
+    }
+
+    //Set and get countdown time end
+    public int getTime_end() {
+        return time_end;
+    }
+
+    public void setTime_end(int time_end) {
+        this.time_end = time_end;
     }
 }
 

@@ -60,4 +60,21 @@ public class StringsUtils {
                 Locale.getDefault());
         return simpleDateFormat.format((long)1000*time);
     }
+
+    /**
+     * Convert an integer into a string, making sure that the generated string respects an minimum
+     * size
+     *
+     * @param value The integer to convert
+     * @param size The size of string
+     * @return Generated string
+     */
+    public static String EnsureZerosInNumberString(int value, int size){
+        StringBuilder stringBuilder = new StringBuilder(value + "");
+
+        while (stringBuilder.length() < size)
+            stringBuilder.insert(0, "0");
+
+        return stringBuilder.toString();
+    }
 }

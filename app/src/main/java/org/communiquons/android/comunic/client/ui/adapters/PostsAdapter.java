@@ -22,6 +22,7 @@ import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.CountDownView;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
 import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
@@ -54,6 +55,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
     private static final int VIEW_TYPE_POST_MOVIE = 2;
     private static final int VIEW_TYPE_POST_PDF = 3;
     private static final int VIEW_TYPE_POST_WEBLINK = 4;
+    private static final int VIEW_TYPE_POST_COUNTDOWN = 5;
 
     /**
      * Posts list
@@ -118,6 +120,9 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             case MOVIE:
                 return VIEW_TYPE_POST_MOVIE;
 
+            case COUNTDOWN:
+                return VIEW_TYPE_POST_COUNTDOWN;
+
             case TEXT:
             default:
                 return VIEW_TYPE_POST_TEXT;
@@ -143,6 +148,9 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
             case VIEW_TYPE_POST_MOVIE:
                 return new MoviePostHolder(view);
+
+            case VIEW_TYPE_POST_COUNTDOWN:
+                return new CountdownPostHolder(view);
 
                 default:
                     return new TextPostHolder(view);
@@ -428,6 +436,30 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             super.bind(position);
 
             mMovieView.setMovie(getPost(position).getMovie());
+        }
+    }
+
+    /**
+     * Countdown post holder
+     */
+    private class CountdownPostHolder extends TextPostHolder {
+
+        private CountDownView mCountDownView;
+
+        CountdownPostHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mCountDownView = new CountDownView(getContext(), null);
+            getAdditionnalViewsLayout().addView(mCountDownView, new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    UiUtils.GetPixel(getContext(), 30)));
+        }
+
+        @Override
+        void bind(int position) {
+            super.bind(position);
+
+            mCountDownView.setTime_end(getPost(position).getTime_end());
         }
     }
 }
