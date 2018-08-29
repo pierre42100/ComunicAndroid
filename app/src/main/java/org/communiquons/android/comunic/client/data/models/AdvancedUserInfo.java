@@ -13,6 +13,7 @@ public class AdvancedUserInfo extends UserInfo {
     private int account_creation_time;
     private boolean accessForbidden = false;
     private boolean canPostText;
+    private boolean friendListPublic;
 
     /**
      * Get the account creation time
@@ -66,5 +67,14 @@ public class AdvancedUserInfo extends UserInfo {
      */
     public boolean isCanPostText() {
         return canPostText;
+    }
+
+    //Set and get friend is public status
+    public boolean isFriendListPublic() {
+        return friendListPublic;
+    }
+
+    public void setFriendListPublic(boolean friendListPublic) {
+        this.friendListPublic = friendListPublic;
     }
 }

@@ -403,6 +403,8 @@ public class GetUsersHelper {
             //Check if user can post text or this page or not
             advancedUserInfo.setCanPostText(userObject.getBoolean("can_post_texts"));
 
+            advancedUserInfo.setFriendListPublic(userObject.getBoolean("friend_list_public"));
+
         } catch (JSONException e){
             e.printStackTrace();
             return null;

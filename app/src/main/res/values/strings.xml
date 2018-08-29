@@ -253,4 +253,7 @@
     <string name="dialog_delete_conversation_message_confirm">Delete</string>
     <string name="err_delete_conversation_message">Could not delete conversation message!</string>
     <string name="date_days_short">d</string>
+    <string name="tab_friends">Friends</string>
+    <string name="err_get_user_friends">Could not get the friends of the user!</string>
+    <string name="notice_user_has_no_friend">This user has not any friend yet.</string>
 </resources>

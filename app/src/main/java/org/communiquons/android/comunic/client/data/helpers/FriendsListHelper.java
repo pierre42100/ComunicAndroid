@@ -343,4 +343,34 @@ public class FriendsListHelper {
             return false;
         }
     }
+
+    /**
+     * Get the list of friends of a user
+     *
+     * @param userID the ID of the target user
+     * @return The list of the IDs of the friends of the user / null in case of failure
+     */
+    @Nullable
+    public ArrayList<Integer> getUserFriends(int userID){
+        APIRequest request = new APIRequest(mContext, "friends/get_user_list");
+        request.addInt("userID", userID);
+
+        try {
+            APIResponse response = new APIRequestHelper().exec(request);
+
+            if(response.getResponse_code() != 200) return null;
+
+            JSONArray array = response.getJSONArray();
+            ArrayList<Integer> list = new ArrayList<>();
+
+            for (int i = 0; i < array.length(); i++)
+                list.add(array.getInt(i));
+
+            return list;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

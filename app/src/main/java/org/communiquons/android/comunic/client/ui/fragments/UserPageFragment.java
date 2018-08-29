@@ -1,12 +1,12 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +17,7 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.models.AdvancedUserInfo;
+import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.FragmentPagerBaseAdapter;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
@@ -195,6 +196,18 @@ public class UserPageFragment extends Fragment {
         postsFragment.setArguments(args);
         adapter.addFragment(postsFragment, UiUtils.getString(getActivity(),
                 R.string.tab_posts));
+
+        //Friends fragment (if required)
+        if(mUserID != AccountUtils.getID(getActivity()) && userInfo.isFriendListPublic()){
+
+            Bundle friendsArgs = new Bundle();
+            friendsArgs.putInt(UserFriendListFragment.ARGUMENT_USER_ID, mUserID);
+
+            UserFriendListFragment friendsFragment = new UserFriendListFragment();
+            friendsFragment.setArguments(friendsArgs);
+            adapter.addFragment(friendsFragment, UiUtils.getString(getActivity(),
+                    R.string.tab_friends));
+        }
 
 
         mPager.setAdapter(adapter);

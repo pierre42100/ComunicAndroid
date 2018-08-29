@@ -249,4 +249,5 @@
     <string name="dialog_open_source_licenses_title">Licences Open Source</string>
     <string name="btn_open_source_licences">Licences Open Source</string>
     <string name="date_days_short">j</string>
+    <string name="tab_friends">Amis</string>
 </resources>
