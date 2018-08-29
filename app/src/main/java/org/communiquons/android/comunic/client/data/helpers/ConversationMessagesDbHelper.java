@@ -191,6 +191,22 @@ class ConversationMessagesDbHelper {
     }
 
     /**
+     * Update a conversation message in the database
+     *
+     * @param message Information about the message to update
+     * @return TRUE in case of success / FALSE else
+     */
+    boolean updateMessage(ConversationMessage message){
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        String conditions = ConversationsMessagesSchema.COLUMN_NAME_MESSAGE_ID + " = ?";
+        String[] values = new String[]{message.getId()+""};
+
+        return db.update(TABLE_NAME, getContentValues(message), conditions, values) > 0;
+    }
+
+    /**
      * Delete a message from the local database
      *
      * @param messageID The ID of the message to delete

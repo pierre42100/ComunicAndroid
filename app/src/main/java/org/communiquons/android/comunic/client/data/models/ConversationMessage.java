@@ -132,6 +132,13 @@ public class ConversationMessage {
     }
 
     /**
+     * @return TRUE if the content of the message has been specified / FALSE else
+     */
+    public boolean hasContent(){
+        return this.content != null;
+    }
+
+    /**
      * Get the content of the message
      *
      * @return The content

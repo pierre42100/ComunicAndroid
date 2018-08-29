@@ -39,6 +39,7 @@ import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.ui.asynctasks.DeleteConversationMessageTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.UpdateConversationMessageContentTask;
 import org.communiquons.android.comunic.client.ui.listeners.OnConversationMessageActionsListener;
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
@@ -48,6 +49,8 @@ import org.communiquons.android.comunic.client.ui.views.ScrollRecyclerView;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.zip.Inflater;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -191,9 +194,10 @@ public class ConversationFragment extends Fragment
     private int mMessageInContextMenu;
 
     /**
-     * Safely delete message
+     * Safe AsyncTasks
      */
     private DeleteConversationMessageTask mDeleteMessageAsyncTask;
+    private UpdateConversationMessageContentTask mUpdateConversationMessageContentTask;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -396,6 +400,7 @@ public class ConversationFragment extends Fragment
         super.onDestroy();
 
         unsetPendingDeleteTasksCallback();
+        unsetPendingUpdatedTasksCallbacks();
     }
 
     @Override
@@ -773,8 +778,10 @@ public class ConversationFragment extends Fragment
         PopupMenu popup = new PopupMenu(getActivity(), v);
         popup.inflate(R.menu.menu_conversation_message);
 
-        if(message.getUser_id() != userID)
+        if(message.getUser_id() != userID) {
             popup.getMenu().findItem(R.id.action_delete).setEnabled(false);
+            popup.getMenu().findItem(R.id.action_update_content).setEnabled(false);
+        }
 
         popup.setOnMenuItemClickListener(this);
 
@@ -789,8 +796,14 @@ public class ConversationFragment extends Fragment
             return true;
         }
 
+        if(item.getItemId() == R.id.action_update_content){
+            onRequestConversationMessageUpdate(mMessageInContextMenu);
+            return true;
+        }
+
         return false;
     }
+
 
     @Override
     public void onConfirmDeleteConversationMessage(final int pos) {
@@ -809,6 +822,29 @@ public class ConversationFragment extends Fragment
 
                 .show();
     }
+
+    @Override
+    public void onRequestConversationMessageUpdate(final int pos) {
+
+        View view = LayoutInflater.from(getActivity()).inflate(
+                R.layout.dialog_edit_conversation_message, null);
+        final EditText input = view.findViewById(R.id.input);
+        input.setText(messagesList.get(pos).getContent());
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.dialog_edit_conversation_message_content_title)
+                .setView(view)
+                .setNegativeButton(R.string.dialog_edit_conversation_message_content_cancel, null)
+                .setPositiveButton(R.string.dialog_edit_conversation_message_content_update, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        update_conversation_message(pos, ""+input.getText());
+                    }
+                }).show();
+
+    }
+
+
 
     /**
      * Delete conversation message at a specified position
@@ -861,4 +897,57 @@ public class ConversationFragment extends Fragment
     }
 
 
+    /**
+     * Perform the update of the content of a conversation message
+     *
+     * @param pos The position of the message to update
+     * @param content The new content of the message
+     */
+    private void update_conversation_message(int pos, String content){
+
+        if(content.length() < 3){
+            Toast.makeText(getActivity(), R.string.err_invalid_conversation_message_content,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        unsetPendingUpdatedTasksCallbacks();
+
+        ConversationMessage message = messagesList.get(pos);
+        message.setContent(content);
+
+        mUpdateConversationMessageContentTask = new UpdateConversationMessageContentTask(getActivity());
+        mUpdateConversationMessageContentTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
+            @Override
+            public void OnPostExecute(Boolean aBoolean) {
+                if(getActivity() != null)
+                    updateConversationMessageCallback(aBoolean);
+            }
+        });
+        mUpdateConversationMessageContentTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message);
+    }
+
+    /**
+     * Unset any conversation message update pending tasks
+     */
+    private void unsetPendingUpdatedTasksCallbacks(){
+        if(mUpdateConversationMessageContentTask != null)
+            mUpdateConversationMessageContentTask.setOnPostExecuteListener(null);
+    }
+
+    /**
+     * Update Conversation message callback
+     *
+     * @param result TRUE in case of result / FALSE else
+     */
+    private void updateConversationMessageCallback(boolean result){
+
+        //Check for errors
+        Toast.makeText(getActivity(),
+                !result ? R.string.err_update_conversation_message_content :
+                        R.string.success_update_conversation_message_content,
+                Toast.LENGTH_SHORT).show();
+
+        convMessAdapter.notifyDataSetChanged();
+    }
 }

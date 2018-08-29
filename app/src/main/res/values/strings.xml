@@ -256,4 +256,12 @@
     <string name="tab_friends">Friends</string>
     <string name="err_get_user_friends">Could not get the friends of the user!</string>
     <string name="notice_user_has_no_friend">This user has not any friend yet.</string>
+    <string name="action_update_content">Update content</string>
+    <string name="hint_edit_conversation_message">Message content</string>
+    <string name="dialog_edit_conversation_message_content_title">Update message</string>
+    <string name="dialog_edit_conversation_message_content_cancel">Cancel</string>
+    <string name="dialog_edit_conversation_message_content_update">Update</string>
+    <string name="err_invalid_conversation_message_content">The content of the conversation message is invalid!</string>
+    <string name="err_update_conversation_message_content">Could not update conversation message content!</string>
+    <string name="success_update_conversation_message_content">The content of the conversation message has been successfully updated!</string>
 </resources>

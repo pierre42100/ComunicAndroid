@@ -26,4 +26,11 @@ public interface OnConversationMessageActionsListener {
      */
     void onConfirmDeleteConversationMessage(int pos);
 
+    /**
+     * Ask the user the new content for the conversation message
+     *
+     * @param pos The position of the message to update
+     */
+    void onRequestConversationMessageUpdate(int pos);
+
 }

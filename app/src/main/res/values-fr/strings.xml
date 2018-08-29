@@ -257,4 +257,12 @@
     <string name="err_delete_conversation_message">Une erreur a survenue lors de la suppression du message !</string>
     <string name="err_get_user_friends">Une erreur a survenu lors de la récupération de la liste des amis de l\'utilisateur !</string>
     <string name="notice_user_has_no_friend">Ce utilisateur n\'a aucun ami pour le moment.</string>
+    <string name="action_update_content">Mettre à jour le contenu</string>
+    <string name="hint_edit_conversation_message">Contenu du message</string>
+    <string name="dialog_edit_conversation_message_content_title">Mise à jour du message</string>
+    <string name="dialog_edit_conversation_message_content_cancel">Annuler</string>
+    <string name="dialog_edit_conversation_message_content_update">Mettre à jour</string>
+    <string name="err_invalid_conversation_message_content">Le contenu du message est invalide !</string>
+    <string name="err_update_conversation_message_content">Une erreur a survenue lors de la mise à jour du contenu du message ! Veuillez réessayer…</string>
+    <string name="success_update_conversation_message_content">Le contenu du message  a bien été mis à jour !</string>
 </resources>

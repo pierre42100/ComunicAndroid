@@ -285,6 +285,32 @@ public class ConversationMessagesHelper {
     }
 
     /**
+     * Update a conversation message
+     *
+     * @param message Information about the message to update
+     * @return TRUE for a success / FALSE else
+     */
+    public boolean updateMessage(ConversationMessage message){
+
+        //Perform the request over the API
+        APIRequest request = new APIRequest(mContext, "conversations/updateMessage");
+        request.addInt("messageID", message.getId());
+
+        if(message.hasContent())
+            request.addString("content", message.getContent());
+
+        try {
+            APIResponse response = new APIRequestHelper().exec(request);
+
+            return response.getResponse_code() == 200 && mDbHelper.updateMessage(message);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Delete a conversation message
      *
      * @param messageID The ID of the message to delete
