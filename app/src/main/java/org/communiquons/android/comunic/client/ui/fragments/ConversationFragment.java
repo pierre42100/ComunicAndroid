@@ -49,8 +49,6 @@ import org.communiquons.android.comunic.client.ui.views.ScrollRecyclerView;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.zip.Inflater;
 
 import static android.app.Activity.RESULT_OK;
 
