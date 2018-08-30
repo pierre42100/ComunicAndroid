@@ -1,12 +1,12 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +17,11 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
 import org.communiquons.android.comunic.client.data.models.Post;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.ui.asynctasks.LoadUserPostsTask;
 
 /**
  * User posts fragment
@@ -52,16 +53,6 @@ public class UserPostsFragment extends Fragment
     private PostsList mPostsList;
 
     /**
-     * Information about the related users
-     */
-    private ArrayMap<Integer, UserInfo> mUsersInfo;
-
-    /**
-     * Post loading thread
-     */
-    private Thread mLoadThread;
-
-    /**
      * Posts helper
      */
     private PostsHelper mPostsHelper;
@@ -85,6 +76,11 @@ public class UserPostsFragment extends Fragment
      * Create post layout
      */
     private FrameLayout mCreatePostLayout;
+
+    /**
+     * Load user posts task
+     */
+    private LoadUserPostsTask mLoadUserPostsTask;
 
     /**
      * Posts list fragment
@@ -145,70 +141,80 @@ public class UserPostsFragment extends Fragment
         load_posts();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        cancel_load_task();
+    }
+
     /**
      * Load user posts
      */
     private void load_posts(){
 
-        mLoadThread = new Thread(new Runnable() {
+        cancel_load_task();
+
+        mLoadUserPostsTask = new LoadUserPostsTask(mUserID, getActivity());
+        mLoadUserPostsTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<PostsList>() {
             @Override
-            public void run() {
-
-                if(mPostsList == null)
+            public void OnPostExecute(PostsList posts) {
+                if(getActivity() == null)
                     return;
 
-                //Get the list of posts of the user
-                PostsList new_posts = mPostsHelper.get_user(mUserID);
-
-                if(mPostsList == null)
-                    return;
-
-                mPostsList.addAll(new_posts);
-
-                if(mPostsList != null)
-                    mUsersInfo = mUserHelper.getMultiple(mPostsList.getUsersId());
-
-                if(getActivity() != null && getView() != null)
-                    getView().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            display_posts();
-                        }
-                    });
+                apply_posts(posts);
             }
         });
-        mLoadThread.start();
+        mLoadUserPostsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 
+    private void cancel_load_task(){
+        if(mLoadUserPostsTask != null)
+            mLoadUserPostsTask.setOnPostExecuteListener(null);
+    }
+
     /**
-     * Display the list of posts
+     * Apply the list of posts
      */
     @UiThread
-    private void display_posts(){
+    private void apply_posts(@Nullable PostsList posts){
+
+        if(mPostsList == null)
+            return;
 
         if(isStateSaved())
             return;
 
         //Check for errors
-        if(mPostsList == null){
+        if(posts == null){
             Toast.makeText(getActivity(), R.string.err_get_user_posts, Toast.LENGTH_SHORT).show();
             return;
         }
 
         //Check we didn't get user information
-        if(mUsersInfo == null){
+        if(!posts.hasUsersInfo()){
             Toast.makeText(getActivity(), R.string.err_get_users_info, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        mPostsListFragment = new PostsListFragment();
-        mPostsListFragment.setPostsList(mPostsList);
-        mPostsListFragment.setUsersInfos(mUsersInfo);
+        //Merge post information with existing one
+        mPostsList.addAll(posts);
+        assert mPostsList.getUsersInfo() != null;
+        mPostsList.getUsersInfo().putAll(posts.getUsersInfo());
 
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.posts_list_target, mPostsListFragment);
-        transaction.commit();
+        //Create fragment if required
+        if(mPostsListFragment == null){
+            mPostsListFragment = new PostsListFragment();
+
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.replace(R.id.posts_list_target, mPostsListFragment);
+            transaction.commit();
+        }
+
+
+        mPostsListFragment.setPostsList(mPostsList);
+        mPostsListFragment.show();
+
 
         setNoPostNoticeVisibility(mPostsList.size() < 1);
     }

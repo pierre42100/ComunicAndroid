@@ -265,4 +265,5 @@
     <string name="err_invalid_conversation_message_content">Le contenu du message est invalide !</string>
     <string name="err_update_conversation_message_content">Une erreur a survenue lors de la mise à jour du contenu du message ! Veuillez réessayer…</string>
     <string name="success_update_conversation_message_content">Le contenu du message  a bien été mis à jour !</string>
+    <string name="err_get_older_posts">Une erreur a survenue lors de la récupération de posts plus anciens !</string>
 </resources>

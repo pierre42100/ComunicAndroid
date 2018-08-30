@@ -1,15 +1,14 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.ArrayMap;
 import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -21,17 +20,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.utils.AccountUtils;
+import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.data.enums.LikesType;
+import org.communiquons.android.comunic.client.data.helpers.CommentsHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.data.models.Comment;
-import org.communiquons.android.comunic.client.data.helpers.CommentsHelper;
 import org.communiquons.android.comunic.client.data.helpers.LikesHelper;
-import org.communiquons.android.comunic.client.data.enums.LikesType;
-import org.communiquons.android.comunic.client.data.models.Post;
 import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
-import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.data.models.Comment;
+import org.communiquons.android.comunic.client.data.models.Post;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.ui.adapters.PostsAdapter;
 import org.communiquons.android.comunic.client.ui.listeners.OnPostListFragmentsUpdateListener;
@@ -90,11 +89,6 @@ public class PostsListFragment extends Fragment
     PostsList mPostsList;
 
     /**
-     * Information about the related users
-     */
-    ArrayMap<Integer, UserInfo> mUsersInfo;
-
-    /**
      * Events listener
      */
     private OnPostListFragmentsUpdateListener onPostListFragmentsUpdateListener = null;
@@ -136,15 +130,6 @@ public class PostsListFragment extends Fragment
      */
     public void setPostsList(PostsList list) {
         this.mPostsList = list;
-    }
-
-    /**
-     * Set the list of users information
-     *
-     * @param list The list
-     */
-    public void setUsersInfos(ArrayMap<Integer, UserInfo> list){
-        this.mUsersInfo = list;
     }
 
     @Override
@@ -189,13 +174,17 @@ public class PostsListFragment extends Fragment
      */
     public void show(){
 
+        //Check if the view has not been created yet...
+        if(getView() == null)
+            return;
+
         //Check if the list of posts is not null
-        if(mPostsList == null && mUsersInfo == null)
+        if(mPostsList == null)
             return;
 
         //Create posts adapter (if required)
         if(mPostsAdapter == null) {
-            mPostsAdapter = new PostsAdapter(getActivity(), mPostsList, mUsersInfo, this);
+            mPostsAdapter = new PostsAdapter(getActivity(), mPostsList, this);
 
             //Connect the adapter to the view
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -283,7 +272,7 @@ public class PostsListFragment extends Fragment
                 comments.add(userInfoCommentPair.second);
 
                 //Add the user to the list
-                mUsersInfo.put(userInfoCommentPair.first.getId(), userInfoCommentPair.first);
+                mPostsList.getUsersInfo().put(userInfoCommentPair.first.getId(), userInfoCommentPair.first);
 
                 //Update data set
                 mPostsAdapter.notifyDataSetChanged();

@@ -1,11 +1,11 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,10 +52,6 @@ public class LatestPostsFragment extends Fragment
      */
     PostsList mPostsList;
 
-    /**
-     * Information about the related users
-     */
-    ArrayMap<Integer, UserInfo> mUserInfo;
 
     /**
      * Fragment that displays the list of posts
@@ -133,7 +129,7 @@ public class LatestPostsFragment extends Fragment
 
                 //Get user information, if possible
                 if(postsList != null)
-                    mUserInfo = mUserHelper.getMultiple(postsList.getUsersId());
+                    postsList.setUsersInfo(mUserHelper.getMultiple(postsList.getUsersId()));
 
                 return postsList;
             }
@@ -166,7 +162,7 @@ public class LatestPostsFragment extends Fragment
             Toast.makeText(getActivity(), R.string.err_get_latest_posts, Toast.LENGTH_SHORT).show();
             return;
         }
-        if(mUserInfo == null){
+        if(!list.hasUsersInfo()){
             Toast.makeText(getActivity(), R.string.err_get_users_info, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -183,7 +179,6 @@ public class LatestPostsFragment extends Fragment
         //Apply the post fragment
         mPostsListFragment = new PostsListFragment();
         mPostsListFragment.setPostsList(mPostsList);
-        mPostsListFragment.setUsersInfos(mUserInfo);
         mPostsListFragment.setOnPostListFragmentsUpdateListener(this);
 
         //Create and commit a transaction
@@ -249,19 +244,16 @@ public class LatestPostsFragment extends Fragment
             if(postsList == null)
                 return null;
 
-            //Merge posts list
-            mPostsList.addAll(postsList);
-
             //Get information about the users
             ArrayMap<Integer, UserInfo> usersInfo
-                    = mUserHelper.getMultiple(mPostsList.getUsersId());
+                    = mUserHelper.getMultiple(postsList.getUsersId());
 
             //Check for errors
             if(usersInfo == null)
                 return null;
 
-            //Save new user information
-            mUserInfo = usersInfo;
+            assert postsList.getUsersInfo() != null;
+            postsList.getUsersInfo().putAll(usersInfo);
 
             return postsList;
         }
@@ -273,13 +265,22 @@ public class LatestPostsFragment extends Fragment
             if(getActivity() == null)
                 return;
 
+
             //Unlock post loading
             mLoadPostsLock = false;
             toggleLoadingBarVisibility(false);
 
+            if(posts == null){
+                Toast.makeText(getActivity(), R.string.err_get_older_posts,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            mPostsList.addAll(posts);
+            assert mPostsList.getUsersInfo() != null;
+            mPostsList.getUsersInfo().putAll(posts.getUsersInfo());
+
             //Apply new posts list
-            mPostsListFragment.setPostsList(mPostsList);
-            mPostsListFragment.setUsersInfos(mUserInfo);
             mPostsListFragment.show();
 
         }

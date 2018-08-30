@@ -264,4 +264,5 @@
     <string name="err_invalid_conversation_message_content">The content of the conversation message is invalid!</string>
     <string name="err_update_conversation_message_content">Could not update conversation message content!</string>
     <string name="success_update_conversation_message_content">The content of the conversation message has been successfully updated!</string>
+    <string name="err_get_older_posts">Could not get older posts!</string>
 </resources>

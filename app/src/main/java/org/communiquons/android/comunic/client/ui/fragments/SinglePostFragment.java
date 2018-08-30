@@ -1,11 +1,11 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,6 +115,7 @@ public class SinglePostFragment extends Fragment {
                     mPostsList = new PostsList();
                     mPostsList.add(mPost);
                     mUserInfo = mGetUserHelper.getMultiple(mPostsList.getUsersId());
+                    mPostsList.setUsersInfo(mUserInfo);
                 }
 
                 return null;
@@ -152,7 +153,6 @@ public class SinglePostFragment extends Fragment {
         //Apply the post fragment
         PostsListFragment postsListFragment = new PostsListFragment();
         postsListFragment.setPostsList(mPostsList);
-        postsListFragment.setUsersInfos(mUserInfo);
 
         //Create and commit a transaction
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();

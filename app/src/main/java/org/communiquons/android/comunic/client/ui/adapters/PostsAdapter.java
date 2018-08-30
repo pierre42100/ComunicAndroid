@@ -82,16 +82,14 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
      *
      * @param context The context of execution of the application
      * @param list The list of posts
-     * @param usersInfo Information about the user
      * @param listener Specify the listener to perform callback actions such as create a comment
      *                 for example
      */
-    public PostsAdapter(Context context, PostsList list, ArrayMap<Integer, UserInfo> usersInfo,
-                        onPostUpdateListener listener){
+    public PostsAdapter(Context context, PostsList list, onPostUpdateListener listener){
         super(context);
 
         mList = list;
-        mUsersInfo = usersInfo;
+        mUsersInfo = list.getUsersInfo();
 
         //Utilities
         mUtils = new Utilities(getContext());
