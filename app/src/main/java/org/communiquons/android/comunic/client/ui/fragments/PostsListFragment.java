@@ -130,6 +130,7 @@ public class PostsListFragment extends Fragment
      */
     public void setPostsList(PostsList list) {
         this.mPostsList = list;
+        mPostsAdapter = null;
     }
 
     @Override
