@@ -158,7 +158,12 @@ public class UserPostsFragment extends Fragment
                     return;
 
                 //Get the list of posts of the user
-                mPostsList.addAll(mPostsHelper.get_user(mUserID));
+                PostsList new_posts = mPostsHelper.get_user(mUserID);
+
+                if(mPostsList == null)
+                    return;
+
+                mPostsList.addAll(new_posts);
 
                 if(mPostsList != null)
                     mUsersInfo = mUserHelper.getMultiple(mPostsList.getUsersId());
