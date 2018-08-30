@@ -119,15 +119,7 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
-        switch (viewHolder.getItemViewType()){
-            case VIEW_TYPE_MESSAGE_SENT:
-                ((SentMessageHolder) viewHolder).bind(position);
-                break;
-
-            case VIEW_TYPE_MESSAGE_RECEIVED:
-                ((ReceivedMessageHolder) viewHolder).bind(position);
-                break;
-        }
+        ((BaseMessageHolder) viewHolder).bind(position);
     }
 
     /**
