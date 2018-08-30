@@ -56,7 +56,7 @@ public class StringsUtils {
      * @return Generated string
      */
     public static String FormatDate(int time){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd",
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd",
                 Locale.getDefault());
         return simpleDateFormat.format((long)1000*time);
     }
