@@ -1,5 +1,14 @@
 CHANGELOG
 
+V 1.5:
+* New navigation bar
+* Can update / delete conversation messages
+* Support countdown timer posts
+* Fix an issue that prevented public user pages to be requested as friends
+* New friendlist appearance (can update following status)
+* Display the date of messages on conversations
+* Display the list of friends on users page
+
 V 1.4:
 * Intend to fix Bitmap crashes with a lock
 * Added latest posts thread
