@@ -187,6 +187,9 @@ public class UserPostsFragment extends Fragment
     @UiThread
     private void display_posts(){
 
+        if(isStateSaved())
+            return;
+
         //Check for errors
         if(mPostsList == null){
             Toast.makeText(getActivity(), R.string.err_get_user_posts, Toast.LENGTH_SHORT).show();
