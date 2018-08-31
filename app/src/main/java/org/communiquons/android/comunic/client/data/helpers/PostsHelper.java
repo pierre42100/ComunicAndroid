@@ -89,10 +89,25 @@ public class PostsHelper {
      */
     @Nullable
     public PostsList get_user(int userID){
+        return get_user(userID, -1);
+    }
+
+    /**
+     * Get the list of the posts of a user
+     *
+     * @param userID The ID of the user to get the post from
+     * @param from The post to start from (-1 not to specify)
+     * @return The list of posts / null in case of failure
+     */
+    @Nullable
+    public PostsList get_user(int userID, int from){
 
         //Perform a request on the API
         APIRequest params = new APIRequest(mContext, "posts/get_user");
         params.addInt("userID", userID);
+
+        if(from > -1)
+            params.addInt("startFrom", from);
 
         //Perform the request
         try {

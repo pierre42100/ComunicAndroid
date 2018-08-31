@@ -12,7 +12,7 @@ import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
  *
  * @author Pierre HUBERT
  */
-public class LoadUserPostsTask extends SafeAsyncTask<Void, Void, PostsList> {
+public class LoadUserPostsTask extends SafeAsyncTask<Integer, Void, PostsList> {
 
     private int mUserID;
 
@@ -29,8 +29,14 @@ public class LoadUserPostsTask extends SafeAsyncTask<Void, Void, PostsList> {
     }
 
     @Override
-    protected PostsList doInBackground(Void... voids) {
-        PostsList list = new PostsHelper(getContext()).get_user(mUserID);
+    protected PostsList doInBackground(Integer ...integers) {
+
+        PostsList list;
+
+        if(integers.length == 0)
+            list = new PostsHelper(getContext()).get_user(mUserID);
+        else
+            list = new PostsHelper(getContext()).get_user(mUserID, integers[0]);
 
         //Get associated user information, if possible
         if(list != null)

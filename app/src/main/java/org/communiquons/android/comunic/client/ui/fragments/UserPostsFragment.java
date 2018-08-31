@@ -12,16 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
 import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
-import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
 import org.communiquons.android.comunic.client.data.models.Post;
 import org.communiquons.android.comunic.client.ui.asynctasks.LoadUserPostsTask;
+import org.communiquons.android.comunic.client.ui.listeners.OnPostListFragmentsUpdateListener;
 
 /**
  * User posts fragment
@@ -29,7 +29,7 @@ import org.communiquons.android.comunic.client.ui.asynctasks.LoadUserPostsTask;
  * @author Pierre HUBERT
  */
 public class UserPostsFragment extends Fragment
-    implements PostsCreateFormFragment.OnPostCreated {
+    implements PostsCreateFormFragment.OnPostCreated, OnPostListFragmentsUpdateListener {
 
     /**
      * Bundle arguments
@@ -51,16 +51,6 @@ public class UserPostsFragment extends Fragment
      * The list of posts of the user
      */
     private PostsList mPostsList;
-
-    /**
-     * Posts helper
-     */
-    private PostsHelper mPostsHelper;
-
-    /**
-     * User information helper
-     */
-    private GetUsersHelper mUserHelper;
 
     /**
      * Create post button
@@ -87,6 +77,11 @@ public class UserPostsFragment extends Fragment
      */
     private PostsListFragment mPostsListFragment;
 
+    /**
+     * Loading bar
+     */
+    private ProgressBar mProgressBar;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,11 +104,11 @@ public class UserPostsFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         //Get the views
         mCreatePostButton = view.findViewById(R.id.create_post_btn);
         mCreatePostLayout = view.findViewById(R.id.create_posts_form_target);
         mNoPostNotice = view.findViewById(R.id.no_post_notice);
+        mProgressBar = view.findViewById(R.id.progressBar);
 
         setNoPostNoticeVisibility(false);
 
@@ -125,11 +120,6 @@ public class UserPostsFragment extends Fragment
             }
         });
 
-        //Initialize helpers
-        assert getActivity() != null;
-        mPostsHelper = new PostsHelper(getActivity());
-        mUserHelper = new GetUsersHelper(getActivity());
-
         //Add create post fragment, if possible
         if(mCanPostsText)
             init_create_post_fragment();
@@ -137,7 +127,7 @@ public class UserPostsFragment extends Fragment
             mCreatePostButton.setVisibility(View.GONE);
 
         //Load user posts
-        mPostsList = new PostsList();
+        mPostsList = null;
         load_posts();
     }
 
@@ -147,12 +137,30 @@ public class UserPostsFragment extends Fragment
         cancel_load_task();
     }
 
+    private void cancel_load_task(){
+        if(mLoadUserPostsTask != null)
+            mLoadUserPostsTask.setOnPostExecuteListener(null);
+    }
+
+    /**
+     * Check whether some posts are loading or not
+     *
+     * @return TRUE or FALSE
+     */
+    private boolean is_loading_posts(){
+        return  mLoadUserPostsTask != null
+                && !mLoadUserPostsTask.isCancelled()
+                && mLoadUserPostsTask.hasOnPostExecuteListener()
+                && mLoadUserPostsTask.getStatus() != AsyncTask.Status.FINISHED;
+    }
+
     /**
      * Load user posts
      */
     private void load_posts(){
 
         cancel_load_task();
+        setProgressBarVisibility(true);
 
         mLoadUserPostsTask = new LoadUserPostsTask(mUserID, getActivity());
         mLoadUserPostsTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<PostsList>() {
@@ -168,19 +176,13 @@ public class UserPostsFragment extends Fragment
 
     }
 
-    private void cancel_load_task(){
-        if(mLoadUserPostsTask != null)
-            mLoadUserPostsTask.setOnPostExecuteListener(null);
-    }
-
     /**
      * Apply the list of posts
      */
     @UiThread
     private void apply_posts(@Nullable PostsList posts){
 
-        if(mPostsList == null)
-            return;
+        setProgressBarVisibility(false);
 
         if(isStateSaved())
             return;
@@ -197,14 +199,11 @@ public class UserPostsFragment extends Fragment
             return;
         }
 
-        //Merge post information with existing one
-        mPostsList.addAll(posts);
-        assert mPostsList.getUsersInfo() != null;
-        mPostsList.getUsersInfo().putAll(posts.getUsersInfo());
-
         //Create fragment if required
         if(mPostsListFragment == null){
             mPostsListFragment = new PostsListFragment();
+            mPostsListFragment.setPostsList(mPostsList);
+            mPostsListFragment.setOnPostListFragmentsUpdateListener(this);
 
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.replace(R.id.posts_list_target, mPostsListFragment);
@@ -212,9 +211,20 @@ public class UserPostsFragment extends Fragment
         }
 
 
-        mPostsListFragment.setPostsList(mPostsList);
-        mPostsListFragment.show();
+        if(mPostsList != null){
 
+            //Merge post information with existing one
+            mPostsList.addAll(posts);
+            assert mPostsList.getUsersInfo() != null;
+            mPostsList.getUsersInfo().putAll(posts.getUsersInfo());
+        }
+        else {
+            mPostsList = posts;
+            mPostsListFragment.setPostsList(mPostsList);
+        }
+
+
+        mPostsListFragment.show();
 
         setNoPostNoticeVisibility(mPostsList.size() < 1);
     }
@@ -248,6 +258,15 @@ public class UserPostsFragment extends Fragment
     }
 
     /**
+     * Update progress bar visibility
+     *
+     * @param visibility TRUE for visible / FALSE else
+     */
+    private void setProgressBarVisibility(boolean visibility){
+        mProgressBar.setVisibility(visibility ? View.VISIBLE : View.GONE);
+    }
+
+    /**
      * Update post creation form visibility
      *
      * @param visible New visibility
@@ -263,8 +282,34 @@ public class UserPostsFragment extends Fragment
 
     @Override
     public void onPostCreated(Post post) {
-        mPostsList = new PostsList();
+        mPostsList = null;
         load_posts();
         init_create_post_fragment();
+    }
+
+    @Override
+    public void onLoadMorePosts() {
+
+        if(mPostsList == null)
+            return;
+
+        if(mPostsList.size() < 1)
+            return;
+
+        if(is_loading_posts())
+            return;
+
+        setProgressBarVisibility(true);
+
+        mLoadUserPostsTask = new LoadUserPostsTask(mUserID, getActivity());
+        mLoadUserPostsTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<PostsList>() {
+            @Override
+            public void OnPostExecute(PostsList posts) {
+                apply_posts(posts);
+            }
+        });
+        mLoadUserPostsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                mPostsList.get(mPostsList.size() -1).getId() -1);
+
     }
 }
