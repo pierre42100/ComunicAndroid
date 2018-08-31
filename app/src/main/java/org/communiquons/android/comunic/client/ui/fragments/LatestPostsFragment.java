@@ -78,7 +78,7 @@ public class LatestPostsFragment extends AbstractPostsListFragment {
                 onGotNewPosts(posts);
             }
         });
-        mGetLatestPostsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, 0);
+        mGetLatestPostsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override

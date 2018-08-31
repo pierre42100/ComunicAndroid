@@ -22,10 +22,14 @@ public class GetLatestPostsTask extends SafeAsyncTask<Integer, Void, PostsList> 
     protected PostsList doInBackground(Integer... integers) {
 
         PostsHelper helper = new PostsHelper(getContext());
+        PostsList list;
 
         //Get the list of posts
-        int from  = integers[0] == 0 ? -1 : integers[0];
-        PostsList list = helper.get_latest(from);
+        if(integers.length == 0)
+            list = helper.get_latest();
+        else
+            list = helper.get_latest(integers[0]);
+
         if(list == null) return null;
 
         //Load related information
