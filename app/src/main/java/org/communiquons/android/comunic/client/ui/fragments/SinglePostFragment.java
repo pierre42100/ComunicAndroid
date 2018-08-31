@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +13,8 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
-import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
-import org.communiquons.android.comunic.client.data.models.Post;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.GetSinglePostTask;
 
 /**
  * Single post fragment
@@ -41,29 +38,14 @@ public class SinglePostFragment extends Fragment {
     private int mPostID = 0;
 
     /**
-     * Information about the post
-     */
-    private Post mPost;
-
-    /**
      * Post list that contains only a single post
      */
     private PostsList mPostsList;
 
     /**
-     * Information about the related users
+     * Get single post task
      */
-    private ArrayMap<Integer, UserInfo> mUserInfo;
-
-    /**
-     * Post helper
-     */
-    private PostsHelper mPostsHelper;
-
-    /**
-     * Get user information helper
-     */
-    private GetUsersHelper mGetUserHelper;
+    private GetSinglePostTask mGetSinglePostTask;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,11 +54,6 @@ public class SinglePostFragment extends Fragment {
         //Get post ID
         mPostID = getArguments().getInt(ARGUMENT_POST_ID);
 
-        //Create post helper
-        mPostsHelper = new PostsHelper(getActivity());
-
-        //Create get user helper
-        mGetUserHelper = new GetUsersHelper(getActivity());
     }
 
     @Nullable
@@ -90,11 +67,22 @@ public class SinglePostFragment extends Fragment {
         super.onResume();
 
         //Check if the fragment contains information about the post
-        if(mPost == null || mUserInfo == null){
+        if(mPostsList == null){
             getPostInfo();
         }
         else
-            onGotPostInfo();
+            show_posts();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        unset_all_tasks();
+    }
+
+    public void unset_all_tasks(){
+        if(mGetSinglePostTask != null)
+            mGetSinglePostTask.setOnPostExecuteListener(null);
     }
 
     /**
@@ -103,52 +91,44 @@ public class SinglePostFragment extends Fragment {
     private void getPostInfo(){
 
         //Perform the request in the background
-        new AsyncTask<Integer, Void, Void>(){
+        unset_all_tasks();
 
+        mGetSinglePostTask = new GetSinglePostTask(getActivity());
+        mGetSinglePostTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<PostsList>() {
             @Override
-            protected Void doInBackground(Integer... params) {
-
-                //Intend to get information about the post
-                mPost = mPostsHelper.getSingle(params[0]);
-
-                if(mPost != null) {
-                    mPostsList = new PostsList();
-                    mPostsList.add(mPost);
-                    mUserInfo = mGetUserHelper.getMultiple(mPostsList.getUsersId());
-                    mPostsList.setUsersInfo(mUserInfo);
-                }
-
-                return null;
+            public void OnPostExecute(PostsList posts) {
+                onGotPostInfo(posts);
             }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-
-                if(getActivity() == null)
-                    return;
-
-                onGotPostInfo();
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mPostID);
-
+        });
+        mGetSinglePostTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mPostID);
     }
 
     /**
-     * This method is triggered once we got informations about the post
+     * This method is triggered once we got information about the post
      */
-    private void onGotPostInfo(){
+    private void onGotPostInfo(@Nullable PostsList list) {
 
         //Check if we did not get post information
-        if(mPost == null){
+        if (list == null) {
             Toast.makeText(getActivity(), R.string.err_get_post_info, Toast.LENGTH_SHORT).show();
             return;
         }
 
         //Check if we could not get user information
-        if(mUserInfo == null){
+        if (!list.hasUsersInfo()) {
             Toast.makeText(getActivity(), R.string.err_get_users_info, Toast.LENGTH_SHORT).show();
             return;
         }
+
+        mPostsList = list;
+
+        show_posts();
+    }
+
+    /**
+     * Show the list of posts
+     */
+    private void show_posts(){
 
         //Apply the post fragment
         PostsListFragment postsListFragment = new PostsListFragment();
