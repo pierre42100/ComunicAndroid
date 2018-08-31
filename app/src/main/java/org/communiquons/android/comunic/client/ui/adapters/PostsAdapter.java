@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.ui.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -168,7 +169,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
         private WebUserAccountImage mUserAccountImage;
         private TextView mUserAccountName;
         private TextView mPostDate;
-        private TextView mPostVisibility;
+        private ImageView mPostVisibility;
         private ImageView mPostActions;
         private FrameLayout mAdditionnalViews;
         private TextView mPostContent;
@@ -231,26 +232,29 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
 
             //Display post visibility
+            int visibility_res_id;
             switch (post.getVisibilityLevel()){
 
                 case PUBLIC:
-                    mPostVisibility.setText(R.string.post_visibility_public);
+                    visibility_res_id = R.drawable.ic_public;
                     break;
 
                 case FRIENDS:
-                    mPostVisibility.setText(R.string.post_visibility_friends);
+                    visibility_res_id = R.drawable.ic_friends;
                     break;
 
                 case MEMBERS:
-                    mPostVisibility.setText(R.string.post_visibility_members);
+                    visibility_res_id = R.drawable.ic_friends;
                     break;
 
                 case PRIVATE:
                 default:
-                    mPostVisibility.setText(R.string.post_visibility_private);
+                    visibility_res_id = R.drawable.ic_user;
                     break;
             }
-
+            Drawable drawable = UiUtils.getDrawable(getContext(), visibility_res_id);
+            drawable.setTint(UiUtils.getColor(getContext(), R.color.darker_gray));
+            mPostVisibility.setImageDrawable(drawable);
 
             //Set post actions
             mPostActions.setOnClickListener(new View.OnClickListener() {

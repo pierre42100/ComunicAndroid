@@ -51,12 +51,14 @@
             android:layout_weight="1" />
 
         <!-- Post visibility level -->
-        <TextView
+        <ImageView
             android:id="@+id/post_visibility"
             style="@style/PostVisibility"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/post_options_btn_height"
             android:layout_gravity="top"
+            android:src="@drawable/ic_public"
+            android:contentDescription="@string/post_visibility_icon"
             tools:text="Public" />
 
         <ImageView
