@@ -1,82 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/PostContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <!-- Information about user who created the post -->
-    <LinearLayout
-        style="@style/PostHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <org.communiquons.android.comunic.client.ui.views.WebUserAccountImage
-            android:id="@+id/user_account_image"
-            android:layout_width="@dimen/account_image_default_width"
-            android:layout_height="@dimen/account_image_default_height"
-            android:contentDescription="@string/user_image_description"
-            android:src="@drawable/default_account_image" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <!-- User name -->
-            <TextView
-                android:id="@+id/user_account_name"
-                style="@style/PostOwnerName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                tools:text="User name" />
-
-            <!-- Post creation time -->
-            <TextView
-                android:id="@+id/post_creation_time"
-                style="@style/PostDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="15 days ago" />
-
-        </LinearLayout>
-
-        <!-- Separator -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <!-- Post visibility level -->
-        <ImageView
-            android:id="@+id/post_visibility"
-            style="@style/PostVisibility"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/post_options_btn_height"
-            android:layout_gravity="top"
-            android:src="@drawable/ic_public"
-            android:contentDescription="@string/post_visibility_icon"
-            tools:text="Public" />
-
-        <ImageView
-            android:id="@+id/post_actions_btn"
-            style="@style/PostActionsButton"
-            android:layout_width="@dimen/post_options_btn_width"
-            android:layout_height="@dimen/post_options_btn_height"
-            android:layout_gravity="top"
-            android:contentDescription="@string/post_action_btn_description" />
+    <org.communiquons.android.comunic.client.ui.views.WebUserAccountImage
+        android:id="@+id/user_account_image"
+        android:layout_width="@dimen/account_image_default_width"
+        android:layout_height="@dimen/account_image_default_height"
+        android:contentDescription="@string/user_image_description"
+        android:src="@drawable/default_account_image" />
 
 
-    </LinearLayout>
+    <!-- User name -->
+    <TextView
+        android:id="@+id/user_account_name"
+        style="@style/PostOwnerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/user_account_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="User name" />
+
+    <!-- Post creation time -->
+    <TextView
+        android:id="@+id/post_creation_time"
+        style="@style/PostDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/user_account_name"
+        app:layout_constraintTop_toBottomOf="@+id/user_account_name"
+        tools:text="15 days ago" />
+
+
+    <!-- Post visibility level -->
+    <ImageView
+        android:id="@+id/post_visibility"
+        style="@style/PostVisibility"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/post_options_btn_height"
+        android:layout_gravity="top"
+        android:contentDescription="@string/post_visibility_icon"
+        android:src="@drawable/ic_public"
+        android:tint="@color/darker_gray"
+        app:layout_constraintEnd_toStartOf="@+id/post_actions_btn"
+        app:layout_constraintTop_toTopOf="@+id/post_actions_btn"
+        tools:text="Public" />
+
+    <!-- Actions button -->
+    <ImageView
+        android:id="@+id/post_actions_btn"
+        style="@style/PostActionsButton"
+        android:layout_width="@dimen/post_options_btn_width"
+        android:layout_height="@dimen/post_options_btn_height"
+        android:layout_gravity="top"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/post_action_btn_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <!-- Additional views -->
     <FrameLayout
         android:id="@+id/additional_views"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_account_image"
+        tools:layout_height="10dp" />
 
     <!-- Post content -->
     <TextView
@@ -84,6 +86,12 @@
         style="@style/PostContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/additional_views"
         tools:text="Post content" />
 
     <!-- Like button -->
@@ -91,21 +99,39 @@
         android:id="@+id/like_button"
         style="@style/PostLikeButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_content" />
 
     <!-- Post comments -->
     <LinearLayout
         android:id="@+id/comments_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/like_button"
+        tools:background="@color/holo_red_dark"
+        tools:layout_height="30dp" />
 
     <!-- Comments form -->
     <LinearLayout
         android:id="@+id/create_comment_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comments_list">
 
         <!-- Comment hint -->
         <org.communiquons.android.comunic.client.ui.views.EditCommentContentView
@@ -127,4 +153,4 @@
     </LinearLayout>
 
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
