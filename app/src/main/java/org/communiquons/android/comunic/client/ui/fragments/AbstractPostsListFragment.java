@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Pair;
@@ -16,7 +18,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
@@ -33,13 +39,13 @@ import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.ui.adapters.PostsAdapter;
-import org.communiquons.android.comunic.client.ui.listeners.OnPostListFragmentsUpdateListener;
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
 import org.communiquons.android.comunic.client.ui.views.ScrollRecyclerView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Posts list fragment
@@ -50,8 +56,8 @@ import java.util.ArrayList;
  * Created by pierre on 3/18/18.
  */
 
-public class PostsListFragment extends Fragment
-    implements onPostUpdateListener, OnScrollChangeDetectListener {
+abstract class AbstractPostsListFragment extends Fragment
+    implements onPostUpdateListener, OnScrollChangeDetectListener, PostsCreateFormFragment.OnPostCreated {
 
     /**
      * Menu action : no action
@@ -86,51 +92,80 @@ public class PostsListFragment extends Fragment
     /**
      * The list of posts
      */
-    PostsList mPostsList;
-
-    /**
-     * Events listener
-     */
-    private OnPostListFragmentsUpdateListener onPostListFragmentsUpdateListener = null;
+    private PostsList mPostsList;
 
     /**
      * Post adapter
      */
-    PostsAdapter mPostsAdapter;
-
-    /**
-     * The list of posts
-     */
-    ScrollRecyclerView mRecyclerView;
+    private PostsAdapter mPostsAdapter;
 
     /**
      * Posts helper
      */
-    PostsHelper mPostsHelper;
+    private PostsHelper mPostsHelper;
 
     /**
      * Comments helper
      */
-    CommentsHelper mCommentsHelper;
+    private CommentsHelper mCommentsHelper;
 
     /**
      * Users helper
      */
-    GetUsersHelper mUserHelper;
+    private GetUsersHelper mUserHelper;
 
     /**
      * Likes helper
      */
-    LikesHelper mLikesHelper;
+    private LikesHelper mLikesHelper;
 
     /**
-     * Set the list of posts of the fragment
-     *
-     * @param list The list of post
+     * Views
      */
-    public void setPostsList(PostsList list) {
-        this.mPostsList = list;
-        mPostsAdapter = null;
+    private ScrollRecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
+    private Button mCreatePostButton;
+    private FrameLayout mCreatePostLayout;
+    private TextView mNoPostsNotice;
+
+    /**
+     * Arguments used to create post form
+     */
+    Bundle mCreateFormArgs;
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_postslist, container, false);
+    }
+
+    @Override
+    @CallSuper
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //Get views
+        mRecyclerView = view.findViewById(R.id.posts_list);
+        mProgressBar = view.findViewById(R.id.progressBar);
+        mCreatePostButton = view.findViewById(R.id.create_post_btn);
+        mCreatePostLayout = view.findViewById(R.id.create_post_form);
+        mNoPostsNotice = view.findViewById(R.id.no_post_notice);
+
+        //Setup posts list
+        mRecyclerView.setOnScrollChangeDetectListener(this);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(),
+                DividerItemDecoration.VERTICAL));
+
+        mCreatePostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPostFormVisibility(mCreatePostLayout.getVisibility() != View.VISIBLE);
+            }
+        });
+
+        enablePostFormFragment(false);
+
     }
 
     @Override
@@ -148,32 +183,103 @@ public class PostsListFragment extends Fragment
 
         //Create likes helper
         mLikesHelper = new LikesHelper(getActivity());
-    }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_postslist, container, false);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onResume() {
+        super.onResume();
 
-        //Get the list view
-        mRecyclerView = view.findViewById(R.id.posts_list);
-        mRecyclerView.setOnScrollChangeDetectListener(this);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(),
-                DividerItemDecoration.VERTICAL));
+        if(mPostsList == null) {
+            setProgressBarVisibility(true);
+            setNoPostsNoticeVisibility(false);
+            onLoadPosts();
+        }
+        else{
+            setPostsList(getPostsList());
+            show_posts();
+        }
+    }
 
-        //Show the posts
-        show();
+    /**
+     * Set the list of posts of the fragment
+     *
+     * @param list The list of post
+     */
+    protected void setPostsList(PostsList list) {
+        this.mPostsList = list;
+        mPostsAdapter = null;
+    }
+
+    /**
+     * Get the current list of posts
+     *
+     * @return The current list of post / null if none
+     */
+    @NonNull
+    protected PostsList getPostsList(){
+        return this.mPostsList;
+    }
+
+    /**
+     * Check if a PostList has been set or not
+     *
+     * @return True if a list has been set / FALSE else
+     */
+    protected boolean hasPostsList(){
+        return this.mPostsList != null;
+    }
+
+    /**
+     * Load posts
+     */
+    public abstract void onLoadPosts();
+
+    /**
+     * Load more posts
+     *
+     * @param last_post_id The ID of the last post in the list
+     */
+    public abstract void onLoadMorePosts(int last_post_id);
+
+    /**
+     * This method is triggered when we have got a new list of posts to apply
+     *
+     * @param list The list
+     */
+    @CallSuper
+    protected void onGotNewPosts(@Nullable PostsList list){
+
+        setProgressBarVisibility(false);
+
+        if(getActivity() == null)
+            return;
+
+        if(list == null){
+            Toast.makeText(getActivity(), R.string.err_get_posts_list, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(!list.hasUsersInfo()){
+            Toast.makeText(getActivity(), R.string.err_get_user_info, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(mPostsList == null)
+            mPostsList = list;
+        else {
+            //Merge posts list
+            mPostsList.addAll(list);
+            Objects.requireNonNull(mPostsList.getUsersInfo()).putAll(list.getUsersInfo());
+        }
+
+        show_posts();
     }
 
     /**
      * Display the list of posts
      */
-    public void show(){
+    public void show_posts(){
 
         //Check if the view has not been created yet...
         if(getView() == null)
@@ -195,7 +301,125 @@ public class PostsListFragment extends Fragment
         //Notify data set update
         mPostsAdapter.notifyDataSetChanged();
 
+        //Update no post notice visibility
+        setProgressBarVisibility(false);
+        setNoPostsNoticeVisibility(mPostsList.size() == 0);
     }
+
+    /**
+     * Get the ID of the last post in the list
+     *
+     * @return The ID of the last post in the list / -1 in case of failure
+     */
+    public int getLastPostID(){
+        if(!hasPostsList())
+            return -1;
+        if(getPostsList().size() < 1)
+            return -1;
+        return getPostsList().get(getPostsList().size() - 1).getId();
+    }
+
+    @Override
+    public void onReachTop() {
+        //Nothing
+    }
+
+    @Override
+    public void onReachBottom() {
+        if(hasPostsList() && getPostsList().size() > 0)
+            onLoadMorePosts(getLastPostID());
+    }
+
+
+    protected void setProgressBarVisibility(boolean visible){
+        mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    protected void setNoPostsNoticeVisibility(boolean visible){
+        mNoPostsNotice.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+
+    //
+    //
+    //
+    //
+    // Posts form
+    //
+    //
+    //
+    //
+
+    /**
+     * Specify whether post form should be enabled or not
+     *
+     * @param enable TRUE to enable / FALSE else
+     */
+    protected void enablePostFormFragment(boolean enable){
+        mCreatePostButton.setVisibility(enable ? View.VISIBLE : View.GONE);
+    }
+
+    /**
+     * Initialize posts fragment
+     *
+     * @param page_type The type of the page
+     * @param page_id The ID of the page
+     */
+    protected void init_create_post_fragment(int page_type, int page_id){
+
+        //Can not perform a transaction if the state has been saved
+        if(isStateSaved())
+            return;
+
+        //Create bundle
+        Bundle args = new Bundle();
+        args.putInt(PostsCreateFormFragment.PAGE_TYPE_ARG, page_type);
+        args.putInt(PostsCreateFormFragment.PAGE_ID_ARG, page_id);
+        mCreateFormArgs = new Bundle(args);
+
+        //Create fragment
+        PostsCreateFormFragment fragment = new PostsCreateFormFragment();
+        fragment.setArguments(args);
+        fragment.setOnPostCreatedListener(this);
+
+        //Perform transaction
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.create_post_form, fragment);
+        transaction.commit();
+
+        //Hide the post form by default
+        setPostFormVisibility(false);
+    }
+
+
+    /**
+     * Set post form visibility
+     */
+    protected void setPostFormVisibility(boolean visible){
+        mCreatePostLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onPostCreated(Post post) {
+        init_create_post_fragment(mCreateFormArgs.getInt(PostsCreateFormFragment.PAGE_TYPE_ARG),
+                mCreateFormArgs.getInt(PostsCreateFormFragment.PAGE_ID_ARG));
+        setPostsList(null);
+        setProgressBarVisibility(true);
+        setNoPostsNoticeVisibility(false);
+        onLoadPosts();
+    }
+
+
+
+    //
+    //
+    //
+    //
+    // Posts actions
+    //
+    //
+    //
+    //
 
     @Override
     public void onCreateComment(int pos, final View button, final Post post,
@@ -672,28 +896,5 @@ public class PostsListFragment extends Fragment
         }
 
         return super.onContextItemSelected(item);
-    }
-
-    public OnPostListFragmentsUpdateListener getOnPostListFragmentsUpdateListener() {
-        return onPostListFragmentsUpdateListener;
-    }
-
-    public void setOnPostListFragmentsUpdateListener(
-            OnPostListFragmentsUpdateListener onPostListFragmentsUpdateListener) {
-        this.onPostListFragmentsUpdateListener = onPostListFragmentsUpdateListener;
-    }
-
-    @Override
-    public void onReachTop() {
-        //Nothing
-    }
-
-    @Override
-    public void onReachBottom() {
-
-        //Request more posts
-        if(onPostListFragmentsUpdateListener != null)
-            onPostListFragmentsUpdateListener.onLoadMorePosts();
-        
     }
 }

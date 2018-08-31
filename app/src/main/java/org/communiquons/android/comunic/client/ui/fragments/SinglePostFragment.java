@@ -2,13 +2,7 @@ package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
@@ -25,7 +19,7 @@ import org.communiquons.android.comunic.client.ui.asynctasks.GetSinglePostTask;
  * Created by pierre on 4/12/18.
  */
 
-public class SinglePostFragment extends Fragment {
+public class SinglePostFragment extends AbstractPostsListFragment {
 
     /**
      * The name of the argument that contains the ID of the post to open
@@ -38,11 +32,6 @@ public class SinglePostFragment extends Fragment {
     private int mPostID = 0;
 
     /**
-     * Post list that contains only a single post
-     */
-    private PostsList mPostsList;
-
-    /**
      * Get single post task
      */
     private GetSinglePostTask mGetSinglePostTask;
@@ -52,26 +41,9 @@ public class SinglePostFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         //Get post ID
+        assert getArguments() != null;
         mPostID = getArguments().getInt(ARGUMENT_POST_ID);
 
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_single_post, container, false);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        //Check if the fragment contains information about the post
-        if(mPostsList == null){
-            getPostInfo();
-        }
-        else
-            show_posts();
     }
 
     @Override
@@ -85,11 +57,8 @@ public class SinglePostFragment extends Fragment {
             mGetSinglePostTask.setOnPostExecuteListener(null);
     }
 
-    /**
-     * Get information about the post and its related users
-     */
-    private void getPostInfo(){
-
+    @Override
+    public void onLoadPosts() {
         //Perform the request in the background
         unset_all_tasks();
 
@@ -97,18 +66,22 @@ public class SinglePostFragment extends Fragment {
         mGetSinglePostTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<PostsList>() {
             @Override
             public void OnPostExecute(PostsList posts) {
-                onGotPostInfo(posts);
+                onGotNewPosts(posts);
             }
         });
         mGetSinglePostTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mPostID);
     }
 
-    /**
-     * This method is triggered once we got information about the post
-     */
-    private void onGotPostInfo(@Nullable PostsList list) {
+    @Override
+    public void onLoadMorePosts(int last_post_id) {
 
-        //Check if we did not get post information
+    }
+
+    @Override
+    protected void onGotNewPosts(@Nullable PostsList list) {
+
+        setProgressBarVisibility(false);
+
         if (list == null) {
             Toast.makeText(getActivity(), R.string.err_get_post_info, Toast.LENGTH_SHORT).show();
             return;
@@ -120,25 +93,7 @@ public class SinglePostFragment extends Fragment {
             return;
         }
 
-        mPostsList = list;
-
-        show_posts();
+        super.onGotNewPosts(list);
     }
 
-    /**
-     * Show the list of posts
-     */
-    private void show_posts(){
-
-        //Apply the post fragment
-        PostsListFragment postsListFragment = new PostsListFragment();
-        postsListFragment.setPostsList(mPostsList);
-
-        //Create and commit a transaction
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.posts_list_target, postsListFragment);
-        transaction.commit();
-
-
-    }
 }
