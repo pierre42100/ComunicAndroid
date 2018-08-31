@@ -93,6 +93,12 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <!-- Post target arrow -->
+    <style name="PostTargetArrow">
+        <item name="android:src">@drawable/ic_play_arrow</item>
+        <item name="android:tint">@color/user_name_link</item>
+    </style>
+
     <!-- Post date -->
     <style name="PostDate">
 

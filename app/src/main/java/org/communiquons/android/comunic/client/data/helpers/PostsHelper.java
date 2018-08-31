@@ -145,6 +145,7 @@ public class PostsHelper {
     public PostsList get_latest(int from) {
         //Perform a request on the API
         APIRequest params = new APIRequest(mContext, "posts/get_latest");
+        params.addBoolean("include_groups", true);
 
         //Check if we have to start from a precise post
         if(from > 0)
@@ -164,6 +165,23 @@ public class PostsHelper {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Load information related to a post
+     *
+     * @param list The list of posts to process
+     * @return TRUE if all the information have been successfully loaded / FALSE else
+     */
+    public boolean load_related_information(@NonNull PostsList list){
+
+        //Get information about related users
+        list.setUsersInfo(new GetUsersHelper(mContext).getMultiple(list.getUsersId()));
+
+        //Get information about related groups
+        list.setGroupsInfo(new GroupsHelper(mContext).getInfoMultiple(list.getGroupsId()));
+
+        return list.hasUsersInfo() && list.hasGroupsInfo();
     }
 
     /**

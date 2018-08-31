@@ -80,6 +80,11 @@ abstract class AbstractPostsListFragment extends Fragment
     private int MENU_ACTION = MENU_ACTION_NONE;
 
     /**
+     * Specify whether posts target should be shown or not
+     */
+    private boolean mDisplayPostsTarget = true;
+
+    /**
      * Current processed comment that context menu display actions for
      */
     private Comment mCurrCommentInContextMenu;
@@ -131,8 +136,7 @@ abstract class AbstractPostsListFragment extends Fragment
     /**
      * Arguments used to create post form
      */
-    Bundle mCreateFormArgs;
-
+    private Bundle mCreateFormArgs;
 
     @Nullable
     @Override
@@ -256,12 +260,20 @@ abstract class AbstractPostsListFragment extends Fragment
             return;
 
         if(list == null){
-            Toast.makeText(getActivity(), R.string.err_get_posts_list, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.err_get_posts_list,
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
         if(!list.hasUsersInfo()){
-            Toast.makeText(getActivity(), R.string.err_get_user_info, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.err_get_user_info,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(!list.hasGroupsInfo()){
+            Toast.makeText(getActivity(), R.string.err_get_related_groups_info,
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -292,6 +304,7 @@ abstract class AbstractPostsListFragment extends Fragment
         //Create posts adapter (if required)
         if(mPostsAdapter == null) {
             mPostsAdapter = new PostsAdapter(getActivity(), mPostsList, this);
+            mPostsAdapter.setDisplayPostsTarget(mDisplayPostsTarget);
 
             //Connect the adapter to the view
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -317,6 +330,15 @@ abstract class AbstractPostsListFragment extends Fragment
         if(getPostsList().size() < 1)
             return -1;
         return getPostsList().get(getPostsList().size() - 1).getId();
+    }
+
+    /**
+     * Specify whether posts target should be shown or not
+     *
+     * @param displayPostsTarget TRUE to display / FALSE else
+     */
+    protected void setDisplayPostsTarget(boolean displayPostsTarget) {
+        this.mDisplayPostsTarget = displayPostsTarget;
     }
 
     @Override

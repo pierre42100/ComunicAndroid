@@ -28,6 +28,27 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="User name" />
 
+    <ImageView
+        android:id="@+id/target_arrow"
+        style="@style/PostTargetArrow"
+        android:layout_width="15dp"
+        android:layout_height="13dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toTopOf="@+id/post_creation_time"
+        app:layout_constraintStart_toEndOf="@+id/user_account_name"
+        app:layout_constraintTop_toTopOf="@+id/user_account_name"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/target_page_name"
+        style="@style/PostOwnerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/target_arrow"
+        app:layout_constraintStart_toEndOf="@+id/target_arrow"
+        app:layout_constraintTop_toTopOf="@+id/target_arrow"
+        tools:text="Target Page" />
+
     <!-- Post creation time -->
     <TextView
         android:id="@+id/post_creation_time"

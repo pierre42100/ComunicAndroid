@@ -268,4 +268,5 @@
     <string name="err_get_posts_list">Could not get the list of posts!</string>
     <string name="notice_no_post_yet">There is no post to display here yet.</string>
     <string name="post_visibility_icon">Post visibility</string>
+    <string name="err_get_related_groups_info">Could not get information about related groups!</string>
 </resources>

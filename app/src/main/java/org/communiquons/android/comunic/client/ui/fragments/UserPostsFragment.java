@@ -46,6 +46,8 @@ public class UserPostsFragment extends AbstractPostsListFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setDisplayPostsTarget(false);
+
         //Get arguments
         Bundle bundle = getArguments();
         assert bundle != null;

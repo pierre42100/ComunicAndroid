@@ -6,6 +6,7 @@ import org.communiquons.android.comunic.client.data.enums.GroupRegistrationLevel
 import org.communiquons.android.comunic.client.data.enums.GroupVisibility;
 import org.communiquons.android.comunic.client.data.enums.GroupsMembershipLevels;
 import org.communiquons.android.comunic.client.data.enums.GroupPostsCreationLevel;
+import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 /**
  * Group information base model
@@ -41,6 +42,13 @@ public class GroupInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return The name of the group ready to be shown on a TextView
+     */
+    public String getDisplayName(){
+        return Utilities.prepareStringTextView(getName());
     }
 
     public String getIcon_url() {

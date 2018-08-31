@@ -22,13 +22,16 @@ public class GetSinglePostTask extends SafeAsyncTask<Integer, Void, PostsList> {
     @Override
     protected PostsList doInBackground(Integer... integers) {
 
-        Post post = new PostsHelper(getContext()).getSingle(integers[0]);
+        PostsHelper helper = new PostsHelper(getContext());
+
+        Post post = helper.getSingle(integers[0]);
         if(post == null) return null;
 
         PostsList list = new PostsList();
         list.add(post);
 
-        list.setUsersInfo(new GetUsersHelper(getContext()).getMultiple(list.getUsersId()));
+        if(!helper.load_related_information(list))
+            return null;
 
         return list;
     }

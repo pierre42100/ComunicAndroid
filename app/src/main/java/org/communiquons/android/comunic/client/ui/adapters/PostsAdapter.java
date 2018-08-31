@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.ArrayMap;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.data.enums.PageType;
 import org.communiquons.android.comunic.client.data.models.Comment;
 import org.communiquons.android.comunic.client.data.models.Post;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
@@ -64,9 +64,10 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
     private PostsList mList;
 
     /**
-     * Information about the users
+     * Specify whether the posts target should be shown or not
      */
-    private ArrayMap<Integer, UserInfo> mUsersInfo;
+    private boolean mDisplayPostsTarget = true;
+
 
     /**
      * Utilities object
@@ -90,12 +91,20 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
         super(context);
 
         mList = list;
-        mUsersInfo = list.getUsersInfo();
 
         //Utilities
         mUtils = new Utilities(getContext());
 
         mListener = listener;
+    }
+
+    /**
+     * Specify whether the target of the posts should be shown or not
+     *
+     * @param displayPostsTarget TRUE to display posts target / FALSE else
+     */
+    public void setDisplayPostsTarget(boolean displayPostsTarget) {
+        this.mDisplayPostsTarget = displayPostsTarget;
     }
 
     @Override
@@ -161,6 +170,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
         ((TextPostHolder)viewHolder).bind(position);
     }
 
+
     /**
      * Text posts holder
      */
@@ -168,6 +178,8 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
         private WebUserAccountImage mUserAccountImage;
         private TextView mUserAccountName;
+        private ImageView mPostTargetArrow;
+        private TextView mTargetPageName;
         private TextView mPostDate;
         private ImageView mPostVisibility;
         private ImageView mPostActions;
@@ -184,6 +196,8 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
             mUserAccountImage = itemView.findViewById(R.id.user_account_image);
             mUserAccountName = itemView.findViewById(R.id.user_account_name);
+            mPostTargetArrow = itemView.findViewById(R.id.target_arrow);
+            mTargetPageName = itemView.findViewById(R.id.target_page_name);
             mPostDate = itemView.findViewById(R.id.post_creation_time);
             mPostVisibility = itemView.findViewById(R.id.post_visibility);
             mPostActions = itemView.findViewById(R.id.post_actions_btn);
@@ -212,8 +226,8 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
             Post post = getPost(position);
             UserInfo user = null;
-            if(mUsersInfo.containsKey(post.getUserID()))
-                user = mUsersInfo.get(post.getUserID());
+            if(mList.getUsersInfo().containsKey(post.getUserID()))
+                user = mList.getUsersInfo().get(post.getUserID());
 
 
             //Apply user information
@@ -225,6 +239,40 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
                 mUserAccountImage.removeUser();
                 mUserAccountName.setText("");
             }
+
+            //Specify post target
+            setTargetNameVisibility(true);
+
+            //Check if posts target has not to be shown
+            if(!mDisplayPostsTarget)
+                setTargetNameVisibility(false);
+
+            //Do not display post target if the user who created the post created it on his page
+            else if(post.getPage_type() == PageType.USER_PAGE
+                    && post.getPage_id() == post.getUserID())
+                setTargetNameVisibility(false);
+
+            //For user page
+            else if(post.getPage_type() == PageType.USER_PAGE
+                    && mList.getUsersInfo().containsKey(post.getPage_id())){
+
+                mTargetPageName.setText(mList.getUsersInfo().get(post.getPage_id())
+                        .getDisplayFullName());
+
+            }
+
+            //For group page
+            else if(post.getPage_type() == PageType.GROUP_PAGE
+                    && mList.getGroupsInfo().containsKey(post.getPage_id())){
+
+                mTargetPageName.setText(mList.getGroupsInfo().get(post.getPage_id())
+                        .getDisplayName());
+
+            }
+
+            //Information about user / group not found
+            else
+                setTargetNameVisibility(false);
 
 
             //Post date
@@ -292,8 +340,8 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
                     if(comment.isDeleted())
                         continue;
 
-                    UserInfo commentUser = mUsersInfo.containsKey(comment.getUserID()) ?
-                            mUsersInfo.get(comment.getUserID()) : null;
+                    UserInfo commentUser = mList.getUsersInfo().containsKey(comment.getUserID()) ?
+                            mList.getUsersInfo().get(comment.getUserID()) : null;
 
                     View commentView = CommentsAdapter.getInflatedView(getContext(), comment,
                             mListener, commentUser, mCommentsList);
@@ -337,6 +385,11 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
                     }
                 });
             }
+        }
+
+        private void setTargetNameVisibility(boolean visible){
+            mPostTargetArrow.setVisibility(visible ? View.VISIBLE : View.GONE);
+            mTargetPageName.setVisibility(visible ? View.VISIBLE : View.GONE);
         }
 
         private void sendComment(){

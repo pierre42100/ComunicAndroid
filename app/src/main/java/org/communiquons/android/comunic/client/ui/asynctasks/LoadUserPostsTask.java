@@ -31,16 +31,20 @@ public class LoadUserPostsTask extends SafeAsyncTask<Integer, Void, PostsList> {
     @Override
     protected PostsList doInBackground(Integer ...integers) {
 
+        PostsHelper helper = new PostsHelper(getContext());
+
         PostsList list;
 
         if(integers.length == 0)
-            list = new PostsHelper(getContext()).get_user(mUserID);
+            list = helper.get_user(mUserID);
         else
-            list = new PostsHelper(getContext()).get_user(mUserID, integers[0]);
+            list = helper.get_user(mUserID, integers[0]);
 
         //Get associated user information, if possible
-        if(list != null)
-            list.setUsersInfo(new GetUsersHelper(getContext()).getMultiple(list.getUsersId()));
+        if(list == null) return null;
+
+        if(!helper.load_related_information(list))
+            return null;
 
         return list;
     }

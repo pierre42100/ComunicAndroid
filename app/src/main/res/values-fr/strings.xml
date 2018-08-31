@@ -266,4 +266,8 @@
     <string name="err_update_conversation_message_content">Une erreur a survenue lors de la mise à jour du contenu du message ! Veuillez réessayer…</string>
     <string name="success_update_conversation_message_content">Le contenu du message  a bien été mis à jour !</string>
     <string name="err_get_older_posts">Une erreur a survenue lors de la récupération de posts plus anciens !</string>
+    <string name="err_get_posts_list">Impossible de récupérer la liste de posts !</string>
+    <string name="notice_no_post_yet">Il n\'y a aucun post à afficher ici pour le moment.</string>
+    <string name="post_visibility_icon">Visiblité du post</string>
+    <string name="err_get_related_groups_info">Une erreur a survenue lors de la récupération d\'information sur les groupes liés !</string>
 </resources>
