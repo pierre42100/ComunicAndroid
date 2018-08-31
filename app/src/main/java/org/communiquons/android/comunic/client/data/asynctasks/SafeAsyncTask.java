@@ -50,6 +50,15 @@ public abstract class SafeAsyncTask<Params, Progress, Result>
         this.onPostExecuteListener = onPostExecuteListener;
     }
 
+    /**
+     * Check whether the a OnPostExecuteListener has been set or not
+     *
+     * @return TRUE if it has been set / FALSE else
+     */
+    public boolean hasOnPostExecuteListener(){
+        return this.onPostExecuteListener != null;
+    }
+
     @Override
     protected void onPostExecute(Result result) {
         super.onPostExecute(result);

@@ -16,10 +16,12 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
+import org.communiquons.android.comunic.client.ui.asynctasks.GetLatestPostsTask;
 import org.communiquons.android.comunic.client.ui.listeners.OnPostListFragmentsUpdateListener;
 
 /**
@@ -38,25 +40,19 @@ public class LatestPostsFragment extends Fragment
     private static final String TAG = "LatestPostsFragment";
 
     /**
-     * Posts helper
-     */
-    PostsHelper mPostsHelper;
-
-    /**
-     * User information helper
-     */
-    GetUsersHelper mUserHelper;
-
-    /**
      * The list of posts
      */
     PostsList mPostsList;
-
 
     /**
      * Fragment that displays the list of posts
      */
     private PostsListFragment mPostsListFragment;
+
+    /**
+     * Load posts task
+     */
+    private GetLatestPostsTask mGetLatestPostsTask;
 
     /**
      * Loading progress bar
@@ -68,21 +64,6 @@ public class LatestPostsFragment extends Fragment
      */
     TextView mNoPostNotice;
 
-    /**
-     * Posts load lock
-     */
-    private boolean mLoadPostsLock = false;
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        //Create posts helper
-        mPostsHelper = new PostsHelper(getActivity());
-
-        //Create user helper
-        mUserHelper = new GetUsersHelper(getActivity());
-    }
 
     @Nullable
     @Override
@@ -110,6 +91,45 @@ public class LatestPostsFragment extends Fragment
         //Refresh the list of posts of the user
         if(mPostsList == null)
             refresh_posts_list();
+        else {
+            mPostsListFragment = null;
+            show_posts_list();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        unset_all_load_tasks();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        unset_all_load_tasks();
+    }
+
+    /**
+     * Unset all pending load tasks
+     */
+    private void unset_all_load_tasks(){
+        if(mGetLatestPostsTask != null)
+            mGetLatestPostsTask.setOnPostExecuteListener(null);
+    }
+
+    /**
+     * Check whether are being loaded now or not
+     *
+     * @return TRUE if some posts are loading / FALSE else
+     */
+    private boolean is_loading_posts() {
+
+        return mGetLatestPostsTask != null &&
+                mGetLatestPostsTask.hasOnPostExecuteListener() &&
+                !mGetLatestPostsTask.isCancelled() &&
+                mGetLatestPostsTask.getStatus() != AsyncTask.Status.FINISHED;
+
     }
 
     /**
@@ -122,29 +142,15 @@ public class LatestPostsFragment extends Fragment
         toggleNoPostNoticeVisibility(false);
 
         //Get the list of latest posts
-        new AsyncTask<Void, Void, PostsList>(){
+        unset_all_load_tasks();
+        mGetLatestPostsTask = new GetLatestPostsTask(getActivity());
+        mGetLatestPostsTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<PostsList>() {
             @Override
-            protected PostsList doInBackground(Void... params) {
-                PostsList postsList =  mPostsHelper.get_latest();
-
-                //Get user information, if possible
-                if(postsList != null)
-                    postsList.setUsersInfo(mUserHelper.getMultiple(postsList.getUsersId()));
-
-                return postsList;
-            }
-
-            @Override
-            protected void onPostExecute(PostsList posts) {
-
-                //Check if the activity still exists or not
-                if(getActivity() == null)
-                    return;
-
+            public void OnPostExecute(PostsList posts) {
                 on_got_new_posts_list(posts);
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
+        });
+        mGetLatestPostsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, 0);
     }
 
     /**
@@ -152,39 +158,89 @@ public class LatestPostsFragment extends Fragment
      *
      * @param list The new list of posts
      */
-    private void on_got_new_posts_list(@Nullable PostsList list){
+    private void on_got_new_posts_list(@Nullable PostsList list) {
 
         //Hide loading bar
         toggleLoadingBarVisibility(false);
 
         //Check for errors
-        if(list == null){
+        if (list == null) {
             Toast.makeText(getActivity(), R.string.err_get_latest_posts, Toast.LENGTH_SHORT).show();
             return;
         }
-        if(!list.hasUsersInfo()){
+        if (!list.hasUsersInfo()) {
             Toast.makeText(getActivity(), R.string.err_get_users_info, Toast.LENGTH_SHORT).show();
             return;
         }
 
         //Save the list of posts
-        mPostsList = list;
+        if (mPostsList == null)
+            mPostsList = list;
+        else {
+            mPostsList.addAll(list);
+            assert mPostsList.getUsersInfo() != null;
+            mPostsList.getUsersInfo().putAll(list.getUsersInfo());
+        }
+
+        show_posts_list();
+    }
+
+    /**
+     * Show posts list
+     */
+    private void show_posts_list(){
+
+        //Hide loading bar
+        toggleLoadingBarVisibility(false);
+
+        if(mPostsListFragment == null){
+
+            //Apply the post fragment
+            mPostsListFragment = new PostsListFragment();
+            mPostsListFragment.setPostsList(mPostsList);
+            mPostsListFragment.setOnPostListFragmentsUpdateListener(this);
+
+            //Create and commit a transaction
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.replace(R.id.posts_list_target, mPostsListFragment);
+            transaction.commit();
+        }
+        else
+            //Append the new posts list
+            mPostsListFragment.show();
 
         //Check if the posts list is empty
+        toggleNoPostNoticeVisibility(mPostsList.size() == 0);
+    }
+
+    @Override
+    public void onLoadMorePosts() {
+
+        //Check if post loading is already locked
+        if(is_loading_posts())
+            return;
+
+        if(mPostsList == null)
+            return;
+
         if(mPostsList.size() == 0)
-            toggleNoPostNoticeVisibility(true);
+            return;
 
+        //Display loading bar
+        toggleLoadingBarVisibility(true);
 
-        //Append the new posts list
-        //Apply the post fragment
-        mPostsListFragment = new PostsListFragment();
-        mPostsListFragment.setPostsList(mPostsList);
-        mPostsListFragment.setOnPostListFragmentsUpdateListener(this);
+        //Get the ID of the oldest post to start from
+        int start = mPostsList.get(mPostsList.size()-1).getId() - 1;
 
-        //Create and commit a transaction
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.posts_list_target, mPostsListFragment);
-        transaction.commit();
+        //Get older posts
+        mGetLatestPostsTask = new GetLatestPostsTask(getActivity());
+        mGetLatestPostsTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<PostsList>() {
+            @Override
+            public void OnPostExecute(PostsList posts) {
+                on_got_new_posts_list(posts);
+            }
+        });
+        mGetLatestPostsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, start);
     }
 
     /**
@@ -203,86 +259,5 @@ public class LatestPostsFragment extends Fragment
      */
     private void toggleNoPostNoticeVisibility(boolean visible){
         mNoPostNotice.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void onLoadMorePosts() {
-
-        //Check if post loading is already locked
-        if(mLoadPostsLock)
-            return;
-
-        if(mPostsList == null)
-            return;
-
-        if(mPostsList.size() == 0)
-            return;
-
-        //Display loading bar
-        mLoadPostsLock = true;
-        toggleLoadingBarVisibility(true);
-
-        //Get the ID of the oldest post to start from
-        final int start = mPostsList.get(mPostsList.size()-1).getId() - 1;
-
-        //Get older posts
-        new GetOlderPosts().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, start);
-    }
-
-    /**
-     * This class get and apply older posts
-     */
-    private class GetOlderPosts extends AsyncTask<Integer, Void, PostsList> {
-
-        @Override
-        protected PostsList doInBackground(Integer... id) {
-
-            //Get the list of older posts
-            PostsList postsList = mPostsHelper.get_latest(id[0]);
-
-            //Check for errors
-            if(postsList == null)
-                return null;
-
-            //Get information about the users
-            ArrayMap<Integer, UserInfo> usersInfo
-                    = mUserHelper.getMultiple(postsList.getUsersId());
-
-            //Check for errors
-            if(usersInfo == null)
-                return null;
-
-            assert postsList.getUsersInfo() != null;
-            postsList.getUsersInfo().putAll(usersInfo);
-
-            return postsList;
-        }
-
-        @Override
-        protected void onPostExecute(PostsList posts) {
-
-            //Check if the activity has been detached
-            if(getActivity() == null)
-                return;
-
-
-            //Unlock post loading
-            mLoadPostsLock = false;
-            toggleLoadingBarVisibility(false);
-
-            if(posts == null){
-                Toast.makeText(getActivity(), R.string.err_get_older_posts,
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            mPostsList.addAll(posts);
-            assert mPostsList.getUsersInfo() != null;
-            mPostsList.getUsersInfo().putAll(posts.getUsersInfo());
-
-            //Apply new posts list
-            mPostsListFragment.show();
-
-        }
     }
 }
