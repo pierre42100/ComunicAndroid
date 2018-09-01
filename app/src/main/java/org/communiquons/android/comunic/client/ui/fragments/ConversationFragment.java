@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.ConversationMessagesList;
+import org.communiquons.android.comunic.client.data.models.NewConversationMessage;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
@@ -39,6 +40,7 @@ import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.ui.asynctasks.DeleteConversationMessageTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.SendConversationMessageTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.UpdateConversationMessageContentTask;
 import org.communiquons.android.comunic.client.ui.listeners.OnConversationMessageActionsListener;
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
@@ -194,6 +196,7 @@ public class ConversationFragment extends Fragment
     /**
      * Safe AsyncTasks
      */
+    private SendConversationMessageTask mSendConversationMessageTask;
     private DeleteConversationMessageTask mDeleteMessageAsyncTask;
     private UpdateConversationMessageContentTask mUpdateConversationMessageContentTask;
 
@@ -397,6 +400,7 @@ public class ConversationFragment extends Fragment
     public void onDestroy() {
         super.onDestroy();
 
+        unsetSendMessageTask();
         unsetPendingDeleteTasksCallback();
         unsetPendingUpdatedTasksCallbacks();
     }
@@ -601,7 +605,7 @@ public class ConversationFragment extends Fragment
     private void send_message(){
 
         //Check message length
-        if(new_message_content.length() < 3 && new_message_bitmap == null){
+        if(new_message_content.length() < 2 && new_message_bitmap == null){
             Toast.makeText(getActivity(), R.string.conversation_message_err_too_short,
                     Toast.LENGTH_SHORT).show();
             return;
@@ -612,22 +616,31 @@ public class ConversationFragment extends Fragment
         new_message_progress_bar.setVisibility(View.VISIBLE);
 
         //Get the message content
-        final String message_content = new_message_content.getText()+"";
+        String message_content = new_message_content.getText()+"";
+
+        if(message_content.length() < 3 && new_message_bitmap == null)
+            message_content += " ";
+
+        NewConversationMessage newMessage = new NewConversationMessage();
+        newMessage.setConversationID(conversation_id);
+        newMessage.setMessage(message_content);
+        newMessage.setImage(new_message_bitmap);
 
         //Send the message
-        new AsyncTask<Void, Void, Boolean>(){
-
+        unsetSendMessageTask();
+        mSendConversationMessageTask = new SendConversationMessageTask(getActivity());
+        mSendConversationMessageTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
             @Override
-            protected Boolean doInBackground(Void... params) {
-                return convMessHelper.sendMessage(conversation_id,
-                        message_content, new_message_bitmap);
-            }
-
-            @Override
-            protected void onPostExecute(Boolean success) {
+            public void OnPostExecute(Boolean success) {
                 send_callback(success);
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        });
+        mSendConversationMessageTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, newMessage);
+    }
+
+    private void unsetSendMessageTask(){
+        if(mSendConversationMessageTask != null)
+            mSendConversationMessageTask.setOnPostExecuteListener(null);
     }
 
     /**

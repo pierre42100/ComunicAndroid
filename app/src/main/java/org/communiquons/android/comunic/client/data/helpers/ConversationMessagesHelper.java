@@ -10,6 +10,7 @@ import org.communiquons.android.comunic.client.data.models.APIPostFile;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
+import org.communiquons.android.comunic.client.data.models.NewConversationMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,31 +93,29 @@ public class ConversationMessagesHelper {
     /**
      * Send a new message to the conversation
      *
-     * @param convID Target conversation ID
-     * @param message The message to send
-     * @param image Image to include with the request, as bitmap (can be null)
+     * @param message Information about the message to send
      * @return true in case of success / false else
      */
-    public boolean sendMessage(int convID, String message, @Nullable Bitmap image){
+    public boolean sendMessage(NewConversationMessage message){
 
         //Make an API request
         APIFileRequest params = new APIFileRequest(mContext,
                 "conversations/sendMessage");
-        params.addString("conversationID", ""+convID);
-        params.addString("message", message);
+        params.addInt("conversationID", message.getConversationID());
+        params.addString("message", message.getMessage());
 
         //Include image (if any)
-        if(image != null) {
+        if(message.hasImage()) {
             APIPostFile file = new APIPostFile();
             file.setFieldName("image");
             file.setFileName("conversationImage.png");
-            file.setBitmap(image);
+            file.setBitmap(message.getImage());
             params.addFile(file);
         }
 
         try {
 
-            if(image != null){
+            if(message.hasImage()){
                 //Perform a POST request
                 new APIRequestHelper().execPostFile(params);
             }
