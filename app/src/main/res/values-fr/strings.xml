@@ -7,7 +7,7 @@
     <string name="activity_login_submit_form">Connexion</string>
     <string name="activity_login_err_invalid_password">Le mot de passe est invalide !</string>
     <string name="activity_login_err_invalid_email">L\'e-mail spécifié est invalide !</string>
-    <string name="activity_login_err_invalid_credentials">La connexion n\'a pas pu être établie. Veuillez vérifier votre connexion au réseau !</string>
+    <string name="activity_login_err_invalid_credentials">La connexion n\'a pas pu être établie. Veuillez vérifier vos identifiants de connexion !</string>
     <string name="err_no_internet_connection">Pas de connexion internet !</string>
     <string name="activity_login_err_server_response">Le serveur a envoyé une réponse inattendue…</string>
     <string name="main_menu_logout">Déconnexion</string>
