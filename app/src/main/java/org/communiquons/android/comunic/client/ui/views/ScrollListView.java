@@ -2,7 +2,6 @@ package org.communiquons.android.comunic.client.ui.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.AbsListView;
 
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;

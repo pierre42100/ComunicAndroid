@@ -32,7 +32,6 @@ import org.communiquons.android.comunic.client.data.helpers.DebugHelper;
 import org.communiquons.android.comunic.client.data.models.NotificationsCount;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
-import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ActionMenuView;
-import android.widget.ImageView;
 
 import org.communiquons.android.comunic.client.R;
 

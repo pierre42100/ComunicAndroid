@@ -11,8 +11,6 @@ import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
-import java.security.acl.Group;
-
 /**
  * Notifications utilities
  *

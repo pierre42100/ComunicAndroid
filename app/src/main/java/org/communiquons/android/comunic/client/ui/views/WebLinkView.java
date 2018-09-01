@@ -1,6 +1,5 @@
 package org.communiquons.android.comunic.client.ui.views;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;

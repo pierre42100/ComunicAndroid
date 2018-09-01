@@ -2,8 +2,6 @@ package org.communiquons.android.comunic.client.ui.listeners;
 
 import android.view.View;
 
-import org.communiquons.android.comunic.client.data.models.ConversationMessage;
-
 /**
  * Listener for actions on conversation messages
  *
