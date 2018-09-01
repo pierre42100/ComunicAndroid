@@ -26,20 +26,20 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.ConversationMessagesList;
-import org.communiquons.android.comunic.client.data.models.NewConversationMessage;
-import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.models.NewConversationMessage;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.runnables.ConversationRefreshRunnable;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.ui.asynctasks.DeleteConversationMessageTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SendConversationMessageTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.UpdateConversationMessageContentTask;
 import org.communiquons.android.comunic.client.ui.listeners.OnConversationMessageActionsListener;
@@ -53,6 +53,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
+import static org.communiquons.android.comunic.client.ui.Constants.IntentRequestCode.CONVERSATION_MESSAGE_PICK_PHOTO;
 
 /**
  * Conversation fragment
@@ -67,11 +68,6 @@ public class ConversationFragment extends Fragment
         implements ConversationRefreshRunnable.onMessagesChangeListener,
         OnScrollChangeDetectListener, OnConversationMessageActionsListener,
         PopupMenu.OnMenuItemClickListener {
-
-    /**
-     * Pick image request number
-     */
-    public static final int PICK_PHOTO = 1;
 
     /**
      * Debug tag
@@ -233,7 +229,7 @@ public class ConversationFragment extends Fragment
         switch (requestCode) {
 
             //If the response if for the photos
-            case PICK_PHOTO :
+            case CONVERSATION_MESSAGE_PICK_PHOTO:
                 pick_image_callback(resultCode, data);
                 break;
         }
@@ -528,7 +524,7 @@ public class ConversationFragment extends Fragment
     private void pick_image(){
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, PICK_PHOTO);
+        startActivityForResult(photoPickerIntent, CONVERSATION_MESSAGE_PICK_PHOTO);
     }
 
     /**

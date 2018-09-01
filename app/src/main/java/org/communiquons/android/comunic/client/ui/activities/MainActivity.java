@@ -49,6 +49,8 @@ import org.communiquons.android.comunic.client.ui.listeners.updateConversationLi
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.views.NavigationBar;
 
+import static org.communiquons.android.comunic.client.ui.Constants.IntentRequestCode.MAIN_ACTIVITY_SEARCH_USER_INTENT;
+
 
 /**
  * Main activity of the application
@@ -63,11 +65,6 @@ public class MainActivity extends AppCompatActivity implements
      * Debug tag
      */
     private static final String TAG = "MainActivity";
-
-    /**
-     * Intent code : search a user
-     */
-    private static final int SEARCH_USER_INTENT = 3;
 
     /**
      * Account object
@@ -364,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements
 
             switch (requestCode) {
 
-                case SEARCH_USER_INTENT:
+                case MAIN_ACTIVITY_SEARCH_USER_INTENT:
                     assert data.getData() != null;
                     openUserPage(Integer.decode(data.getData().getQueryParameter("userID")));
                     break;
@@ -650,7 +647,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //Make intent
         Intent intent = new Intent(this, SearchUserActivity.class);
-        startActivityForResult(intent, SEARCH_USER_INTENT);
+        startActivityForResult(intent, MAIN_ACTIVITY_SEARCH_USER_INTENT);
 
     }
 }

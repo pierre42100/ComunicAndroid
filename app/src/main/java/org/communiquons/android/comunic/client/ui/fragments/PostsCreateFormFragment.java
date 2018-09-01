@@ -1,14 +1,14 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +30,7 @@ import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import java.io.FileNotFoundException;
 
 import static android.app.Activity.RESULT_OK;
+import static org.communiquons.android.comunic.client.ui.Constants.IntentRequestCode.POST_CREATE_FORM_PICK_PHOTO;
 
 /**
  * Posts creation form
@@ -49,11 +50,6 @@ public class PostsCreateFormFragment extends Fragment {
      * The name of the argument that contains the type of the page
      */
     public static final String PAGE_TYPE_ARG = "PAGE_TYPE";
-
-    /**
-     * Intent : request to pick a picture
-     */
-    public static final int PICK_PHOTO = 2;
 
     /**
      * Page type : user page
@@ -143,7 +139,7 @@ public class PostsCreateFormFragment extends Fragment {
 
         switch (requestCode){
 
-            case PICK_PHOTO:
+            case POST_CREATE_FORM_PICK_PHOTO:
                 pick_picture_callback(resultCode, data);
                 break;
 
@@ -158,7 +154,7 @@ public class PostsCreateFormFragment extends Fragment {
         //Make an intent
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, PICK_PHOTO);
+        startActivityForResult(photoPickerIntent, POST_CREATE_FORM_PICK_PHOTO);
 
     }
 

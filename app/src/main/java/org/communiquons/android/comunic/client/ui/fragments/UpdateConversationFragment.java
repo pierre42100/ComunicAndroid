@@ -1,12 +1,12 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.ArrayMap;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -22,20 +22,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.ui.activities.SearchUserActivity;
-import org.communiquons.android.comunic.client.data.utils.AccountUtils;
+import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.ui.adapters.UsersAsysncInfoAdapter;
 import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
-import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.utils.AccountUtils;
+import org.communiquons.android.comunic.client.ui.activities.MainActivity;
+import org.communiquons.android.comunic.client.ui.activities.SearchUserActivity;
+import org.communiquons.android.comunic.client.ui.adapters.UsersAsysncInfoAdapter;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 import org.communiquons.android.comunic.client.ui.views.AppBarLayout;
 
 import java.util.ArrayList;
+
+import static org.communiquons.android.comunic.client.ui.Constants.IntentRequestCode.CONVERSATION_UPDATE_FIND_USER_ID_INTENT;
 
 /**
  * Create and / or update a conversation fragment
@@ -55,11 +57,6 @@ public class UpdateConversationFragment extends Fragment {
      * The conversation ID argument
      */
     public static final String ARG_CONVERSATION_ID = "conversation_id";
-
-    /**
-     * Find user ID intent
-     */
-    public static final int FIND_USER_ID_INTENT = 0;
 
     /**
      * Action : create a conversation
@@ -258,7 +255,7 @@ public class UpdateConversationFragment extends Fragment {
 
         //Make intent
         Intent intent = new Intent(getActivity(), SearchUserActivity.class);
-        startActivityForResult(intent, FIND_USER_ID_INTENT);
+        startActivityForResult(intent, CONVERSATION_UPDATE_FIND_USER_ID_INTENT);
 
     }
 
@@ -271,7 +268,7 @@ public class UpdateConversationFragment extends Fragment {
 
             switch(requestCode){
 
-                case FIND_USER_ID_INTENT:
+                case CONVERSATION_UPDATE_FIND_USER_ID_INTENT:
                     addMemberID(Integer.decode(data.getData().getQueryParameter("userID")));
             }
 
