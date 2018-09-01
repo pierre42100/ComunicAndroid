@@ -184,7 +184,7 @@ public class ConversationsListHelper {
         for(Integer id : users.keySet()){
 
             //Do not display current user name
-            if(id == new AccountUtils(mContext).get_current_user_id())
+            if(id == AccountUtils.getID(mContext))
                 continue;
 
             if(users.get(id) != null){

@@ -260,7 +260,7 @@ public class ConversationFragment extends Fragment
         mAppBar = view.findViewById(R.id.appbar);
 
         //Need user ID
-        userID = new AccountUtils(getActivity()).get_current_user_id();
+        userID = AccountUtils.getID(getActivity());
 
         //Initialize toolbar
         mAppBar.addBackButton(new View.OnClickListener() {

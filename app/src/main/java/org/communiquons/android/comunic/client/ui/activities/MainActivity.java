@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //User personal page
         else if(id == R.id.action_personal_page){
-            openUserPage(new AccountUtils(this).get_current_user_id());
+            openUserPage(new AccountHelper(this).get_current_user_id());
         }
 
         //Latest posts

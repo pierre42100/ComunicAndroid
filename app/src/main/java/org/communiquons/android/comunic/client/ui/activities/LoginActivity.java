@@ -3,7 +3,6 @@ package org.communiquons.android.comunic.client.ui.activities;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -14,17 +13,11 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
+import org.communiquons.android.comunic.client.data.enums.LoginResult;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
-import org.communiquons.android.comunic.client.data.models.APIRequest;
-import org.communiquons.android.comunic.client.data.models.APIResponse;
-import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
-import org.communiquons.android.comunic.client.ui.asynctasks.APIRequestTask;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import org.communiquons.android.comunic.client.ui.asynctasks.LoginTask;
 
 /**
  * Login activity of the application
@@ -35,14 +28,9 @@ import java.util.ArrayList;
 public class LoginActivity extends AppCompatActivity {
 
     /**
-     * Account utilities object
-     */
-    private AccountUtils aUtils;
-
-    /**
      * API request task (to perform login)
      */
-    private APIRequestTask mApiRequestTask;
+    private LoginTask mLoginTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +38,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         assert getSupportActionBar() != null;
         getSupportActionBar().hide();
-
-        //Create account utilities object
-        aUtils = new AccountUtils(this);
 
         //Check for connectivity
         if(!APIRequestHelper.isAPIavailable(this)){
@@ -100,8 +85,8 @@ public class LoginActivity extends AppCompatActivity {
      * Cancel any running task
      */
     private void undoRunningTasks(){
-        if(mApiRequestTask != null)
-            mApiRequestTask.setOnPostExecuteListener(null);
+        if(mLoginTask != null)
+            mLoginTask.setOnPostExecuteListener(null);
     }
 
     /**
@@ -144,23 +129,18 @@ public class LoginActivity extends AppCompatActivity {
         show_form_error("");
         enter_loading_state(true);
 
-
-        //Perform a request on the API to check user credentials and get login tokens
-        APIRequest params = new APIRequest(this, "user/connectUSER");
-        params.setTryContinueOnError(true);
-        params.addString("userMail", ""+login_mail.getText());
-        params.addString("userPassword", ""+login_password.getText());
-
         //Create Request
         undoRunningTasks();
-        mApiRequestTask = new APIRequestTask(this);
-        mApiRequestTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<APIResponse>() {
+        mLoginTask = new LoginTask(this);
+        mLoginTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<LoginResult>() {
+
             @Override
-            public void OnPostExecute(APIResponse apiResponse) {
-                handle_server_response(apiResponse);
+            public void OnPostExecute(LoginResult loginResult) {
+                handle_server_response(loginResult);
             }
         });
-        mApiRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+        mLoginTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                ""+login_mail.getText(), ""+login_password.getText());
 
     }
 
@@ -170,71 +150,30 @@ public class LoginActivity extends AppCompatActivity {
      *
      * @param response The server response
      */
-    void handle_server_response(@Nullable APIResponse response){
+    void handle_server_response(LoginResult response){
 
-        if(response == null){
-           show_err_server_response();
-            return;
-        }
+        enter_loading_state(false);
 
-        if(response.getResponse_code() != 200){
+        switch (response){
 
-            enter_loading_state(false);
+            case SUCCESS:
+                openMainActivity();
+                break;
 
-            if(response.getResponse_code() == 429)
+            case TOO_MANY_ATTEMPTS:
                 show_form_error(getString(R.string.activity_login_too_many_request));
-            else
+                break;
+
+            case INVALID_CREDENTIALS:
                 show_form_error(getString(R.string.activity_login_err_invalid_credentials));
+                break;
 
-            return;
-        }
-
-        JSONObject data = response.getJSONObject();
-
-        //Check for decoding response errors
-        if(data == null) {
-            show_err_server_response();
-            return;
-        }
-
-        try {
-            //Search for tokens
-            JSONObject tokensObj = data.getJSONObject("tokens");
-
-            //Extract tokens
-            ArrayList<String> tokens = new ArrayList<>();
-            tokens.add(tokensObj.getString("token1"));
-            tokens.add(tokensObj.getString("token2"));
-
-            //Save tokens
-            AccountHelper accountHelper = new AccountHelper(this);
-            if(!accountHelper.save_new_tokens(tokens)) {
+            case SERVER_ERROR:
+            default:
                 show_err_server_response();
-                return;
-            }
+                break;
 
-        } catch (JSONException e){
-            e.printStackTrace();
-            show_err_server_response();
-            return;
         }
-
-        //Refresh current user ID
-        aUtils.refresh_current_user_id(new AccountUtils.onceRefreshedUserID(){
-            @Override
-            public void callback(boolean success) {
-
-                //Check if it is a success or a failure
-                if(!success){
-                    show_err_server_response();
-                }
-                else {
-                    //Redirect to the main activity
-                    openMainActivity();
-                }
-
-            }
-        });
 
     }
 

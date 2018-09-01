@@ -4,18 +4,20 @@ import android.content.Context;
 import android.util.Log;
 
 import org.communiquons.android.comunic.client.data.enums.CreateAccountResult;
+import org.communiquons.android.comunic.client.data.enums.LoginResult;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.NewAccount;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * Comunic account class
+ * Comunic account helper class
  *
  * This class stores the account tokens
  *
@@ -23,7 +25,7 @@ import java.util.Objects;
  * Created by pierre on 10/29/17.
  */
 
-public class AccountHelper {
+public class AccountHelper extends BaseHelper {
 
     /**
      * Utilities object
@@ -41,9 +43,9 @@ public class AccountHelper {
     private String tokFilename = "login_tokens.json";
 
     /**
-     * Application context
+     * The name of the userID file
      */
-    private Context mContext;
+    private static final String USER_ID_FILENAME = "user_id.txt";
 
     /**
      * Account class constructor
@@ -51,7 +53,8 @@ public class AccountHelper {
      * @param context Context of the application
      */
     public AccountHelper(Context context){
-        mContext = context;
+        super(context);
+
         utils = new Utilities(context);
 
         //Initialize tokens array
@@ -59,19 +62,63 @@ public class AccountHelper {
     }
 
     /**
+     * Intend to sign in user
+     *
+     * @param email Email address of the user
+     * @param password The password of the user
+     * @return The result of the operation
+     */
+    public LoginResult sign_in(String email, String password){
+
+        APIRequest request = new APIRequest(getContext(), "account/login");
+        request.setTryContinueOnError(true);
+        request.addString("userMail", email);
+        request.addString("userPassword", password);
+
+        try {
+
+            APIResponse response = new APIRequestHelper().exec(request);
+
+            //Check for login errors
+            if(response.getResponse_code() != 200){
+
+                return response.getResponse_code() == 429 ?
+                        LoginResult.TOO_MANY_ATTEMPTS :
+                        LoginResult.INVALID_CREDENTIALS;
+
+            }
+
+            //Get login tokens
+            JSONObject tokensObj = response.getJSONObject().getJSONObject("tokens");
+            ArrayList<String> tokens = new ArrayList<>();
+            tokens.add(tokensObj.getString("token1"));
+            tokens.add(tokensObj.getString("token2"));
+
+            //Try to save new tokens
+            if(!save_new_tokens(tokens))
+                return LoginResult.SERVER_ERROR;
+
+            //Get user ID
+            if(fetch_current_user_id() < 1)
+                return LoginResult.SERVER_ERROR;
+
+            //Success
+            return LoginResult.SUCCESS;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return LoginResult.SERVER_ERROR;
+        }
+    }
+
+    /**
      * Determine whether user is signed in or not
      *
      * @return True if signed in
      */
-    public boolean signed_in(){
-
+    public boolean signed_in() {
         //Check if tokens are already loaded
-        if(tokens.size() < 1){
-            if(!load_tokens())
-                return false;
-        }
-
-        return true;
+        return tokens.size() >= 1 || load_tokens();
     }
 
     /**
@@ -80,6 +127,103 @@ public class AccountHelper {
      */
     public boolean sign_out(){
         return remove_login_tokens();
+    }
+
+    /**
+     * Fetch on the server the current user ID
+     *
+     * @return Current user ID / -1 in case of failure
+     */
+    private int fetch_current_user_id(){
+        APIRequest request = new APIRequest(getContext(), "user/getCurrentUserID");
+
+        try {
+            APIResponse response = new APIRequestHelper().exec(request);
+            if(response.getResponse_code() != 200)
+                return -1;
+
+            int userID = response.getJSONObject().getInt("userID");
+            return save_new_user_id(userID) ? userID : -1;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    /**
+     * Get the current user ID
+     *
+     * @return The user ID or -1 in case of error
+     */
+    public int get_current_user_id(){
+
+        //Get file content
+        String userIDString = utils.file_get_content(USER_ID_FILENAME);
+
+        //Convert into an int
+        try {
+            int userID = Integer.decode(userIDString);
+
+            //Return user ID
+            return userID > 0 ? userID : -1;
+        } catch (NumberFormatException e){
+            e.printStackTrace();
+
+            //This is a failure
+            return -1;
+        }
+    }
+
+    /**
+     * Save new user ID
+     *
+     * @param id The new ID to save
+     * @return True in case of success / false else
+     */
+    private boolean save_new_user_id(int id){
+        //Save new file content
+        return utils.file_put_contents(USER_ID_FILENAME, ""+id);
+    }
+
+    /**
+     * Create a new account
+     *
+     * @param newAccount Information about the new account to create
+     * @return TRUE for a success / FALSE else
+     */
+    public CreateAccountResult createAccount(NewAccount newAccount) {
+
+        APIRequest request = new APIRequest(getContext(), "account/create");
+        request.setTryContinueOnError(true);
+        request.addString("firstName", newAccount.getFirstName());
+        request.addString("lastName", newAccount.getLastName());
+        request.addString("emailAddress", newAccount.getEmail());
+        request.addString("password", newAccount.getPassword());
+
+        //Perform the request
+        try {
+            APIResponse response = new APIRequestHelper().exec(request);
+
+            switch (response.getResponse_code()) {
+                case 200:
+                    return CreateAccountResult.SUCCESS;
+
+                case 409:
+                    return CreateAccountResult.ERROR_EXISTING_EMAIL;
+
+                case 429:
+                    return CreateAccountResult.ERROR_TOO_MANY_REQUESTS;
+
+                default:
+                    return CreateAccountResult.ERROR;
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CreateAccountResult.ERROR;
+        }
     }
 
     /**
@@ -145,7 +289,7 @@ public class AccountHelper {
      * @param toks The array containing the tokens
      * @return False in case of failure
      */
-    public boolean save_new_tokens(ArrayList<String> toks){
+    private boolean save_new_tokens(ArrayList<String> toks){
 
         //Create tokens array
         JSONArray tokens = new JSONArray();
@@ -183,43 +327,5 @@ public class AccountHelper {
         return true;
     }
 
-    /**
-     * Create a new account
-     *
-     * @param newAccount Information about the new account to create
-     * @return TRUE for a success / FALSE else
-     */
-    public CreateAccountResult createAccount(NewAccount newAccount) {
 
-        APIRequest request = new APIRequest(mContext, "account/create");
-        request.setTryContinueOnError(true);
-        request.addString("firstName", newAccount.getFirstName());
-        request.addString("lastName", newAccount.getLastName());
-        request.addString("emailAddress", newAccount.getEmail());
-        request.addString("password", newAccount.getPassword());
-
-        //Perform the request
-        try {
-            APIResponse response = new APIRequestHelper().exec(request);
-
-            switch (response.getResponse_code()) {
-                case 200:
-                    return CreateAccountResult.SUCCESS;
-
-                case 409:
-                    return CreateAccountResult.ERROR_EXISTING_EMAIL;
-
-                case 429:
-                    return CreateAccountResult.ERROR_TOO_MANY_REQUESTS;
-
-                default:
-                    return CreateAccountResult.ERROR;
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CreateAccountResult.ERROR;
-        }
-    }
 }

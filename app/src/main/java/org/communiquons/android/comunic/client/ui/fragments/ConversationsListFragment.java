@@ -246,7 +246,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
                 for(int userID : conv.getMembers()){
 
                     //Do not display current user name
-                    if(userID == new AccountUtils(getActivity()).get_current_user_id())
+                    if(userID == AccountUtils.getID(getActivity()))
                         continue;
 
                     if(usersInfo.containsKey(userID)){
