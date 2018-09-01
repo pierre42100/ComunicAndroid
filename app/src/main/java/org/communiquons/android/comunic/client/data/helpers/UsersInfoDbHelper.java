@@ -6,6 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.communiquons.android.comunic.client.data.DatabaseContract.UsersInfoSchema;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.utils.TimeUtils;
+
+import static org.communiquons.android.comunic.client.data.DatabaseContract.UsersInfoSchema.COLUMN_NAME_TIME_INSERT;
+import static org.communiquons.android.comunic.client.data.DatabaseContract.UsersInfoSchema.TABLE_NAME;
 
 /**
  * Users information helpers
@@ -16,7 +20,12 @@ import org.communiquons.android.comunic.client.data.models.UserInfo;
  * Created by pierre on 11/2/17.
  */
 
-class UsersInfosDbHelper {
+class UsersInfoDbHelper {
+
+    /**
+     * Max age of user information in cache
+     */
+    private static final int USER_INFO_MAX_AGE = 36000; //10 hours
 
     /**
      * Database helper
@@ -28,8 +37,9 @@ class UsersInfosDbHelper {
      *
      * @param dbHelper Database helper object
      */
-    UsersInfosDbHelper(DatabaseHelper dbHelper){
+    UsersInfoDbHelper(DatabaseHelper dbHelper){
         this.dbHelper = dbHelper;
+        clean();
     }
 
     /**
@@ -51,7 +61,7 @@ class UsersInfosDbHelper {
     }
 
     /**
-     * Check wether a user is present in the database or not
+     * Check whether a user is present in the database or not
      *
      * @param userID The user to research on the database
      * @return boolean True if the user exists / false else
@@ -73,7 +83,7 @@ class UsersInfosDbHelper {
 
         //Perform the request on the database
         Cursor c = db.query(
-                UsersInfoSchema.TABLE_NAME,
+                TABLE_NAME,
                 projection,
                 selection,
                 selectionArgs,
@@ -86,9 +96,6 @@ class UsersInfosDbHelper {
 
         //Close cursor
         c.close();
-
-        //Close the database
-        //db.close();
 
         return number_entries > 0;
     }
@@ -105,17 +112,10 @@ class UsersInfosDbHelper {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         //Prepare the insertion
-        ContentValues newValues = new ContentValues();
-        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_ID, user.getId());
-        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_FIRSTNAME, user.getFirstName());
-        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_LASTNAME, user.getLastName());
-        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_ACCOUNT_IMAGE, user.getAcountImageURL());
+        ContentValues newValues = UserInfoToDb(user);
 
         //Insert it
-        long newRowId = db.insert(UsersInfoSchema.TABLE_NAME, null, newValues);
-
-        //Close the database
-        //db.close();
+        long newRowId = db.insert(TABLE_NAME, null, newValues);
 
         return (int) newRowId;
     }
@@ -150,7 +150,7 @@ class UsersInfosDbHelper {
 
         //Perform the request
         Cursor c = db.query(
-                UsersInfoSchema.TABLE_NAME,
+                TABLE_NAME,
                 requestedFields,
                 selection,
                 selectionArgs,
@@ -164,30 +164,13 @@ class UsersInfosDbHelper {
             result = null;
         else {
 
-            //Initialize User object
-            result = new UserInfo();
-
-            c.moveToFirst();
-
             //Extract the information and record them
-            result.setId(c.getInt(c.getColumnIndexOrThrow(
-                                UsersInfoSchema.COLUMN_NAME_USER_ID)));
-
-            result.setFirstName(c.getString(c.getColumnIndexOrThrow(
-                    UsersInfoSchema.COLUMN_NAME_USER_FIRSTNAME)));
-
-            result.setLastName(c.getString(c.getColumnIndexOrThrow(
-                    UsersInfoSchema.COLUMN_NAME_USER_LASTNAME)));
-
-            result.setAccountImageURL(c.getString(c.getColumnIndexOrThrow(
-                    UsersInfoSchema.COLUMN_NAME_USER_ACCOUNT_IMAGE)));
+            c.moveToFirst();
+            result = DbToUserInfo(c);
         }
 
         //Close the cursor
         c.close();
-
-        //Close the database
-        //db.close();
 
         return result;
     }
@@ -208,10 +191,7 @@ class UsersInfosDbHelper {
         String[] conditionArgs = {""+userID};
 
         //Perform the request
-        int result = db.delete(UsersInfoSchema.TABLE_NAME, condition, conditionArgs);
-
-        //Close database
-        //db.close();
+        int result = db.delete(TABLE_NAME, condition, conditionArgs);
 
         return result > 0;
     }
@@ -219,7 +199,7 @@ class UsersInfosDbHelper {
     /**
      * Update a user entry
      *
-     * @param userInfo New informations about the user
+     * @param userInfo New information about the user
      * @return True if the operation seems to be a success / false else
      */
     private boolean update(UserInfo userInfo){
@@ -228,10 +208,7 @@ class UsersInfosDbHelper {
 
         //Prepare the request
         //Set the new values
-        ContentValues newValues = new ContentValues();
-        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_FIRSTNAME, userInfo.getFirstName());
-        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_LASTNAME, userInfo.getLastName());
-        newValues.put(UsersInfoSchema.COLUMN_NAME_USER_ACCOUNT_IMAGE, userInfo.getAcountImageURL());
+        ContentValues newValues = UserInfoToDb(userInfo);
 
         //Set the condition
         String conditions = UsersInfoSchema.COLUMN_NAME_USER_ID + " = ?";
@@ -241,10 +218,51 @@ class UsersInfosDbHelper {
 
 
         //Perform the request
-        int result = db.update(UsersInfoSchema.TABLE_NAME, newValues, conditions, conditionArgs);
+        return db.update(TABLE_NAME, newValues, conditions, conditionArgs) > 0;
 
-        //db.close();
+    }
 
-        return result > 0;
+    /**
+     * Remove old user data
+     */
+    private void clean(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String whereClauses = COLUMN_NAME_TIME_INSERT + " < ?";
+        String[] whereArgs = {(TimeUtils.time() - USER_INFO_MAX_AGE)+""};
+        db.delete(TABLE_NAME, whereClauses, whereArgs);
+    }
+
+    /**
+     * Turn user information object into database entry
+     *
+     * @param user Information about the user
+     * @return Generated database entry
+     */
+    private ContentValues UserInfoToDb(UserInfo user){
+        ContentValues values = new ContentValues();
+        values.put(UsersInfoSchema.COLUMN_NAME_USER_ID, user.getId());
+        values.put(UsersInfoSchema.COLUMN_NAME_TIME_INSERT, TimeUtils.time());
+        values.put(UsersInfoSchema.COLUMN_NAME_USER_FIRSTNAME, user.getFirstName());
+        values.put(UsersInfoSchema.COLUMN_NAME_USER_LASTNAME, user.getLastName());
+        values.put(UsersInfoSchema.COLUMN_NAME_USER_ACCOUNT_IMAGE, user.getAcountImageURL());
+        return values;
+    }
+
+    /**
+     * Turn a database entry into a UserInfo object
+     *
+     * @param c The cursor to parse
+     * @return Generated user information
+     */
+    private UserInfo DbToUserInfo(Cursor c){
+        UserInfo user = new UserInfo();
+        user.setId(c.getInt(c.getColumnIndexOrThrow(UsersInfoSchema.COLUMN_NAME_USER_ID)));
+        user.setFirstName(c.getString(c.getColumnIndexOrThrow(
+                UsersInfoSchema.COLUMN_NAME_USER_FIRSTNAME)));
+        user.setLastName(c.getString(c.getColumnIndexOrThrow(
+                UsersInfoSchema.COLUMN_NAME_USER_LASTNAME)));
+        user.setAccountImageURL(c.getString(c.getColumnIndexOrThrow(
+                UsersInfoSchema.COLUMN_NAME_USER_ACCOUNT_IMAGE)));
+        return user;
     }
 }

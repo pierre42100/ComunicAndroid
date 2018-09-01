@@ -33,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + UsersInfoSchema.TABLE_NAME + " (" +
                     UsersInfoSchema._ID + " INTEGER PRIMARY KEY," +
                     UsersInfoSchema.COLUMN_NAME_USER_ID + INTEGER_TYPE + COMMA_SEP +
+                    UsersInfoSchema.COLUMN_NAME_TIME_INSERT + INTEGER_TYPE + COMMA_SEP +
                     UsersInfoSchema.COLUMN_NAME_USER_FIRSTNAME + TEXT_TYPE + COMMA_SEP +
                     UsersInfoSchema.COLUMN_NAME_USER_LASTNAME + TEXT_TYPE + COMMA_SEP +
                     UsersInfoSchema.COLUMN_NAME_USER_ACCOUNT_IMAGE + TEXT_TYPE

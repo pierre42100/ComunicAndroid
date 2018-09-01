@@ -15,7 +15,7 @@ public final class DatabaseContract {
     public DatabaseContract(){}
 
     /* Database basic information */
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "database.db";
 
     /* Users info table */
@@ -23,6 +23,7 @@ public final class DatabaseContract {
         public static final String TABLE_NAME = "users_info";
 
         public static final String COLUMN_NAME_USER_ID = "user_id";
+        public static final String COLUMN_NAME_TIME_INSERT = "time_insert";
         public static final String COLUMN_NAME_USER_FIRSTNAME = "first_name";
         public static final String COLUMN_NAME_USER_LASTNAME = "last_name";
         public static final String COLUMN_NAME_USER_ACCOUNT_IMAGE = "account_image";

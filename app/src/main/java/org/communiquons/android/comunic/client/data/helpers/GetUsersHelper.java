@@ -38,7 +38,7 @@ public class GetUsersHelper {
     /**
      * User information database helper
      */
-    private UsersInfosDbHelper udbHelper = null;
+    private UsersInfoDbHelper udbHelper = null;
 
     /**
      * Public constructor of the class
@@ -55,7 +55,7 @@ public class GetUsersHelper {
      * @param context The context of execution of the application
      * @param udbHelper User database helper
      */
-    public GetUsersHelper(@NonNull Context context, @NonNull UsersInfosDbHelper udbHelper){
+    public GetUsersHelper(@NonNull Context context, @NonNull UsersInfoDbHelper udbHelper){
         mContext = context.getApplicationContext();
         this.udbHelper = udbHelper;
     }
@@ -68,7 +68,7 @@ public class GetUsersHelper {
      */
     public GetUsersHelper(@NonNull Context context, @NonNull DatabaseHelper dbHelper){
         mContext = context;
-        this.udbHelper = new UsersInfosDbHelper(dbHelper);
+        this.udbHelper = new UsersInfoDbHelper(dbHelper);
     }
 
     /**
