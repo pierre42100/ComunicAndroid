@@ -1,7 +1,6 @@
 package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
