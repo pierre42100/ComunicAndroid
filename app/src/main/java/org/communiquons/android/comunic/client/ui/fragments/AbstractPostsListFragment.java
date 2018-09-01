@@ -56,7 +56,7 @@ import java.util.Objects;
  * Created by pierre on 3/18/18.
  */
 
-abstract class AbstractPostsListFragment extends Fragment
+public abstract class AbstractPostsListFragment extends Fragment
     implements onPostUpdateListener, OnScrollChangeDetectListener, PostsCreateFormFragment.OnPostCreated {
 
     /**

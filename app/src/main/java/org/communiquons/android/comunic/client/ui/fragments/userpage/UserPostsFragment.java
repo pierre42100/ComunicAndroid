@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.ui.fragments;
+package org.communiquons.android.comunic.client.ui.fragments.userpage;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.LoadUserPostsTask;
+import org.communiquons.android.comunic.client.ui.fragments.AbstractPostsListFragment;
+import org.communiquons.android.comunic.client.ui.fragments.PostsCreateFormFragment;
 
 /**
  * User posts fragment

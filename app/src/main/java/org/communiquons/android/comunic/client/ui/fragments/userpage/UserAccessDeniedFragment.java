@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.ui.fragments;
+package org.communiquons.android.comunic.client.ui.fragments.userpage;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
