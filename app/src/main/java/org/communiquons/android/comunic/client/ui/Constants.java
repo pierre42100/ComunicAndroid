@@ -31,6 +31,11 @@ public final class Constants {
          * Intent code : search a user
          */
         public static final int MAIN_ACTIVITY_SEARCH_USER_INTENT = 3;
+
+        /**
+         * Pick image to update account image
+         */
+        public static final int ACCOUNT_IMAGE_SETTINGS_PICK_NEW_INTENT = 4;
     }
 
 }

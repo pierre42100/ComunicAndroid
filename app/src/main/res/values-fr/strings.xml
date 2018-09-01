@@ -270,4 +270,18 @@
     <string name="notice_no_post_yet">Il n\'y a aucun post à afficher ici pour le moment.</string>
     <string name="post_visibility_icon">Visiblité du post</string>
     <string name="err_get_related_groups_info">Une erreur a survenue lors de la récupération d\'information sur les groupes liés !</string>
+    <string name="action_account_settings">Paramètres du compte</string>
+    <string name="activity_account_settings_label">Paramètres du compte</string>
+    <string name="preferences_account_image_title">Image du compte</string>
+    <string name="preference_account_image_summary">Mettre à jour votre image de compte et sa visibilité</string>
+    <string name="prefence_update_account_image_title">Mettre à jour votre image de compte</string>
+    <string name="prefence_update_account_image_description">Touchez ici pour mettre une nouvelle image de compte en ligne</string>
+    <string name="err_get_account_image_settings">Une erreur a survenue lors de la récupération des paramètres d\'image de compte !</string>
+    <string name="action_delete_account_image">Supprimer votre image de compte</string>
+    <string name="dialog_delete_accountimage_title">Suppression de l\'image de compte</string>
+    <string name="dialog_delete_accountimage_message">Voulez vous vraiment supprimer votre image de compte ? Cette opération est irréversible !</string>
+    <string name="dialog_delete_accountimage_cancel">Annuler</string>
+    <string name="dialog_delete_accountimage_confirm">Supprimer</string>
+    <string name="err_delete_account_image">Une erreur a survenu lors de la suppression de votre image de compte !</string>
+    <string name="err_upload_account_image">Une erreur a survenu lors de la mise en ligne de votre nouvelle image de compte !</string>
 </resources>

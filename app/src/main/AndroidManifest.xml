@@ -49,6 +49,10 @@
             android:name=".ui.activities.PDFActivity"
             android:label="@string/activity_view_pdf_label" />
 
+        <!-- Account settings activity -->
+        <activity android:name=".ui.activities.AccountSettingsActivity"
+            android:label="@string/activity_account_settings_label"/>
+
         <!-- Settings activity -->
         <activity
             android:name=".ui.activities.SettingsActivity"
@@ -57,7 +61,8 @@
         <!-- About activity -->
         <activity
             android:name=".ui.activities.AboutActivity"
-            android:label="@string/activity_about_title"/>
+            android:label="@string/activity_about_title" />
+
 
     </application>
 

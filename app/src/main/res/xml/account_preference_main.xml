@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="preference_category_account_image"
+        android:title="@string/preferences_account_image_title"
+        android:icon="@drawable/ic_account_circle"
+        android:summary="@string/preference_account_image_summary"/>
+
+</PreferenceScreen>

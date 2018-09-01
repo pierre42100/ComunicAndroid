@@ -5,23 +5,28 @@
     <!-- Search user -->
     <item
         android:id="@+id/action_search_user"
-        android:title="@string/main_menu_search_user"/>
+        android:title="@string/main_menu_search_user" />
+
+    <!-- Account settings -->
+    <item
+        android:id="@+id/action_account_settings"
+        android:title="@string/action_account_settings" />
 
     <!-- Settings -->
     <item
         android:id="@+id/action_settings"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_settings" />
 
     <!-- About activity -->
     <item
         android:id="@+id/action_about"
-        android:title="@string/action_about"/>
+        android:title="@string/action_about" />
 
     <!-- Sign out -->
     <item
         android:id="@+id/action_logout"
-        android:title="@string/main_menu_logout"
         android:orderInCategory="101"
-        app:showAsAction="never"/>
+        android:title="@string/main_menu_logout"
+        app:showAsAction="never" />
 
 </menu>

@@ -57,7 +57,7 @@ import static org.communiquons.android.comunic.client.ui.Constants.IntentRequest
  *
  * @author Pierre HUBERT
  */
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends BaseActivity implements
         openConversationListener, updateConversationListener, onOpenUsersPageListener,
         onPostOpenListener, NavigationBar.OnNavigationItemSelectedListener {
 
@@ -153,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements
         conversationsListHelper = new ConversationsListHelper(this, dbHelper);
 
         //Use navigation bar
-        assert getSupportActionBar() != null;
         getSupportActionBar().hide();
         mNavBar = findViewById(R.id.nav_bar);
         mNavBar.setOnNavigationItemSelectedListener(this);
@@ -230,6 +229,11 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
 
+        //To open account settings
+        if(id == R.id.action_account_settings){
+            openAccountSettings();
+            return true;
+        }
 
         //To open settings fragment
         if (id == R.id.action_settings) {
@@ -428,6 +432,13 @@ public class MainActivity extends AppCompatActivity implements
         transaction.addToBackStack(null);
         transaction.commit();
 
+    }
+
+    /**
+     * Open account settings
+     */
+    void openAccountSettings(){
+        startActivity(new Intent(this, AccountSettingsActivity.class));
     }
 
     /**
