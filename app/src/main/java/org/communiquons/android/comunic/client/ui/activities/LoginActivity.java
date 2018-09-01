@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.ui.activities;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,12 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.ui.asynctasks.APIRequestTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +38,11 @@ public class LoginActivity extends AppCompatActivity {
      * Account utilities object
      */
     private AccountUtils aUtils;
+
+    /**
+     * API request task (to perform login)
+     */
+    private APIRequestTask mApiRequestTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +89,21 @@ public class LoginActivity extends AppCompatActivity {
             openMainActivity();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        undoRunningTasks();
+    }
+
+    /**
+     * Cancel any running task
+     */
+    private void undoRunningTasks(){
+        if(mApiRequestTask != null)
+            mApiRequestTask.setOnPostExecuteListener(null);
+    }
+
     /**
      * Handle login form submission
      */
@@ -123,61 +146,22 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //Perform a request on the API to check user credentials and get login tokens
-        final APIRequest params = new APIRequest(this, "user/connectUSER");
+        APIRequest params = new APIRequest(this, "user/connectUSER");
         params.setTryContinueOnError(true);
         params.addString("userMail", ""+login_mail.getText());
         params.addString("userPassword", ""+login_password.getText());
 
         //Create Request
-        new Thread(new SubmitLoginRequest(params)).start();
-
-    }
-
-
-    /**
-     * Runnable used to submit login request and retrieve login tokens
-     */
-    private class SubmitLoginRequest implements Runnable {
-
-        private APIRequest mRequest;
-
-        SubmitLoginRequest(APIRequest request){
-            mRequest = request;
-        }
-
-        @Override
-        public void run() {
-
-            APIResponse response = null;
-            try {
-                response = new APIRequestHelper().exec(mRequest);
-            } catch (Exception e) {
-                e.printStackTrace();
+        undoRunningTasks();
+        mApiRequestTask = new APIRequestTask(this);
+        mApiRequestTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<APIResponse>() {
+            @Override
+            public void OnPostExecute(APIResponse apiResponse) {
+                handle_server_response(apiResponse);
             }
+        });
+        mApiRequestTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
 
-            if(!isFinishing()){
-                findViewById(R.id.email_field).post(new ServerResponseRunnable(response));
-            }
-
-        }
-    }
-
-
-    /**
-     * Runnable used on the UI Thread to pre-process server response
-     */
-    private class ServerResponseRunnable implements Runnable {
-
-        private APIResponse mResponse;
-
-        ServerResponseRunnable(APIResponse response){
-            mResponse = response;
-        }
-
-        @Override
-        public void run() {
-            handle_server_response(mResponse);
-        }
     }
 
 
