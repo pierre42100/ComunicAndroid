@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.enums.CreateAccountResult;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.models.NewAccount;
@@ -212,10 +212,9 @@ public class CreateAccountActivity extends AppCompatActivity
      * @return TRUE if a request is running / FALSE else
      */
     private boolean isCreating() {
-        if (mCreateAccountTask == null)
-            return false;
-
-        return !mCreateAccountTask.isCancelled() && mCreateAccountTask.getStatus() != FINISHED;
+        return mCreateAccountTask != null
+                && !mCreateAccountTask.isCancelled()
+                && mCreateAccountTask.getStatus() != FINISHED;
 
     }
 

@@ -3,7 +3,6 @@ package org.communiquons.android.comunic.client.ui.asynctasks;
 import android.content.Context;
 import android.util.ArrayMap;
 
-import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.FriendsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.models.UserInfo;

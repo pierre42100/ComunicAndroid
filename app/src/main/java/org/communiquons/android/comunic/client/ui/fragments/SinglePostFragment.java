@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
-import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.GetSinglePostTask;
 
 /**

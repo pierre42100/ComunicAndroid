@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.data.asynctasks;
+package org.communiquons.android.comunic.client.ui.asynctasks;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

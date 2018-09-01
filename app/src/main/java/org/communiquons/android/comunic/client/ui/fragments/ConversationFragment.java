@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.ConversationMessagesList;
-import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;

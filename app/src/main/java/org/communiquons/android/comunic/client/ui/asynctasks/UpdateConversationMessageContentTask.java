@@ -2,7 +2,6 @@ package org.communiquons.android.comunic.client.ui.asynctasks;
 
 import android.content.Context;
 
-import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 

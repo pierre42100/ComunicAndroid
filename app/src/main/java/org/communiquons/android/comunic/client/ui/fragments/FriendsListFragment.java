@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.FriendsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;

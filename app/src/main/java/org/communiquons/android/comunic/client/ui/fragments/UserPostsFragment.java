@@ -5,13 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.PostsList;
-import org.communiquons.android.comunic.client.data.asynctasks.SafeAsyncTask;
-import org.communiquons.android.comunic.client.data.models.Post;
+import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.LoadUserPostsTask;
 
 /**
