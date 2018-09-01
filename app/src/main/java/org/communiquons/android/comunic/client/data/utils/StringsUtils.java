@@ -1,6 +1,13 @@
 package org.communiquons.android.comunic.client.data.utils;
 
+import android.text.TextUtils;
+import android.util.Patterns;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.Formatter;
 import java.util.Locale;
 import java.util.Random;
 
@@ -76,5 +83,59 @@ public class StringsUtils {
             stringBuilder.insert(0, "0");
 
         return stringBuilder.toString();
+    }
+
+    /**
+     * Check whether a specified email address is valid or not
+     *
+     * @param mail The E-Mail address to check
+     * @return True if the mail is valid / false else
+     */
+    public static boolean isValidMail(CharSequence mail){
+        return !TextUtils.isEmpty(mail) && Patterns.EMAIL_ADDRESS.matcher(mail).matches();
+    }
+
+    /**
+     * Generate the SHA-1 summary of a given string
+     *
+     * @param source The source string
+     * @return The SHA-1 encoded string
+     */
+    public static String sha1(String source){
+
+        String sha1;
+
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(source.getBytes("UTF-8"));
+            sha1 = byteToHex(crypt.digest());
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return sha1;
+
+    }
+
+    /**
+     * Convert an array of bytes into a string
+     *
+     * @param bList The list of bytes
+     * @return The result string
+     */
+    private static String byteToHex(byte[] bList){
+
+        Formatter formatter = new Formatter();
+
+        for(byte b : bList){
+            formatter.format("%02x", b);
+        }
+
+        String result = formatter.toString();
+        formatter.close();
+        return result;
+
     }
 }

@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
-import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.data.utils.TimeUtils;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
 /**
@@ -53,7 +53,7 @@ public class CountDownView extends BaseFrameLayoutView {
     public void setTime_end(final int time_end) {
         this.time_end = time_end;
 
-        final int remaining = time_end - Utilities.time();
+        final int remaining = time_end - TimeUtils.time();
 
         if(mTimer != null)
             mTimer.cancel();
@@ -68,7 +68,7 @@ public class CountDownView extends BaseFrameLayoutView {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                mTimerView.setText(timeToString(time_end - Utilities.time()));
+                mTimerView.setText(timeToString(time_end - TimeUtils.time()));
             }
 
             @Override

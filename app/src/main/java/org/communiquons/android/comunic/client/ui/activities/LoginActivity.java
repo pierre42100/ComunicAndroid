@@ -12,11 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.enums.LoginResult;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
-import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.asynctasks.LoginTask;
 
 /**
@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         //Check email address
-        if(login_mail.length() < 3 || !Utilities.isValidMail(login_mail.getText())){
+        if(login_mail.length() < 3 || !StringsUtils.isValidMail(login_mail.getText())){
             login_mail.setError(getString(R.string.activity_login_err_invalid_email));
             login_mail.requestFocus();
             stop = 1;

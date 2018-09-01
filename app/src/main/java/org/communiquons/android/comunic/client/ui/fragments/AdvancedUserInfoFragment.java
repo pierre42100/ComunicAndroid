@@ -12,7 +12,7 @@ import android.widget.TextView;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.models.AdvancedUserInfo;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
-import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.data.utils.TimeUtils;
 import org.communiquons.android.comunic.client.ui.views.FriendshipStatusButton;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
@@ -93,8 +93,8 @@ public class AdvancedUserInfoFragment extends Fragment {
         //Apply user information
         mUserAccountImage.setUser(mAdvancedUserInfo);
         mUserName.setText(mAdvancedUserInfo.getDisplayFullName());
-        mMemberSinceTarget.setText(new Utilities(getActivity()).timeToString(
-                Utilities.time() - mAdvancedUserInfo.getAccount_creation_time()));
+        mMemberSinceTarget.setText(TimeUtils.TimeToString(getActivity(),
+                TimeUtils.time() - mAdvancedUserInfo.getAccount_creation_time()));
     }
 
     @Override

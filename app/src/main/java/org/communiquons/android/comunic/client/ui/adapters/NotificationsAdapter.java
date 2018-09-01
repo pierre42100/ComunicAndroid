@@ -16,7 +16,7 @@ import org.communiquons.android.comunic.client.data.models.GroupInfo;
 import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.NotifsUtils;
-import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.data.utils.TimeUtils;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
 /**
@@ -27,11 +27,6 @@ import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
  */
 
 public class NotificationsAdapter extends ArrayAdapter<Notif>{
-
-    /**
-     * Utilities
-     */
-    private Utilities mUtils;
 
     /**
      * Information about the users of the notifications
@@ -55,8 +50,6 @@ public class NotificationsAdapter extends ArrayAdapter<Notif>{
         //Save users and groups information
         mUsersInfo = list.getUsersInfo();
         mGroupsInfo = list.getGroupsInfo();
-
-        mUtils = new Utilities(context);
     }
 
     @NonNull
@@ -84,7 +77,8 @@ public class NotificationsAdapter extends ArrayAdapter<Notif>{
 
         //Update the date of the notification
         TextView date = convertView.findViewById(R.id.notification_date);
-        date.setText(mUtils.timeToString(Utilities.time() - notif.getTime_create()));
+        date.setText(TimeUtils.TimeToString(getContext(),
+                TimeUtils.time() - notif.getTime_create()));
 
         return convertView;
     }

@@ -1,6 +1,6 @@
 package org.communiquons.android.comunic.client.data.models;
 
-import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.data.utils.TimeUtils;
 
 /**
  * Friend object
@@ -119,6 +119,6 @@ public class Friend {
      * @return True if user is signed in / false else
      */
     public boolean signed_in(){
-        return (Utilities.time()-USER_INACTIVE_AFTER) < last_activity;
+        return (TimeUtils.time()-USER_INACTIVE_AFTER) < last_activity;
     }
 }

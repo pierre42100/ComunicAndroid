@@ -8,7 +8,7 @@ import org.communiquons.android.comunic.client.data.enums.LoginResult;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.NewAccount;
-import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.data.utils.FilesUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,9 +28,9 @@ import java.util.Objects;
 public class AccountHelper extends BaseHelper {
 
     /**
-     * Utilities object
+     * Files utilities object
      */
-    private Utilities utils;
+    private FilesUtils mFilesUtils;
 
     /**
      * Tokens list
@@ -40,7 +40,7 @@ public class AccountHelper extends BaseHelper {
     /**
      * Tokens file
      */
-    private String tokFilename = "login_tokens.json";
+    private static final String tokFilename = "login_tokens.json";
 
     /**
      * The name of the userID file
@@ -55,7 +55,7 @@ public class AccountHelper extends BaseHelper {
     public AccountHelper(Context context){
         super(context);
 
-        utils = new Utilities(context);
+        mFilesUtils = new FilesUtils(context);
 
         //Initialize tokens array
         tokens = new ArrayList<>();
@@ -159,7 +159,7 @@ public class AccountHelper extends BaseHelper {
     public int get_current_user_id(){
 
         //Get file content
-        String userIDString = utils.file_get_content(USER_ID_FILENAME);
+        String userIDString = mFilesUtils.file_get_content(USER_ID_FILENAME);
 
         //Convert into an int
         try {
@@ -183,7 +183,7 @@ public class AccountHelper extends BaseHelper {
      */
     private boolean save_new_user_id(int id){
         //Save new file content
-        return utils.file_put_contents(USER_ID_FILENAME, ""+id);
+        return mFilesUtils.file_put_contents(USER_ID_FILENAME, ""+id);
     }
 
     /**
@@ -236,7 +236,7 @@ public class AccountHelper extends BaseHelper {
         String tokens_file;
 
         //Get the tokens file content
-        tokens_file = utils.file_get_content(tokFilename);
+        tokens_file = mFilesUtils.file_get_content(tokFilename);
 
         //Check if there was an error
         if(Objects.equals(tokens_file, ""))
@@ -303,7 +303,7 @@ public class AccountHelper extends BaseHelper {
         String tokens_string = tokens.toString();
 
         //Try to write result to file
-        if(!utils.file_put_contents(tokFilename, tokens_string)){
+        if(!mFilesUtils.file_put_contents(tokFilename, tokens_string)){
             Log.e("Account", "Couldn't save new tokens !");
             return false;
         }
@@ -317,7 +317,7 @@ public class AccountHelper extends BaseHelper {
      * @return False in case of failure
      */
     private boolean remove_login_tokens(){
-        if(!utils.file_put_contents(tokFilename, "[]"))
+        if(!mFilesUtils.file_put_contents(tokFilename, "[]"))
             return false;
 
         //Create new array

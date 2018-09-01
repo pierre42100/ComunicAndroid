@@ -20,7 +20,7 @@ import org.communiquons.android.comunic.client.data.enums.PageType;
 import org.communiquons.android.comunic.client.data.models.Comment;
 import org.communiquons.android.comunic.client.data.models.Post;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.data.utils.TimeUtils;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.views.CountDownView;
@@ -68,12 +68,6 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
      */
     private boolean mDisplayPostsTarget = true;
 
-
-    /**
-     * Utilities object
-     */
-    private Utilities mUtils;
-
     /**
      * Actions update listener
      */
@@ -91,9 +85,6 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
         super(context);
 
         mList = list;
-
-        //Utilities
-        mUtils = new Utilities(getContext());
 
         mListener = listener;
     }
@@ -276,7 +267,8 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
 
             //Post date
-            mPostDate.setText(mUtils.timeToString(Utilities.time() - post.getPost_time()));
+            mPostDate.setText(TimeUtils.TimeToString(getContext(),
+                    TimeUtils.time() - post.getPost_time()));
 
 
             //Display post visibility
@@ -314,7 +306,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
 
             //Set post content
-            mPostContent.setText(Utilities.prepareStringTextView(post.getContent()));
+            mPostContent.setText(UiUtils.prepareStringTextView(post.getContent()));
 
 
             //Post likes

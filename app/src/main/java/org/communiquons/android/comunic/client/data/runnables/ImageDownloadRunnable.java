@@ -3,8 +3,8 @@ package org.communiquons.android.comunic.client.data.runnables;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import org.communiquons.android.comunic.client.data.utils.StreamsUtils;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
-import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -73,7 +73,7 @@ class ImageDownloadRunnable implements Runnable {
             Log.v(TAG, "Downloading image (size: "+img_size+") at " + url);
 
             //Big images have to written byte per byte
-            Utilities.InputToOutputStream(is, os);
+            StreamsUtils.InputToOutputStream(is, os);
 
             //Close streams and disconnect
             is.close();

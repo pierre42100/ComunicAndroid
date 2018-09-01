@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import org.communiquons.android.comunic.client.data.arrays.ConversationMessagesL
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
-import org.communiquons.android.comunic.client.data.utils.Utilities;
 import org.communiquons.android.comunic.client.ui.listeners.OnConversationMessageActionsListener;
 import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
@@ -60,8 +58,6 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
      */
     private OnConversationMessageActionsListener mOnConversationMessageActionsListener;
 
-    private Utilities utils;
-
     /**
      * Public class constructor
      *
@@ -76,8 +72,6 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
         this.userID = userID;
         this.mContext = context;
         this.mList = list;
-
-        utils = new Utilities(mContext);
 
     }
 

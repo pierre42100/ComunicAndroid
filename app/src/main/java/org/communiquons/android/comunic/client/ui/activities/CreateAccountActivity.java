@@ -17,11 +17,11 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.enums.CreateAccountResult;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.models.NewAccount;
-import org.communiquons.android.comunic.client.data.utils.Utilities;
 
 import static android.os.AsyncTask.Status.FINISHED;
 
@@ -159,7 +159,7 @@ public class CreateAccountActivity extends AppCompatActivity
             cancel = true;
             focusView = focusView != null ? focusView : mEmailAddress;
         }
-        else if(!Utilities.isValidMail(email)){
+        else if(!StringsUtils.isValidMail(email)){
             mEmailAddress.setError(getString(R.string.err_invalid_email));
             cancel = true;
             focusView = focusView != null ? focusView : mEmailAddress;

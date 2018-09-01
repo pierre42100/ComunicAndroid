@@ -3,8 +3,6 @@ package org.communiquons.android.comunic.client.data.utils;
 import android.content.Context;
 import android.util.Log;
 
-import org.communiquons.android.comunic.client.data.utils.Utilities;
-
 import java.io.File;
 
 /**
@@ -33,7 +31,7 @@ public class ImageLoadUtils {
      * @return The name of the file, composed of characters that can be used in filename
      */
     public static String get_file_name(String url){
-        return Utilities.sha1(url);
+        return StringsUtils.sha1(url);
     }
 
     /**

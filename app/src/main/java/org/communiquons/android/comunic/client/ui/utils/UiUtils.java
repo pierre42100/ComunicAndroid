@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.text.Html;
 import android.util.TypedValue;
 
 import org.communiquons.android.comunic.client.R;
@@ -95,5 +96,19 @@ public class UiUtils {
     public static int GetPixel(Context context, int dp){
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 context.getResources().getDisplayMetrics());
+    }
+
+    /**
+     * Prepare a string sent through the API to be shown in a TextView element
+     *
+     * @param input The string to prepare
+     * @return The string ready to be shown
+     */
+    public static String prepareStringTextView(String input){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(input, Html.FROM_HTML_SEPARATOR_LINE_BREAK_PARAGRAPH).toString();
+        }
+        else
+            return Html.fromHtml(input).toString();
     }
 }

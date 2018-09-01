@@ -1,6 +1,6 @@
 package org.communiquons.android.comunic.client.data.models;
 
-import org.communiquons.android.comunic.client.data.utils.Utilities;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
 /**
  * This class contains the informations about a single user
@@ -88,7 +88,7 @@ public class UserInfo {
      * @return The full name of the user
      */
     public String getDisplayFullName(){
-        return Utilities.prepareStringTextView(getFullName());
+        return UiUtils.prepareStringTextView(getFullName());
     }
 
     /**
