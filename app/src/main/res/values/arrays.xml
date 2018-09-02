@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Account image visibility levels -->
+    <string-array name="account_image_visibility_levels_entries">
+        <item>@string/array_everyone</item>
+        <item>@string/array_authenticated_users</item>
+        <item>@string/array_friends_only</item>
+    </string-array>
+
+    <string-array name="account_image_visibility_levels_values">
+        <item>open</item>
+        <item>public</item>
+        <item>friends</item>
+    </string-array>
+
+
+</resources>

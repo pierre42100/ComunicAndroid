@@ -12,12 +12,15 @@ import android.support.v7.preference.Preference;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.enums.AccountImageVisibility;
 import org.communiquons.android.comunic.client.data.models.AccountImageSettings;
 import org.communiquons.android.comunic.client.ui.asynctasks.DeleteUserAccountImageTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.GetAccountImageSettingsTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.UpdateAccountImageVisibilityTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.UploadNewAccountImageTask;
 import org.communiquons.android.comunic.client.ui.preference.AccountImagePreference;
+import org.communiquons.android.comunic.client.ui.preference.AccountImageVisibilityPreference;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
 
 import java.io.FileNotFoundException;
@@ -27,19 +30,22 @@ import static org.communiquons.android.comunic.client.ui.Constants.IntentRequest
 /**
  * Account image settings fragment
  */
-public class AccountImageSettingsFragment extends BaseAccountSettingsFragment implements Preference.OnPreferenceClickListener {
+public class AccountImageSettingsFragment extends BaseAccountSettingsFragment
+        implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
 
     private static final String TAG = AccountImageSettingsFragment.class.getSimpleName();
 
     //Preferences
     private static final String PREFERENCE_UPDATE_ACCOUNT_IMAGE = "update_account_image";
     private static final String PREFERENCE_DELETE_ACCOUNT_IMAGE = "delete_account_image";
+    private static final String PREFERENCE_ACCOUNT_IMAGE_VISIBILITY = "account_image_visibility_level";
 
     private AccountImageSettings mAccountImageSettings;
 
     private GetAccountImageSettingsTask mGetAccountImageSettingsTask;
     private UploadNewAccountImageTask mUploadNewAccountImageTask;
     private DeleteUserAccountImageTask mDeleteUserAccountImageTask;
+    private UpdateAccountImageVisibilityTask mUpdateAccountImageVisibilityTask;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -52,6 +58,7 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
 
         findPreference(PREFERENCE_UPDATE_ACCOUNT_IMAGE).setOnPreferenceClickListener(this);
         findPreference(PREFERENCE_DELETE_ACCOUNT_IMAGE).setOnPreferenceClickListener(this);
+        findPreference(PREFERENCE_ACCOUNT_IMAGE_VISIBILITY).setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -59,7 +66,7 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
         super.onResume();
         getActivity().setTitle(R.string.preferences_account_image_title);
 
-        if(mAccountImageSettings == null)
+        if (mAccountImageSettings == null)
             load_settings();
         else
             onGotAccountImageSettings(mAccountImageSettings);
@@ -72,24 +79,26 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
         removeLoadingDialog();
     }
 
-    private void unset_loading_tasks(){
-        if(mGetAccountImageSettingsTask != null)
+    private void unset_loading_tasks() {
+        if (mGetAccountImageSettingsTask != null)
             mGetAccountImageSettingsTask.setOnPostExecuteListener(null);
 
-        if(mUploadNewAccountImageTask != null)
+        if (mUploadNewAccountImageTask != null)
             mUploadNewAccountImageTask.setOnPostExecuteListener(null);
 
-        if(mDeleteUserAccountImageTask != null)
+        if (mDeleteUserAccountImageTask != null)
             mDeleteUserAccountImageTask.setOnPostExecuteListener(null);
-    }
 
+        if (mUpdateAccountImageVisibilityTask != null)
+            mUpdateAccountImageVisibilityTask.setOnPostExecuteListener(null);
+    }
 
 
     /**
      * Load account image settings. As soon as this method is called, cached information about
      * account image are cleared, so on pause and resume of the fragment it can be loaded again
      */
-    private void load_settings(){
+    private void load_settings() {
         unset_loading_tasks();
 
         showLoadingDialog();
@@ -105,12 +114,12 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
         mGetAccountImageSettingsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private void onGotAccountImageSettings(@Nullable AccountImageSettings accountImageSettings){
+    private void onGotAccountImageSettings(@Nullable AccountImageSettings accountImageSettings) {
 
         removeLoadingDialog();
 
         //Check for errors
-        if(accountImageSettings == null){
+        if (accountImageSettings == null) {
             Toast.makeText(getActivity(), R.string.err_get_account_image_settings,
                     Toast.LENGTH_SHORT).show();
             return;
@@ -119,17 +128,21 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
         mAccountImageSettings = accountImageSettings;
 
         //Apply settings
-        ((AccountImagePreference)findPreference(PREFERENCE_UPDATE_ACCOUNT_IMAGE))
+        ((AccountImagePreference) findPreference(PREFERENCE_UPDATE_ACCOUNT_IMAGE))
                 .setImage_url(mAccountImageSettings.getImageURL());
         findPreference(PREFERENCE_DELETE_ACCOUNT_IMAGE).setEnabled(
                 accountImageSettings.isHas_image());
+        findPreference(PREFERENCE_ACCOUNT_IMAGE_VISIBILITY)
+                .setEnabled(accountImageSettings.isHas_image());
+        ((AccountImageVisibilityPreference) findPreference(PREFERENCE_ACCOUNT_IMAGE_VISIBILITY))
+                .setValue(mAccountImageSettings.getVisibility());
 
     }
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
 
-        switch (preference.getKey()){
+        switch (preference.getKey()) {
 
             //Upload new account image
             case PREFERENCE_UPDATE_ACCOUNT_IMAGE:
@@ -138,9 +151,22 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
 
             //Delete account image
             case PREFERENCE_DELETE_ACCOUNT_IMAGE:
-              confirmDeleteAccountImage();
-              break;
+                confirmDeleteAccountImage();
+                break;
 
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object o) {
+
+        //Update account image visibility
+        if (preference.getKey().equals(PREFERENCE_ACCOUNT_IMAGE_VISIBILITY)) {
+            updateAccountImageVisibility(
+                    AccountImageVisibilityPreference.StringToAccountImageVisibility((String)o));
+            return true;
         }
 
         return false;
@@ -151,14 +177,14 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
         super.onActivityResult(requestCode, resultCode, data);
 
         //Check if the request was to choose a new account image
-        if(requestCode == ACCOUNT_IMAGE_SETTINGS_PICK_NEW_INTENT)
+        if (requestCode == ACCOUNT_IMAGE_SETTINGS_PICK_NEW_INTENT)
             pickNewAccountImageCallback(resultCode, data);
     }
 
     /**
      * Prompt the user to choose a new account image
      */
-    private void pickNewAccountImage(){
+    private void pickNewAccountImage() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, ACCOUNT_IMAGE_SETTINGS_PICK_NEW_INTENT);
@@ -168,10 +194,10 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
      * Pick new account image callback
      *
      * @param resultCode Result code of the operation
-     * @param data Associated data
+     * @param data       Associated data
      */
-    private void pickNewAccountImageCallback(int resultCode, Intent data){
-        if(resultCode != Activity.RESULT_OK)
+    private void pickNewAccountImageCallback(int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK)
             return;
 
         try {
@@ -187,7 +213,7 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
      *
      * @param bitmap The new account image, as bitmap
      */
-    private void uploadNewAccountImage(Bitmap bitmap){
+    private void uploadNewAccountImage(Bitmap bitmap) {
         showLoadingDialog();
         unset_loading_tasks();
 
@@ -195,7 +221,7 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
         mUploadNewAccountImageTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
             @Override
             public void OnPostExecute(Boolean result) {
-                if(!result)
+                if (!result)
                     Toast.makeText(getActivity(), R.string.err_upload_account_image,
                             Toast.LENGTH_SHORT).show();
 
@@ -208,7 +234,7 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
     /**
      * Prompt user confirmation to delete account image
      */
-    private void confirmDeleteAccountImage(){
+    private void confirmDeleteAccountImage() {
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.dialog_delete_accountimage_title)
                 .setMessage(R.string.dialog_delete_accountimage_message)
@@ -227,7 +253,7 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
     /**
      * Perform account image deletion
      */
-    private void deleteAccountImage(){
+    private void deleteAccountImage() {
         showLoadingDialog();
         unset_loading_tasks();
 
@@ -236,7 +262,7 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
             @Override
             public void OnPostExecute(Boolean result) {
 
-                if(!result)
+                if (!result)
                     Toast.makeText(getActivity(), R.string.err_delete_account_image,
                             Toast.LENGTH_SHORT).show();
 
@@ -244,5 +270,30 @@ public class AccountImageSettingsFragment extends BaseAccountSettingsFragment im
             }
         });
         mDeleteUserAccountImageTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * Update account image visibility level
+     *
+     * @param visibility New Visibility level
+     */
+    private void updateAccountImageVisibility(AccountImageVisibility visibility) {
+
+        unset_loading_tasks();
+        showLoadingDialog();
+
+        mUpdateAccountImageVisibilityTask = new UpdateAccountImageVisibilityTask(getActivity());
+        mUpdateAccountImageVisibilityTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
+            @Override
+            public void OnPostExecute(Boolean result) {
+                if (!result)
+                    Toast.makeText(getActivity(), R.string.err_update_account_image_visibility,
+                            Toast.LENGTH_SHORT).show();
+
+                load_settings();
+            }
+        });
+        mUpdateAccountImageVisibilityTask.executeOnExecutor(
+                AsyncTask.THREAD_POOL_EXECUTOR, visibility);
     }
 }

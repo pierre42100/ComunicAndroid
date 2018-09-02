@@ -283,4 +283,9 @@
     <string name="dialog_delete_accountimage_confirm">Delete</string>
     <string name="err_delete_account_image">Could not delete your account image!</string>
     <string name="err_upload_account_image">Could not upload new account image!</string>
+    <string name="preference_account_image_visibility_level">Account image visibility level</string>
+    <string name="array_everyone">Everyone</string>
+    <string name="array_authenticated_users">Authenticated users</string>
+    <string name="array_friends_only">Friends only</string>
+    <string name="err_update_account_image_visibility">Could not update account image visibility level!</string>
 </resources>

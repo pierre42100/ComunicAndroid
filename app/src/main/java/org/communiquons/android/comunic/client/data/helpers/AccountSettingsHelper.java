@@ -90,6 +90,24 @@ public class AccountSettingsHelper extends BaseHelper {
     }
 
     /**
+     * Update account image visibility
+     *
+     * @param visibility New account image visibility
+     * @return The result of the operation
+     */
+    public boolean setAccountImageVisibility(AccountImageVisibility visibility){
+        APIRequest request = new APIRequest(getContext(), "settings/set_account_image_visibility");
+        request.addString("visibility", AccountImageVisibilityToString(visibility));
+
+        try {
+            return new APIRequestHelper().exec(request).getResponse_code() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Parse an API entry into an AccountImageSettings entry
      *
      * @param object JSON object to parse
@@ -125,6 +143,28 @@ public class AccountSettingsHelper extends BaseHelper {
 
                 default:
                     throw new AssertionError();
+        }
+    }
+
+    /**
+     * Turn an account image visibility level into a string ready for the API
+     *
+     * @param visibility Visibility level to convert
+     * @return Matching string
+     */
+    private static String AccountImageVisibilityToString(AccountImageVisibility visibility){
+        switch (visibility){
+            case OPEN:
+                return "open";
+
+            case PUBLIC:
+                return "public";
+
+            case FRIENDS:
+                return "friends";
+
+            default:
+                throw new AssertionError();
         }
     }
 }
