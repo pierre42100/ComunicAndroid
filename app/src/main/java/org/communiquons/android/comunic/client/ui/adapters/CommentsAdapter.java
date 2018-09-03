@@ -13,6 +13,7 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.models.Comment;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
+import org.communiquons.android.comunic.client.ui.views.ContentTextView;
 import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
@@ -86,7 +87,7 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
         }
 
         //Update comment content
-        ((TextView) view.findViewById(R.id.comment_text)).setText(comment.getContent());
+        ((ContentTextView) view.findViewById(R.id.comment_text)).setParsedText(comment.getContent());
 
         //Update comment image (if any)
         EnlargeableWebImageView commentImage = view.findViewById(R.id.comment_image);

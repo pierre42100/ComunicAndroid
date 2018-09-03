@@ -24,7 +24,7 @@
 
 
     <!-- Comment content -->
-    <TextView
+    <org.communiquons.android.comunic.client.ui.views.ContentTextView
         android:id="@+id/comment_text"
         style="@style/CommentText"
         android:layout_width="0dp"
