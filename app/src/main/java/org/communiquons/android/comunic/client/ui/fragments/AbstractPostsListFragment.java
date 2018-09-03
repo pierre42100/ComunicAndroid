@@ -188,21 +188,16 @@ public abstract class AbstractPostsListFragment extends Fragment
         //Create likes helper
         mLikesHelper = new LikesHelper(getActivity());
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
         if(mPostsList == null) {
             setProgressBarVisibility(true);
             setNoPostsNoticeVisibility(false);
             onLoadPosts();
         }
-        else{
+        else {
             setPostsList(getPostsList());
             show_posts();
         }
+
     }
 
     /**

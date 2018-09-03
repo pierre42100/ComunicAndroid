@@ -102,7 +102,7 @@
         tools:layout_height="10dp" />
 
     <!-- Post content -->
-    <TextView
+    <org.communiquons.android.comunic.client.ui.views.ContentTextView
         android:id="@+id/post_content"
         style="@style/PostContent"
         android:layout_width="match_parent"

@@ -23,6 +23,7 @@ import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.TimeUtils;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
+import org.communiquons.android.comunic.client.ui.views.ContentTextView;
 import org.communiquons.android.comunic.client.ui.views.CountDownView;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
 import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
@@ -175,7 +176,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
         private ImageView mPostVisibility;
         private ImageView mPostActions;
         private FrameLayout mAdditionnalViews;
-        private TextView mPostContent;
+        private ContentTextView mPostContent;
         private LikeButtonView mLikeButton;
         private LinearLayout mCommentsList;
         private LinearLayout mCreateCommentForm;
@@ -208,7 +209,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
         /**
          * @return Additional views container
          */
-        FrameLayout getAdditionnalViewsLayout(){
+        FrameLayout getAdditionalViewsLayout(){
             return mAdditionnalViews;
         }
 
@@ -306,7 +307,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
 
             //Set post content
-            mPostContent.setText(UiUtils.prepareStringTextView(post.getContent()));
+            mPostContent.setParsedText(UiUtils.prepareStringTextView(post.getContent()));
 
 
             //Post likes
@@ -401,7 +402,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             super(itemView);
 
             mPostImage = new EnlargeableWebImageView(getContext());
-            getAdditionnalViewsLayout().addView(mPostImage,
+            getAdditionalViewsLayout().addView(mPostImage,
                     new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             UiUtils.GetPixel(getContext(), 200)));
         }
@@ -425,7 +426,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             super(itemView);
 
             mPDFLinkButton = new PDFLinkButtonView(getContext(), null, R.style.PostPDFButton);
-            getAdditionnalViewsLayout().addView(mPDFLinkButton);
+            getAdditionalViewsLayout().addView(mPDFLinkButton);
         }
 
         @Override
@@ -447,7 +448,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             super(itemView);
 
             mWebLinkView = new WebLinkView(getContext());
-            getAdditionnalViewsLayout().addView(mWebLinkView,
+            getAdditionalViewsLayout().addView(mWebLinkView,
                     new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT
             ));
@@ -472,7 +473,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             super(itemView);
 
             mMovieView = new MovieView(getContext(), null, R.style.PostMovie);
-            getAdditionnalViewsLayout().addView(mMovieView, new FrameLayout.LayoutParams(
+            getAdditionalViewsLayout().addView(mMovieView, new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     UiUtils.GetPixel(getContext(), 200)
             ));
@@ -497,7 +498,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             super(itemView);
 
             mCountDownView = new CountDownView(getContext(), null);
-            getAdditionnalViewsLayout().addView(mCountDownView, new FrameLayout.LayoutParams(
+            getAdditionalViewsLayout().addView(mCountDownView, new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     UiUtils.GetPixel(getContext(), 30)));
         }
