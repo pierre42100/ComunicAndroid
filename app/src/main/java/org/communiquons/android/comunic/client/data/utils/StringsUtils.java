@@ -96,6 +96,16 @@ public class StringsUtils {
     }
 
     /**
+     * Check whether a specified string is an URL or not
+     *
+     * @param string The string to check
+     * @return TRUE if the string is an URL / FALSE else
+     */
+    public static boolean isURL(CharSequence string){
+        return !TextUtils.isEmpty(string) && Patterns.WEB_URL.matcher(string).matches();
+    }
+
+    /**
      * Generate the SHA-1 summary of a given string
      *
      * @param source The source string

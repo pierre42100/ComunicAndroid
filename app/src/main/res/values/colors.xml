@@ -22,8 +22,10 @@
     <!-- Conversation messages -->
     <color name="conversation_user_messages_background">#3F51B5</color>
     <color name="conversation_user_messages_textColor">#FFFFFF</color>
+    <color name="conversation_user_links_color">#c5cae9</color>
     <color name="conversation_otheruser_messages_background">#D8D8D8</color>
     <color name="conversation_otheruser_messages_textColor">#000000</color>
+    <color name="conversation_otheruser_links_color">@color/conversation_user_messages_background</color>
 
     <!-- Conversations footer -->
     <color name="conversation_footer_bg">#8c9eff</color>

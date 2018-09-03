@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -39,7 +38,7 @@
             app:layout_constraintTop_toTopOf="@id/account_image"
             tools:text="John Doe" />
 
-        <TextView
+        <org.communiquons.android.comunic.client.ui.views.ContentTextView
             android:id="@+id/message_body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,12 +61,12 @@
         android:layout_height="98dp"
         android:layout_marginStart="60dp"
         android:layout_marginTop="2dp"
+        android:scaleType="fitStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraintLayout2"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/img_placeholder"
-        android:scaleType="fitStart"/>
+        app:srcCompat="@drawable/img_placeholder" />
 
 
     <TextView

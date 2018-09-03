@@ -15,6 +15,7 @@ import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.ui.listeners.OnConversationMessageActionsListener;
+import org.communiquons.android.comunic.client.ui.views.ContentTextView;
 import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
@@ -122,7 +123,7 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
     private class BaseMessageHolder extends RecyclerView.ViewHolder
             implements View.OnLongClickListener{
 
-        private TextView mMessage;
+        ContentTextView mMessage;
         private TextView mSentDate;
         private EnlargeableWebImageView mImage;
 
@@ -133,7 +134,7 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
             mImage = itemView.findViewById(R.id.messageImage);
             mSentDate = itemView.findViewById(R.id.text_message_time);
 
-            itemView.setOnLongClickListener(this);
+            mMessage.setOnLongClickListener(this);
             mImage.setOnLongClickListener(this);
         }
 
@@ -156,7 +157,7 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
         void bind(int pos){
             ConversationMessage message = mList.get(pos);
 
-            mMessage.setText(message.getContent());
+            mMessage.setParsedText(message.getContent());
             mMessage.setVisibility(mMessage.getText().length() > 0 ? View.VISIBLE : View.GONE);
 
             mImage.setVisibility(message.hasImage() ? View.VISIBLE : View.GONE);
@@ -193,6 +194,8 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
 
         SentMessageHolder(@NonNull View itemView) {
             super(itemView);
+
+            mMessage.setLinksColor(R.color.conversation_user_links_color);
         }
     }
 
@@ -209,6 +212,8 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
 
             mUserAccountImage = itemView.findViewById(R.id.account_image);
             mUserName = itemView.findViewById(R.id.user_name);
+
+            mMessage.setLinksColor(R.color.conversation_otheruser_links_color);
         }
 
         void setUserInfoVisibility(boolean visible){

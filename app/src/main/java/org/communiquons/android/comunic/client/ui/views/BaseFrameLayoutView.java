@@ -31,13 +31,23 @@ abstract class BaseFrameLayoutView extends FrameLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+
     /**
      * Get hosting activity
      *
      * @return Hosting activity, if found, null else
      */
     protected Activity getActivity(){
-        Context context = getContext();
+        return GetActivityFromContext(getContext());
+    }
+
+    /**
+     * Get an activity from context
+     *
+     * @param context The context to parse
+     * @return The activity
+     */
+    static Activity GetActivityFromContext(Context context){
 
         while(context instanceof ContextWrapper){
             if(context instanceof Activity)
