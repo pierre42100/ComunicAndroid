@@ -288,4 +288,6 @@
     <string name="array_authenticated_users">Authenticated users</string>
     <string name="array_friends_only">Friends only</string>
     <string name="err_update_account_image_visibility">Could not update account image visibility level!</string>
+    <string name="err_find_tag">Could not find requested tag!</string>
+    <string name="err_groups_not_supported">Groups are not supported yet by the Android application!</string>
 </resources>

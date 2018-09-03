@@ -289,4 +289,6 @@
     <string name="array_authenticated_users">Les utilisateurs connectés à Comunic</string>
     <string name="array_friends_only">Uniquement mes amis</string>
     <string name="err_update_account_image_visibility">Une erreur a survenu lors de la mise à jour du niveau de visibilité de l\'image de compte !</string>
+    <string name="err_find_tag">Le tag spécifié n\'a pas été trouvé !</string>
+    <string name="err_groups_not_supported">Les groupes ne sont pas encore supportés sur l\'application Android…</string>
 </resources>

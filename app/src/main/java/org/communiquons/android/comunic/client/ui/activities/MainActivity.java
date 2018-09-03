@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,15 +23,19 @@ import android.widget.Toast;
 import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.crashreporter.CrashReporter;
+import org.communiquons.android.comunic.client.data.enums.VirtualDirectoryType;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.DebugHelper;
 import org.communiquons.android.comunic.client.data.models.NotificationsCount;
+import org.communiquons.android.comunic.client.data.models.VirtualDirectory;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
 import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
+import org.communiquons.android.comunic.client.ui.asynctasks.FindVirtualDirectoryTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
 import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
@@ -90,6 +93,11 @@ public class MainActivity extends BaseActivity implements
      * Main navigation bar
      */
     private NavigationBar mNavBar;
+
+    /**
+     * Tasks
+     */
+    private FindVirtualDirectoryTask mFindVirtualDirectoryTask;
 
     /**
      * Broadcast receiver
@@ -197,9 +205,12 @@ public class MainActivity extends BaseActivity implements
             friendsListRefreshRunnable.interrupt();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
-
-
+        unsetFindVirtualDirectoryTask();
+    }
 
     /**
      * Activity context menu
@@ -419,6 +430,70 @@ public class MainActivity extends BaseActivity implements
                     "from MainActivity!");
 
         ((MainActivity)activity).getSupportFragmentManager().popBackStack();
+    }
+
+
+    /**
+     * Follow a tag to open it
+     *
+     * @param activity Activity object
+     * @param tag The tag to follow
+     */
+    public static void FollowTag(@NonNull Activity activity, String tag){
+        if(!(activity instanceof MainActivity))
+            throw new RuntimeException("Need a MainActivity!");
+
+        ((MainActivity)activity).followTag(tag);
+    }
+
+    /**
+     * Unset FindVirtualDirectoryTask callback in order to prevent memory leaks
+     */
+    private void unsetFindVirtualDirectoryTask(){
+        if(mFindVirtualDirectoryTask != null)
+            mFindVirtualDirectoryTask.setOnPostExecuteListener(null);
+    }
+
+    /**
+     * Follow a tag to open it
+     *
+     * @param tag The tag to find
+     */
+    public void followTag(String tag){
+        final AlertDialog dialog = UiUtils.create_loading_dialog(this);
+
+        unsetFindVirtualDirectoryTask();
+        mFindVirtualDirectoryTask = new FindVirtualDirectoryTask(this);
+        mFindVirtualDirectoryTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<VirtualDirectory>() {
+            @Override
+            public void OnPostExecute(VirtualDirectory virtualDirectory) {
+                dialog.dismiss();
+                openDirectory(virtualDirectory);
+            }
+        });
+        mFindVirtualDirectoryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tag);
+
+    }
+
+    /**
+     * Open a directory
+     *
+     * @param directory The directory to open
+     */
+    public void openDirectory(@Nullable VirtualDirectory directory){
+        if(directory == null){
+            Toast.makeText(this, R.string.err_find_tag, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (directory.getKind() == VirtualDirectoryType.GROUP){
+            Toast.makeText(this, R.string.err_groups_not_supported,
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        else if(directory.getKind() == VirtualDirectoryType.USER){
+            openUserPage(directory.getId());
+        }
     }
 
     /**

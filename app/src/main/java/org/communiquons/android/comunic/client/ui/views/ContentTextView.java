@@ -15,6 +15,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
+import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
 /**
@@ -76,13 +77,19 @@ public class ContentTextView extends android.support.v7.widget.AppCompatTextView
         int pos = 0;
         for (String part : parts) {
 
-            //Mark it as URL
+            //Process it as URL if possible
             if (StringsUtils.isURL(part)) {
 
                 ClickableSpan clickableSpan = new URLClickableSpan(part);
                 ssb.setSpan(clickableSpan, pos, pos + part.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
+            }
+
+            else if(part.length() > 0 && part.charAt(0) == '@'){
+                ClickableSpan clickableSpan = new TAGClickableSpan(part);
+                ssb.setSpan(clickableSpan, pos, pos + part.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
             pos += part.length() + 1;
@@ -121,6 +128,23 @@ public class ContentTextView extends android.support.v7.widget.AppCompatTextView
         @Override
         public void onClick(View widget) {
             getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mURL)));
+        }
+    }
+
+    /**
+     * Clickable span for tag
+     */
+    private class TAGClickableSpan extends BaseClickableSpan {
+
+        private String mTag;
+
+        private TAGClickableSpan(String tag){
+            mTag = tag.substring(1);
+        }
+
+        @Override
+        public void onClick(View widget) {
+            MainActivity.FollowTag(getActivity(), mTag);
         }
     }
 }
