@@ -31,23 +31,12 @@ public class AdvancedUserInfoFragment extends Fragment {
     private AdvancedUserInfo mAdvancedUserInfo;
 
     /**
-     * User account image
+     * Views
      */
     private WebUserAccountImage mUserAccountImage;
-
-    /**
-     * The name of the user
-     */
     private TextView mUserName;
-
-    /**
-     * Target for the time the user has been a member of the group
-     */
+    private TextView mUserTag;
     private TextView mMemberSinceTarget;
-
-    /**
-     * Friendship status
-     */
     private FriendshipStatusButton mFriendshipStatus;
 
     /**
@@ -82,6 +71,7 @@ public class AdvancedUserInfoFragment extends Fragment {
         //Get the views
         mUserAccountImage = view.findViewById(R.id.user_account_image);
         mUserName = view.findViewById(R.id.user_name);
+        mUserTag = view.findViewById(R.id.userTag);
         mMemberSinceTarget = view.findViewById(R.id.member_since_value);
         mFriendshipStatus = view.findViewById(R.id.friendship_status);
     }
@@ -95,6 +85,8 @@ public class AdvancedUserInfoFragment extends Fragment {
         mUserName.setText(mAdvancedUserInfo.getDisplayFullName());
         mMemberSinceTarget.setText(TimeUtils.TimeToString(getActivity(),
                 TimeUtils.time() - mAdvancedUserInfo.getAccount_creation_time()));
+        mUserTag.setText(mAdvancedUserInfo.hasVirtualDirectory() ?
+                "@" + mAdvancedUserInfo.getVirtualDirectory() : "");
     }
 
     @Override

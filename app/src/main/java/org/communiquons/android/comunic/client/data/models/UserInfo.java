@@ -12,12 +12,13 @@ import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 public class UserInfo {
 
     /**
-     * Informations about the user
+     * Information about the user
      */
     private int id;
     private String firstName;
     private String lastName;
     private String accountImageURL;
+    private String virtualDirectory;
 
     /**
      * Set the ID of the user
@@ -107,5 +108,21 @@ public class UserInfo {
      */
     public String getAcountImageURL() {
         return accountImageURL;
+    }
+
+
+    public String getVirtualDirectory() {
+        return virtualDirectory;
+    }
+
+    public boolean hasVirtualDirectory(){
+        return virtualDirectory != null;
+    }
+
+    public void setVirtualDirectory(String virtualDirectory) {
+        this.virtualDirectory = virtualDirectory;
+
+        if(virtualDirectory.equals(""))
+            this.virtualDirectory = null;
     }
 }

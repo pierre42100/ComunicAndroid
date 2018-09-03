@@ -432,6 +432,7 @@ public class GetUsersHelper {
             userInfos.setFirstName(userObject.getString("firstName"));
             userInfos.setLastName(userObject.getString("lastName"));
             userInfos.setAccountImageURL(userObject.getString("accountImage"));
+            userInfos.setVirtualDirectory(userObject.getString("virtualDirectory"));
 
         } catch (JSONException e){
             e.printStackTrace();
