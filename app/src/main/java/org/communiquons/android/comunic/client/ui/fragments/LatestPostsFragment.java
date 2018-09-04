@@ -24,11 +24,6 @@ public class LatestPostsFragment extends AbstractPostsListFragment {
      */
     private static final String TAG = "LatestPostsFragment";
 
-    /**
-     * Load posts task
-     */
-    private GetLatestPostsTask mGetLatestPostsTask;
-
     @Override
     public void onResume() {
         super.onResume();
@@ -41,16 +36,7 @@ public class LatestPostsFragment extends AbstractPostsListFragment {
     @Override
     public void onStop() {
         super.onStop();
-        unset_all_load_tasks();
-    }
-
-
-    /**
-     * Unset all pending load tasks
-     */
-    private void unset_all_load_tasks(){
-        if(mGetLatestPostsTask != null)
-            mGetLatestPostsTask.setOnPostExecuteListener(null);
+        getTasksManager().unsetAllTasks();
     }
 
     /**
@@ -60,25 +46,28 @@ public class LatestPostsFragment extends AbstractPostsListFragment {
      */
     private boolean is_loading_posts() {
 
-        return mGetLatestPostsTask != null &&
-                mGetLatestPostsTask.hasOnPostExecuteListener() &&
-                !mGetLatestPostsTask.isCancelled() &&
-                mGetLatestPostsTask.getStatus() != AsyncTask.Status.FINISHED;
+        SafeAsyncTask task = getTasksManager().getTask(GetLatestPostsTask.class);
+
+        return task != null &&
+                task.hasOnPostExecuteListener() &&
+                !task.isCancelled() &&
+                task.getStatus() != AsyncTask.Status.FINISHED;
 
     }
 
     @Override
     public void onLoadPosts() {
         //Get the list of latest posts
-        unset_all_load_tasks();
-        mGetLatestPostsTask = new GetLatestPostsTask(getActivity());
-        mGetLatestPostsTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<PostsList>() {
+        getTasksManager().unsetSpecificTasks(GetLatestPostsTask.class);
+        GetLatestPostsTask getLatestPostsTask = new GetLatestPostsTask(getActivity());
+        getLatestPostsTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<PostsList>() {
             @Override
             public void OnPostExecute(PostsList posts) {
                 onGotNewPosts(posts);
             }
         });
-        mGetLatestPostsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        getLatestPostsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        getTasksManager().addTask(getLatestPostsTask, true);
     }
 
     @Override
@@ -100,14 +89,15 @@ public class LatestPostsFragment extends AbstractPostsListFragment {
         int start = last_post_id - 1;
 
         //Get older posts
-        mGetLatestPostsTask = new GetLatestPostsTask(getActivity());
-        mGetLatestPostsTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<PostsList>() {
+        GetLatestPostsTask getLastestPostsTask = new GetLatestPostsTask(getActivity());
+        getLastestPostsTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<PostsList>() {
             @Override
             public void OnPostExecute(PostsList posts) {
                 onGotNewPosts(posts);
             }
         });
-        mGetLatestPostsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, start);
+        getLastestPostsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, start);
+        getTasksManager().addTask(getLastestPostsTask, true);
     }
 
     @Override

@@ -51,6 +51,13 @@ public abstract class SafeAsyncTask<Params, Progress, Result>
     }
 
     /**
+     * Remove current onPostExecuteListener
+     */
+    public void removeOnPostExecuteListener(){
+        this.onPostExecuteListener = null;
+    }
+
+    /**
      * Check whether the a OnPostExecuteListener has been set or not
      *
      * @return TRUE if it has been set / FALSE else
