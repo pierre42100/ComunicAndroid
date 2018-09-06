@@ -72,6 +72,23 @@ public class PostsList extends ArrayList<Post> {
     }
 
     /**
+     * Search a post by ID in the list
+     *
+     * Warning ! The post MUST be in the list else an exception will be thrown
+     *
+     * @param id The ID of the post to find
+     * @return Information about the post
+     */
+    public Post find(int id) {
+        for (Post post : this){
+            if(post.getId() == id)
+                return post;
+        }
+
+        throw new AssertionError();
+    }
+
+    /**
      * Get IDs of the related groups
      *
      * @return The list of IDs of related groups (may be an empty array)

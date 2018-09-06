@@ -52,6 +52,9 @@ public class Post {
     //Countdown timer
     private int time_end;
 
+    //Survey
+    private Survey survey;
+
 
     //Set and get the ID of the post
     public void setId(int id) {
@@ -239,6 +242,18 @@ public class Post {
 
     public void setTime_end(int time_end) {
         this.time_end = time_end;
+    }
+
+    public Survey getSurvey() {
+        return survey;
+    }
+
+    public boolean hasSurvey(){
+        return this.survey != null;
+    }
+
+    public void setSurvey(Survey survey) {
+        this.survey = survey;
     }
 }
 

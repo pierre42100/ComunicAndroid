@@ -34,10 +34,14 @@ import org.communiquons.android.comunic.client.data.helpers.LikesHelper;
 import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
 import org.communiquons.android.comunic.client.data.models.Comment;
 import org.communiquons.android.comunic.client.data.models.Post;
+import org.communiquons.android.comunic.client.data.models.Survey;
+import org.communiquons.android.comunic.client.data.models.SurveyChoice;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.ui.adapters.PostsAdapter;
+import org.communiquons.android.comunic.client.ui.asynctasks.CancelSurveyResponseTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
 import org.communiquons.android.comunic.client.ui.views.EditCommentContentView;
@@ -912,5 +916,49 @@ public abstract class AbstractPostsListFragment extends AbstractFragment
         }
 
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onCancelSurveyResponse(Survey survey) {
+
+        final int postID = survey.getPostID();
+
+        getTasksManager().unsetSpecificTasks(CancelSurveyResponseTask.class);
+        CancelSurveyResponseTask cancelSurveyResponseTask =
+                new CancelSurveyResponseTask(getActivity());
+        cancelSurveyResponseTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
+            @Override
+            public void OnPostExecute(Boolean success) {
+                delete_callback(postID, success);
+            }
+        });
+        cancelSurveyResponseTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, survey.getPostID());
+        getTasksManager().addTask(cancelSurveyResponseTask);
+    }
+
+    /**
+     * Delete survey callback
+     *
+     * @param postID The ID of the related post
+     * @param success TRUE in case of success / FALSE else
+     */
+    private void delete_callback(int postID, boolean success){
+
+        //Check for failure
+        if(!success){
+            Toast.makeText(getActivity(), R.string.err_cancel_response, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Survey survey = getPostsList().find(postID).getSurvey();
+        survey.getChoices().find(survey.getUser_choice()).removeOneResponse();
+        survey.setUser_choice(0);
+
+        mPostsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRespondToSurvey(Survey survey, int choiceID) {
+
     }
 }

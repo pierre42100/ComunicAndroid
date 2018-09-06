@@ -4,17 +4,17 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.communiquons.android.comunic.client.data.arrays.PostsList;
+import org.communiquons.android.comunic.client.data.enums.PageType;
+import org.communiquons.android.comunic.client.data.enums.PostTypes;
+import org.communiquons.android.comunic.client.data.enums.PostUserAccess;
+import org.communiquons.android.comunic.client.data.enums.PostVisibilityLevels;
 import org.communiquons.android.comunic.client.data.models.APIFileRequest;
 import org.communiquons.android.comunic.client.data.models.APIPostFile;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.CreatePost;
-import org.communiquons.android.comunic.client.data.enums.PageType;
 import org.communiquons.android.comunic.client.data.models.Post;
-import org.communiquons.android.comunic.client.data.enums.PostTypes;
-import org.communiquons.android.comunic.client.data.enums.PostUserAccess;
-import org.communiquons.android.comunic.client.data.enums.PostVisibilityLevels;
-import org.communiquons.android.comunic.client.data.arrays.PostsList;
 import org.communiquons.android.comunic.client.data.models.WebLink;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -412,6 +412,10 @@ public class PostsHelper {
         if(!json.isNull("time_end"))
             post.setTime_end(json.getInt("time_end"));
 
+        //Get information about survey if required
+        if(post.getType() == PostTypes.SURVEY)
+            post.setSurvey(SurveyHelper.APIToSurvey(json.getJSONObject("data_survey")));
+
         return post;
     }
 
@@ -468,6 +472,9 @@ public class PostsHelper {
 
             case "countdown":
                 return PostTypes.COUNTDOWN;
+
+            case "survey":
+                return PostTypes.SURVEY;
 
             default:
                 return PostTypes.UNKNOWN;

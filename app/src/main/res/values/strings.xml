@@ -290,4 +290,9 @@
     <string name="err_update_account_image_visibility">Could not update account image visibility level!</string>
     <string name="err_find_tag">Could not find requested tag!</string>
     <string name="err_groups_not_supported">Groups are not supported yet by the Android application!</string>
+    <string name="survey_choice">(%1$d) %2$s</string>
+    <string name="survey_your_choice">Your choice : %1$s</string>
+    <string name="action_cancel_response_survey">Cancel</string>
+    <string name="action_send_survey_response">Respond</string>
+    <string name="err_cancel_response">Could not cancel your response to the survey!</string>
 </resources>

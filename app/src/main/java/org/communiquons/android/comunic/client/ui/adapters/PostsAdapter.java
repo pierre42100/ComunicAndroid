@@ -30,6 +30,7 @@ import org.communiquons.android.comunic.client.ui.views.EnlargeableWebImageView;
 import org.communiquons.android.comunic.client.ui.views.LikeButtonView;
 import org.communiquons.android.comunic.client.ui.views.MovieView;
 import org.communiquons.android.comunic.client.ui.views.PDFLinkButtonView;
+import org.communiquons.android.comunic.client.ui.views.SurveyView;
 import org.communiquons.android.comunic.client.ui.views.WebLinkView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 
@@ -58,6 +59,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
     private static final int VIEW_TYPE_POST_PDF = 3;
     private static final int VIEW_TYPE_POST_WEBLINK = 4;
     private static final int VIEW_TYPE_POST_COUNTDOWN = 5;
+    private static final int VIEW_TYPE_POST_SURVEY = 6;
 
     /**
      * Posts list
@@ -123,6 +125,9 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             case COUNTDOWN:
                 return VIEW_TYPE_POST_COUNTDOWN;
 
+            case SURVEY:
+                return VIEW_TYPE_POST_SURVEY;
+
             case TEXT:
             default:
                 return VIEW_TYPE_POST_TEXT;
@@ -151,6 +156,9 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
             case VIEW_TYPE_POST_COUNTDOWN:
                 return new CountdownPostHolder(view);
+
+            case VIEW_TYPE_POST_SURVEY:
+                return new SurveyPostHolder(view);
 
                 default:
                     return new TextPostHolder(view);
@@ -508,6 +516,31 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             super.bind(position);
 
             mCountDownView.setTime_end(getPost(position).getTime_end());
+        }
+    }
+
+    /**
+     * Survey post holder
+     */
+    private class SurveyPostHolder extends TextPostHolder {
+
+        private SurveyView mSurveyView;
+
+        SurveyPostHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mSurveyView = new SurveyView(getContext());
+            mSurveyView.setOnSurveyUpdateListener(mListener);
+            getAdditionalViewsLayout().addView(mSurveyView, new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+
+        @Override
+        void bind(int position) {
+            super.bind(position);
+
+            mSurveyView.setSurvey(getPost(position).getSurvey());
         }
     }
 }

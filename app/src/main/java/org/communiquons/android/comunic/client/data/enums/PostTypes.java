@@ -40,6 +40,11 @@ public enum PostTypes {
     COUNTDOWN,
 
     /**
+     * Survey
+     */
+    SURVEY,
+
+    /**
      * Unknown type
      */
     UNKNOWN
