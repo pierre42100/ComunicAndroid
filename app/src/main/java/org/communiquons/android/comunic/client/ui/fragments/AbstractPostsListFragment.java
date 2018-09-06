@@ -947,6 +947,7 @@ public abstract class AbstractPostsListFragment extends AbstractFragment
         //Check for failure
         if(!success){
             Toast.makeText(getActivity(), R.string.err_cancel_response, Toast.LENGTH_SHORT).show();
+            mPostsAdapter.notifyDataSetChanged();
             return;
         }
 

@@ -103,6 +103,9 @@ public class SurveyView extends BaseFrameLayoutView implements View.OnClickListe
 
         }
 
+        mCancelButton.setEnabled(true);
+        mResponseButton.setEnabled(true);
+
         mCancelSurveyResponseForm.setVisibility(survey.hasUserResponded() ?
                 View.VISIBLE : View.GONE);
         mSendResponseForm.setVisibility(survey.hasUserResponded() ?
@@ -138,6 +141,8 @@ public class SurveyView extends BaseFrameLayoutView implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+
+        v.setEnabled(false);
 
         //Cancel response to survey
         if(v.equals(mCancelButton)){
