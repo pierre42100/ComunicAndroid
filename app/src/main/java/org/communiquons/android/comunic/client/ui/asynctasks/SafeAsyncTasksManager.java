@@ -99,10 +99,18 @@ public class SafeAsyncTasksManager {
      * @param cls The tasks to disable
      */
     public void unsetSpecificTasks(Class<?> cls){
-        for (SafeAsyncTask task : mTasks){
-            if(task.getClass().equals(cls))
-                unsetTask(task);
+        ArrayList<SafeAsyncTask> toRemove = new ArrayList<>();
 
+        for(int i = 0; i < mTasks.size(); i++){
+            if(mTasks.get(i).getClass().equals(cls))
+                toRemove.add(mTasks.get(i));
         }
+
+        while (toRemove.size() > 0){
+            SafeAsyncTask task = toRemove.get(toRemove.size() - 1);
+            unsetTask(task);
+            toRemove.remove(task);
+        }
+
     }
 }
