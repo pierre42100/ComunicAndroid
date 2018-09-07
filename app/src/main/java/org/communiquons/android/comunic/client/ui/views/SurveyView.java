@@ -7,13 +7,14 @@ import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.arrays.SurveyChoicesList;
 import org.communiquons.android.comunic.client.data.models.Survey;
 import org.communiquons.android.comunic.client.data.models.SurveyChoice;
 import org.communiquons.android.comunic.client.ui.listeners.OnSurveyUpdateListener;
@@ -25,6 +26,11 @@ public class SurveyView extends BaseFrameLayoutView implements View.OnClickListe
      * Current survey
      */
     private Survey mSurvey;
+
+    /**
+     * Adapter for select dropdown
+     */
+    private SurveyChoicesAdapter mSpinnerAdapter;
 
     /**
      * Update listener
@@ -69,6 +75,9 @@ public class SurveyView extends BaseFrameLayoutView implements View.OnClickListe
 
         mCancelButton.setOnClickListener(this);
         mResponseButton.setOnClickListener(this);
+
+        mSpinnerAdapter = new SurveyChoicesAdapter(getContext());
+        mResponsesSpinner.setAdapter(mSpinnerAdapter);
     }
 
     /**
@@ -136,7 +145,7 @@ public class SurveyView extends BaseFrameLayoutView implements View.OnClickListe
      * Render respond form
      */
     private void renderRespondForm(){
-
+        mSpinnerAdapter.setList(mSurvey.getChoices());
     }
 
     @Override
@@ -152,12 +161,65 @@ public class SurveyView extends BaseFrameLayoutView implements View.OnClickListe
 
         //Respond to a survey
         if(v.equals(mResponseButton)){
+
+            int choiceID = mSpinnerAdapter.getChoice(mResponsesSpinner.getSelectedItemPosition())
+                    .getChoiceID();
+
             if(mOnSurveyUpdateListener != null)
-                mOnSurveyUpdateListener.onRespondToSurvey(mSurvey, -1);
-            //TODO : implement
+                mOnSurveyUpdateListener.onRespondToSurvey(mSurvey, choiceID);
+
         }
 
     }
 
 
+    /**
+     * Adapter for the spinner
+     *
+     * @author Pierre HUBERT
+     */
+    private static class SurveyChoicesAdapter extends ArrayAdapter<CharSequence> {
+
+        private SurveyChoicesList mList;
+
+        SurveyChoicesAdapter(@NonNull Context context) {
+            super(context, android.R.layout.simple_spinner_item);
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        }
+
+        /**
+         * Set a new list of choices
+         *
+         * @param list The list of choices
+         */
+        void setList(@NonNull SurveyChoicesList list){
+            mList = list;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+
+            if(mList == null)
+                return 0;
+
+            return mList.size();
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getItem(int position) {
+            return mList.get(position).getName();
+        }
+
+        /**
+         * Get a choice from the list at a specified position
+         *
+         * @param pos The position of the item to select
+         * @return The SurveyChoice
+         */
+        SurveyChoice getChoice(int pos) {
+            return mList.get(pos);
+        }
+    }
 }

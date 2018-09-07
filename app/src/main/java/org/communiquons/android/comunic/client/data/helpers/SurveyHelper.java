@@ -41,6 +41,26 @@ public class SurveyHelper extends BaseHelper {
     }
 
     /**
+     * Respond to a survey
+     *
+     * @param postID The ID of the target post
+     * @param choiceID The ID of the target choice
+     * @return TRUE in case of success / FALSE else
+     */
+    public boolean sendResponse(int postID, int choiceID){
+        APIRequest request = new APIRequest(getContext(), "surveys/send_response");
+        request.addInt("postID", postID);
+        request.addInt("choiceID", choiceID);
+
+        try {
+            return new APIRequestHelper().exec(request).getResponse_code() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Turn an API JSON object into a Survey
      *
      * @param object The object to parse

@@ -35,12 +35,12 @@ import org.communiquons.android.comunic.client.data.helpers.PostsHelper;
 import org.communiquons.android.comunic.client.data.models.Comment;
 import org.communiquons.android.comunic.client.data.models.Post;
 import org.communiquons.android.comunic.client.data.models.Survey;
-import org.communiquons.android.comunic.client.data.models.SurveyChoice;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.ui.adapters.PostsAdapter;
 import org.communiquons.android.comunic.client.ui.asynctasks.CancelSurveyResponseTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.RespondSurveyTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
@@ -929,7 +929,7 @@ public abstract class AbstractPostsListFragment extends AbstractFragment
         cancelSurveyResponseTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
             @Override
             public void OnPostExecute(Boolean success) {
-                delete_callback(postID, success);
+                delete_survey_response_callback(postID, success);
             }
         });
         cancelSurveyResponseTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, survey.getPostID());
@@ -942,7 +942,7 @@ public abstract class AbstractPostsListFragment extends AbstractFragment
      * @param postID The ID of the related post
      * @param success TRUE in case of success / FALSE else
      */
-    private void delete_callback(int postID, boolean success){
+    private void delete_survey_response_callback(int postID, boolean success){
 
         //Check for failure
         if(!success){
@@ -959,7 +959,39 @@ public abstract class AbstractPostsListFragment extends AbstractFragment
     }
 
     @Override
-    public void onRespondToSurvey(Survey survey, int choiceID) {
+    public void onRespondToSurvey(Survey survey, final int choiceID) {
 
+        final int postID = survey.getPostID();
+
+        RespondSurveyTask respondSurveyTask = new RespondSurveyTask(getActivity());
+        respondSurveyTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
+            @Override
+            public void OnPostExecute(Boolean result) {
+                respond_survey_callback(result, postID, choiceID);
+            }
+        });
+        respondSurveyTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, survey.getPostID(), choiceID);
+        getTasksManager().addTask(respondSurveyTask);
+    }
+
+    /**
+     * Respond to a survey callback
+     *
+     * @param result The result of the operation
+     * @param postID The ID of the related choice
+     * @param choiceID The ID of choice
+     */
+    private void respond_survey_callback(boolean result, int postID, int choiceID){
+
+        if(!result){
+            Toast.makeText(getActivity(), R.string.err_respond_survey, Toast.LENGTH_SHORT).show();
+            mPostsAdapter.notifyDataSetChanged();
+            return;
+        }
+
+        Survey survey = getPostsList().find(postID).getSurvey();
+        survey.setUser_choice(choiceID);
+        survey.getChoices().find(choiceID).addOneResponse();
+        mPostsAdapter.notifyDataSetChanged();
     }
 }

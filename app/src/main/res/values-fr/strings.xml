@@ -293,4 +293,8 @@
     <string name="err_groups_not_supported">Les groupes ne sont pas encore supportés sur l\'application Android…</string>
     <string name="survey_choice">(%1$d) %2$s</string>
     <string name="survey_your_choice">Votre choix : %1$s</string>
+    <string name="action_cancel_response_survey">Annuler</string>
+    <string name="action_send_survey_response">Répondre</string>
+    <string name="err_cancel_response">Une erreur a survenue lors de l\'annulation de votre réponse au sondage !</string>
+    <string name="err_respond_survey">Une erreur a survenue lors de l\'envoi de votre réponse au sondage !</string>
 </resources>
