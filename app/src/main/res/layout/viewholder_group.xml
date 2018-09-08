@@ -13,10 +13,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        tools:text="Group Name"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/groupImage"
         app:layout_constraintStart_toEndOf="@+id/groupImage"
-        app:layout_constraintTop_toTopOf="@+id/groupImage" />
+        app:layout_constraintTop_toTopOf="@+id/groupImage"
+        tools:text="Group Name" />
 
     <org.communiquons.android.comunic.client.ui.views.GroupImageView
         android:id="@+id/groupImage"
@@ -29,4 +30,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_friends" />
+
+    <org.communiquons.android.comunic.client.ui.views.GroupMembershipStatusView
+        android:id="@+id/groupMembershipStatusView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </android.support.constraint.ConstraintLayout>

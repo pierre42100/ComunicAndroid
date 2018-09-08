@@ -299,4 +299,16 @@
     <string name="action_user_groups">My groups</string>
     <string name="err_get_user_groups">Could not get the groups of the user!</string>
     <string name="notice_no_group">You do not have any group yet.</string>
+    <string name="notice_group_invited">Invited</string>
+    <string name="action_group_accept_request">Accept</string>
+    <string name="action_group_reject_request">Reject</string>
+    <string name="notice_group_requested">Requested</string>
+    <string name="action_group_cancel_membership_request">Cancel</string>
+    <string name="action_join_group">Join</string>
+    <string name="action_leave_group">Leave</string>
+    <string name="dialog_leave_group_title">Leave group</string>
+    <string name="dialog_leave_group_message">Do you really want to leave this group? You might not be able to join it later!</string>
+    <string name="dialog_leave_group_cancel">Cancel</string>
+    <string name="dialog_leave_group_confirm">Leave</string>
+    <string name="err_update_group_membership">Could not update group membership!</string>
 </resources>

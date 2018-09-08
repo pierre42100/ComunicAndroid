@@ -120,15 +120,27 @@ public class UserGroupsFragment extends AbstractGroupFragment {
 
         setProgressBarVisibility(false);
 
-        mGroupsAdapter = new GroupsListAdapter(getActivity());
-        mGroupsAdapter.setList(new ArrayList<>(mGroupsList.values()));
+        if(mGroupsAdapter == null) {
+            mGroupsAdapter = new GroupsListAdapter(getActivity());
 
-        mGroupsView.setAdapter(mGroupsAdapter);
-        mGroupsView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mGroupsView.addItemDecoration(new DividerItemDecoration(getActivity(),
-                DividerItemDecoration.VERTICAL));
+            mGroupsView.setAdapter(mGroupsAdapter);
+            mGroupsView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mGroupsView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                    DividerItemDecoration.VERTICAL));
+        }
+
+
+        mGroupsAdapter.setOnGroupMembershipUpdateListener(this);
+        mGroupsAdapter.setList(new ArrayList<>(mGroupsList.values()));
+        mGroupsAdapter.notifyDataSetChanged();
 
         setNoGroupNoticeVisibility(mGroupsList.size() == 0);
+    }
+
+    @Override
+    public void onGroupMembershipUpdated(boolean success, int groupID) {
+        super.onGroupMembershipUpdated(success, groupID);
+        getGroupsList();
     }
 
     /**

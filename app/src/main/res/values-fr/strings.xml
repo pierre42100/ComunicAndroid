@@ -300,4 +300,16 @@
     <string name="action_user_groups">Mes groupes</string>
     <string name="err_get_user_groups">Une erreur a survenu lors de la récupération de vos groupes !</string>
     <string name="notice_no_group">Vous n\'avez aucun groupe pour le moment.</string>
+    <string name="notice_group_invited">Invité</string>
+    <string name="action_group_accept_request">Accepter</string>
+    <string name="action_group_reject_request">Rejeter</string>
+    <string name="notice_group_requested">Demande envoyée</string>
+    <string name="action_group_cancel_membership_request">Annuler</string>
+    <string name="action_join_group">Rejoindre</string>
+    <string name="action_leave_group">Quitter</string>
+    <string name="dialog_leave_group_title">Quitter le groupe</string>
+    <string name="dialog_leave_group_message">Voulez-vous vraiment quitter ce groupe ? Il se peut que vous ne puissez pas le rejoindre ultérieurement !</string>
+    <string name="dialog_leave_group_cancel">Annuler</string>
+    <string name="dialog_leave_group_confirm">Quitter</string>
+    <string name="err_update_group_membership">Une erreur a survenue lors de la mise à jour de votre appartenance au groupe !</string>
 </resources>

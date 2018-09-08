@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.models.GroupInfo;
+import org.communiquons.android.comunic.client.ui.listeners.OnGroupMembershipUpdateListener;
 import org.communiquons.android.comunic.client.ui.views.GroupImageView;
+import org.communiquons.android.comunic.client.ui.views.GroupMembershipStatusView;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,8 @@ public class GroupsListAdapter extends BaseRecyclerViewAdapter {
      */
     private ArrayList<GroupInfo> mList = new ArrayList<>();
 
+    private OnGroupMembershipUpdateListener mOnGroupMembershipUpdateListener;
+
     public GroupsListAdapter(Context context) {
         super(context);
     }
@@ -37,6 +41,15 @@ public class GroupsListAdapter extends BaseRecyclerViewAdapter {
      */
     public void setList(ArrayList<GroupInfo> List) {
         this.mList = List;
+    }
+
+    /**
+     * Set the group membership update listener
+     *
+     * @param onGroupMembershipUpdateListener The listener
+     */
+    public void setOnGroupMembershipUpdateListener(OnGroupMembershipUpdateListener onGroupMembershipUpdateListener) {
+        this.mOnGroupMembershipUpdateListener = onGroupMembershipUpdateListener;
     }
 
     @Override
@@ -57,6 +70,7 @@ public class GroupsListAdapter extends BaseRecyclerViewAdapter {
         ((GroupHolder)viewHolder).bind(i);
     }
 
+
     /**
      * Single group holder class
      */
@@ -64,12 +78,16 @@ public class GroupsListAdapter extends BaseRecyclerViewAdapter {
 
         private GroupImageView mGroupImageView;
         private TextView mGroupName;
+        private GroupMembershipStatusView mGroupMembershipStatus;
 
         GroupHolder(@NonNull View itemView) {
             super(itemView);
 
             mGroupImageView = itemView.findViewById(R.id.groupImage);
             mGroupName = itemView.findViewById(R.id.groupName);
+            mGroupMembershipStatus = itemView.findViewById(R.id.groupMembershipStatusView);
+
+            mGroupMembershipStatus.setOnGroupMembershipUpdateListener(mOnGroupMembershipUpdateListener);
         }
 
         GroupInfo getGroup(int pos){
@@ -80,6 +98,7 @@ public class GroupsListAdapter extends BaseRecyclerViewAdapter {
             GroupInfo groupInfo = getGroup(pos);
             mGroupImageView.setGroup(groupInfo);
             mGroupName.setText(groupInfo.getDisplayName());
+            mGroupMembershipStatus.setGroup(groupInfo);
         }
     }
 }

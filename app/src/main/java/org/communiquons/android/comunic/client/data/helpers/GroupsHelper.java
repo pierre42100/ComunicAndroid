@@ -162,6 +162,70 @@ public class GroupsHelper extends BaseHelper {
     }
 
     /**
+     * Send a group membership request
+     *
+     * @param groupID The ID of the target group
+     * @return Depends of the success of the operation
+     */
+    public boolean sendRequest(int groupID){
+        APIRequest request = new APIRequest(getContext(), "groups/send_request");
+        request.addInt("id", groupID);
+        return performMembershipUpdate(request);
+    }
+
+    /**
+     * Cancel a group membership request
+     *
+     * @param groupID the ID of the target group
+     * @return TRUE in case of success / FALSE else
+     */
+    public boolean cancelRequest(int groupID){
+        APIRequest request = new APIRequest(getContext(), "groups/cancel_request");
+        request.addInt("id", groupID);
+        return performMembershipUpdate(request);
+    }
+
+    /**
+     * Respond to a group membership invitation
+     *
+     * @param groupID The ID of the target group
+     * @param accept TRUE to accept invitation / FALSE else
+     */
+    public boolean respondInvitation(int groupID, boolean accept){
+        APIRequest request = new APIRequest(getContext(), "groups/respond_invitation");
+        request.addInt("id", groupID);
+        request.addBoolean("accept", accept);
+        return performMembershipUpdate(request);
+    }
+
+    /**
+     * Leave a group
+     *
+     * @param groupID The ID of the group to leave
+     * @return TRUE for a success / FALSE else
+     */
+    public boolean leaveGroup(int groupID){
+        APIRequest request = new APIRequest(getContext(), "groups/remove_membership");
+        request.addInt("id", groupID);
+        return performMembershipUpdate(request);
+    }
+
+    /**
+     * Perform on the server a membership update
+     *
+     * @param request The request to perform
+     * @return Depends of the success of the operation
+     */
+    private boolean performMembershipUpdate(APIRequest request){
+        try {
+            return new APIRequestHelper().exec(request).getResponse_code() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Parse group information into GroupInfo object
      *
      * @param object The object to parse
