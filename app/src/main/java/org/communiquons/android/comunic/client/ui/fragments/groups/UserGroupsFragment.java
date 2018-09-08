@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
@@ -34,6 +35,7 @@ public class UserGroupsFragment extends AbstractGroupFragment {
      */
     private ProgressBar mProgressBar;
     private RecyclerView mGroupsView;
+    private TextView mNoGroupNotice;
 
     /**
      * User groups
@@ -58,8 +60,10 @@ public class UserGroupsFragment extends AbstractGroupFragment {
         //Get views
         mGroupsView = view.findViewById(R.id.groups_list);
         mProgressBar = view.findViewById(R.id.progressBar);
+        mNoGroupNotice = view.findViewById(R.id.noGroupNotice);
 
-        setProgressBarVisiblity(true);
+        setProgressBarVisibility(true);
+        setNoGroupNoticeVisibility(false);
     }
 
     @Override
@@ -77,7 +81,7 @@ public class UserGroupsFragment extends AbstractGroupFragment {
      */
     private void getGroupsList(){
 
-        setProgressBarVisiblity(true);
+        setProgressBarVisibility(true);
 
         getTasksManager().unsetSpecificTasks(GetUserGroupsTask.class);
         GetUserGroupsTask getUserGroupsTask = new GetUserGroupsTask(getActivity());
@@ -98,7 +102,7 @@ public class UserGroupsFragment extends AbstractGroupFragment {
      */
     private void getGroupsListCallback(@Nullable ArrayMap<Integer, GroupInfo> list){
 
-        setProgressBarVisiblity(false);
+        setProgressBarVisibility(false);
 
         if(list == null){
             Toast.makeText(getActivity(), R.string.err_get_user_groups, Toast.LENGTH_SHORT).show();
@@ -114,7 +118,7 @@ public class UserGroupsFragment extends AbstractGroupFragment {
      */
     private void displayGroupsList(){
 
-        setProgressBarVisiblity(false);
+        setProgressBarVisibility(false);
 
         mGroupsAdapter = new GroupsListAdapter(getActivity());
         mGroupsAdapter.setList(new ArrayList<>(mGroupsList.values()));
@@ -124,14 +128,24 @@ public class UserGroupsFragment extends AbstractGroupFragment {
         mGroupsView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
 
+        setNoGroupNoticeVisibility(mGroupsList.size() == 0);
     }
 
     /**
      * Update (set) progressbar visibility
      *
-     * @param visible Visibility level of the progress bar
+     * @param visible Visibility of the progress bar
      */
-    private void setProgressBarVisiblity(boolean visible){
+    private void setProgressBarVisibility(boolean visible){
         mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    /**
+     * Update no group notice visibility
+     *
+     * @param visible The visibility of the notice
+     */
+    private void setNoGroupNoticeVisibility(boolean visible){
+        mNoGroupNotice.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }

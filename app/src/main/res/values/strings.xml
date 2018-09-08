@@ -298,4 +298,5 @@
     <string name="err_respond_survey">Could not send response to the server!</string>
     <string name="action_user_groups">My groups</string>
     <string name="err_get_user_groups">Could not get the groups of the user!</string>
+    <string name="notice_no_group">You do not have any group yet.</string>
 </resources>

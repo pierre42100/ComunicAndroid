@@ -297,4 +297,7 @@
     <string name="action_send_survey_response">Répondre</string>
     <string name="err_cancel_response">Une erreur a survenue lors de l\'annulation de votre réponse au sondage !</string>
     <string name="err_respond_survey">Une erreur a survenue lors de l\'envoi de votre réponse au sondage !</string>
+    <string name="action_user_groups">Mes groupes</string>
+    <string name="err_get_user_groups">Une erreur a survenu lors de la récupération de vos groupes !</string>
+    <string name="notice_no_group">Vous n\'avez aucun groupe pour le moment.</string>
 </resources>
