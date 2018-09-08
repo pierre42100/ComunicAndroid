@@ -39,7 +39,7 @@ public abstract class AbstractFragment extends Fragment {
      *
      * @return The task manager
      */
-    SafeAsyncTasksManager getTasksManager() {
+    public SafeAsyncTasksManager getTasksManager() {
         return mTasksManager;
     }
 }

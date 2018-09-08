@@ -12,6 +12,7 @@ import org.communiquons.android.comunic.client.data.enums.GroupsMembershipLevels
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.GroupInfo;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +37,31 @@ public class GroupsHelper extends BaseHelper {
         super(context);
     }
 
+    /**
+     * Get the list of groups of the user
+     *
+     * @return The list of groups of the user / null in case of failure
+     */
+    @Nullable
+    public ArrayList<Integer> getUserList(){
+        APIRequest request = new APIRequest(getContext(), "groups/get_my_list");
+
+        try {
+            APIResponse response = new APIRequestHelper().exec(request);
+            if(response.getResponse_code() != 200) return null;
+
+            JSONArray array = response.getJSONArray();
+            ArrayList<Integer> list = new ArrayList<>();
+            for (int i = 0; i < array.length(); i++)
+                list.add(array.getInt(i));
+            return list;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     /**
      * Get information about multiple groups
@@ -45,12 +71,25 @@ public class GroupsHelper extends BaseHelper {
      */
     @Nullable
     public ArrayMap<Integer, GroupInfo> getInfoMultiple(ArrayList<Integer> IDs){
+        return getInfoMultiple(IDs, false);
+    }
+
+    /**
+     * Get information about multiple groups
+     *
+     * @param IDs The ID of the target groups
+     * @param force Specify whether the request has to be forced or not (if set to true, the cache
+     *              will be ignored)
+     * @return Information about the related groups
+     */
+    @Nullable
+    public ArrayMap<Integer, GroupInfo> getInfoMultiple(ArrayList<Integer> IDs, boolean force){
 
         //Process each group to check if its information are available in the cache or not
         ArrayList<Integer> toGet = new ArrayList<>();
 
         for(int id : IDs){
-            if(!mInfoCache.containsKey(id))
+            if(!mInfoCache.containsKey(id) || force)
                 toGet.add(id);
         }
 

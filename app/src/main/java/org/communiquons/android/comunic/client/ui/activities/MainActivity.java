@@ -43,6 +43,7 @@ import org.communiquons.android.comunic.client.ui.fragments.LatestPostsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.NotificationsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.SinglePostFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UpdateConversationFragment;
+import org.communiquons.android.comunic.client.ui.fragments.groups.UserGroupsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserAccessDeniedFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserPageFragment;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
@@ -233,6 +234,12 @@ public class MainActivity extends BaseActivity implements
 
         //Get action id
         int id = item.getItemId();
+
+        //Display user groups
+        if(id == R.id.action_user_groups){
+            openUserGroups();
+            return true;
+        }
 
         //To search a user
         if (id == R.id.action_search_user) {
@@ -710,6 +717,18 @@ public class MainActivity extends BaseActivity implements
         //Perform the transaction
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, latestPostsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    /**
+     * Open user groups
+     */
+    public void openUserGroups(){
+        UserGroupsFragment userGroupsFragment = new UserGroupsFragment();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, userGroupsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
