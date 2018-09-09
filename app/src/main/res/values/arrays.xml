@@ -8,7 +8,7 @@
         <item>@string/array_friends_only</item>
     </string-array>
 
-    <string-array name="account_image_visibility_levels_values">
+    <string-array name="account_image_visibility_levels_values" translatable="false">
         <item>open</item>
         <item>public</item>
         <item>friends</item>
