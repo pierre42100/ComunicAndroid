@@ -43,6 +43,7 @@ import org.communiquons.android.comunic.client.ui.fragments.LatestPostsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.NotificationsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.SinglePostFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UpdateConversationFragment;
+import org.communiquons.android.comunic.client.ui.fragments.groups.GroupPageMainFragment;
 import org.communiquons.android.comunic.client.ui.fragments.groups.UserGroupsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserAccessDeniedFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserPageFragment;
@@ -753,6 +754,44 @@ public class MainActivity extends BaseActivity implements
         //Make intent
         Intent intent = new Intent(this, SearchUserActivity.class);
         startActivityForResult(intent, MAIN_ACTIVITY_SEARCH_USER_INTENT);
+
+    }
+
+    /**
+     * Request the page of a group to be opened
+     *
+     * @param activity Current activity (MUST BE THIS ACTIVITY)
+     * @param groupID Group ID to open
+     */
+    public static void OpenGroup(@NonNull Activity activity, int groupID){
+
+        if(!(activity instanceof MainActivity))
+            throw new RuntimeException("Specified activity is not an instance of MainActivity!");
+
+        ((MainActivity)activity).openGroupPage(groupID);
+
+    }
+
+    /**
+     * Open group page
+     *
+     * @param groupID The ID of the group to open
+     */
+    private void openGroupPage(int groupID){
+
+        //Specify fragment arguments
+        Bundle args = new Bundle();
+        args.putInt(GroupPageMainFragment.ARGUMENT_GROUP_ID, groupID);
+
+        //Initialize fragment
+        GroupPageMainFragment fragment = new GroupPageMainFragment();
+        fragment.setArguments(args);
+
+        //Perform fragment transaction
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.main_fragment, fragment);
+        transaction.commit();
 
     }
 }

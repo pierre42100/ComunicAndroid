@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.models.GroupInfo;
-import org.communiquons.android.comunic.client.ui.listeners.OnGroupMembershipUpdateListener;
+import org.communiquons.android.comunic.client.ui.listeners.OnGroupActionListener;
 import org.communiquons.android.comunic.client.ui.views.GroupImageView;
 import org.communiquons.android.comunic.client.ui.views.GroupMembershipStatusView;
 
@@ -28,7 +28,7 @@ public class GroupsListAdapter extends BaseRecyclerViewAdapter {
      */
     private ArrayList<GroupInfo> mList = new ArrayList<>();
 
-    private OnGroupMembershipUpdateListener mOnGroupMembershipUpdateListener;
+    private OnGroupActionListener mOnGroupActionListener;
 
     public GroupsListAdapter(Context context) {
         super(context);
@@ -44,12 +44,12 @@ public class GroupsListAdapter extends BaseRecyclerViewAdapter {
     }
 
     /**
-     * Set the group membership update listener
+     * Set the group action listener
      *
-     * @param onGroupMembershipUpdateListener The listener
+     * @param onGroupActionListener The listener
      */
-    public void setOnGroupMembershipUpdateListener(OnGroupMembershipUpdateListener onGroupMembershipUpdateListener) {
-        this.mOnGroupMembershipUpdateListener = onGroupMembershipUpdateListener;
+    public void setOnGroupActionListener(OnGroupActionListener onGroupActionListener) {
+        this.mOnGroupActionListener = onGroupActionListener;
     }
 
     @Override
@@ -74,7 +74,11 @@ public class GroupsListAdapter extends BaseRecyclerViewAdapter {
     /**
      * Single group holder class
      */
-    private class GroupHolder extends RecyclerView.ViewHolder {
+    private class GroupHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+
+        private GroupInfo mGroupInfo;
+
 
         private GroupImageView mGroupImageView;
         private TextView mGroupName;
@@ -83,11 +87,13 @@ public class GroupsListAdapter extends BaseRecyclerViewAdapter {
         GroupHolder(@NonNull View itemView) {
             super(itemView);
 
+            itemView.setOnClickListener(this);
+
             mGroupImageView = itemView.findViewById(R.id.groupImage);
             mGroupName = itemView.findViewById(R.id.groupName);
             mGroupMembershipStatus = itemView.findViewById(R.id.groupMembershipStatusView);
 
-            mGroupMembershipStatus.setOnGroupMembershipUpdateListener(mOnGroupMembershipUpdateListener);
+            mGroupMembershipStatus.setOnGroupMembershipUpdateListener(mOnGroupActionListener);
         }
 
         GroupInfo getGroup(int pos){
@@ -95,10 +101,16 @@ public class GroupsListAdapter extends BaseRecyclerViewAdapter {
         }
 
         void bind(int pos){
-            GroupInfo groupInfo = getGroup(pos);
-            mGroupImageView.setGroup(groupInfo);
-            mGroupName.setText(groupInfo.getDisplayName());
-            mGroupMembershipStatus.setGroup(groupInfo);
+            mGroupInfo = getGroup(pos);
+            mGroupImageView.setGroup(mGroupInfo);
+            mGroupName.setText(mGroupInfo.getDisplayName());
+            mGroupMembershipStatus.setGroup(mGroupInfo);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(v.equals(itemView))
+                mOnGroupActionListener.onOpenGroup(mGroupInfo.getId());
         }
     }
 }

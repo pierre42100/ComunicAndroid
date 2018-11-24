@@ -8,6 +8,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +18,26 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.models.GroupInfo;
+import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.GroupsListAdapter;
 import org.communiquons.android.comunic.client.ui.asynctasks.GetUserGroupsTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
+import org.communiquons.android.comunic.client.ui.listeners.OnGroupActionListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * User groups fragment
  *
  * @author Pierre HUBERT
  */
-public class UserGroupsFragment extends AbstractGroupFragment {
+public class UserGroupsFragment extends AbstractGroupFragment implements OnGroupActionListener {
+
+    /**
+     * Debug tag
+     */
+    private static final String TAG = UserGroupsFragment.class.getSimpleName();
 
     /**
      * Views
@@ -120,17 +129,17 @@ public class UserGroupsFragment extends AbstractGroupFragment {
 
         setProgressBarVisibility(false);
 
-        if(mGroupsAdapter == null) {
-            mGroupsAdapter = new GroupsListAdapter(getActivity());
 
-            mGroupsView.setAdapter(mGroupsAdapter);
-            mGroupsView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            mGroupsView.addItemDecoration(new DividerItemDecoration(getActivity(),
-                    DividerItemDecoration.VERTICAL));
-        }
+        mGroupsAdapter = new GroupsListAdapter(getActivity());
+
+        mGroupsView.setAdapter(mGroupsAdapter);
+        mGroupsView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mGroupsView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                DividerItemDecoration.VERTICAL));
 
 
-        mGroupsAdapter.setOnGroupMembershipUpdateListener(this);
+
+        mGroupsAdapter.setOnGroupActionListener(this);
         mGroupsAdapter.setList(new ArrayList<>(mGroupsList.values()));
         mGroupsAdapter.notifyDataSetChanged();
 
@@ -159,5 +168,11 @@ public class UserGroupsFragment extends AbstractGroupFragment {
      */
     private void setNoGroupNoticeVisibility(boolean visible){
         mNoGroupNotice.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onOpenGroup(int groupID) {
+        Log.v(TAG, "Open group " + groupID);
+        MainActivity.OpenGroup(Objects.requireNonNull(getActivity()), groupID);
     }
 }
