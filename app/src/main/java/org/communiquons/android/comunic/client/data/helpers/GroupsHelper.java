@@ -11,6 +11,7 @@ import org.communiquons.android.comunic.client.data.enums.GroupVisibility;
 import org.communiquons.android.comunic.client.data.enums.GroupsMembershipLevels;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
+import org.communiquons.android.comunic.client.data.models.AdvancedGroupInfo;
 import org.communiquons.android.comunic.client.data.models.GroupInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -162,6 +163,32 @@ public class GroupsHelper extends BaseHelper {
     }
 
     /**
+     * Get advanced information about a group
+     *
+     * @param groupID Target group to get information about
+     * @return Information about the group / null in case of failure
+     */
+    @Nullable
+    public AdvancedGroupInfo getAdvancedInformation(int groupID){
+        APIRequest request = new APIRequest(getContext(), "groups/get_advanced_info");
+        request.addInt("id", groupID);
+
+        try {
+
+            //Execute request and get result
+            JSONObject object = new APIRequestHelper().exec(request).getJSONObject();
+            return parse_advanced_group_info(object);
+
+        } catch (Exception e) {
+
+            //Could not execute request
+            e.printStackTrace();
+            return null;
+
+        }
+    }
+
+    /**
      * Send a group membership request
      *
      * @param groupID The ID of the target group
@@ -226,29 +253,58 @@ public class GroupsHelper extends BaseHelper {
     }
 
     /**
+     * Overloaded method (see below)
+     */
+    private GroupInfo parse_group_info(@NonNull JSONObject object) throws JSONException {
+        return parse_group_info(object, new GroupInfo());
+    }
+
+    /**
      * Parse group information into GroupInfo object
      *
      * @param object The object to parse
+     * @param group Group object to complete with group information
      * @return Generated group object
      * @throws JSONException In case of failure
      */
-    private GroupInfo parse_group_info(@NonNull JSONObject object) throws JSONException {
+    private GroupInfo parse_group_info(@NonNull JSONObject object, GroupInfo group) throws JSONException {
 
-        GroupInfo info = new GroupInfo();
+        group.setId(object.getInt("id"));
+        group.setName(object.getString("name"));
+        group.setIcon_url(object.getString("icon_url"));
+        group.setNumber_members(object.getInt("number_members"));
+        group.setMembershipLevel(parse_membership_level(object.getString("membership")));
+        group.setVisibility(parse_group_visibility(object.getString("visibility")));
+        group.setRegistrationLevel(parse_group_registration_level(object.getString("registration_level")));
+        group.setPostCreationLevel(parse_post_creation_level(object.getString("posts_level")));
+        group.setVirtualDirectory(object.getString("virtual_directory"));
+        group.setFollowing(object.getBoolean("following"));
 
-        info.setId(object.getInt("id"));
-        info.setName(object.getString("name"));
-        info.setIcon_url(object.getString("icon_url"));
-        info.setNumber_members(object.getInt("number_members"));
-        info.setMembershipLevel(parse_membership_level(object.getString("membership")));
-        info.setVisibility(parse_group_visibility(object.getString("visibility")));
-        info.setRegistrationLevel(parse_group_registration_level(object.getString("registration_level")));
-        info.setPostCreationLevel(parse_post_creation_level(object.getString("posts_level")));
-        info.setVirtualDirectory(object.getString("virtual_directory"));
-        info.setFollowing(object.getBoolean("following"));
+        return group;
 
-        return info;
+    }
 
+    /**
+     * Parse advanced group information into AdvancedGroupInfo object
+     *
+     * @param object The object to parse
+     * @return Generated group information object
+     * @throws JSONException In case of failure
+     */
+    private AdvancedGroupInfo parse_advanced_group_info(@NonNull JSONObject object) throws JSONException {
+
+        AdvancedGroupInfo group = new AdvancedGroupInfo();
+
+        //Parse basic group information
+        parse_group_info(object, group);
+
+        group.setTime_create(object.getInt("time_create"));
+        group.setUrl(object.getString("url"));
+        group.setDescription(object.getString("description"));
+        group.setNumber_likes(object.getInt("number_likes"));
+        group.setIs_liking(object.getBoolean("is_liking"));
+
+        return group;
     }
 
     /**
