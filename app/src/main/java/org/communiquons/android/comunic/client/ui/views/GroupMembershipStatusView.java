@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.enums.GroupRegistrationLevel;
 import org.communiquons.android.comunic.client.data.models.GroupInfo;
 import org.communiquons.android.comunic.client.ui.listeners.OnGroupMembershipUpdateListener;
 
@@ -31,6 +32,7 @@ public class GroupMembershipStatusView extends BaseFrameLayoutView implements Vi
     private Button joinButton;
     private ConstraintLayout memberForm;
     private Button leaveButton;
+    private ConstraintLayout closeRegistrationForm;
 
     /**
      * Group information
@@ -64,6 +66,7 @@ public class GroupMembershipStatusView extends BaseFrameLayoutView implements Vi
         joinButton = view.findViewById(R.id.joinButton);
         memberForm = view.findViewById(R.id.memberForm);
         leaveButton = view.findViewById(R.id.leaveButton);
+        closeRegistrationForm = view.findViewById(R.id.closedRegistrationForm);
 
         //Show only one form
         showForm(respondInvitationForm);
@@ -95,7 +98,10 @@ public class GroupMembershipStatusView extends BaseFrameLayoutView implements Vi
 
         switch (info.getMembershipLevel()) {
             case VISITOR:
-                showForm(requestForm);
+                if(info.getRegistrationLevel() == GroupRegistrationLevel.CLOSED)
+                    showForm(closeRegistrationForm);
+                else
+                    showForm(requestForm);
                 return;
 
             case PENDING:
@@ -125,6 +131,8 @@ public class GroupMembershipStatusView extends BaseFrameLayoutView implements Vi
         requestForm.setVisibility(v.equals(requestForm)
                 ? View.VISIBLE : View.GONE);
         memberForm.setVisibility(v.equals(memberForm) ? View.VISIBLE : View.GONE);
+        closeRegistrationForm.setVisibility(v.equals(closeRegistrationForm)
+                ? View.VISIBLE : View.GONE);
 
     }
 
