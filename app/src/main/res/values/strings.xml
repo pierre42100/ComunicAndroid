@@ -312,4 +312,5 @@
     <string name="dialog_leave_group_confirm">Leave</string>
     <string name="err_update_group_membership">Could not update group membership!</string>
     <string name="err_get_group_info">Could not get group information!</string>
+    <string name="notice_group_access_denied">Access to the group denied.</string>
 </resources>

@@ -10,11 +10,20 @@ package org.communiquons.android.comunic.client.data.models;
 public class AdvancedGroupInfo extends GroupInfo {
 
     //Private fields
+    private boolean access_forbidden = false;
     private int time_create;
     private String url;
     private String description;
     private int number_likes;
     private boolean is_liking;
+
+    public boolean isAccess_forbidden() {
+        return access_forbidden;
+    }
+
+    public void setAccess_forbidden(boolean access_forbidden) {
+        this.access_forbidden = access_forbidden;
+    }
 
     public int getTime_create() {
         return time_create;

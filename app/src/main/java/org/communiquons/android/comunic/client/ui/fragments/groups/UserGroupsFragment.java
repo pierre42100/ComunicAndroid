@@ -23,6 +23,7 @@ import org.communiquons.android.comunic.client.ui.adapters.GroupsListAdapter;
 import org.communiquons.android.comunic.client.ui.asynctasks.GetUserGroupsTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.listeners.OnGroupActionListener;
+import org.communiquons.android.comunic.client.ui.listeners.OnOpenGroupListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -134,7 +135,7 @@ public class UserGroupsFragment extends AbstractGroupFragment implements OnGroup
 
         mGroupsView.setAdapter(mGroupsAdapter);
         mGroupsView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mGroupsView.addItemDecoration(new DividerItemDecoration(getActivity(),
+        mGroupsView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()),
                 DividerItemDecoration.VERTICAL));
 
 
@@ -173,6 +174,12 @@ public class UserGroupsFragment extends AbstractGroupFragment implements OnGroup
     @Override
     public void onOpenGroup(int groupID) {
         Log.v(TAG, "Open group " + groupID);
-        MainActivity.OpenGroup(Objects.requireNonNull(getActivity()), groupID);
+        ((OnOpenGroupListener)Objects.requireNonNull(getActivity())).onOpenGroup(groupID);
+    }
+
+    @Override
+    public void onOpenGroupAccessDenied(int groupID) {
+        ((OnOpenGroupListener)Objects.requireNonNull(getActivity()))
+                .onOpenGroupAccessDenied(groupID);
     }
 }

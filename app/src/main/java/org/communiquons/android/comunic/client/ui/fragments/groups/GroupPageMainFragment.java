@@ -15,8 +15,11 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.models.AdvancedGroupInfo;
 import org.communiquons.android.comunic.client.ui.asynctasks.GetGroupAdvancedInfoTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
+import org.communiquons.android.comunic.client.ui.listeners.OnOpenGroupListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.views.GroupImageView;
+
+import java.util.Objects;
 
 /**
  * Group main page
@@ -118,6 +121,13 @@ public class GroupPageMainFragment extends AbstractGroupFragment {
 
         if(info == null) {
             Toast.makeText(getActivity(), R.string.err_get_group_info, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Check if access to the group was denied
+        if(info.isAccess_forbidden()){
+            ((OnOpenGroupListener) Objects.requireNonNull(getActivity()))
+                    .onOpenGroupAccessDenied(mGroupID);
             return;
         }
 

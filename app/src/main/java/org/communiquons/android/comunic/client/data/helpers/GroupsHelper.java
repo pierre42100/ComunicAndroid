@@ -25,6 +25,11 @@ import java.util.ArrayList;
 public class GroupsHelper extends BaseHelper {
 
     /**
+     * Debug tag
+     */
+    private static final String TAG = GroupsHelper.class.getSimpleName();
+
+    /**
      * Groups information cache
      */
     private static ArrayMap<Integer, GroupInfo> mInfoCache = new ArrayMap<>();
@@ -63,6 +68,28 @@ public class GroupsHelper extends BaseHelper {
         }
     }
 
+
+    /**
+     * Get information about a single group
+     *
+     * @param groupID Target group ID
+     * @param force Specify whether the request should be forced or not
+     * @return null in case of failure / Group information else
+     */
+    @Nullable
+    public GroupInfo getInfoSingle(int groupID, boolean force){
+
+        //Prepare request
+        ArrayList<Integer> ids = new ArrayList<>();
+        ids.add(groupID);
+
+        //Execute request
+        ArrayMap<Integer, GroupInfo> list = getInfoMultiple(ids, force);
+        if(list == null || !list.containsKey(groupID))
+            return null;
+
+        return list.get(groupID);
+    }
 
     /**
      * Get information about multiple groups
@@ -172,11 +199,27 @@ public class GroupsHelper extends BaseHelper {
     public AdvancedGroupInfo getAdvancedInformation(int groupID){
         APIRequest request = new APIRequest(getContext(), "groups/get_advanced_info");
         request.addInt("id", groupID);
+        request.setTryContinueOnError(true);
 
         try {
 
             //Execute request and get result
-            JSONObject object = new APIRequestHelper().exec(request).getJSONObject();
+            APIResponse response = new APIRequestHelper().exec(request);
+
+            if (response.getResponse_code() != 200) {
+                if(response.getResponse_code() == 401){
+                    //Access was explicitly denied to the group
+                    AdvancedGroupInfo groupInfo = new AdvancedGroupInfo();
+                    groupInfo.setAccess_forbidden(true);
+                    return groupInfo;
+                }
+
+                //Could not get group information
+                return null;
+            }
+
+            //Parse and return result
+            JSONObject object = response.getJSONObject();
             return parse_advanced_group_info(object);
 
         } catch (Exception e) {

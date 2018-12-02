@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -43,10 +44,12 @@ import org.communiquons.android.comunic.client.ui.fragments.LatestPostsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.NotificationsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.SinglePostFragment;
 import org.communiquons.android.comunic.client.ui.fragments.UpdateConversationFragment;
+import org.communiquons.android.comunic.client.ui.fragments.groups.GroupAccessDeniedFragment;
 import org.communiquons.android.comunic.client.ui.fragments.groups.GroupPageMainFragment;
 import org.communiquons.android.comunic.client.ui.fragments.groups.UserGroupsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserAccessDeniedFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserPageFragment;
+import org.communiquons.android.comunic.client.ui.listeners.OnOpenGroupListener;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
 import org.communiquons.android.comunic.client.ui.listeners.onPostOpenListener;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
@@ -64,7 +67,7 @@ import static org.communiquons.android.comunic.client.ui.Constants.IntentRequest
  */
 public class MainActivity extends BaseActivity implements
         openConversationListener, updateConversationListener, onOpenUsersPageListener,
-        onPostOpenListener, NavigationBar.OnNavigationItemSelectedListener {
+        onPostOpenListener, NavigationBar.OnNavigationItemSelectedListener, OnOpenGroupListener {
 
     /**
      * Debug tag
@@ -758,27 +761,12 @@ public class MainActivity extends BaseActivity implements
     }
 
     /**
-     * Request the page of a group to be opened
-     *
-     * @param activity Current activity (MUST BE THIS ACTIVITY)
-     * @param groupID Group ID to open
-     */
-    public static void OpenGroup(@NonNull Activity activity, int groupID){
-
-        if(!(activity instanceof MainActivity))
-            throw new RuntimeException("Specified activity is not an instance of MainActivity!");
-
-        ((MainActivity)activity).openGroupPage(groupID);
-
-    }
-
-    /**
      * Open group page
      *
      * @param groupID The ID of the group to open
      */
-    private void openGroupPage(int groupID){
-
+    @Override
+    public void onOpenGroup(int groupID) {
         //Specify fragment arguments
         Bundle args = new Bundle();
         args.putInt(GroupPageMainFragment.ARGUMENT_GROUP_ID, groupID);
@@ -792,6 +780,26 @@ public class MainActivity extends BaseActivity implements
         transaction.addToBackStack(null);
         transaction.replace(R.id.main_fragment, fragment);
         transaction.commit();
+    }
 
+    @Override
+    public void onOpenGroupAccessDenied(int groupID) {
+
+        //Add arguments
+        Bundle args = new Bundle();
+        args.putInt(GroupAccessDeniedFragment.ARGUMENT_GROUP_ID, groupID);
+
+        //Create fragment
+        Fragment fragment = new GroupAccessDeniedFragment();
+        fragment.setArguments(args);
+
+        //Remove last transaction from list
+        getSupportFragmentManager().popBackStackImmediate();
+
+        //Perform fragment transaction
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.main_fragment, fragment);
+        transaction.commit();
     }
 }
