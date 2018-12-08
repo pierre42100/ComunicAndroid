@@ -118,9 +118,7 @@ public class GroupAccessDeniedFragment extends AbstractGroupFragment {
         }
 
         //Check if the user is now at least a member of the group
-        if(info.getMembershipLevel() == GroupsMembershipLevels.MEMBER
-                || info.getMembershipLevel() == GroupsMembershipLevels.MODERATOR
-                || info.getMembershipLevel() == GroupsMembershipLevels.ADMINISTRATOR){
+        if(info.isAtLeastMember()){
 
             //Go back to the group
             Objects.requireNonNull(getActivity())

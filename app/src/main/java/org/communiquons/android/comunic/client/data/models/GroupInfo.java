@@ -124,4 +124,15 @@ public class GroupInfo {
     public void setFollowing(boolean following) {
         this.following = following;
     }
+
+    /**
+     * Check if the current user is at least a member of the group
+     *
+     * @return TRUE if the user is at least a member of the group / FALSE else
+     */
+    public boolean isAtLeastMember(){
+        return getMembershipLevel() == GroupsMembershipLevels.ADMINISTRATOR
+                || getMembershipLevel() == GroupsMembershipLevels.MODERATOR
+                || getMembershipLevel() == GroupsMembershipLevels.MEMBER;
+    }
 }
