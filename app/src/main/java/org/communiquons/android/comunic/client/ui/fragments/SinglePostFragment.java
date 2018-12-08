@@ -70,6 +70,7 @@ public class SinglePostFragment extends AbstractPostsListFragment {
             }
         });
         mGetSinglePostTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mPostID);
+        getTasksManager().addTask(mGetSinglePostTask);
     }
 
     @Override
