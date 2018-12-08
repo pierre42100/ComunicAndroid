@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,9 +141,27 @@ public class GroupPageMainFragment extends AbstractGroupFragment {
      */
     private void applyGroupInfo(){
 
+
+
         //Apply main group information
         mGroupName.setText(mAdvancedGroupInfo.getDisplayName());
         mGroupImage.setGroup(mAdvancedGroupInfo);
+
+
+
+        //Show posts list
+        Bundle args = new Bundle();
+        args.putInt(GroupsPostsFragment.ARGUMENT_GROUP_ID, mGroupID);
+        args.putBoolean(GroupsPostsFragment.ARGUMENT_CAN_CREATE_GROUPS,
+                mAdvancedGroupInfo.canPostTexts());
+
+        GroupsPostsFragment fragment = new GroupsPostsFragment();
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction
+                = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.postsListTarget, fragment);
+        transaction.commit();
 
     }
 }

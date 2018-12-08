@@ -126,6 +126,50 @@ public class PostsHelper {
     }
 
     /**
+     * Get the list of the posts of a group
+     *
+     * @param groupID The ID of the group to get the post from
+     * @return The list of posts / null in case of failure
+     */
+    @Nullable
+    public PostsList get_group(int groupID){
+        return get_group(groupID, -1);
+    }
+
+    /**
+     * Get the list of the posts of a group
+     *
+     * @param groupID The ID of the group to get the post from
+     * @param from The post to start from (-1 not to specify)
+     * @return The list of posts / null in case of failure
+     */
+    @Nullable
+    public PostsList get_group(int groupID, int from){
+
+        //Perform a request on the API
+        APIRequest params = new APIRequest(mContext, "posts/get_group");
+        params.addInt("groupID", groupID);
+
+        if(from > -1)
+            params.addInt("startFrom", from);
+
+        //Perform the request
+        try {
+
+            //Make the request on the API
+            APIResponse response = new APIRequestHelper().exec(params);
+
+            //Get the list of posts and process it
+            JSONArray posts = response.getJSONArray();
+            return parse_json_posts_list(posts);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * Get the list of latest posts of a user
      *
      * @return The list of posts / null in case of failure
@@ -253,6 +297,10 @@ public class PostsHelper {
 
             case USER_PAGE:
                 req.addString("kind-page", "user");
+                break;
+
+            case GROUP_PAGE:
+                req.addString("kind-page", "group");
                 break;
 
             default:

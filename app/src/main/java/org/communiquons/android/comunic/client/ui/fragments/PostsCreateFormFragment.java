@@ -57,6 +57,11 @@ public class PostsCreateFormFragment extends Fragment {
     public static final int PAGE_TYPE_USER = 1;
 
     /**
+     * Page type : group page
+     */
+    public static final int PAGE_TYPE_GROUP = 2;
+
+    /**
      * On post created interface
      */
     private OnPostCreated mOnPostCreated;
@@ -249,6 +254,9 @@ public class PostsCreateFormFragment extends Fragment {
         switch (getArguments().getInt(PAGE_TYPE_ARG)){
             case PAGE_TYPE_USER:
                 post.setPage_type(PageType.USER_PAGE);
+
+            case PAGE_TYPE_GROUP:
+                post.setPage_type(PageType.GROUP_PAGE);
         }
         post.setPage_id(getArguments().getInt(PAGE_ID_ARG));
 

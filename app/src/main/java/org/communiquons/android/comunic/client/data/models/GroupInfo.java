@@ -135,4 +135,33 @@ public class GroupInfo {
                 || getMembershipLevel() == GroupsMembershipLevels.MODERATOR
                 || getMembershipLevel() == GroupsMembershipLevels.MEMBER;
     }
+
+    /**
+     * Check if a user is at least the moderator of a group
+     *
+     * @return TRUE if the user is at least a moderator of the group / FALSE else
+     */
+    public boolean isAtLeastModerator(){
+        return getMembershipLevel() == GroupsMembershipLevels.ADMINISTRATOR
+                || getMembershipLevel() == GroupsMembershipLevels.MODERATOR;
+    }
+
+    /**
+     * Check if the current user can post texts on this group or not
+     *
+     * @return TRUE if the user can posts texts / FALSE else
+     */
+    public boolean canPostTexts(){
+
+        //Posting texts on a group requires to be at least a member of it
+        if(!isAtLeastMember())
+            return false;
+
+        if(getPostCreationLevel() == GroupPostsCreationLevel.MODERATORS && !isAtLeastModerator())
+            return false;
+
+        //If we get there, the user can certainly create posts
+        //on the group
+        return true;
+    }
 }
