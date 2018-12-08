@@ -498,8 +498,7 @@ public class MainActivity extends BaseActivity implements
         }
 
         if (directory.getKind() == VirtualDirectoryType.GROUP){
-            Toast.makeText(this, R.string.err_groups_not_supported,
-                    Toast.LENGTH_SHORT).show();
+            onOpenGroup(directory.getId());
         }
 
         else if(directory.getKind() == VirtualDirectoryType.USER){
