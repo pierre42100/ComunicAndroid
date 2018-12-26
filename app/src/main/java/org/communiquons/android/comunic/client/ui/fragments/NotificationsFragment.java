@@ -28,8 +28,11 @@ import org.communiquons.android.comunic.client.data.arrays.NotifsList;
 import org.communiquons.android.comunic.client.data.models.Notif;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.NotificationsAdapter;
+import org.communiquons.android.comunic.client.ui.listeners.OnOpenGroupListener;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
 import org.communiquons.android.comunic.client.ui.listeners.onPostOpenListener;
+
+import java.util.Objects;
 
 /**
  * Notifications fragment
@@ -92,6 +95,11 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
     private onOpenUsersPageListener mUserPageOpener;
 
     /**
+     * Groups opener
+     */
+    private OnOpenGroupListener mOnOpenGroupListener;
+
+    /**
      * Post open listener
      */
     private onPostOpenListener mOpenPostListener;
@@ -101,7 +109,7 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
         super.onCreate(savedInstanceState);
 
         //Initialize helpers
-        mNotificationsHelper = new NotificationsHelper(getActivity());
+        mNotificationsHelper = new NotificationsHelper(Objects.requireNonNull(getActivity()));
         mUsersInfoHelper = new GetUsersHelper(getActivity());
         mGroupsHelper = new GroupsHelper(getActivity());
     }
@@ -141,14 +149,13 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
         super.onResume();
 
         //Update the title of the application
-        getActivity().setTitle(R.string.fragment_notifications_title);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.fragment_notifications_title);
         MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_notifications);
 
-        //Get user page opener
+        //Get openers
         mUserPageOpener = (onOpenUsersPageListener) getActivity();
-
-        //Get post opener
         mOpenPostListener = (onPostOpenListener) getActivity();
+        mOnOpenGroupListener = (OnOpenGroupListener) getActivity();
 
         //Check if it is required to fetch the list of notifications
         if(mNotificationsList == null){
@@ -308,7 +315,7 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
             return;
 
         //Inflate the menu
-        MenuInflater inflater = getActivity().getMenuInflater();
+        MenuInflater inflater = Objects.requireNonNull(getActivity()).getMenuInflater();
         inflater.inflate(R.menu.menu_notification_actions, menu);
     }
 
@@ -388,6 +395,13 @@ public class NotificationsFragment extends Fragment implements View.OnCreateCont
 
             //Open the post
             mOpenPostListener.onOpenPost(notif.getOn_elem_id());
+
+        }
+
+        if(notif.getOn_elem_type() == NotifElemType.GROUPS_MEMBERSHIP){
+
+            //Open target group
+            mOnOpenGroupListener.onOpenGroup(notif.getOn_elem_id());
 
         }
     }
