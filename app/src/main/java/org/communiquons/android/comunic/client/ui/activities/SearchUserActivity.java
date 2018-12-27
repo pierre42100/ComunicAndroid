@@ -18,6 +18,7 @@ import android.widget.Toast;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
+import org.communiquons.android.comunic.client.ui.Constants;
 import org.communiquons.android.comunic.client.ui.adapters.UsersBasicAdapter;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 
@@ -81,7 +82,7 @@ public class SearchUserActivity extends AppCompatActivity
      */
     private void onGotUserID(int userID){
 
-        Intent data = new Intent("org.communiquons.android.RESULT");
+        Intent data = new Intent(Constants.IntentResults.SEARCH_USER_RESULT);
         data.setData(Uri.parse("?userID=" + userID));
         setResult(RESULT_OK, data);
         finish();

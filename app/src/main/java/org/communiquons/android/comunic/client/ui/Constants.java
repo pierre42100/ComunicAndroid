@@ -28,14 +28,36 @@ public final class Constants {
         public static final int POST_CREATE_FORM_PICK_PHOTO = 2;
 
         /**
-         * Intent code : search a user
+         * Main Activity : search a user
          */
         public static final int MAIN_ACTIVITY_SEARCH_USER_INTENT = 3;
 
         /**
+         * Main Activity : make a global search
+         */
+        public static final int MAIN_ACTIVITY_GLOBAL_SEARCH_INTENT = 4;
+
+        /**
          * Pick image to update account image
          */
-        public static final int ACCOUNT_IMAGE_SETTINGS_PICK_NEW_INTENT = 4;
+        public static final int ACCOUNT_IMAGE_SETTINGS_PICK_NEW_INTENT = 5;
     }
 
+
+    /**
+     * Intents results
+     */
+    public final class IntentResults {
+
+        /**
+         * Search user result
+         */
+        public static final String SEARCH_USER_RESULT = "org.communiquons.android.searchUser.RESULT";
+
+        /**
+         * Global search result
+         */
+        public static final String SEARCH_GLOBAL_RESULT = "org.communiquons.android.globalSearch.RESULT";
+
+    }
 }

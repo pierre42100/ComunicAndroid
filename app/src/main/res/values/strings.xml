@@ -314,4 +314,8 @@
     <string name="err_get_group_info">Could not get group information!</string>
     <string name="notice_group_access_denied">Access to the group denied.</string>
     <string name="notice_closed_registration">Invitation only</string>
+    <string name="main_menu_search">Search</string>
+    <string name="activity_search_title">Search</string>
+    <string name="input_search_hint">Search a user, a group…</string>
+    <string name="err_get_search_results">Could not get results of your search!</string>
 </resources>

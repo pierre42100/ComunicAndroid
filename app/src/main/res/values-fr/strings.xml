@@ -312,4 +312,11 @@
     <string name="dialog_leave_group_cancel">Annuler</string>
     <string name="dialog_leave_group_confirm">Quitter</string>
     <string name="err_update_group_membership">Une erreur a survenue lors de la mise à jour de votre appartenance au groupe !</string>
+    <string name="main_menu_search">Rechercher</string>
+    <string name="activity_search_title">Recherche</string>
+    <string name="input_search_hint">Rechercher un utilisateur, un groupe…</string>
+    <string name="err_get_search_results">Une erreur a survenue lors de la récupération du résultat de votre recherche !</string>
+    <string name="notice_group_access_denied">Accès au groupe refusé.</string>
+    <string name="err_get_group_info">Impossible de récupérer les informations sur le groupe !</string>
+    <string name="notice_closed_registration">Accès sur invitation</string>
 </resources>

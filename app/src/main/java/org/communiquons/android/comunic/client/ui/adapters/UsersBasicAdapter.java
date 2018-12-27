@@ -59,6 +59,7 @@ public class UsersBasicAdapter extends ArrayAdapter<UserInfo> {
             account_image.setUser(userInfos);
         }
 
+
         return convertView;
     }
 }

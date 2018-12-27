@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -49,14 +50,16 @@ import org.communiquons.android.comunic.client.ui.fragments.groups.GroupPageMain
 import org.communiquons.android.comunic.client.ui.fragments.groups.UserGroupsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserAccessDeniedFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserPageFragment;
-import org.communiquons.android.comunic.client.ui.listeners.OnOpenGroupListener;
-import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
+import org.communiquons.android.comunic.client.ui.listeners.OnOpenPageListener;
 import org.communiquons.android.comunic.client.ui.listeners.onPostOpenListener;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 import org.communiquons.android.comunic.client.ui.listeners.updateConversationListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.views.NavigationBar;
 
+import java.util.Objects;
+
+import static org.communiquons.android.comunic.client.ui.Constants.IntentRequestCode.MAIN_ACTIVITY_GLOBAL_SEARCH_INTENT;
 import static org.communiquons.android.comunic.client.ui.Constants.IntentRequestCode.MAIN_ACTIVITY_SEARCH_USER_INTENT;
 
 
@@ -66,8 +69,8 @@ import static org.communiquons.android.comunic.client.ui.Constants.IntentRequest
  * @author Pierre HUBERT
  */
 public class MainActivity extends BaseActivity implements
-        openConversationListener, updateConversationListener, onOpenUsersPageListener,
-        onPostOpenListener, NavigationBar.OnNavigationItemSelectedListener, OnOpenGroupListener {
+        openConversationListener, updateConversationListener, OnOpenPageListener,
+        onPostOpenListener, NavigationBar.OnNavigationItemSelectedListener {
 
     /**
      * Debug tag
@@ -245,9 +248,9 @@ public class MainActivity extends BaseActivity implements
             return true;
         }
 
-        //To search a user
-        if (id == R.id.action_search_user) {
-            searchUser();
+        //To perform a wider search
+        if(id == R.id.action_search) {
+            searchGlobal();
             return true;
         }
 
@@ -387,9 +390,28 @@ public class MainActivity extends BaseActivity implements
 
             switch (requestCode) {
 
+                //User search
                 case MAIN_ACTIVITY_SEARCH_USER_INTENT:
                     assert data.getData() != null;
-                    openUserPage(Integer.decode(data.getData().getQueryParameter("userID")));
+                    openUserPage(Integer.decode(
+                            Objects.requireNonNull(
+                                    data.getData().getQueryParameter("userID"))));
+                    break;
+
+
+                //Global search result
+                case MAIN_ACTIVITY_GLOBAL_SEARCH_INTENT:
+                    assert data.getData() != null;
+
+                    //Open user page or group accordingly to the choice of the user
+                    Uri result = data.getData();
+                    String type = result.getQueryParameter(SearchActivity.INTENT_ARG_RESULT_TYPE);
+                    int id = Integer.decode(Objects.requireNonNull(result.getQueryParameter(SearchActivity.INTENT_ARG_RESULT_ID)));
+                    if(Objects.equals(type, SearchActivity.INTENT_RESULT_USER))
+                        openUserPage(id);
+                    else
+                        onOpenGroup(id);
+
                     break;
 
             }
@@ -756,6 +778,17 @@ public class MainActivity extends BaseActivity implements
         //Make intent
         Intent intent = new Intent(this, SearchUserActivity.class);
         startActivityForResult(intent, MAIN_ACTIVITY_SEARCH_USER_INTENT);
+
+    }
+
+    /**
+     * Perform a global search
+     */
+    private void searchGlobal(){
+
+        //Make intent
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivityForResult(intent, MAIN_ACTIVITY_GLOBAL_SEARCH_INTENT);
 
     }
 

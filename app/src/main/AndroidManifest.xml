@@ -39,6 +39,11 @@
             android:name=".ui.activities.SearchUserActivity"
             android:label="@string/activity_searchuser_title" />
 
+        <!-- Global search activity -->
+        <activity
+            android:name=".ui.activities.SearchActivity"
+            android:label="@string/activity_search_title" />
+
         <!-- Notifications background refresh service -->
         <service
             android:name=".data.services.NotificationsService"
@@ -50,8 +55,9 @@
             android:label="@string/activity_view_pdf_label" />
 
         <!-- Account settings activity -->
-        <activity android:name=".ui.activities.AccountSettingsActivity"
-            android:label="@string/activity_account_settings_label"/>
+        <activity
+            android:name=".ui.activities.AccountSettingsActivity"
+            android:label="@string/activity_account_settings_label" />
 
         <!-- Settings activity -->
         <activity
@@ -62,7 +68,6 @@
         <activity
             android:name=".ui.activities.AboutActivity"
             android:label="@string/activity_about_title" />
-
 
     </application>
 

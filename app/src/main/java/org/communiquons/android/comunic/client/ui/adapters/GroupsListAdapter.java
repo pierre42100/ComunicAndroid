@@ -6,13 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.models.GroupInfo;
 import org.communiquons.android.comunic.client.ui.listeners.OnGroupActionListener;
-import org.communiquons.android.comunic.client.ui.views.GroupImageView;
-import org.communiquons.android.comunic.client.ui.views.GroupMembershipStatusView;
+import org.communiquons.android.comunic.client.ui.viewholders.GroupViewHolder;
 
 import java.util.ArrayList;
 
@@ -62,55 +60,12 @@ public class GroupsListAdapter extends BaseRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(getContext()).inflate(
                 R.layout.viewholder_group, viewGroup, false);
-        return new GroupHolder(view);
+        return new GroupViewHolder(view, mOnGroupActionListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        ((GroupHolder)viewHolder).bind(i);
+        ((GroupViewHolder)viewHolder).bind(mList.get(i));
     }
 
-
-    /**
-     * Single group holder class
-     */
-    private class GroupHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-
-        private GroupInfo mGroupInfo;
-
-
-        private GroupImageView mGroupImageView;
-        private TextView mGroupName;
-        private GroupMembershipStatusView mGroupMembershipStatus;
-
-        GroupHolder(@NonNull View itemView) {
-            super(itemView);
-
-            itemView.setOnClickListener(this);
-
-            mGroupImageView = itemView.findViewById(R.id.groupImage);
-            mGroupName = itemView.findViewById(R.id.groupName);
-            mGroupMembershipStatus = itemView.findViewById(R.id.groupMembershipStatusView);
-
-            mGroupMembershipStatus.setOnGroupMembershipUpdateListener(mOnGroupActionListener);
-        }
-
-        GroupInfo getGroup(int pos){
-            return mList.get(pos);
-        }
-
-        void bind(int pos){
-            mGroupInfo = getGroup(pos);
-            mGroupImageView.setGroup(mGroupInfo);
-            mGroupName.setText(mGroupInfo.getDisplayName());
-            mGroupMembershipStatus.setGroup(mGroupInfo);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if(v.equals(itemView))
-                mOnGroupActionListener.onOpenGroup(mGroupInfo.getId());
-        }
-    }
 }

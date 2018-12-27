@@ -9,8 +9,8 @@
 
     <!-- Search user -->
     <item
-        android:id="@+id/action_search_user"
-        android:title="@string/main_menu_search_user" />
+        android:id="@+id/action_search"
+        android:title="@string/main_menu_search" />
 
     <!-- Account settings -->
     <item

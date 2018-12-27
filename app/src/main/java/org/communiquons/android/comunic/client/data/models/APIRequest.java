@@ -2,6 +2,8 @@ package org.communiquons.android.comunic.client.data.models;
 
 import android.content.Context;
 
+import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
+
 import java.util.ArrayList;
 
 /**
@@ -99,17 +101,17 @@ public class APIRequest {
     public String get_parameters_encoded(){
 
         //Return string
-        String result = "";
+        StringBuilder result = new StringBuilder();
 
         //Process loop
         for(int i = 0; i < parameters.size(); i++){
 
             //Make sure to separate parameters
-            result += (i > 0 ? "&" : "");
-            result += parameters.get(i).get_encoded();
+            result.append(i > 0 ? "&" : "");
+            result.append(parameters.get(i).get_encoded());
         }
 
-        return result;
+        return result.toString();
     }
 
     /**
@@ -146,5 +148,17 @@ public class APIRequest {
      */
     public boolean isTryContinueOnError() {
         return tryContinueOnError;
+    }
+
+    /**
+     * Execute the request
+     *
+     * This is a convenience method
+     *
+     * @return The result of the operation
+     * @throws Exception In case of failure
+     */
+    public APIResponse exec() throws Exception {
+        return new APIRequestHelper().exec(this);
     }
 }
