@@ -20,6 +20,7 @@ import org.communiquons.android.comunic.client.data.enums.PageType;
 import org.communiquons.android.comunic.client.data.models.Comment;
 import org.communiquons.android.comunic.client.data.models.Post;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
+import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.data.utils.TimeUtils;
 import org.communiquons.android.comunic.client.ui.listeners.onPostUpdateListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
@@ -315,7 +316,11 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
 
             //Set post content
-            mPostContent.setParsedText(UiUtils.prepareStringTextView(post.getContent()));
+            mPostContent.setParsedText(
+                    StringsUtils.RemoveBBCode(
+                            UiUtils.prepareStringTextView(post.getContent())
+                    )
+            );
 
 
             //Post likes

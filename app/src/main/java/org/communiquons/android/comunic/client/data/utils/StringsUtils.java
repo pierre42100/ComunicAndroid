@@ -148,4 +148,14 @@ public class StringsUtils {
         return result;
 
     }
+
+    /**
+     * Remove all BBCode tags of a given string
+     *
+     * @param string The string to update
+     * @return The same string, without any bbcode tags
+     */
+    public static String RemoveBBCode(String string){
+        return string.replaceAll("\\[[a-zA-Z1-9/=#]{1,10}]", "");
+    }
 }
