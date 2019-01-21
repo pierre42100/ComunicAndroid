@@ -1,5 +1,13 @@
 CHANGELOG
 
+V.1.6 :
+* Display groups posts
+* Display the list of the groups of the users
+* Search option allows to search both groups and users
+* Ready for the BBcode transition
+* Automatically refresh user information
+* In conversation messages, posts and comments, users and groups references and also URLs are clickable
+
 V 1.5:
 * New navigation bar
 * Can update / delete conversation messages
