@@ -37,6 +37,7 @@ import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopR
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
 import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
 import org.communiquons.android.comunic.client.ui.asynctasks.FindVirtualDirectoryTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.GetCallConfigurationTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
@@ -181,6 +182,11 @@ public class MainActivity extends BaseActivity implements
         //Receive broadcasts
         IntentFilter intentFilter = new IntentFilter(NotificationsService.BROADCAST_ACTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, intentFilter);
+
+        //Get calls configuration
+        GetCallConfigurationTask callConfigurationTask = new GetCallConfigurationTask(this);
+        callConfigurationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        getTasksManager().addTask(callConfigurationTask);
     }
 
     @Override
