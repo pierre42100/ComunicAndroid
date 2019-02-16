@@ -13,6 +13,7 @@ public class NotificationsCount {
     private int notificationsCount;
     private int conversationsCount;
     private int friendsRequestsCount;
+    private int pendingCalls;
 
 
     //Set and get notifications count
@@ -41,5 +42,17 @@ public class NotificationsCount {
 
     public void setFriendsRequestsCount(int friendsRequestsCount) {
         this.friendsRequestsCount = friendsRequestsCount;
+    }
+
+    public int getPendingCalls() {
+        return pendingCalls;
+    }
+
+    public boolean hasPendingCalls() {
+        return pendingCalls > 0;
+    }
+
+    public void setPendingCalls(int pendingCalls) {
+        this.pendingCalls = pendingCalls;
     }
 }
