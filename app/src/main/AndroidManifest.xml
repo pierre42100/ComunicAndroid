@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.communiquons.android.comunic.client">
 
     <!-- Internet access is required to access the API and download medias -->
@@ -13,7 +14,8 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_app_rounded"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <!-- Main activity of the application -->
         <activity android:name=".ui.activities.MainActivity">
@@ -68,6 +70,11 @@
         <activity
             android:name=".ui.activities.AboutActivity"
             android:label="@string/activity_about_title" />
+
+        <!-- Call activity -->
+        <activity
+            android:name=".ui.activities.CallActivity"
+            android:label="@string/activity_call_label"/>
 
     </application>
 

@@ -875,6 +875,10 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void openCall(int callID) {
-        Log.e(TAG, "Open call " + callID);
+
+        Intent intent = new Intent(this, CallActivity.class);
+        intent.putExtra(CallActivity.ARGUMENT_CALL_ID, callID);
+        startActivity(intent);
+
     }
 }
