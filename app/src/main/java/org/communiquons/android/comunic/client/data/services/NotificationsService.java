@@ -1,12 +1,14 @@
 package org.communiquons.android.comunic.client.data.services;
 
 import android.app.IntentService;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -18,6 +20,11 @@ import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 
 import java.util.Objects;
+
+import static android.app.NotificationManager.IMPORTANCE_DEFAULT;
+import static org.communiquons.android.comunic.client.ui.Constants.NotificationsChannels.GLOBAL_CHANNEL_DESCRIPTION;
+import static org.communiquons.android.comunic.client.ui.Constants.NotificationsChannels.GLOBAL_CHANNEL_ID;
+import static org.communiquons.android.comunic.client.ui.Constants.NotificationsChannels.GLOBAL_CHANNEL_NAME;
 
 /**
  * Notifications service
@@ -45,11 +52,6 @@ public class NotificationsService extends IntentService {
     public static final String BROADCAST_EXTRA_NUMBER_NOTIFICATIONS = "NumberNotifications";
     public static final String BROADCAST_EXTRA_UNREAD_CONVERSATIONS = "UnreadConversations";
     public static final String BROADCAST_EXTRA_NUMBER_FRIENDSHIP_REQUESTS = "NumberFriendsRequests";
-
-    /**
-     * Notification channel ID
-     */
-    private final String CHANNEL_ID = "MainNotifChannel";
 
     /**
      * Main notification ID
@@ -172,57 +174,50 @@ public class NotificationsService extends IntentService {
      */
     private void showNotification(NotificationsCount count){
 
-        Notification.Builder mBuilder;
+        createGlobalNotificationChannel();
 
-        //Check which version of the notification system to use
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-
-            //Create notification channel
-            CharSequence name = "MainNotificationChannel";
-            String description = "Activity notifications";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name,
-                    importance);
-            mChannel.setDescription(description);
-
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = (NotificationManager) getSystemService(
-                    NOTIFICATION_SERVICE);
-            assert notificationManager != null;
-            notificationManager.createNotificationChannel(mChannel);
-
-            //Create notification builder
-            mBuilder = new Notification.Builder(this, CHANNEL_ID);
-        }
-        else {
-            //Create notification without channel
-            mBuilder = new Notification.Builder(this);
-            mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
-        }
-
-        //Set notification settings
-        mBuilder.setSmallIcon(R.drawable.ic_app_rounded);
-        mBuilder.setContentTitle(getString(R.string.notification_notif_available_title));
-        mBuilder.setContentText(getString(R.string.notification_notif_available_content,
-                count.getNotificationsCount(), count.getConversationsCount()));
-
-        //Create and apply an intent
+        //Create pending intent
         Intent activityIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, 0);
-        mBuilder.setContentIntent(pendingIntent);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, activityIntent, 0);
+
+        //Build the notification
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, GLOBAL_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_app_rounded)
+            .setContentTitle(getString(R.string.notification_notif_available_title))
+            .setContentText(getString(R.string.notification_notif_available_content,
+                count.getNotificationsCount(), count.getConversationsCount()))
+            .setContentIntent(pendingIntent);
 
         //Get notification manager to push notification
-        ((NotificationManager) Objects.requireNonNull(getSystemService(NOTIFICATION_SERVICE))).notify(
-                MAIN_NOTIFICATION_ID, mBuilder.build());
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(MAIN_NOTIFICATION_ID, mBuilder.build());
     }
 
     /**
      * Remove the notification
      */
     private void removeNotification(){
-        ((NotificationManager) Objects.requireNonNull(getSystemService(NOTIFICATION_SERVICE)))
-                .cancel(MAIN_NOTIFICATION_ID);
+        NotificationManagerCompat.from(this).cancel(MAIN_NOTIFICATION_ID);
+    }
+
+    /**
+     * Create global notification channel
+     */
+    private void createGlobalNotificationChannel(){
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel(
+                    GLOBAL_CHANNEL_ID,
+                    GLOBAL_CHANNEL_NAME,
+                    IMPORTANCE_DEFAULT
+            );
+            channel.setDescription(GLOBAL_CHANNEL_DESCRIPTION);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
     }
 
     @Override

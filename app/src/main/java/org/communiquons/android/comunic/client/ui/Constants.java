@@ -1,5 +1,7 @@
 package org.communiquons.android.comunic.client.ui;
 
+import android.app.NotificationManager;
+
 /**
  * UI constants
  *
@@ -58,6 +60,32 @@ public final class Constants {
          * Global search result
          */
         public static final String SEARCH_GLOBAL_RESULT = "org.communiquons.android.globalSearch.RESULT";
+
+    }
+
+    /**
+     * Notifications channels
+     */
+    public final class NotificationsChannels {
+
+        /**
+         * Global channel information
+         */
+        public static final String GLOBAL_CHANNEL_ID = "MainNotifChannel";
+        public static final String GLOBAL_CHANNEL_NAME = "MainNotificationChannel";
+        public static final String GLOBAL_CHANNEL_DESCRIPTION = "Global Comunic notifications";
+
+    }
+
+    /**
+     * Notifications IDs
+     */
+    public final class Notifications {
+
+        /**
+         * Main notification ID
+         */
+        public static final int MAIN_NOTIFICATION_ID = 0;
 
     }
 }
