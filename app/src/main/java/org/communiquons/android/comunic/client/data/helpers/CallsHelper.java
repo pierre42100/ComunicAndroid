@@ -3,9 +3,13 @@ package org.communiquons.android.comunic.client.data.helpers;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
+import org.communiquons.android.comunic.client.data.enums.MemberCallStatus;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
+import org.communiquons.android.comunic.client.data.models.CallInformation;
+import org.communiquons.android.comunic.client.data.models.CallMember;
 import org.communiquons.android.comunic.client.data.models.CallsConfiguration;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,7 +52,7 @@ public class CallsHelper extends BaseHelper {
             APIResponse response = request.exec();
 
             //Parse response
-            mCallsConfiguration = JSONObjectToCallConfiguration(response.getJSONObject());
+            mCallsConfiguration = JSONObjectToCallsConfiguration(response.getJSONObject());
 
 
         } catch (Exception e) {
@@ -60,10 +64,13 @@ public class CallsHelper extends BaseHelper {
     /**
      * Get Calls configuration, if available
      *
+     * Note if IsCallSystemAvailable returned TRUE, it is guaranteed that this method WILL NOT
+     * return null
+     *
      * @return Calls configuration
      */
     @Nullable
-    public static CallsConfiguration getCallConfiguration(){
+    public static CallsConfiguration GetCallsConfiguration(){
         return mCallsConfiguration;
     }
 
@@ -76,8 +83,36 @@ public class CallsHelper extends BaseHelper {
      *
      * @return TRUE if call system is available / FALSE else
      */
-    public static boolean isCallSystemAvailable(){
+    public static boolean IsCallSystemAvailable(){
         return mCallsConfiguration != null && mCallsConfiguration.isEnabled();
+    }
+
+    /**
+     * Create a call for a conversation, returns information about this call then
+     *
+     * Note : if a similar call already exists, it will be returned instead of
+     * creating a new call
+     *
+     * @param convID The ID of the target conversation
+     * @return Information about the created call / null in case of failure
+     */
+    @Nullable
+    public CallInformation createForConversation(int convID){
+
+        APIRequest request = new APIRequest(getContext(), "calls/createForConversation");
+        request.addInt("conversationID", convID);
+        try {
+
+            //Execute request
+            APIResponse response = request.exec();
+
+            return JSONObjectToCallInformation(response.getJSONObject());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
 
@@ -88,7 +123,7 @@ public class CallsHelper extends BaseHelper {
      * @return The result of the operation
      * @throws JSONException Exception thrown in case of failure
      */
-    private static CallsConfiguration JSONObjectToCallConfiguration(JSONObject object)
+    private static CallsConfiguration JSONObjectToCallsConfiguration(JSONObject object)
             throws JSONException {
 
         CallsConfiguration config = new CallsConfiguration();
@@ -108,5 +143,61 @@ public class CallsHelper extends BaseHelper {
 
         return  config;
 
+    }
+
+    /**
+     * Turn a {@link JSONObject} into {@link CallInformation} object
+     *
+     * @param object object to convert
+     * @return Generated CallInformation object
+     * @throws JSONException in case of failure
+     */
+    private static CallInformation JSONObjectToCallInformation(JSONObject object)
+            throws JSONException {
+
+        CallInformation call = new CallInformation();
+        call.setId(object.getInt("id"));
+        call.setConversationID(object.getInt("conversation_id"));
+        call.setLastActive(object.getInt("last_active"));
+
+        JSONArray members = object.getJSONArray("members");
+        for (int i = 0; i < members.length(); i++) {
+
+            JSONObject member_obj = members.getJSONObject(i);
+
+            call.addMember(new CallMember(
+                    member_obj.getInt("userID"),
+                    member_obj.getInt("call_id"),
+                    member_obj.getString("user_call_id"),
+                    StringToMemberCallStatus(member_obj.getString("status"))
+            ));
+        }
+
+        return call;
+
+    }
+
+    /**
+     * Turn a string into a {@link MemberCallStatus}
+     *
+     * @param s String to convert
+     * @return Generated MemberCallStatus
+     */
+    private static MemberCallStatus StringToMemberCallStatus(String s){
+        switch (s){
+
+            case "accepted":
+                return MemberCallStatus.ACCEPTED;
+
+            case "rejected":
+                return MemberCallStatus.REJECTED;
+
+            case "hang_up":
+                return MemberCallStatus.HANG_UP;
+
+            case "unknown":
+            default:
+                return MemberCallStatus.UNKNOWN;
+        }
     }
 }

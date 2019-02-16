@@ -318,4 +318,5 @@
     <string name="activity_search_title">Search</string>
     <string name="input_search_hint">Search a user, a group…</string>
     <string name="err_get_search_results">Could not get results of your search!</string>
+    <string name="err_create_call_for_conversation">Could not create a call for the conversation!</string>
 </resources>

@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.arrays.ConversationMessagesList;
+import org.communiquons.android.comunic.client.data.helpers.CallsHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
@@ -43,6 +44,7 @@ import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SendConversationMessageTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.UpdateConversationMessageContentTask;
 import org.communiquons.android.comunic.client.ui.listeners.OnConversationMessageActionsListener;
+import org.communiquons.android.comunic.client.ui.listeners.OnOpenCallListener;
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
@@ -51,6 +53,7 @@ import org.communiquons.android.comunic.client.ui.views.ScrollRecyclerView;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 import static org.communiquons.android.comunic.client.ui.Constants.IntentRequestCode.CONVERSATION_MESSAGE_PICK_PHOTO;
@@ -173,6 +176,11 @@ public class ConversationFragment extends Fragment
      * New message selected image
      */
     private Bitmap new_message_bitmap = null;
+
+    /**
+     * Contains whether a call button is visible on the conversation or not
+     */
+    private boolean mHasCallButton = false;
 
     /**
      * Get user helper
@@ -392,6 +400,7 @@ public class ConversationFragment extends Fragment
 
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -515,6 +524,23 @@ public class ConversationFragment extends Fragment
 
         //Update the name of the conversation
         setTitle(info.getDisplayName());
+
+
+        //Add call button (if possible)
+        if(CallsHelper.IsCallSystemAvailable() && info.getMembers().size() > 1 && info.getMembers().size() <=
+                Objects.requireNonNull(CallsHelper.GetCallsConfiguration()).getMaximumNumberMembers() &&
+                !mHasCallButton) {
+
+            mHasCallButton = true;
+
+            mAppBar.addButton(R.drawable.ic_call, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((OnOpenCallListener)Objects.requireNonNull(getActivity()))
+                            .createCallForConversation(conversation_id);
+                }
+            });
+        }
 
     }
 

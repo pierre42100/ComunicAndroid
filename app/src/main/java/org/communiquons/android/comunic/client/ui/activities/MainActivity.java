@@ -2,6 +2,7 @@ package org.communiquons.android.comunic.client.ui.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,11 +32,13 @@ import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.DebugHelper;
+import org.communiquons.android.comunic.client.data.models.CallInformation;
 import org.communiquons.android.comunic.client.data.models.NotificationsCount;
 import org.communiquons.android.comunic.client.data.models.VirtualDirectory;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
 import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
+import org.communiquons.android.comunic.client.ui.asynctasks.CreateCallForConversationTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.FindVirtualDirectoryTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.GetCallConfigurationTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
@@ -51,6 +54,7 @@ import org.communiquons.android.comunic.client.ui.fragments.groups.GroupPageMain
 import org.communiquons.android.comunic.client.ui.fragments.groups.UserGroupsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserAccessDeniedFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserPageFragment;
+import org.communiquons.android.comunic.client.ui.listeners.OnOpenCallListener;
 import org.communiquons.android.comunic.client.ui.listeners.OnOpenPageListener;
 import org.communiquons.android.comunic.client.ui.listeners.onPostOpenListener;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
@@ -71,7 +75,7 @@ import static org.communiquons.android.comunic.client.ui.Constants.IntentRequest
  */
 public class MainActivity extends BaseActivity implements
         openConversationListener, updateConversationListener, OnOpenPageListener,
-        onPostOpenListener, NavigationBar.OnNavigationItemSelectedListener {
+        onPostOpenListener, NavigationBar.OnNavigationItemSelectedListener, OnOpenCallListener {
 
     /**
      * Debug tag
@@ -839,5 +843,38 @@ public class MainActivity extends BaseActivity implements
         transaction.addToBackStack(null);
         transaction.replace(R.id.main_fragment, fragment);
         transaction.commit();
+    }
+
+    @Override
+    public void createCallForConversation(int convID) {
+        final Dialog dialog = UiUtils.create_loading_dialog(this);
+
+        //Create the call for the conversation
+        CreateCallForConversationTask task = new CreateCallForConversationTask(this);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, convID);
+        getTasksManager().addTask(task, true);
+        task.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<CallInformation>() {
+            @Override
+            public void OnPostExecute(@Nullable CallInformation callInformation) {
+
+                dialog.dismiss();
+
+                //Check for errors
+                if(callInformation == null)
+                    Toast.makeText(
+                            MainActivity.this,
+                            R.string.err_create_call_for_conversation,
+                            Toast.LENGTH_SHORT).show();
+
+                else
+                    //Open call
+                    openCall(callInformation.getId());
+            }
+        });
+    }
+
+    @Override
+    public void openCall(int callID) {
+        Log.e(TAG, "Open call " + callID);
     }
 }

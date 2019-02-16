@@ -319,4 +319,5 @@
     <string name="notice_group_access_denied">Accès au groupe refusé.</string>
     <string name="err_get_group_info">Impossible de récupérer les informations sur le groupe !</string>
     <string name="notice_closed_registration">Accès sur invitation</string>
+    <string name="err_create_call_for_conversation">Une erreur a survenu lors de la création d\'un appel pour la conversation !</string>
 </resources>
