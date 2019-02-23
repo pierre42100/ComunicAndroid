@@ -1,10 +1,11 @@
 package org.communiquons.android.comunic.client.ui.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.ui.receivers.PendingCallsBroadcastReceiver;
 
 import java.util.Objects;
 
@@ -31,5 +32,13 @@ public class CallActivity extends AppCompatActivity {
 
         ((TextView)findViewById(R.id.call_id)).setText(
                 "Call " + getIntent().getExtras().getInt(ARGUMENT_CALL_ID));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //Hide call notifications
+        PendingCallsBroadcastReceiver.RemoveCallNotification(this);
     }
 }

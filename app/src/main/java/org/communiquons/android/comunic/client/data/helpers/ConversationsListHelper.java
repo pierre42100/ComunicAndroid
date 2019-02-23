@@ -57,6 +57,15 @@ public class ConversationsListHelper {
     }
 
     /**
+     * The constructor of the class
+     *
+     * @param context The context of execution of the application
+     */
+    public ConversationsListHelper(Context context){
+        this(context, DatabaseHelper.getInstance(context));
+    }
+
+    /**
      * Get the list of conversation or null in case of failure
      *
      * @return The list of conversations
@@ -147,17 +156,17 @@ public class ConversationsListHelper {
     /**
      * Get the display name of a conversation
      *
-     * @param infos Informations about a conversation
+     * @param info Information about a conversation
      * @return The name of the conversation
      */
-    public String getDisplayName(ConversationsInfo infos){
+    public String getDisplayName(ConversationsInfo info){
 
         //Check if a specific name has been specified
-        if(infos.hasName())
-            return infos.getName();
+        if(info.hasName())
+            return info.getName();
 
         //Get the list of members of the conversation
-        ArrayList<Integer> members = infos.getMembers();
+        ArrayList<Integer> members = info.getMembers();
 
         //Get the ID of the three first members
         ArrayList<Integer> membersToGet = new ArrayList<>();
@@ -201,6 +210,24 @@ public class ConversationsListHelper {
         }
 
         return name;
+    }
+
+    /**
+     * Get the name of a conversation specified by its ID
+     *
+     * @param convID The ID of the target conversation
+     * @return The name of the conversation / null in case of failure
+     */
+    @Nullable
+    public String getConversationName(int convID){
+
+        ConversationsInfo info = getInfosSingle(convID, true);
+
+        if(info == null)
+            return null;
+
+        return getDisplayName(info);
+
     }
 
     /**

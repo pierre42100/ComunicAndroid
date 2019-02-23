@@ -76,6 +76,14 @@
             android:name=".ui.activities.CallActivity"
             android:label="@string/activity_call_label"/>
 
+
+        <!-- New calls available receiver -->
+        <receiver android:name=".ui.receivers.PendingCallsBroadcastReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="org.communiquons.android.comunic.client.NEW_CALLS_AVAILABLE" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

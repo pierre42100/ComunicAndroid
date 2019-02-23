@@ -56,4 +56,13 @@ public class CallMember {
     public void setStatus(MemberCallStatus status) {
         this.status = status;
     }
+
+    /**
+     * Check out whether the member left the call or not
+     *
+     * @return TRUE if the user is considered as out of the conversation
+     */
+    public boolean leftCall(){
+        return status == MemberCallStatus.HANG_UP || status == MemberCallStatus.REJECTED;
+    }
 }

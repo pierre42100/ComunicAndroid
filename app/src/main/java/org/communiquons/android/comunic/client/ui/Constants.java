@@ -1,7 +1,5 @@
 package org.communiquons.android.comunic.client.ui;
 
-import android.app.NotificationManager;
-
 /**
  * UI constants
  *
@@ -64,6 +62,19 @@ public final class Constants {
     }
 
     /**
+     * Intents actions
+     */
+    public final class IntentActions {
+
+        /**
+         * Intent used to notify of new available calls
+         */
+        public static final String ACTION_NOTIFY_NEW_CALLS_AVAILABLE =
+                "org.communiquons.android.comunic.client.NEW_CALLS_AVAILABLE";
+
+    }
+
+    /**
      * Notifications channels
      */
     public final class NotificationsChannels {
@@ -75,6 +86,13 @@ public final class Constants {
         public static final String GLOBAL_CHANNEL_NAME = "MainNotificationChannel";
         public static final String GLOBAL_CHANNEL_DESCRIPTION = "Global Comunic notifications";
 
+
+        /**
+         * Call channel information
+         */
+        public static final String CALL_CHANNEL_ID = "CallChannel";
+        public static final String CALL_CHANNEL_NAME = "Call Notification Channel";
+        public static final String CALL_CHANNEL_DESCRIPTION = "Channel used to notify incoming calls";
     }
 
     /**
@@ -86,6 +104,12 @@ public final class Constants {
          * Main notification ID
          */
         public static final int MAIN_NOTIFICATION_ID = 0;
+
+
+        /**
+         * Call notification ID
+         */
+        public static final int CALL_NOTIFICATION_ID = 1;
 
     }
 }

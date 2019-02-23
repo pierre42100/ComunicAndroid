@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.communiquons.android.comunic.client.data.enums.MemberCallStatus;
@@ -9,6 +10,7 @@ import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.CallInformation;
 import org.communiquons.android.comunic.client.data.models.CallMember;
 import org.communiquons.android.comunic.client.data.models.CallsConfiguration;
+import org.communiquons.android.comunic.client.data.models.NextPendingCallInformation;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,13 +108,67 @@ public class CallsHelper extends BaseHelper {
             //Execute request
             APIResponse response = request.exec();
 
-            return JSONObjectToCallInformation(response.getJSONObject());
+            return JSONObjectToCallInformation(response.getJSONObject(), null);
 
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
 
+    }
+
+    /**
+     * Get the next pending call for a user
+     *
+     * @return Next pending call for a user
+     */
+    @Nullable
+    public NextPendingCallInformation getNextPendingCall(){
+
+        APIRequest request = new APIRequest(getContext(), "calls/nextPending");
+
+        try {
+            JSONObject object = request.exec().getJSONObject();
+
+            //Check if there is no pending call available
+            NextPendingCallInformation call = new NextPendingCallInformation();
+            if(object.has("notice")){
+                call.setHasPendingCall(false);
+                return call;
+            }
+
+
+            call.setHasPendingCall(true);
+            JSONObjectToCallInformation(object, call);
+            return call;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
+
+
+    /**
+     * Try to get and return call information
+     *
+     * @param call Target call information
+     * @return The name of call / null in case of failure
+     */
+    @Nullable
+    public String getCallName(@NonNull CallInformation call){
+
+        //Get call name
+        String name = new ConversationsListHelper(getContext())
+                .getConversationName(call.getConversationID());
+
+        if(name == null)
+            return null;
+
+        call.setCallName(name);
+        return name;
     }
 
 
@@ -149,13 +205,18 @@ public class CallsHelper extends BaseHelper {
      * Turn a {@link JSONObject} into {@link CallInformation} object
      *
      * @param object object to convert
+     * @param call Call object to fill (null = none)
      * @return Generated CallInformation object
      * @throws JSONException in case of failure
      */
-    private static CallInformation JSONObjectToCallInformation(JSONObject object)
+    private static CallInformation JSONObjectToCallInformation(JSONObject object,
+                                                               @Nullable CallInformation call)
             throws JSONException {
 
-        CallInformation call = new CallInformation();
+        //Check if object has to be instanced
+        if(call == null)
+            call = new CallInformation();
+
         call.setId(object.getInt("id"));
         call.setConversationID(object.getInt("conversation_id"));
         call.setLastActive(object.getInt("last_active"));

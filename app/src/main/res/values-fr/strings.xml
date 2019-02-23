@@ -320,4 +320,8 @@
     <string name="err_get_group_info">Impossible de récupérer les informations sur le groupe !</string>
     <string name="notice_closed_registration">Accès sur invitation</string>
     <string name="err_create_call_for_conversation">Une erreur a survenu lors de la création d\'un appel pour la conversation !</string>
+    <string name="activity_call_label">Appel</string>
+    <string name="notification_call_accept">Répondre</string>
+    <string name="notification_call_reject">Rejeter</string>
+    <string name="notification_call_content">%s vous appelle.</string>
 </resources>

@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -15,14 +16,15 @@ import android.util.Log;
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.helpers.CallsHelper;
-import org.communiquons.android.comunic.client.data.models.NotificationsCount;
 import org.communiquons.android.comunic.client.data.helpers.NotificationsHelper;
+import org.communiquons.android.comunic.client.data.models.NotificationsCount;
 import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
-
-import java.util.Objects;
+import org.communiquons.android.comunic.client.ui.receivers.PendingCallsBroadcastReceiver;
 
 import static android.app.NotificationManager.IMPORTANCE_DEFAULT;
+import static org.communiquons.android.comunic.client.ui.Constants.IntentActions.ACTION_NOTIFY_NEW_CALLS_AVAILABLE;
+import static org.communiquons.android.comunic.client.ui.Constants.Notifications.MAIN_NOTIFICATION_ID;
 import static org.communiquons.android.comunic.client.ui.Constants.NotificationsChannels.GLOBAL_CHANNEL_DESCRIPTION;
 import static org.communiquons.android.comunic.client.ui.Constants.NotificationsChannels.GLOBAL_CHANNEL_ID;
 import static org.communiquons.android.comunic.client.ui.Constants.NotificationsChannels.GLOBAL_CHANNEL_NAME;
@@ -55,11 +57,6 @@ public class NotificationsService extends IntentService {
     public static final String BROADCAST_EXTRA_NUMBER_FRIENDSHIP_REQUESTS = "NumberFriendsRequests";
 
     /**
-     * Main notification ID
-     */
-    private final static int MAIN_NOTIFICATION_ID = 0;
-
-    /**
      * Keep run status
      */
     private boolean run;
@@ -81,6 +78,13 @@ public class NotificationsService extends IntentService {
      */
     public NotificationsService(){
         super("NotificationsService");
+
+        //Register calls broadcast register
+        IntentFilter callFilters = new IntentFilter();
+        callFilters.addAction(ACTION_NOTIFY_NEW_CALLS_AVAILABLE);
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(new PendingCallsBroadcastReceiver(), callFilters);
+
     }
 
     /**
@@ -161,7 +165,22 @@ public class NotificationsService extends IntentService {
                     .putExtra(BROADCAST_EXTRA_UNREAD_CONVERSATIONS, count.getConversationsCount())
                     .putExtra(BROADCAST_EXTRA_NUMBER_FRIENDSHIP_REQUESTS, count.getFriendsRequestsCount());
 
+            //Send new calls information
             LocalBroadcastManager.getInstance(this).sendBroadcast(pushIntent);
+
+            //If new calls are available, notify system
+            if(CallsHelper.IsCallSystemAvailable()){
+
+                if(count.hasPendingCalls()) {
+                    Intent callIntent = new Intent(this, PendingCallsBroadcastReceiver.class);
+                    callIntent.setAction(ACTION_NOTIFY_NEW_CALLS_AVAILABLE);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(callIntent);
+                }
+                else
+                    PendingCallsBroadcastReceiver.RemoveCallNotification(this);
+
+            }
+
         }
 
         Log.v(TAG, "Stop service");
@@ -193,6 +212,7 @@ public class NotificationsService extends IntentService {
         //Get notification manager to push notification
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(MAIN_NOTIFICATION_ID, mBuilder.build());
+
     }
 
     /**

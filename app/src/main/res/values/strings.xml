@@ -320,4 +320,7 @@
     <string name="err_get_search_results">Could not get results of your search!</string>
     <string name="err_create_call_for_conversation">Could not create a call for the conversation!</string>
     <string name="activity_call_label">Call</string>
+    <string name="notification_call_accept">Respond</string>
+    <string name="notification_call_reject">Reject call</string>
+    <string name="notification_call_content">%s is calling you</string>
 </resources>

@@ -1,7 +1,7 @@
 package org.communiquons.android.comunic.client.data.models;
 
 /**
- * Notifications count service
+ * Notifications count class
  *
  * @author Pierre HUBERT
  * Created by pierre on 4/9/18.
@@ -13,7 +13,7 @@ public class NotificationsCount {
     private int notificationsCount;
     private int conversationsCount;
     private int friendsRequestsCount;
-    private int pendingCalls;
+    private int pendingCalls = -1;
 
 
     //Set and get notifications count
