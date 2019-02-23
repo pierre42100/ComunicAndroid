@@ -44,16 +44,19 @@ public class NotificationsHelper {
     /**
      * Get the notifications count
      *
+     * @param include_calls Specify whether pending calls should be included or not in the count
      * @return Notifications count / NULL in case of failure
      */
     @Nullable
-    public NotificationsCount pullCount(){
+    public NotificationsCount pullCount(boolean include_calls){
 
         //Perform an API request
         APIRequest params = new APIRequest(mContext,
                 "notifications/count_all_news");
         params.addBoolean("friends_request", true);
-        params.addBoolean("include_calls", true);
+
+        if(include_calls)
+            params.addBoolean("include_calls", true);
 
         //Try to perform the request and parse results
         try {
@@ -66,7 +69,9 @@ public class NotificationsHelper {
             res.setNotificationsCount(object.getInt("notifications"));
             res.setConversationsCount(object.getInt("conversations"));
             res.setFriendsRequestsCount(object.getInt("friends_request"));
-            res.setPendingCalls(object.getInt("calls"));
+
+            if(include_calls)
+                res.setPendingCalls(object.getInt("calls"));
 
             return res;
 

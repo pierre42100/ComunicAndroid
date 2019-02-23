@@ -14,6 +14,7 @@ import android.util.Log;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
+import org.communiquons.android.comunic.client.data.helpers.CallsHelper;
 import org.communiquons.android.comunic.client.data.models.NotificationsCount;
 import org.communiquons.android.comunic.client.data.helpers.NotificationsHelper;
 import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
@@ -119,7 +120,7 @@ public class NotificationsService extends IntentService {
             }
 
             //Pull the number of notifications
-            NotificationsCount count = mNotifHelper.pullCount();
+            NotificationsCount count = mNotifHelper.pullCount(CallsHelper.IsCallSystemAvailable());
 
             //Check for error
             if(count == null){
