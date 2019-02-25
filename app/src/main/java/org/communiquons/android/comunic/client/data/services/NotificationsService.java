@@ -28,6 +28,7 @@ import static org.communiquons.android.comunic.client.ui.Constants.Notifications
 import static org.communiquons.android.comunic.client.ui.Constants.NotificationsChannels.GLOBAL_CHANNEL_DESCRIPTION;
 import static org.communiquons.android.comunic.client.ui.Constants.NotificationsChannels.GLOBAL_CHANNEL_ID;
 import static org.communiquons.android.comunic.client.ui.Constants.NotificationsChannels.GLOBAL_CHANNEL_NAME;
+import static org.communiquons.android.comunic.client.ui.Constants.PreferencesKeys.PREFERENCE_ACCELERATE_NOTIFICATIONS_REFRESH;
 
 /**
  * Notifications service
@@ -104,7 +105,10 @@ public class NotificationsService extends IntentService {
 
             try {
                 //Make a pause
-                Thread.sleep(30000);
+                int secs = PreferencesUtils.getBoolean(
+                        this, PREFERENCE_ACCELERATE_NOTIFICATIONS_REFRESH, false) ?
+                        2 /* high frequency */ : 30 /* low frequency */;
+                Thread.sleep(secs*1000);
             } catch (InterruptedException e){
                 Thread.currentThread().interrupt();
             }

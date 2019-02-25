@@ -112,4 +112,22 @@ public final class Constants {
         public static final int CALL_NOTIFICATION_ID = 1;
 
     }
+
+
+    /**
+     * Preferences keys
+     */
+    public final class PreferencesKeys {
+
+        /**
+         * Enable debug mode
+         */
+        public static final String PREFERENCE_ENABLE_DEBUG_MODE = "enable_debug_mode";
+
+        /**
+         * Accelerate notifications refresh
+         */
+        public static final String PREFERENCE_ACCELERATE_NOTIFICATIONS_REFRESH
+                = "accelerate_notifications_refresh";
+    }
 }

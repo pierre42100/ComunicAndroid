@@ -323,4 +323,5 @@
     <string name="notification_call_accept">Respond</string>
     <string name="notification_call_reject">Reject call</string>
     <string name="notification_call_content">%s is calling you</string>
+    <string name="action_accelerate_notifications_refresh">Accelerate notifications refresh</string>
 </resources>

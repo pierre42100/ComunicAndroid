@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/action_accelerate_notifications_refresh"
+        android:title="@string/action_accelerate_notifications_refresh"
+        android:checkable="true"/>
+
+    <item
         android:id="@+id/action_clear_local_db"
         android:title="@string/menu_clear_local_db"/>
 

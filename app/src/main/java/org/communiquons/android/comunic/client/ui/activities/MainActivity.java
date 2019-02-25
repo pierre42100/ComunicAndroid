@@ -66,6 +66,8 @@ import java.util.Objects;
 
 import static org.communiquons.android.comunic.client.ui.Constants.IntentRequestCode.MAIN_ACTIVITY_GLOBAL_SEARCH_INTENT;
 import static org.communiquons.android.comunic.client.ui.Constants.IntentRequestCode.MAIN_ACTIVITY_SEARCH_USER_INTENT;
+import static org.communiquons.android.comunic.client.ui.Constants.PreferencesKeys.PREFERENCE_ACCELERATE_NOTIFICATIONS_REFRESH;
+import static org.communiquons.android.comunic.client.ui.Constants.PreferencesKeys.PREFERENCE_ENABLE_DEBUG_MODE;
 
 
 /**
@@ -238,9 +240,17 @@ public class MainActivity extends BaseActivity implements
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         //Check if the debug menu has to be shown or not
-        if (PreferencesUtils.getBoolean(this, "enable_debug_mode", false)) {
+        if (PreferencesUtils.getBoolean(this, PREFERENCE_ENABLE_DEBUG_MODE, false)) {
             SubMenu debugMenu = menu.addSubMenu(R.string.menu_debug_title);
             getMenuInflater().inflate(R.menu.debug_menu, debugMenu);
+
+            debugMenu.findItem(R.id.action_accelerate_notifications_refresh).setChecked(
+                    PreferencesUtils.getBoolean(
+                            this,
+                            PREFERENCE_ACCELERATE_NOTIFICATIONS_REFRESH,
+                            false
+                    )
+            );
         }
 
         return true;
@@ -290,6 +300,19 @@ public class MainActivity extends BaseActivity implements
         //Check if user wants to clear database
         if (id == R.id.action_clear_local_db) {
             clearLocalDatabase();
+            return true;
+        }
+
+        //Check if we have to accelerate notifications refresh
+        if(id == R.id.action_accelerate_notifications_refresh){
+
+            boolean enable = !PreferencesUtils.getBoolean(
+                    this, PREFERENCE_ACCELERATE_NOTIFICATIONS_REFRESH, false);
+
+            PreferencesUtils.setBoolean(
+                    this,
+                    PREFERENCE_ACCELERATE_NOTIFICATIONS_REFRESH,
+                    enable);
             return true;
         }
 

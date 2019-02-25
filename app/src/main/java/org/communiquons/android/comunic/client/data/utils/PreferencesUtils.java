@@ -27,4 +27,15 @@ public class PreferencesUtils {
         return sharedPrefs.getBoolean(key, def);
     }
 
+    /**
+     * Set (save) a new boolean preference
+     *
+     * @param context Application context
+     * @param key The name of the key to change
+     * @param value New value for the key
+     */
+    public static void setBoolean(Context context, String key, boolean value){
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit().putBoolean(key, value).apply();
+    }
 }

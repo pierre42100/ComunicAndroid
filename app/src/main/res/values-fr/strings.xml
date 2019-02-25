@@ -324,4 +324,5 @@
     <string name="notification_call_accept">Répondre</string>
     <string name="notification_call_reject">Rejeter</string>
     <string name="notification_call_content">%s vous appelle.</string>
+    <string name="action_accelerate_notifications_refresh">Accélérer le rafraîchissement des notifications</string>
 </resources>
