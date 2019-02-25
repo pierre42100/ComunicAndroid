@@ -325,4 +325,8 @@
     <string name="notification_call_reject">Rejeter</string>
     <string name="notification_call_content">%s vous appelle.</string>
     <string name="action_accelerate_notifications_refresh">Accélérer le rafraîchissement des notifications</string>
+    <string name="button_reject_call">Rejeter</string>
+    <string name="button_accept_call">Répondre</string>
+    <string name="title_incoming_call">Appel entrant</string>
+    <string name="err_get_next_pending_call_info">Impossible de récupérer les informations de l\'appel en cours !</string>
 </resources>

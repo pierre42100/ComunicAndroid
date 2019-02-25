@@ -9,6 +9,7 @@ import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.CallInformation;
 import org.communiquons.android.comunic.client.data.models.CallMember;
+import org.communiquons.android.comunic.client.data.models.CallResponse;
 import org.communiquons.android.comunic.client.data.models.CallsConfiguration;
 import org.communiquons.android.comunic.client.data.models.NextPendingCallInformation;
 import org.json.JSONArray;
@@ -169,6 +170,26 @@ public class CallsHelper extends BaseHelper {
 
         call.setCallName(name);
         return name;
+    }
+
+    /**
+     * Respond to a call request
+     *
+     * @param response The response to the call
+     * @return TRUE for a success / FALSE else
+     */
+    public boolean respondToCall(@NonNull CallResponse response){
+
+        APIRequest request = new APIRequest(getContext(), "calls/respond");
+        request.addInt("call_id", response.getCallID());
+        request.addBoolean("accept", response.isAccept());
+
+        try {
+            return request.exec().getJSONObject().has("success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 

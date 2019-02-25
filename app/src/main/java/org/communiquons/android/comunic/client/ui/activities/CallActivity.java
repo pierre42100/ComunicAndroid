@@ -1,7 +1,6 @@
 package org.communiquons.android.comunic.client.ui.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
@@ -14,7 +13,7 @@ import java.util.Objects;
  *
  * @author Pierre HUBERT
  */
-public class CallActivity extends AppCompatActivity {
+public class CallActivity extends BaseActivity {
 
     /**
      * Mandatory argument that includes call id
@@ -29,9 +28,6 @@ public class CallActivity extends AppCompatActivity {
 
         //Hide call bar
         Objects.requireNonNull(getSupportActionBar()).hide();
-
-        ((TextView)findViewById(R.id.call_id)).setText(
-                "Call " + getIntent().getExtras().getInt(ARGUMENT_CALL_ID));
     }
 
     @Override
@@ -40,5 +36,8 @@ public class CallActivity extends AppCompatActivity {
 
         //Hide call notifications
         PendingCallsBroadcastReceiver.RemoveCallNotification(this);
+
+        ((TextView)findViewById(R.id.call_id)).setText(
+                "Call " + getIntent().getExtras().getInt(ARGUMENT_CALL_ID));
     }
 }

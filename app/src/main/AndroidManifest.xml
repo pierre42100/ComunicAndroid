@@ -74,15 +74,29 @@
         <!-- Call activity -->
         <activity
             android:name=".ui.activities.CallActivity"
-            android:label="@string/activity_call_label"/>
+            android:label="@string/activity_call_label" />
 
+        <!-- Incoming call activity -->
+        <activity android:name=".ui.activities.IncomingCallActivity" />
 
         <!-- New calls available receiver -->
-        <receiver android:name=".ui.receivers.PendingCallsBroadcastReceiver" android:exported="false">
+        <receiver
+            android:name=".ui.receivers.PendingCallsBroadcastReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="org.communiquons.android.comunic.client.NEW_CALLS_AVAILABLE" />
             </intent-filter>
         </receiver>
+
+        <!-- Reject new call receiver -->
+        <receiver
+            android:name=".ui.receivers.RejectCallReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.communiquons.android.comunic.client.REJECT_INCOMING_CALL" />
+            </intent-filter>
+        </receiver>
+
 
     </application>
 

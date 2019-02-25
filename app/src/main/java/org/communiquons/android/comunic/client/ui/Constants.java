@@ -72,6 +72,13 @@ public final class Constants {
         public static final String ACTION_NOTIFY_NEW_CALLS_AVAILABLE =
                 "org.communiquons.android.comunic.client.NEW_CALLS_AVAILABLE";
 
+
+        /**
+         * Intent used to reject incoming call
+         */
+        public static final String ACTION_REJECT_INCOMING_CALL =
+                "org.communiquons.android.comunic.client.REJECT_INCOMING_CALL";
+
     }
 
     /**

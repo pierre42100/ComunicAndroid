@@ -324,4 +324,8 @@
     <string name="notification_call_reject">Reject call</string>
     <string name="notification_call_content">%s is calling you</string>
     <string name="action_accelerate_notifications_refresh">Accelerate notifications refresh</string>
+    <string name="button_reject_call">Reject call</string>
+    <string name="button_accept_call">Accept call</string>
+    <string name="title_incoming_call">Incoming call</string>
+    <string name="err_get_next_pending_call_info">Could not get pending call information!</string>
 </resources>

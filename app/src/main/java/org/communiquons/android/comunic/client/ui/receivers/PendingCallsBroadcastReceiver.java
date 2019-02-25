@@ -18,7 +18,9 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.models.NextPendingCallInformation;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.ui.Constants;
+import org.communiquons.android.comunic.client.ui.activities.BaseActivity;
 import org.communiquons.android.comunic.client.ui.activities.CallActivity;
+import org.communiquons.android.comunic.client.ui.activities.IncomingCallActivity;
 import org.communiquons.android.comunic.client.ui.asynctasks.GetNextPendingCallTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
@@ -50,6 +52,11 @@ public class PendingCallsBroadcastReceiver extends BroadcastReceiver {
      */
     private boolean locked = false;
 
+    /**
+     * The ID of the last shown notification
+     */
+    private static int mLastNotificationCallID = 0;
+
 
     @Override
     public void onReceive(final Context context, Intent intent) {
@@ -60,6 +67,12 @@ public class PendingCallsBroadcastReceiver extends BroadcastReceiver {
                 Constants.IntentActions.ACTION_NOTIFY_NEW_CALLS_AVAILABLE))
             throw new RuntimeException("Unexpected call of " + TAG);
 
+
+        //Check if user is already calling
+        if(CheckIfUseless(context, null)) {
+            Log.v(TAG, "Reported that a new call is available but skipped because considered as useless.");
+            return;
+        }
 
         //Check if service is currently locked
         if(locked) {
@@ -93,29 +106,20 @@ public class PendingCallsBroadcastReceiver extends BroadcastReceiver {
             return;
         }
 
-        //Check if there is no pending call
-        if(!info.isHasPendingCall()) {
 
-            //Remove any related notification
-            RemoveCallNotification(context);
-
+        //Check if it is useless to continue
+        if(CheckIfUseless(context, info)) {
             return;
-
         }
-
-        //Check if all notification members left the call
-        if(info.hasAllMembersLeftCallExcept(AccountUtils.getID(context)))
-            return;
-
 
 
         //Create notification
 
-        //Accept intent
-        Intent acceptIntent = new Intent(context, CallActivity.class);
-        acceptIntent.putExtra(CallActivity.ARGUMENT_CALL_ID, info.getId());
-        PendingIntent pendingAcceptIntent
-                = PendingIntent.getActivity(context, 0, acceptIntent, 0);
+        //Full screen call request intent
+        Intent fullScreenCallRequestIntent = new Intent(context, IncomingCallActivity.class);
+        PendingIntent pendingFullScreenRequestIntent = PendingIntent.getActivity(context,
+                0, fullScreenCallRequestIntent, 0);
+
 
         //Create and show notification
         NotificationCompat.Builder builder =
@@ -123,14 +127,9 @@ public class PendingCallsBroadcastReceiver extends BroadcastReceiver {
                         .setSmallIcon(R.drawable.ic_call)
                         .setContentTitle(info.getCallName())
                         .setContentText(UiUtils.getString(context, R.string.notification_call_content, info.getCallName()))
-                        .setContentIntent(pendingAcceptIntent)
-                        .setFullScreenIntent(pendingAcceptIntent, true)
-                        .setPriority(PRIORITY_HIGH)
-
-                        //Accept action
-                        .addAction(R.drawable.ic_call,
-                                UiUtils.getString(context, R.string.notification_call_accept), pendingAcceptIntent);
-                        //.addAction(R.drawable.ic_call, R.string.notification_call_reject, null)
+                        //.setContentIntent(pendingAcceptIntent)
+                        .setFullScreenIntent(pendingFullScreenRequestIntent, true)
+                        .setPriority(PRIORITY_HIGH);
 
 
         //Create notification channel if required
@@ -146,7 +145,28 @@ public class PendingCallsBroadcastReceiver extends BroadcastReceiver {
         Notification n = builder.build();
         n.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
 
-        NotificationManagerCompat.from(context).notify(CALL_NOTIFICATION_ID, n);
+        mLastNotificationCallID = info.getId();
+        NotificationManagerCompat.from(context).notify(GetNotificationID(mLastNotificationCallID), n);
+    }
+
+    /**
+     * Check if calling this receiver is useless for now
+     *
+     * @param context Context of application
+     * @param call Optional information about a pending call
+     * @return TRUE if useless / FALSE else
+     */
+    public static boolean CheckIfUseless(Context context, @Nullable NextPendingCallInformation call){
+        boolean useless = BaseActivity.IsActiveActivity(IncomingCallActivity.class)
+                || BaseActivity.IsActiveActivity(CallActivity.class)
+                || (call != null && (
+                        !call.isHasPendingCall()
+                        || call.hasAllMembersLeftCallExcept(AccountUtils.getID(context))));
+
+        if(useless)
+            RemoveCallNotification(context);
+
+        return useless;
     }
 
     /**
@@ -155,6 +175,15 @@ public class PendingCallsBroadcastReceiver extends BroadcastReceiver {
      * @param context The context of the application
      */
     public static void RemoveCallNotification(Context context){
-        NotificationManagerCompat.from(context).cancel(CALL_NOTIFICATION_ID);
+        NotificationManagerCompat.from(context).cancel(GetNotificationID(mLastNotificationCallID));
+    }
+
+    /**
+     * Get the ID of a notification for a call
+     *
+     * @param callID The ID of the target call
+     */
+    private static int GetNotificationID(int callID){
+        return CALL_NOTIFICATION_ID*1000 + callID;
     }
 }
