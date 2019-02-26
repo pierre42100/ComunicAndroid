@@ -251,12 +251,15 @@ public class PostsCreateFormFragment extends Fragment {
         CreatePost post = new CreatePost();
 
         //Determine the type and the ID of the page
+        assert getArguments() != null;
         switch (getArguments().getInt(PAGE_TYPE_ARG)){
             case PAGE_TYPE_USER:
                 post.setPage_type(PageType.USER_PAGE);
+                break;
 
             case PAGE_TYPE_GROUP:
                 post.setPage_type(PageType.GROUP_PAGE);
+                break;
         }
         post.setPage_id(getArguments().getInt(PAGE_ID_ARG));
 
