@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -23,6 +25,7 @@ import org.communiquons.android.comunic.client.data.models.CallsConfiguration;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.ui.arrays.CallPeersConnectionsList;
 import org.communiquons.android.comunic.client.ui.asynctasks.GetCallInformationTask;
+import org.communiquons.android.comunic.client.ui.asynctasks.HangUpCallTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.RespondToCallTask;
 import org.communiquons.android.comunic.client.ui.models.CallPeerConnection;
 import org.communiquons.android.comunic.client.ui.receivers.PendingCallsBroadcastReceiver;
@@ -85,6 +88,11 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
      */
     private SignalExchangerClient mSignalExchangerClient = null;
 
+    /**
+     * Specify whether call was stopped or not
+     */
+    private boolean mStopped = false;
+
 
     /**
      * Connections list
@@ -102,6 +110,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
      * Views
      */
     private ProgressBar mProgressBar;
+    private ImageButton mHangUpButton;
 
 
     @Override
@@ -184,7 +193,8 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     private void initViews(){
 
         mProgressBar = findViewById(R.id.progressBar);
-
+        mHangUpButton = findViewById(R.id.hangUp);
+        mHangUpButton.setOnClickListener(v -> hangUp());
 
     }
 
@@ -214,6 +224,8 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
      */
     private void onGotCallInformation(@Nullable CallInformation info){
 
+        if(mStopped) return;
+
         if(info == null){
             Toast.makeText(this, R.string.err_get_call_info, Toast.LENGTH_SHORT).show();
             return;
@@ -225,7 +237,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         //Check if everyone left the conversation
         if(mCallInformation.hasAllMembersLeftCallExcept(AccountUtils.getID(this))){
             Toast.makeText(this, R.string.notice_call_terminated, Toast.LENGTH_SHORT).show();
-            finish();
+            hangUp();
             return;
         }
 
@@ -258,6 +270,9 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
 
 
     private void processClientsConnections(){
+
+        if(mStopped) return;
+
         //Process each peer connection
         for(CallMember member : mCallInformation.getMembers())
             processClientConnection(member);
@@ -293,6 +308,8 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
      * @param isInitiator Specify whether if we should send the offer or not to this user
      */
     private void createPeerConnection(CallMember member, boolean isInitiator){
+
+        if(mStopped) return;
 
         Log.v(TAG, "Create peer connection for connection with user " + member.getUserID());
 
@@ -359,10 +376,12 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
 
         ProxyVideoSink localProxyVideoSink = new ProxyVideoSink();
         localProxyVideoSink.setTarget(callPeer.getLocalVideoView());
+        callPeer.setLocalProxyVideoSink(localProxyVideoSink);
 
         ProxyVideoSink remoteProxyRenderer = new ProxyVideoSink();
         remoteProxyRenderer.setTarget(callPeer.getRemoteViewView());
         callPeer.getRemoteSinks().add(remoteProxyRenderer);
+        callPeer.setRemoteProxyRenderer(remoteProxyRenderer);
 
         //Start connection
         peerConnectionClient.createPeerConnection(
@@ -377,6 +396,27 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     }
 
     /**
+     * Hang up call
+     */
+    private void hangUp(){
+
+        mHangUpButton.setVisibility(View.GONE);
+        mStopped = true;
+
+        mRefreshCallInformation.interrupt();
+
+        mSignalExchangerClient.close();
+
+        for (CallPeerConnection client : mList)
+            disconnectFromPeer(client.getMember());
+
+        HangUpCallTask hangUpCallTask = new HangUpCallTask(getApplicationContext());
+        hangUpCallTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mCallID);
+
+        finish();
+    }
+
+    /**
      * Disconnect from a specific peer
      *
      * @param member Information about related call member
@@ -386,6 +426,9 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         CallPeerConnection callPeer = mList.find(member);
         if(callPeer == null)
             return;
+
+        ((ProxyVideoSink)callPeer.getLocalProxyVideoSink()).setTarget(null);
+        ((ProxyVideoSink)callPeer.getRemoteProxyRenderer()).setTarget(null);
 
         callPeer.getPeerConnectionClient().close();
 

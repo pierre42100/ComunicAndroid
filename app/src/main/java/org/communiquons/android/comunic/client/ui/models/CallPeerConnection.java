@@ -17,6 +17,8 @@ public class CallPeerConnection {
     //Private fields
     private CallMember member;
     private PeerConnectionClient peerConnectionClient;
+    private VideoSink localProxyVideoSink;
+    private VideoSink remoteProxyRenderer;
     private ArrayList<VideoSink> remoteSinks = new ArrayList<>();
 
     //Views
@@ -66,5 +68,21 @@ public class CallPeerConnection {
 
     public void setLocalVideoView(SurfaceViewRenderer mLocalVideoView) {
         this.mLocalVideoView = mLocalVideoView;
+    }
+
+    public VideoSink getLocalProxyVideoSink() {
+        return localProxyVideoSink;
+    }
+
+    public void setLocalProxyVideoSink(VideoSink localProxyVideoSink) {
+        this.localProxyVideoSink = localProxyVideoSink;
+    }
+
+    public VideoSink getRemoteProxyRenderer() {
+        return remoteProxyRenderer;
+    }
+
+    public void setRemoteProxyRenderer(VideoSink remoteProxyRenderer) {
+        this.remoteProxyRenderer = remoteProxyRenderer;
     }
 }

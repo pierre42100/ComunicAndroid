@@ -331,4 +331,5 @@
     <string name="err_get_call_info">Could not get call information!</string>
     <string name="err_connect_signaling_server">Could not connect to signaling server!</string>
     <string name="notice_call_terminated">Call terminated</string>
+    <string name="action_hang_up">Hang up</string>
 </resources>

@@ -72,6 +72,14 @@ public class SignalExchangerClient extends WebSocketListener {
     }
 
     /**
+     * Close this socket
+     */
+    public void close(){
+        if(mWebSocket != null)
+            mWebSocket.close(4999, null);
+    }
+
+    /**
      * Get current client configuration
      *
      * @return Configuration of the client

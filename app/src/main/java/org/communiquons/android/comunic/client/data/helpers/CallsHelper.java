@@ -239,6 +239,24 @@ public class CallsHelper extends BaseHelper {
         }
     }
 
+    /**
+     * Hang up a call
+     *
+     * @param callID Target call ID
+     * @return TRUE for a success / FALSE else
+     */
+    public boolean hangUp(int callID){
+        APIRequest request = new APIRequest(getContext(), "calls/hangUp");
+        request.addInt("call_id", callID);
+        try {
+            return request.exec().getJSONObject().has("success");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     /**
      * Turn a {@link JSONObject} object into a {@link CallsConfiguration} object.
