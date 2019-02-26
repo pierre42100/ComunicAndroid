@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.crashreporter.CrashReporter;
+import org.communiquons.crashreporter.CrashReporter;
 import org.communiquons.android.comunic.client.data.enums.VirtualDirectoryType;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;

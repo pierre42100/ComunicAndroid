@@ -329,4 +329,7 @@
     <string name="button_accept_call">Répondre</string>
     <string name="title_incoming_call">Appel entrant</string>
     <string name="err_get_next_pending_call_info">Impossible de récupérer les informations de l\'appel en cours !</string>
+    <string name="err_get_call_info">Impossible de récupérer les infoamtions sur l\'appel !</string>
+    <string name="err_connect_signaling_server">Impossible de connecter au signaling server !</string>
+    <string name="notice_call_terminated">Appel terminé.</string>
 </resources>

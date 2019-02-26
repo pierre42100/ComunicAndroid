@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.models;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -74,6 +75,36 @@ public class CallInformation {
     public void setMembers(ArrayList<CallMember> members) {
         this.members = members;
     }
+
+    /**
+     * Find a member by user ID
+     *
+     * @param userID The ID of the user to search
+     * @return Information about the target user
+     */
+    public CallMember findMember(int userID){
+        for(CallMember member : members)
+            if(member.getUserID() == userID)
+                return member;
+
+        throw new RuntimeException("Specified user was not found in the conversation!");
+    }
+
+    /**
+     * Find a member by call ID
+     *
+     * @param userCallID The ID of the target user
+     * @return Information about the user / null in case of failure
+     */
+    @Nullable
+    public CallMember findMember(String userCallID){
+        for(CallMember member : members)
+            if(member.getUserCallID().equals(userCallID))
+                return member;
+
+        throw new RuntimeException("Specified user was not found in the conversation!");
+    }
+
 
     public String getCallName() {
         return callName;

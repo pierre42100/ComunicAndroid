@@ -1,4 +1,4 @@
-package org.communiquons.android.comunic.client.crashreporter;
+package org.communiquons.crashreporter;
 
 import android.content.Context;
 import android.os.AsyncTask;

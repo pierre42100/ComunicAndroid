@@ -15,6 +15,9 @@ import org.communiquons.android.comunic.client.data.models.NextPendingCallInform
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.webrtc.PeerConnection;
+
+import java.util.ArrayList;
 
 /**
  * Calls helper
@@ -91,6 +94,30 @@ public class CallsHelper extends BaseHelper {
     }
 
     /**
+     * Get the list of STUN and TURN servers
+     *
+     * @return List of STUN and TURN servers available for Comunic
+     */
+    public static ArrayList<PeerConnection.IceServer> GetPeerServers(){
+
+        ArrayList<PeerConnection.IceServer> servers = new ArrayList<>();
+
+        //Stun server
+        servers.add(PeerConnection.IceServer.builder(
+                mCallsConfiguration.getStunServer()).createIceServer());
+
+        //TURN server
+        servers.add(PeerConnection.IceServer
+                .builder(mCallsConfiguration.getTurnServer())
+                .setUsername(mCallsConfiguration.getTurnUsername())
+                .setPassword(mCallsConfiguration.getTurnPassword())
+                .createIceServer()
+        );
+
+        return servers;
+    }
+
+    /**
      * Create a call for a conversation, returns information about this call then
      *
      * Note : if a similar call already exists, it will be returned instead of
@@ -148,6 +175,26 @@ public class CallsHelper extends BaseHelper {
             return null;
         }
 
+
+    }
+
+    /**
+     * Get information about a call
+     *
+     * @param callID Target call ID
+     * @return Information about the call / null in case of failure
+     */
+    public CallInformation getInfo(int callID){
+
+        APIRequest request = new APIRequest(getContext(), "calls/getInfo");
+        request.addInt("call_id", callID);
+
+        try {
+            return JSONObjectToCallInformation(request.exec().getJSONObject(), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
     }
 

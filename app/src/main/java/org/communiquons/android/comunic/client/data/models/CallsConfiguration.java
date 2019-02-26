@@ -50,7 +50,7 @@ public class CallsConfiguration {
         this.signalServerPort = signalServerPort;
     }
 
-    public boolean isSignalSererSecure() {
+    public boolean isSignalServerSecure() {
         return isSignalSererSecure;
     }
 
