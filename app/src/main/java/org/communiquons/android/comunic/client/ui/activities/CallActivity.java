@@ -293,12 +293,17 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
 
         if(mList.find(member) == null && member.getUserID() > AccountUtils.getID(this)) {
             createPeerConnection(member, false);
-            mSignalExchangerClient.sendReadyMessage(member.getUserCallID());
         }
 
+        CallPeerConnection connection = mList.find(member);
 
-        if(mList.find(member) != null)
-            Objects.requireNonNull(mList.find(member)).setMember(member);
+        if(connection != null) {
+
+            if(!connection.isConnected())
+                mSignalExchangerClient.sendReadyMessage(connection.getMember().getUserCallID());
+
+            Objects.requireNonNull(connection).setMember(member);
+        }
     }
 
     /**
@@ -403,9 +408,11 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         mHangUpButton.setVisibility(View.GONE);
         mStopped = true;
 
-        mRefreshCallInformation.interrupt();
+        if(mRefreshCallInformation != null)
+            mRefreshCallInformation.interrupt();
 
-        mSignalExchangerClient.close();
+        if(mSignalExchangerClient != null)
+            mSignalExchangerClient.close();
 
         for (CallPeerConnection client : mList)
             disconnectFromPeer(client.getMember());
@@ -592,24 +599,28 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         public void onIceConnected() {
             Log.v(TAG, "Ice connected with peer  " +
                     connection.getMember().getUserID());
+            connection.setConnected(true);
         }
 
         @Override
         public void onIceDisconnected() {
             Log.v(TAG, "Ice disconnected from peer  " +
                     connection.getMember().getUserID());
+            connection.setConnected(false);
         }
 
         @Override
         public void onConnected() {
             Log.v(TAG, "Connected to peer  " +
                     connection.getMember().getUserID());
+            connection.setConnected(true);
         }
 
         @Override
         public void onDisconnected() {
             Log.v(TAG, "Disconnected from peer  " +
                     connection.getMember().getUserID());
+            connection.setConnected(false);
         }
 
         @Override
@@ -617,6 +628,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
             Log.v(TAG, "Connection close from user " +
                     connection.getMember().getUserID());
             runOnUiThread(() -> disconnectFromPeer(connection.getMember()));
+            connection.setConnected(false);
         }
 
         @Override
@@ -629,6 +641,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         public void onPeerConnectionError(String description) {
             Log.e(TAG, "Peer connection error with " +
                     connection.getMember().getUserID() + " " + description);
+            connection.setConnected(false);
         }
     }
 

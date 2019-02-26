@@ -17,6 +17,7 @@ public class CallPeerConnection {
     //Private fields
     private CallMember member;
     private PeerConnectionClient peerConnectionClient;
+    private boolean connected = false;
     private VideoSink localProxyVideoSink;
     private VideoSink remoteProxyRenderer;
     private ArrayList<VideoSink> remoteSinks = new ArrayList<>();
@@ -43,6 +44,14 @@ public class CallPeerConnection {
 
     public void setPeerConnectionClient(PeerConnectionClient peerConnectionClient) {
         this.peerConnectionClient = peerConnectionClient;
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
     }
 
     public ArrayList<VideoSink> getRemoteSinks() {
