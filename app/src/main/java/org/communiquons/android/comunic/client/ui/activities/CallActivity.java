@@ -49,6 +49,8 @@ import org.webrtc.VideoSink;
 
 import java.util.Objects;
 
+import static org.webrtc.RendererCommon.ScalingType.SCALE_ASPECT_FILL;
+
 /**
  * Call activity
  *
@@ -116,6 +118,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     private ImageButton mHangUpButton;
     private LinearLayout mRemoteVideosLayout;
     private SurfaceViewRenderer mLocalVideoView;
+    private View mButtonsView;
 
 
     @Override
@@ -202,6 +205,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         mHangUpButton.setOnClickListener(v -> hangUp());
         mRemoteVideosLayout = findViewById(R.id.remoteVideosLayout);
         mLocalVideoView = findViewById(R.id.local_video);
+        mButtonsView = findViewById(R.id.buttonsLayout);
     }
 
 
@@ -383,14 +387,15 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         SurfaceViewRenderer remoteView = new SurfaceViewRenderer(this);
         remoteView.init(eglBase.getEglBaseContext(), null);
         remoteView.setZOrderMediaOverlay(false);
+        remoteView.setScalingType(SCALE_ASPECT_FILL);
+        remoteView.setEnableHardwareScaler(false);
         callPeer.setRemoteViewView(remoteView);
+        remoteView.setOnClickListener(v -> switchButtonsVisibility());
 
         mRemoteVideosLayout.addView(remoteView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1));
 
 
-
-        //callPeer.setLocalProxyVideoSink(mLocalProxyVideoSink);
 
         ProxyVideoSink remoteProxyRenderer = new ProxyVideoSink();
         remoteProxyRenderer.setTarget(callPeer.getRemoteViewView());
@@ -452,6 +457,20 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
 
         mList.remove(callPeer);
     }
+
+
+    private void switchButtonsVisibility(){
+
+        boolean show = !getSupportActionBar().isShowing();
+
+        if(show)
+            getSupportActionBar().show();
+        else
+            getSupportActionBar().hide();
+
+        mButtonsView.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
 
     //Based on https://github.com/vivek1794/webrtc-android-codelab
     @Nullable
