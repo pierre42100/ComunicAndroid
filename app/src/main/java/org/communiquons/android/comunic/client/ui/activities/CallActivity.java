@@ -119,6 +119,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     private LinearLayout mRemoteVideosLayout;
     private SurfaceViewRenderer mLocalVideoView;
     private View mButtonsView;
+    private ImageButton mSwitchCameraButton;
 
 
     @Override
@@ -206,6 +207,8 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         mRemoteVideosLayout = findViewById(R.id.remoteVideosLayout);
         mLocalVideoView = findViewById(R.id.local_video);
         mButtonsView = findViewById(R.id.buttonsLayout);
+        mSwitchCameraButton = findViewById(R.id.switchCameraButton);
+        mSwitchCameraButton.setOnClickListener(v -> switchCamera());
     }
 
 
@@ -458,6 +461,11 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         mList.remove(callPeer);
     }
 
+
+    private void switchCamera(){
+        for(CallPeerConnection c : mList)
+            c.getPeerConnectionClient().switchCamera();
+    }
 
     private void switchButtonsVisibility(){
 

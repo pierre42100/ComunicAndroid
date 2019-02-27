@@ -333,4 +333,5 @@
     <string name="err_connect_signaling_server">Impossible de connecter au signaling server !</string>
     <string name="notice_call_terminated">Appel terminé.</string>
     <string name="action_hang_up">Raccrocher</string>
+    <string name="action_switch_camera">Changer de caméra</string>
 </resources>

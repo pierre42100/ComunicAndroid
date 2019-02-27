@@ -332,4 +332,5 @@
     <string name="err_connect_signaling_server">Could not connect to signaling server!</string>
     <string name="notice_call_terminated">Call terminated</string>
     <string name="action_hang_up">Hang up</string>
+    <string name="action_switch_camera">Switch camera</string>
 </resources>
