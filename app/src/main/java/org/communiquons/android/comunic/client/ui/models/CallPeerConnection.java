@@ -18,12 +18,10 @@ public class CallPeerConnection {
     private CallMember member;
     private PeerConnectionClient peerConnectionClient;
     private boolean connected = false;
-    private VideoSink localProxyVideoSink;
     private VideoSink remoteProxyRenderer;
     private ArrayList<VideoSink> remoteSinks = new ArrayList<>();
 
     //Views
-    private SurfaceViewRenderer mLocalVideoView;
     private SurfaceViewRenderer mRemoteViewView;
 
     public CallPeerConnection(CallMember member) {
@@ -68,23 +66,6 @@ public class CallPeerConnection {
 
     public void setRemoteViewView(SurfaceViewRenderer mRemoteViewView) {
         this.mRemoteViewView = mRemoteViewView;
-    }
-
-    public SurfaceViewRenderer getLocalVideoView() {
-
-        return mLocalVideoView;
-    }
-
-    public void setLocalVideoView(SurfaceViewRenderer mLocalVideoView) {
-        this.mLocalVideoView = mLocalVideoView;
-    }
-
-    public VideoSink getLocalProxyVideoSink() {
-        return localProxyVideoSink;
-    }
-
-    public void setLocalProxyVideoSink(VideoSink localProxyVideoSink) {
-        this.localProxyVideoSink = localProxyVideoSink;
     }
 
     public VideoSink getRemoteProxyRenderer() {

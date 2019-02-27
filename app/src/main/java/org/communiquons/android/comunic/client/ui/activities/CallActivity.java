@@ -106,6 +106,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
      * WebRTC attributes
      */
     private EglBase rootEglBase;
+    ProxyVideoSink mLocalProxyVideoSink;
 
 
     /**
@@ -114,6 +115,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     private ProgressBar mProgressBar;
     private ImageButton mHangUpButton;
     private LinearLayout mRemoteVideosLayout;
+    private SurfaceViewRenderer mLocalVideoView;
 
 
     @Override
@@ -199,10 +201,18 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         mHangUpButton = findViewById(R.id.hangUp);
         mHangUpButton.setOnClickListener(v -> hangUp());
         mRemoteVideosLayout = findViewById(R.id.remoteVideosLayout);
+        mLocalVideoView = findViewById(R.id.local_video);
     }
+
 
     private void initVideos(){
         rootEglBase = EglBase.create();
+
+        mLocalVideoView.init(rootEglBase.getEglBaseContext(), null);
+        mLocalVideoView.setZOrderMediaOverlay(true);
+
+        mLocalProxyVideoSink = new ProxyVideoSink();
+        mLocalProxyVideoSink.setTarget(mLocalVideoView);
     }
 
 
@@ -370,11 +380,6 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
 
 
         //Initialize video view
-        SurfaceViewRenderer localView = new SurfaceViewRenderer(this);
-        localView.init(eglBase.getEglBaseContext(), null);
-        localView.setZOrderMediaOverlay(true);
-        callPeer.setLocalVideoView(localView);
-
         SurfaceViewRenderer remoteView = new SurfaceViewRenderer(this);
         remoteView.init(eglBase.getEglBaseContext(), null);
         remoteView.setZOrderMediaOverlay(false);
@@ -384,9 +389,8 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1));
 
 
-        ProxyVideoSink localProxyVideoSink = new ProxyVideoSink();
-        localProxyVideoSink.setTarget(callPeer.getLocalVideoView());
-        callPeer.setLocalProxyVideoSink(localProxyVideoSink);
+
+        //callPeer.setLocalProxyVideoSink(mLocalProxyVideoSink);
 
         ProxyVideoSink remoteProxyRenderer = new ProxyVideoSink();
         remoteProxyRenderer.setTarget(callPeer.getRemoteViewView());
@@ -395,7 +399,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
 
         //Start connection
         peerConnectionClient.createPeerConnection(
-                localProxyVideoSink,
+                mLocalProxyVideoSink,
                 callPeer.getRemoteSinks(),
                 createCameraCapturer(new Camera1Enumerator(false)),
                 parameters
@@ -439,7 +443,6 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         if(callPeer == null)
             return;
 
-        ((ProxyVideoSink)callPeer.getLocalProxyVideoSink()).setTarget(null);
         ((ProxyVideoSink)callPeer.getRemoteProxyRenderer()).setTarget(null);
 
         callPeer.getPeerConnectionClient().close();
