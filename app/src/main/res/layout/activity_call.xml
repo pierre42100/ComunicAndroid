@@ -41,7 +41,7 @@
         app:layout_constraintBottom_toTopOf="@+id/buttonsLayout"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:id="@+id/buttonsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,37 +50,46 @@
         android:background="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageButton
-            android:id="@+id/hangUp"
-            android:layout_width="51dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/holo_red_dark"
-            android:contentDescription="@string/action_hang_up"
-            android:src="@drawable/ic_call"
-            android:tint="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/switchCameraButton"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:contentDescription="@string/action_switch_camera"
             android:src="@drawable/ic_camera_switch"
-            android:tint="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/hangUp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:tint="@android:color/white" />
 
-    </android.support.constraint.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/stopCameraButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/action_stop_camera"
+            android:src="@drawable/ic_videocam"
+            android:tint="@android:color/white" />
+
+        <ImageButton
+            android:id="@+id/hangUp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/holo_red_dark"
+            android:contentDescription="@string/action_hang_up"
+            android:src="@drawable/ic_call"
+            android:tint="@android:color/white" />
+
+
+
+    </LinearLayout>
 
 
 </android.support.constraint.ConstraintLayout>

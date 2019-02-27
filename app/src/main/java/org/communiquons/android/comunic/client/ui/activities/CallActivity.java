@@ -31,6 +31,7 @@ import org.communiquons.android.comunic.client.ui.asynctasks.HangUpCallTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.RespondToCallTask;
 import org.communiquons.android.comunic.client.ui.models.CallPeerConnection;
 import org.communiquons.android.comunic.client.ui.receivers.PendingCallsBroadcastReceiver;
+import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.signalexchangerclient.SignalExchangerCallback;
 import org.communiquons.signalexchangerclient.SignalExchangerClient;
 import org.communiquons.signalexchangerclient.SignalExchangerInitConfig;
@@ -96,7 +97,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
      * Specify whether call was stopped or not
      */
     private boolean mStopped = false;
-
+    private boolean mIsCameraStopped = false;
 
     /**
      * Connections list
@@ -119,7 +120,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     private LinearLayout mRemoteVideosLayout;
     private SurfaceViewRenderer mLocalVideoView;
     private View mButtonsView;
-    private ImageButton mSwitchCameraButton;
+    private ImageButton mStopCameraButton;
 
 
     @Override
@@ -202,13 +203,19 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     private void initViews(){
 
         mProgressBar = findViewById(R.id.progressBar);
-        mHangUpButton = findViewById(R.id.hangUp);
-        mHangUpButton.setOnClickListener(v -> hangUp());
         mRemoteVideosLayout = findViewById(R.id.remoteVideosLayout);
         mLocalVideoView = findViewById(R.id.local_video);
         mButtonsView = findViewById(R.id.buttonsLayout);
-        mSwitchCameraButton = findViewById(R.id.switchCameraButton);
-        mSwitchCameraButton.setOnClickListener(v -> switchCamera());
+
+        mHangUpButton = findViewById(R.id.hangUp);
+        mHangUpButton.setOnClickListener(v -> hangUp());
+
+        ImageButton switchCameraButton = findViewById(R.id.switchCameraButton);
+        switchCameraButton.setOnClickListener(v -> switchCamera());
+
+        mStopCameraButton = findViewById(R.id.stopCameraButton);
+        mStopCameraButton.setOnClickListener(v -> toggleStopCamera());
+
     }
 
 
@@ -465,6 +472,19 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     private void switchCamera(){
         for(CallPeerConnection c : mList)
             c.getPeerConnectionClient().switchCamera();
+    }
+
+    private void toggleStopCamera(){
+        mIsCameraStopped = !mIsCameraStopped;
+        for(CallPeerConnection c : mList) {
+            if(mIsCameraStopped)
+                c.getPeerConnectionClient().stopVideoSource();
+            else
+                c.getPeerConnectionClient().startVideoSource();
+        }
+
+        mStopCameraButton.setImageDrawable(UiUtils.getDrawable(this,
+                mIsCameraStopped ? R.drawable.ic_videocam_off : R.drawable.ic_videocam));
     }
 
     private void switchButtonsVisibility(){

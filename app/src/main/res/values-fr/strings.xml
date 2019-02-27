@@ -334,4 +334,5 @@
     <string name="notice_call_terminated">Appel terminé.</string>
     <string name="action_hang_up">Raccrocher</string>
     <string name="action_switch_camera">Changer de caméra</string>
+    <string name="action_stop_camera">Arrêter la caméra</string>
 </resources>

@@ -333,4 +333,5 @@
     <string name="notice_call_terminated">Call terminated</string>
     <string name="action_hang_up">Hang up</string>
     <string name="action_switch_camera">Switch camera</string>
+    <string name="action_stop_camera">Stop camera</string>
 </resources>
