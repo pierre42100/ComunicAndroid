@@ -98,6 +98,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
      */
     private boolean mStopped = false;
     private boolean mIsCameraStopped = false;
+    private boolean mIsMicrophoneStopped = false;
 
     /**
      * Connections list
@@ -121,6 +122,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     private SurfaceViewRenderer mLocalVideoView;
     private View mButtonsView;
     private ImageButton mStopCameraButton;
+    private ImageButton mStopMicrophoneButton;
 
 
     @Override
@@ -216,6 +218,8 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         mStopCameraButton = findViewById(R.id.stopCameraButton);
         mStopCameraButton.setOnClickListener(v -> toggleStopCamera());
 
+        mStopMicrophoneButton = findViewById(R.id.stopMicrophoneButton);
+        mStopMicrophoneButton.setOnClickListener(v -> toggleStopMicrophone());
     }
 
 
@@ -485,6 +489,16 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
 
         mStopCameraButton.setImageDrawable(UiUtils.getDrawable(this,
                 mIsCameraStopped ? R.drawable.ic_videocam_off : R.drawable.ic_videocam));
+    }
+
+    private void toggleStopMicrophone(){
+        mIsMicrophoneStopped = !mIsMicrophoneStopped;
+
+        for(CallPeerConnection c : mList)
+            c.getPeerConnectionClient().setAudioEnabled(!mIsMicrophoneStopped);
+
+        mStopMicrophoneButton.setImageDrawable(UiUtils.getDrawable(this,
+                mIsMicrophoneStopped ? R.drawable.ic_mic_off : R.drawable.ic_mic));
     }
 
     private void switchButtonsVisibility(){

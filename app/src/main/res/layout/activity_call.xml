@@ -59,8 +59,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
             android:contentDescription="@string/action_switch_camera"
             android:src="@drawable/ic_camera_switch"
             android:tint="@android:color/white" />
@@ -71,8 +71,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
             android:contentDescription="@string/action_stop_camera"
             android:src="@drawable/ic_videocam"
             android:tint="@android:color/white" />
@@ -82,9 +82,23 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:backgroundTint="@color/holo_red_dark"
             android:contentDescription="@string/action_hang_up"
             android:src="@drawable/ic_call"
+            android:tint="@android:color/white" />
+
+        <ImageButton
+            android:id="@+id/stopMicrophoneButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:contentDescription="@string/action_stop_camera"
+            android:src="@drawable/ic_mic"
             android:tint="@android:color/white" />
 
 
