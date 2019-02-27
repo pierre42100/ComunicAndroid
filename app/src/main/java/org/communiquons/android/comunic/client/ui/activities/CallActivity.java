@@ -9,7 +9,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -111,6 +113,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
      */
     private ProgressBar mProgressBar;
     private ImageButton mHangUpButton;
+    private LinearLayout mRemoteVideosLayout;
 
 
     @Override
@@ -195,14 +198,11 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         mProgressBar = findViewById(R.id.progressBar);
         mHangUpButton = findViewById(R.id.hangUp);
         mHangUpButton.setOnClickListener(v -> hangUp());
-
+        mRemoteVideosLayout = findViewById(R.id.remoteVideosLayout);
     }
 
-
     private void initVideos(){
-
         rootEglBase = EglBase.create();
-
     }
 
 
@@ -321,10 +321,12 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         CallPeerConnection callPeer = new CallPeerConnection(member);
         mList.add(callPeer);
 
+        EglBase eglBase = EglBase.create();
+
         //Create peer connection
         PeerConnectionClient peerConnectionClient = new PeerConnectionClient(
                 getApplicationContext(),
-                rootEglBase,
+                eglBase,
                 new PeerConnectionClient.PeerConnectionParameters(
                         true,
                         false,
@@ -369,14 +371,17 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
 
         //Initialize video view
         SurfaceViewRenderer localView = new SurfaceViewRenderer(this);
-        localView.init(rootEglBase.getEglBaseContext(), null);
+        localView.init(eglBase.getEglBaseContext(), null);
         localView.setZOrderMediaOverlay(true);
         callPeer.setLocalVideoView(localView);
 
         SurfaceViewRenderer remoteView = new SurfaceViewRenderer(this);
-        remoteView.init(rootEglBase.getEglBaseContext(), null);
+        remoteView.init(eglBase.getEglBaseContext(), null);
         remoteView.setZOrderMediaOverlay(false);
         callPeer.setRemoteViewView(remoteView);
+
+        mRemoteVideosLayout.addView(remoteView, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1));
 
 
         ProxyVideoSink localProxyVideoSink = new ProxyVideoSink();
@@ -414,8 +419,8 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         if(mSignalExchangerClient != null)
             mSignalExchangerClient.close();
 
-        for (CallPeerConnection client : mList)
-            disconnectFromPeer(client.getMember());
+        while(mList.size() > 0)
+            disconnectFromPeer(mList.get(0).getMember());
 
         HangUpCallTask hangUpCallTask = new HangUpCallTask(getApplicationContext());
         hangUpCallTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mCallID);
@@ -438,6 +443,9 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         ((ProxyVideoSink)callPeer.getRemoteProxyRenderer()).setTarget(null);
 
         callPeer.getPeerConnectionClient().close();
+
+        //Remove the views
+        mRemoteVideosLayout.removeView(callPeer.getRemoteViewView());
 
         mList.remove(callPeer);
     }
@@ -472,6 +480,8 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
                 }
             }
         }
+
+        Log.e(TAG, "Could not get user camera!");
 
         return null;
     }
