@@ -136,6 +136,7 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter {
 
             mMessage.setOnLongClickListener(this);
             mImage.setOnLongClickListener(this);
+            mImage.setCanSaveImageToGallery(true);
         }
 
         /**

@@ -91,6 +91,7 @@ class CommentsAdapter extends ArrayAdapter<Comment> {
 
         //Update comment image (if any)
         EnlargeableWebImageView commentImage = view.findViewById(R.id.comment_image);
+        commentImage.setCanSaveImageToGallery(true);
         if(comment.getImage_url().length() < 5)
             commentImage.setVisibility(View.GONE);
         else {

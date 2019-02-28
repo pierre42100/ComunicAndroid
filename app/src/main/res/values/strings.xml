@@ -334,4 +334,7 @@
     <string name="action_hang_up">Hang up</string>
     <string name="action_switch_camera">Switch camera</string>
     <string name="action_stop_camera">Stop camera</string>
+    <string name="action_save_image_in_gallery">Save in gallery</string>
+    <string name="err_save_image_in_gallery">Could not save the image in the gallery!</string>
+    <string name="success_save_image_in_gallery">Successfully saved the image into the gallery!</string>
 </resources>

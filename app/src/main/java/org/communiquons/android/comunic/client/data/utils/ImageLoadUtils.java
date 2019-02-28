@@ -22,7 +22,7 @@ public class ImageLoadUtils {
     /**
      * The main folder in the cache directory that stores the file
      */
-    public static final String IMAGE_CACHE_DIRECTORY = "img_cache/";
+    private static final String IMAGE_CACHE_DIRECTORY = "img_cache/";
 
     /**
      * Get the file name, based on the URL name
@@ -30,8 +30,26 @@ public class ImageLoadUtils {
      * @param url The URL of the file
      * @return The name of the file, composed of characters that can be used in filename
      */
-    public static String get_file_name(String url){
+    private static String get_file_name(String url){
         return StringsUtils.sha1(url);
+    }
+
+    /**
+     * Get the File object corresponding to an image URL
+     *
+     * Warning ! In some cases, the file might not exists
+     *
+     * @param context Application context
+     * @param url URL of the target image
+     * @return File object pointing on the image
+     */
+    public static File getFileForImage(Context context, String url){
+
+        //Determine the filename for the requested URL
+        String filename = IMAGE_CACHE_DIRECTORY + ImageLoadUtils.get_file_name(url);
+
+        //Create file object
+        return new File(context.getCacheDir(), filename);
     }
 
     /**

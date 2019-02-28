@@ -1,5 +1,6 @@
 package org.communiquons.android.comunic.client.ui.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.ui.utils.PermissionsUtils;
 import org.communiquons.crashreporter.CrashReporter;
 import org.communiquons.android.comunic.client.data.enums.VirtualDirectoryType;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
@@ -193,6 +195,11 @@ public class MainActivity extends BaseActivity implements
         GetCallConfigurationTask callConfigurationTask = new GetCallConfigurationTask(this);
         callConfigurationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         getTasksManager().addTask(callConfigurationTask);
+
+        //Request a few permissions
+        PermissionsUtils.RequestPermissions(this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+
     }
 
     @Override

@@ -335,4 +335,7 @@
     <string name="action_hang_up">Raccrocher</string>
     <string name="action_switch_camera">Changer de caméra</string>
     <string name="action_stop_camera">Arrêter la caméra</string>
+    <string name="action_save_image_in_gallery">Enregistrer dans la gallerie</string>
+    <string name="err_save_image_in_gallery">Une erreur a survenue lors de l\'enregistrement de l\'image dans la gallerie !</string>
+    <string name="success_save_image_in_gallery">L\'image a bien été enregistrée dans la gallerie !</string>
 </resources>

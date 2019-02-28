@@ -28,12 +28,12 @@ public class ImageLoadRunnable implements Runnable {
     /**
      * Debug tag
      */
-    private static final String TAG = "ImageLoadRunnable";
+    private static final String TAG = ImageLoadRunnable.class.getSimpleName();
 
     /**
      * Image load lock
      */
-    public static ReentrantLock ImageLoadLock = null;
+    private static ReentrantLock ImageLoadLock = null;
 
     /**
      * An array map with all the pending images associated with their URLs
@@ -89,11 +89,7 @@ public class ImageLoadRunnable implements Runnable {
         //Create the parent directory if required
         ImageLoadUtils.create_parent_directory(mContext);
 
-        //Determine the filename for the requested URL
-        String filename = ImageLoadUtils.IMAGE_CACHE_DIRECTORY + ImageLoadUtils.get_file_name(url);
-
-        //Create file object
-        file = new File(mContext.getCacheDir(), filename);
+        file = ImageLoadUtils.getFileForImage(mContext, url);
 
         //Check no thread is already running for the following image
         if (!pendingOperation.containsKey(url)) {
@@ -181,7 +177,8 @@ public class ImageLoadRunnable implements Runnable {
                         " deleted");
 
                 //Delete file
-                file.delete();
+                if(!file.delete())
+                    Log.e(TAG, "Could not delete file " + file.getPath() + " !");
 
                 return;
             }

@@ -415,6 +415,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             super(itemView);
 
             mPostImage = new EnlargeableWebImageView(getContext());
+            mPostImage.setCanSaveImageToGallery(true);
             getAdditionalViewsLayout().addView(mPostImage,
                     new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             UiUtils.GetPixel(getContext(), 200)));

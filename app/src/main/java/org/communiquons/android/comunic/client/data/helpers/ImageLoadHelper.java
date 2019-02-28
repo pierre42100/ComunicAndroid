@@ -7,6 +7,8 @@ import android.widget.ImageView;
 
 import org.communiquons.android.comunic.client.data.runnables.ImageLoadRunnable;
 
+import java.util.Objects;
+
 /**
  * Image load manager / helper
  *
@@ -93,6 +95,20 @@ public class ImageLoadHelper {
 
         //Clean the list
         clean();
+    }
+
+    /**
+     * Check out whether an image view is loading or not
+     *
+     * @param v The target view
+     * @return TRUE if loading / FALSE else
+     */
+    public static boolean IsLoading(View v){
+
+        return threads.containsKey(v)
+                && threads.get(v) != null
+                && Objects.requireNonNull(threads.get(v)).isAlive()
+                && !Objects.requireNonNull(threads.get(v)).isInterrupted();
     }
 
     /**
