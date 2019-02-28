@@ -31,6 +31,7 @@ import org.communiquons.android.comunic.client.ui.asynctasks.HangUpCallTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.RespondToCallTask;
 import org.communiquons.android.comunic.client.ui.models.CallPeerConnection;
 import org.communiquons.android.comunic.client.ui.receivers.PendingCallsBroadcastReceiver;
+import org.communiquons.android.comunic.client.ui.utils.PermissionsUtils;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.signalexchangerclient.SignalExchangerCallback;
 import org.communiquons.signalexchangerclient.SignalExchangerClient;
@@ -73,8 +74,6 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     /**
      * Permissions requests codes
      */
-    private static final int MY_PERMISSIONS_REQUEST_CAMERA = 100;
-    private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 101;
     private static final int MY_PERMISSIONS_REQUEST = 102;
 
     /**
@@ -178,25 +177,12 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
      * Based on https://github.com/sergiopaniego/WebRTCAndroidExample
      */
     private void askForPermissions() {
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) &&
-                (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                        != PackageManager.PERMISSION_GRANTED)) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO},
-                    MY_PERMISSIONS_REQUEST);
-        } else if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.RECORD_AUDIO},
-                    MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
 
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    MY_PERMISSIONS_REQUEST_CAMERA);
-        }
+        PermissionsUtils.RequestPermissions(this, new String[]{
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO
+        }, MY_PERMISSIONS_REQUEST);
+
     }
 
     /**
