@@ -1,12 +1,9 @@
 package org.communiquons.android.comunic.client.ui.activities;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -273,7 +270,11 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
 
         CallsConfiguration callsConfiguration = CallsHelper.GetCallsConfiguration();
 
-        assert callsConfiguration != null;
+        if(callsConfiguration == null){
+            Toast.makeText(this, R.string.err_missing_call_config, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         mSignalExchangerClient = new SignalExchangerClient(new SignalExchangerInitConfig(
                 callsConfiguration.getSignalServerName(),
                 callsConfiguration.getSignalServerPort(),
