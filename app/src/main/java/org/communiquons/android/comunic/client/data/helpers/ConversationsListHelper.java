@@ -26,17 +26,12 @@ import java.util.Objects;
  * Created by pierre on 12/9/17.
  */
 
-public class ConversationsListHelper {
+public class ConversationsListHelper extends BaseHelper {
 
     /**
      * Debug tag
      */
     private static final String TAG = ConversationsListHelper.class.getSimpleName();
-
-    /**
-     * The context of the application
-     */
-    private Context mContext;
 
     /**
      * Conversations list database helper
@@ -55,7 +50,8 @@ public class ConversationsListHelper {
      * @param dbHelper Database helper
      */
     public ConversationsListHelper(Context context, DatabaseHelper dbHelper){
-        mContext = context;
+        super(context);
+        
         convDBHelper = new ConversationsListDbHelper(dbHelper);
         this.dbHelper = dbHelper;
     }
@@ -126,7 +122,7 @@ public class ConversationsListHelper {
     public Integer getPrivate(int userID, boolean allowCreate){
 
         //Prepare an API request
-        APIRequest params = new APIRequest(mContext,
+        APIRequest params = new APIRequest(getContext(),
                 "conversations/getPrivate");
         params.addInt("otherUser", userID);
         params.addBoolean("allowCreate", allowCreate);
@@ -196,7 +192,7 @@ public class ConversationsListHelper {
                 int count = 0;
                 for(int userID : c.getMembers()){
 
-                    if(userID == AccountUtils.getID(mContext))
+                    if(userID == AccountUtils.getID(getContext()))
                         continue;
 
                     if(!usersToFetch.contains(userID))
@@ -215,7 +211,7 @@ public class ConversationsListHelper {
         if(usersToFetch.size() == 0)
             return true;
 
-        ArrayMap<Integer, UserInfo> users = new GetUsersHelper(mContext).getMultiple(usersToFetch);
+        ArrayMap<Integer, UserInfo> users = new GetUsersHelper(getContext()).getMultiple(usersToFetch);
 
         if(users == null)
             return false;
@@ -278,7 +274,7 @@ public class ConversationsListHelper {
     public boolean delete(int convID){
 
         //Delete the conversation on the API
-        APIRequest params = new APIRequest(mContext, "conversations/delete");
+        APIRequest params = new APIRequest(getContext(), "conversations/delete");
         params.addString("conversationID", ""+convID);
 
         try {
@@ -309,7 +305,7 @@ public class ConversationsListHelper {
         }
 
         //Make an API request
-        APIRequest params = new APIRequest(mContext, "conversations/create");
+        APIRequest params = new APIRequest(getContext(), "conversations/create");
         params.addString("name", name.equals("") ? "false" : name);
         params.addString("follow", follow ? "true" : "false");
         params.addString("users", members_str.toString());
@@ -352,7 +348,7 @@ public class ConversationsListHelper {
                           @Nullable ArrayList<Integer> members, boolean following){
 
         //Prepare a request on the database
-        APIRequest params = new APIRequest(mContext,
+        APIRequest params = new APIRequest(getContext(),
                 "conversations/updateSettings");
         params.addString("conversationID", ""+convID);
 
@@ -398,7 +394,7 @@ public class ConversationsListHelper {
         try {
 
             //Prepare the request on the server
-            APIRequest params = new APIRequest(mContext, "conversations/getList");
+            APIRequest params = new APIRequest(getContext(), "conversations/getList");
             APIResponse response = new APIRequestHelper().exec(params);
 
             //Check if an error occurred
@@ -432,7 +428,7 @@ public class ConversationsListHelper {
     private ConversationInfo downloadSingle(int convID){
 
         //Perform an API request
-        APIRequest params = new APIRequest(mContext,
+        APIRequest params = new APIRequest(getContext(),
                 "conversations/getInfosOne");
         params.addString("conversationID", ""+convID);
 
