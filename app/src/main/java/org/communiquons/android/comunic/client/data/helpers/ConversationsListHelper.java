@@ -86,6 +86,15 @@ public class ConversationsListHelper extends BaseHelper {
     }
 
     /**
+     * Get the cached version of the list of conversation
+     *
+     * @return The cached list of conversations
+     */
+    public ArrayList<ConversationInfo> getCachedList(){
+        return convDBHelper.getList();
+    }
+
+    /**
      * Get information about a conversation
      *
      * @param convID The conversation ID

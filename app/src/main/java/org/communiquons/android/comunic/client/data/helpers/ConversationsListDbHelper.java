@@ -18,7 +18,25 @@ import java.util.ArrayList;
  * Created by pierre on 12/13/17.
  */
 
-public class ConversationsListDbHelper {
+class ConversationsListDbHelper {
+
+    /**
+     * Debug tag
+     */
+    private static final String TAG = ConversationsListDbHelper.class.getSimpleName();
+
+    /**
+     * The list of all the columns of the database
+     */
+    private static final String[] mAllColumns = {
+            ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID,
+            ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID_OWNER,
+            ConversationsListSchema.COLUMN_NAME_CONVERSATION_LAST_ACTIVE,
+            ConversationsListSchema.COLUMN_NAME_CONVERSATION_NAME,
+            ConversationsListSchema.COLUMN_NAME_CONVERSATION_FOLLOWING,
+            ConversationsListSchema.COLUMN_NAME_CONVERSATION_SAW_LAST_MESSAGES,
+            ConversationsListSchema.COLUMN_NAME_CONVERSATION_MEMBERS,
+    };
 
     /**
      * Pointer on the database
@@ -35,10 +53,39 @@ public class ConversationsListDbHelper {
      *
      * @param databaseHelper Object pointing on database helper
      */
-    public ConversationsListDbHelper(@NonNull DatabaseHelper databaseHelper){
+    ConversationsListDbHelper(@NonNull DatabaseHelper databaseHelper){
         this.databaseHelper = databaseHelper;
     }
 
+
+    /**
+     * Get the list of conversation stored in the database
+     *
+     * @return The list of conversations
+     */
+    ArrayList<ConversationInfo> getList(){
+
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+        Cursor c = db.query(TABLE_NAME, mAllColumns, null, null, null,
+                null,
+                ConversationsListSchema.COLUMN_NAME_CONVERSATION_LAST_ACTIVE + " DESC");
+
+        ArrayList<ConversationInfo> list = new ArrayList<>();
+        if(c.getCount() < 1)
+            return list;
+
+        c.moveToFirst();
+
+        while(!c.isAfterLast()){
+            list.add(getConvObj(c));
+            c.moveToNext();
+        }
+
+        c.close();
+
+        return list;
+    }
 
     /**
      * Update the list of conversations currently installed in the system with a new list
@@ -60,7 +107,6 @@ public class ConversationsListDbHelper {
                 success = false;
         }
 
-        //db.close();
 
         return success;
     }
@@ -77,35 +123,25 @@ public class ConversationsListDbHelper {
 
         //Prepare database request
         String table = ConversationsListSchema.TABLE_NAME;
-        String[] columns = {
-                ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID,
-                ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID_OWNER,
-                ConversationsListSchema.COLUMN_NAME_CONVERSATION_LAST_ACTIVE,
-                ConversationsListSchema.COLUMN_NAME_CONVERSATION_NAME,
-                ConversationsListSchema.COLUMN_NAME_CONVERSATION_FOLLOWING,
-                ConversationsListSchema.COLUMN_NAME_CONVERSATION_SAW_LAST_MESSAGES,
-                ConversationsListSchema.COLUMN_NAME_CONVERSATION_MEMBERS,
-        };
         String selection = ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID + " = ?";
         String[] selectionArgs = {""+convID};
 
         //Perform database request
-        Cursor c = db.query(table, columns, selection, selectionArgs, null, null, null);
+        Cursor c = db.query(table, mAllColumns, selection, selectionArgs, null, null, null);
 
-        ConversationInfo infos = null;
+        ConversationInfo info = null;
 
         //Check for result
         if(c.getCount() != 0){
             c.moveToFirst();
 
             //Parse result
-            infos = getConvObj(c);
+            info = getConvObj(c);
         }
 
         c.close();
-        //db.close();
 
-        return infos;
+        return info;
 
     }
 
@@ -135,7 +171,6 @@ public class ConversationsListDbHelper {
         //Prepare the request
         db.delete(TABLE_NAME, null, null);
 
-        //db.close();
     }
 
     /**

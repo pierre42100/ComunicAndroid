@@ -30,6 +30,7 @@ import org.communiquons.android.comunic.client.ui.listeners.openConversationList
 import org.communiquons.android.comunic.client.ui.listeners.updateConversationListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Conversation list fragment
@@ -92,6 +93,11 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
      */
     private ProgressBar mProgressBar;
 
+    /**
+     * Specify whether we got the first version of the list of conversation
+     */
+    private boolean mGotFirstList = false;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -106,7 +112,7 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
 
         //Instantiate the user information helper
-        userHelper = new GetUsersHelper(getActivity(), dbHelper);
+        userHelper = new GetUsersHelper(Objects.requireNonNull(getActivity()), dbHelper);
 
         //Create the conversation list helper
         conversationsListHelper = new ConversationsListHelper(getActivity(), dbHelper);
@@ -122,7 +128,7 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
         mNoConversationNotice.setVisibility(View.GONE);
 
         //Refresh conversations list
-        refresh_conversations_list();
+        refresh_conversations_list(false);
 
         //Set the open and update conversation listener
         try {
@@ -143,14 +149,14 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
         super.onResume();
 
         //Update activity title
-        getActivity().setTitle(R.string.fragment_conversationslist_title);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.fragment_conversationslist_title);
         MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_conversations);
     }
 
     /**
      * Refresh the list of conversations
      */
-    private void refresh_conversations_list(){
+    private void refresh_conversations_list(boolean online){
 
         //Display loading wheel
         mProgressBar.setVisibility(View.VISIBLE);
@@ -158,7 +164,7 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
         //Get the list of conversations
         GetConversationsListTask getConversationsListTask = new GetConversationsListTask(getActivity());
         getConversationsListTask.setOnPostExecuteListener(this::display_conversations_list);
-        getConversationsListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        getConversationsListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, online);
         getTasksManager().addTask(getConversationsListTask);
     }
 
@@ -167,13 +173,20 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
      *
      * @param list The list to display
      */
-    public void display_conversations_list(ArrayList<ConversationInfo> list){
+    public void display_conversations_list(@Nullable ArrayList<ConversationInfo> list){
+
+        display_progress_bar(false);
+
+        //Check if we were fetching the local list of conversation
+        if(!mGotFirstList) {
+            mGotFirstList = true;
+            refresh_conversations_list(true);
+        }
 
         //Check if we got a list
         if(list == null) {
             Toast.makeText(getActivity(), R.string.fragment_conversationslist_err_get_list,
                     Toast.LENGTH_LONG).show();
-            display_progress_bar(false);
             return;
         }
 
@@ -189,16 +202,10 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
         //Add click listener
         conversationsListView.setOnItemClickListener(this);
 
-        conversationsListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                MenuInflater inflater = getActivity().getMenuInflater();
-                inflater.inflate(R.menu.menu_fragment_conversationslist_item, menu);
-            }
+        conversationsListView.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
+            MenuInflater inflater = Objects.requireNonNull(getActivity()).getMenuInflater();
+            inflater.inflate(R.menu.menu_fragment_conversationslist_item, menu);
         });
-
-        //Remove progress bar
-        display_progress_bar(false);
 
         //Update the visibility of the no conversation notice
         updateNoConversationNotice();
@@ -272,12 +279,8 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
                 .setMessage(R.string.popup_deleteconversation_messsage)
                 .setNegativeButton(R.string.popup_deleteconversation_cancel, null)
 
-                .setPositiveButton(R.string.popup_deleteconversation_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        delete_conversation(convID);
-                    }
-                })
+                .setPositiveButton(R.string.popup_deleteconversation_confirm,
+                        (dialog, which) -> delete_conversation(convID))
 
                 .show();
 
@@ -303,7 +306,7 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
                 if(getActivity() == null)
                     return;
 
-                refresh_conversations_list();
+                refresh_conversations_list(true);
 
                 //Display a toast if an error occurred
                 if(!result)

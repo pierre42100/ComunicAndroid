@@ -12,17 +12,24 @@ import java.util.ArrayList;
  *
  * @author Pierre HUBERT
  */
-public class GetConversationsListTask extends SafeAsyncTask<Void, Void, ArrayList<ConversationInfo>> {
+public class GetConversationsListTask extends SafeAsyncTask<Boolean, Void, ArrayList<ConversationInfo>> {
 
     public GetConversationsListTask(Context context) {
         super(context);
     }
 
     @Override
-    protected ArrayList<ConversationInfo> doInBackground(Void... voids) {
+    protected ArrayList<ConversationInfo> doInBackground(Boolean... booleans) {
         ConversationsListHelper conversationsListHelper = new ConversationsListHelper(getContext());
 
-        ArrayList<ConversationInfo> list = conversationsListHelper.getOnline();
+        boolean getOnline = booleans[0];
+        ArrayList<ConversationInfo> list;
+
+
+        if(getOnline)
+            list = conversationsListHelper.getOnline();
+        else
+            list = conversationsListHelper.getCachedList();
 
         if(list == null || !conversationsListHelper.getConversationsDisplayName(list))
             return null;
