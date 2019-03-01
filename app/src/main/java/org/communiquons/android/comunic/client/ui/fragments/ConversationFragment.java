@@ -32,7 +32,7 @@ import org.communiquons.android.comunic.client.data.helpers.ConversationsListHel
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
-import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.models.ConversationInfo;
 import org.communiquons.android.comunic.client.data.models.NewConversationMessage;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.runnables.ConversationRefreshRunnable;
@@ -90,7 +90,7 @@ public class ConversationFragment extends Fragment
     /**
      * Information about the conversation
      */
-    private ConversationsInfo conversationInfo = null;
+    private ConversationInfo conversationInfo = null;
 
     /**
      * The last available message id
@@ -368,18 +368,18 @@ public class ConversationFragment extends Fragment
         if(conversationInfo == null){
 
             //Query information about the conversation
-            new AsyncTask<Void, Void, ConversationsInfo>(){
+            new AsyncTask<Void, Void, ConversationInfo>(){
                 @Override
-                protected ConversationsInfo doInBackground(Void... params) {
-                    ConversationsInfo infos = convListHelper.getInfosSingle(conversation_id, true);
+                protected ConversationInfo doInBackground(Void... params) {
+                    ConversationInfo infos = convListHelper.getInfoSingle(conversation_id, true);
                     if(infos != null)
-                        infos.setDisplayName(convListHelper.getDisplayName(infos));
+                        infos.setDisplayName(convListHelper.getConversationDisplayName(infos));
                     return infos;
                 }
 
                 @Override
-                protected void onPostExecute(ConversationsInfo conversationsInfo) {
-                    onGotConversationInfo(conversationsInfo);
+                protected void onPostExecute(ConversationInfo conversationInfo) {
+                    onGotConversationInfo(conversationInfo);
                 }
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
@@ -509,7 +509,7 @@ public class ConversationFragment extends Fragment
      *
      * @param info Information about the conversation
      */
-    private void onGotConversationInfo(ConversationsInfo info){
+    private void onGotConversationInfo(ConversationInfo info){
 
         //Check for errors
         if(info == null){

@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.models.ConversationInfo;
 import org.communiquons.android.comunic.client.data.utils.TimeUtils;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * Created by pierre on 12/10/17.
  */
 
-public class ConversationsListAdapter extends ArrayAdapter<ConversationsInfo> {
+public class ConversationsListAdapter extends ArrayAdapter<ConversationInfo> {
 
     /**
      * Class constructor
@@ -34,7 +34,7 @@ public class ConversationsListAdapter extends ArrayAdapter<ConversationsInfo> {
      * @param context The context of the application
      * @param list The list of conversations to display
      */
-    public ConversationsListAdapter(Context context, ArrayList<ConversationsInfo> list){
+    public ConversationsListAdapter(Context context, ArrayList<ConversationInfo> list){
         super(context, 0, list);
     }
 
@@ -58,7 +58,7 @@ public class ConversationsListAdapter extends ArrayAdapter<ConversationsInfo> {
         }
 
         //Get information about the conversation
-        ConversationsInfo infos = getItem(position);
+        ConversationInfo infos = getItem(position);
 
         //Set the name of the conversation
         TextView conversationName = convertView

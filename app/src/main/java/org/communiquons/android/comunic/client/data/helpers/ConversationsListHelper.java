@@ -10,13 +10,14 @@ import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.models.ConversationInfo;
 import org.communiquons.android.comunic.client.data.utils.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Operations on the conversation list (helper)
@@ -27,7 +28,10 @@ import java.util.ArrayList;
 
 public class ConversationsListHelper {
 
-    private String TAG = "ConversationsList";
+    /**
+     * Debug tag
+     */
+    private static final String TAG = ConversationsListHelper.class.getSimpleName();
 
     /**
      * The context of the application
@@ -71,10 +75,10 @@ public class ConversationsListHelper {
      * @return The list of conversations
      */
     @Nullable
-    public ArrayList<ConversationsInfo> get(){
+    public ArrayList<ConversationInfo> getOnline(){
 
         //Download a new list of conversations
-        ArrayList<ConversationsInfo> list = download();
+        ArrayList<ConversationInfo> list = download();
 
         if(list != null){
             //Save the list
@@ -89,24 +93,24 @@ public class ConversationsListHelper {
      * Get information about a conversation
      *
      * @param convID The conversation ID
-     * @param allowDownload In case the conversation was not found locally, allow informations about
+     * @param allowDownload In case the conversation was not found locally, allow information about
      *                      the conversation to be fetched online
      * @return Information about the conversation, or false in case of failure
      */
     @Nullable
-    public ConversationsInfo getInfosSingle(int convID, boolean allowDownload){
+    public ConversationInfo getInfoSingle(int convID, boolean allowDownload){
 
-        ConversationsInfo infos;
+        ConversationInfo info;
 
         //Try to fetch information from the local database
-        if((infos = convDBHelper.getInfos(convID)) != null)
-            return infos;
+        if((info = convDBHelper.getInfo(convID)) != null)
+            return info;
 
-        //Check if we are not allowed to fetch informations online
+        //Check if we are not allowed to fetch information online
         if(!allowDownload)
             return null;
 
-        //Get informations about the conversation online
+        //Get information about the conversation online
         return downloadSingle(convID);
     }
 
@@ -159,57 +163,92 @@ public class ConversationsListHelper {
      * @param info Information about a conversation
      * @return The name of the conversation
      */
-    public String getDisplayName(ConversationsInfo info){
+    @NonNull
+    public String getConversationDisplayName(ConversationInfo info){
 
-        //Check if a specific name has been specified
-        if(info.hasName())
-            return info.getName();
+        ArrayList<ConversationInfo> list = new ArrayList<>();
+        list.add(info);
 
-        //Get the list of members of the conversation
-        ArrayList<Integer> members = info.getMembers();
+        if(!getConversationsDisplayName(list))
+            return "";
 
-        //Get the ID of the three first members
-        ArrayList<Integer> membersToGet = new ArrayList<>();
-        int num = 0;
-        for(int ID : members){
-            membersToGet.add(ID);
+        return info.getDisplayName();
+    }
 
-            num++;
+    /**
+     * Get the name of a list of conversation
+     *
+     * @param list The list of conversations to process
+     * @return TRUE if we could get all conversations name / FALSE else
+     */
+    public boolean getConversationsDisplayName(ArrayList<ConversationInfo> list){
 
-            if(num > 3)
-                break;
-        }
 
-        //Get information about the users
-        ArrayMap<Integer, UserInfo> users =
-                new GetUsersHelper(mContext, dbHelper).getMultiple(membersToGet);
+        ArrayList<Integer> usersToFetch = new ArrayList<>();
 
-        if(users == null)
-            return ""; //No name by default
+        for(ConversationInfo c : list){
 
-        String name = "";
+            if(c.hasName())
+                c.setDisplayName(c.getName());
 
-        int count = 0;
-        for(Integer id : users.keySet()){
+            else {
 
-            //Do not display current user name
-            if(id == AccountUtils.getID(mContext))
-                continue;
+                int count = 0;
+                for(int userID : c.getMembers()){
 
-            if(users.get(id) != null){
+                    if(userID == AccountUtils.getID(mContext))
+                        continue;
 
-                if(count > 0)
-                    name += ", ";
+                    if(!usersToFetch.contains(userID))
+                        usersToFetch.add(userID);
 
-                name += users.get(id).getFullName();
-                count++;
+                    count++;
 
-                if(count > 3)
-                    break;
+                    if(count  > 2)
+                        break;
+                }
+
             }
         }
 
-        return name;
+        //Check if there is not anything to do more
+        if(usersToFetch.size() == 0)
+            return true;
+
+        ArrayMap<Integer, UserInfo> users = new GetUsersHelper(mContext).getMultiple(usersToFetch);
+
+        if(users == null)
+            return false;
+
+
+        for(ConversationInfo c : list){
+
+            if(c.hasName())
+                continue;
+
+            int count = 0;
+
+            StringBuilder name = new StringBuilder();
+
+            for(int userID : c.getMembers()){
+
+                if(!users.containsKey(userID) || users.get(userID) == null)
+                    continue;
+
+                if(count > 0)
+                    name.append(", ");
+
+                name.append(Objects.requireNonNull(users.get(userID)).getFullName());
+                count++;
+
+                if(count == 2)
+                    break;
+            }
+
+            c.setDisplayName(name.toString());
+        }
+
+        return true;
     }
 
     /**
@@ -219,14 +258,14 @@ public class ConversationsListHelper {
      * @return The name of the conversation / null in case of failure
      */
     @Nullable
-    public String getConversationName(int convID){
+    public String getConversationDisplayName(int convID){
 
-        ConversationsInfo info = getInfosSingle(convID, true);
+        ConversationInfo info = getInfoSingle(convID, true);
 
         if(info == null)
             return null;
 
-        return getDisplayName(info);
+        return getConversationDisplayName(info);
 
     }
 
@@ -264,16 +303,16 @@ public class ConversationsListHelper {
     public Integer create(String name, boolean follow, ArrayList<Integer> members){
 
         //Turn the list of members into a string
-        String members_str = "";
+        StringBuilder members_str = new StringBuilder();
         for(int id : members){
-            members_str += id + ",";
+            members_str.append(id).append(",");
         }
 
         //Make an API request
         APIRequest params = new APIRequest(mContext, "conversations/create");
         params.addString("name", name.equals("") ? "false" : name);
         params.addString("follow", follow ? "true" : "false");
-        params.addString("users", members_str);
+        params.addString("users", members_str.toString());
 
         //Perform the request
         try {
@@ -352,9 +391,9 @@ public class ConversationsListHelper {
      * @return The list of conversations
      */
     @Nullable
-    private ArrayList<ConversationsInfo> download(){
+    private ArrayList<ConversationInfo> download(){
 
-        ArrayList<ConversationsInfo> list = new ArrayList<>();
+        ArrayList<ConversationInfo> list = new ArrayList<>();
 
         try {
 
@@ -390,7 +429,7 @@ public class ConversationsListHelper {
      * @return Informations about the conversation in case of success / null else
      */
     @Nullable
-    private ConversationsInfo downloadSingle(int convID){
+    private ConversationInfo downloadSingle(int convID){
 
         //Perform an API request
         APIRequest params = new APIRequest(mContext,
@@ -419,9 +458,9 @@ public class ConversationsListHelper {
      * @return Conversation object or null in case of failure
      */
     @Nullable
-    private ConversationsInfo parseConversationJSON(@NonNull JSONObject obj){
+    private ConversationInfo parseConversationJSON(@NonNull JSONObject obj){
 
-        ConversationsInfo info = new ConversationsInfo();
+        ConversationInfo info = new ConversationInfo();
 
         try {
             //Get information about the conversation

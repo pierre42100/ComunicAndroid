@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Created by pierre on 12/9/17.
  */
 
-public class ConversationsInfo {
+public class ConversationInfo {
 
     /**
      * Values of the conversation

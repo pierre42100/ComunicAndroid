@@ -26,7 +26,7 @@ import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.models.ConversationInfo;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
@@ -315,16 +315,16 @@ public class UpdateConversationFragment extends Fragment {
             submitButton.setText(R.string.fragment_update_conversation_button_update);
 
             //Get informations about the conversation
-            new AsyncTask<Integer, Void, ConversationsInfo>(){
+            new AsyncTask<Integer, Void, ConversationInfo>(){
 
                 @Override
-                protected ConversationsInfo doInBackground(Integer... params) {
-                    return convListHelper.getInfosSingle(params[0], true);
+                protected ConversationInfo doInBackground(Integer... params) {
+                    return convListHelper.getInfoSingle(params[0], true);
                 }
 
                 @Override
-                protected void onPostExecute(ConversationsInfo conversationsInfo) {
-                    onGotConversationInfos(conversationsInfo);
+                protected void onPostExecute(ConversationInfo conversationInfo) {
+                    onGotConversationInfos(conversationInfo);
                 }
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, conversation_id);
         }
@@ -336,7 +336,7 @@ public class UpdateConversationFragment extends Fragment {
      *
      * @param infos Informations about a conversation, or null in case of failure
      */
-    private void onGotConversationInfos(@Nullable ConversationsInfo infos){
+    private void onGotConversationInfos(@Nullable ConversationInfo infos){
 
         //Check if the activity has been destroyed
         if(getActivity() == null)

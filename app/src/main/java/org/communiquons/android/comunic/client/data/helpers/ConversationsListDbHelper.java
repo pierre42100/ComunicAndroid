@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.communiquons.android.comunic.client.data.DatabaseContract.ConversationsListSchema;
-import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.models.ConversationInfo;
 
 import java.util.ArrayList;
 
@@ -46,7 +46,7 @@ public class ConversationsListDbHelper {
      * @param list The new list of conversation
      * @return TRUE for a success / FALSE else
      */
-    boolean update_list(ArrayList<ConversationsInfo> list){
+    boolean update_list(ArrayList<ConversationInfo> list){
 
         //Remove any old list of conversations
         delete_all();
@@ -55,7 +55,7 @@ public class ConversationsListDbHelper {
 
         //Process the list of conversation
         boolean success = true;
-        for(ConversationsInfo info : list){
+        for(ConversationInfo info : list){
             if(!insert(db, info))
                 success = false;
         }
@@ -72,7 +72,7 @@ public class ConversationsListDbHelper {
      * @return Information about the conversation (if available locally) or null in case of failure
      */
     @Nullable
-    ConversationsInfo getInfos(int convID){
+    ConversationInfo getInfo(int convID){
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
         //Prepare database request
@@ -92,7 +92,7 @@ public class ConversationsListDbHelper {
         //Perform database request
         Cursor c = db.query(table, columns, selection, selectionArgs, null, null, null);
 
-        ConversationsInfo infos = null;
+        ConversationInfo infos = null;
 
         //Check for result
         if(c.getCount() != 0){
@@ -144,7 +144,7 @@ public class ConversationsListDbHelper {
      * @param info Informations about the conversation to insert
      * @return TRUE for a success / False else
      */
-    private boolean insert(@NonNull SQLiteDatabase db, @NonNull ConversationsInfo info){
+    private boolean insert(@NonNull SQLiteDatabase db, @NonNull ConversationInfo info){
 
         ContentValues values = getContentValues(info);
 
@@ -158,7 +158,7 @@ public class ConversationsListDbHelper {
      * @param info Information about a conversation
      * @return The values of the conservation
      */
-    private ContentValues getContentValues(ConversationsInfo info){
+    private ContentValues getContentValues(ConversationInfo info){
         ContentValues values = new ContentValues();
 
         values.put(ConversationsListSchema.COLUMN_NAME_CONVERSATION_ID, info.getID());
@@ -187,9 +187,9 @@ public class ConversationsListDbHelper {
      * @param c The cursor
      * @return The Generated conversation information
      */
-    private ConversationsInfo getConvObj(Cursor c){
+    private ConversationInfo getConvObj(Cursor c){
 
-        ConversationsInfo infos = new ConversationsInfo();
+        ConversationInfo infos = new ConversationInfo();
 
         //Get the values
         infos.setID(c.getInt(c.getColumnIndexOrThrow(

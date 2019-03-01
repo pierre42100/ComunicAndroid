@@ -210,7 +210,7 @@ public class CallsHelper extends BaseHelper {
 
         //Get call name
         String name = new ConversationsListHelper(getContext())
-                .getConversationName(call.getConversationID());
+                .getConversationDisplayName(call.getConversationID());
 
         if(name == null)
             return null;

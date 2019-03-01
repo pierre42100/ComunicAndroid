@@ -1,14 +1,11 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.ArrayMap;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -21,15 +18,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.data.utils.AccountUtils;
+import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.data.models.ConversationsInfo;
+import org.communiquons.android.comunic.client.data.models.ConversationInfo;
+import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationsListAdapter;
-import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
+import org.communiquons.android.comunic.client.ui.asynctasks.GetConversationsListTask;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 import org.communiquons.android.comunic.client.ui.listeners.updateConversationListener;
 
@@ -44,17 +40,17 @@ import java.util.ArrayList;
  * Created by pierre on 12/6/17.
  */
 
-public class ConversationsListFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class ConversationsListFragment extends AbstractFragment implements AdapterView.OnItemClickListener {
 
     /**
      * Debug tag
      */
-    private String TAG = "ConversationsListFrag";
+    private static final String TAG = ConversationsListFragment.class.getSimpleName();
 
     /**
      * The list of conversations
      */
-    private ArrayList<ConversationsInfo> convList;
+    private ArrayList<ConversationInfo> convList;
 
     /**
      * User information helper
@@ -94,7 +90,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
     /**
      * Loading progress bar
      */
-    private ProgressBar progressBar;
+    private ProgressBar mProgressBar;
 
     @Nullable
     @Override
@@ -109,7 +105,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
         //Database helper
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
 
-        //Instantiate the user informations helper
+        //Instantiate the user information helper
         userHelper = new GetUsersHelper(getActivity(), dbHelper);
 
         //Create the conversation list helper
@@ -119,7 +115,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
         conversationsListView = view.findViewById(R.id.fragment_conversationslist_list);
 
         //Get progress bar wheel
-        progressBar = view.findViewById(R.id.fragment_conversationslist_progressbar);
+        mProgressBar = view.findViewById(R.id.fragment_conversationslist_progressbar);
 
         //Get no conversation notice
         mNoConversationNotice = view.findViewById(R.id.no_conversation_notice);
@@ -139,12 +135,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
 
         //Set create conversation button listener
         view.findViewById(R.id.fragment_conversationslist_create)
-                .setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateConversationListener.createConversation();
-            }
-        });
+                .setOnClickListener(v -> updateConversationListener.createConversation());
     }
 
     @Override
@@ -162,120 +153,13 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
     private void refresh_conversations_list(){
 
         //Display loading wheel
-        progressBar.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
 
         //Get the list of conversations
-        new AsyncTask<Void, Void, ArrayList<ConversationsInfo>>(){
-            @Override
-            protected ArrayList<ConversationsInfo> doInBackground(Void... params) {
-
-                //Get the list of conversations
-                ArrayList<ConversationsInfo> list = conversationsListHelper.get();
-                process_conversations_list(list);
-                return list;
-
-            }
-
-            @Override
-            protected void onPostExecute(ArrayList<ConversationsInfo> list) {
-                if(getActivity() != null)
-                    display_conversations_list(list);
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-    }
-
-    /**
-     * Process the conversation list
-     *
-     * This method must be called on a separate thread
-     *
-     * @param list The list of conversations
-     */
-    private void process_conversations_list(ArrayList<ConversationsInfo> list){
-
-        //Check if got the list
-        if(list == null){
-            return; //Nothing to be done
-        }
-
-        //Process the list of conversation
-        ArrayList<Integer> usersToGet = new ArrayList<>();
-        ArrayList<ConversationsInfo> convToUpdateName = new ArrayList<>();
-        for(ConversationsInfo conv : list){
-
-            //Set the displayed names of the conversation
-            if(conv.hasName()){
-                //Use the name of the conversation if available
-                conv.setDisplayName(conv.getName());
-            }
-            else {
-
-                //Add the first users of the conversations to the users for which we need info
-                for(int i = 0; i < 2; i++){
-
-                    if(conv.getMembers().size() <= i)
-                        break;
-
-                    usersToGet.add(conv.getMembers().get(i));
-
-                }
-
-                convToUpdateName.add(conv);
-            }
-        }
-
-        //Check if we have user to get information about
-        if(usersToGet.size() > 0){
-
-            //Get information about the users
-            ArrayMap<Integer, UserInfo> usersInfo = userHelper.getMultiple(usersToGet);
-
-            //Check for errors
-            if(usersInfo == null){
-                Log.e(TAG, "Couldn't get information about some users !");
-                return;
-            }
-
-            //Process the conversation that have to be processed
-            for(ConversationsInfo conv : convToUpdateName){
-
-                //Get the name of the first members
-                String conversationName = "";
-                int count = 0;
-                for(int userID : conv.getMembers()){
-
-                    //Do not display current user name
-                    if(userID == AccountUtils.getID(getActivity()))
-                        continue;
-
-                    if(usersInfo.containsKey(userID)){
-
-                        UserInfo userInfo = usersInfo.get(userID);
-
-                        if(count > 0){
-                            conversationName += ", ";
-                        }
-
-                        if(userInfo != null){
-                            conversationName += userInfo.getFullName();
-                            count++;
-                        }
-
-                    }
-
-                    if(count == 2)
-                        break;
-                }
-
-                if(conv.getMembers().size() > 3)
-                    conversationName += "...";
-
-                //Update the displayed name of the conversation
-                conv.setDisplayName(conversationName);
-            }
-        }
-
+        GetConversationsListTask getConversationsListTask = new GetConversationsListTask(getActivity());
+        getConversationsListTask.setOnPostExecuteListener(this::display_conversations_list);
+        getConversationsListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        getTasksManager().addTask(getConversationsListTask);
     }
 
     /**
@@ -283,7 +167,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
      *
      * @param list The list to display
      */
-    public void display_conversations_list(ArrayList<ConversationsInfo> list){
+    public void display_conversations_list(ArrayList<ConversationInfo> list){
 
         //Check if we got a list
         if(list == null) {
@@ -360,7 +244,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         //Get the clicked conversation
-        ConversationsInfo conv = convList.get(position);
+        ConversationInfo conv = convList.get(position);
 
         //Open the specified conversation
         openConvListener.openConversation(conv.getID());
@@ -373,7 +257,7 @@ public class ConversationsListFragment extends Fragment implements AdapterView.O
      * @param show Set wether the progress bar should be shown or not
      */
     private void display_progress_bar(boolean show){
-        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     /**
