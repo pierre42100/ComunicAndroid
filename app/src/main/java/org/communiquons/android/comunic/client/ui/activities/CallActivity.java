@@ -5,10 +5,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -22,12 +24,14 @@ import org.communiquons.android.comunic.client.data.models.CallMember;
 import org.communiquons.android.comunic.client.data.models.CallResponse;
 import org.communiquons.android.comunic.client.data.models.CallsConfiguration;
 import org.communiquons.android.comunic.client.data.utils.AccountUtils;
+import org.communiquons.android.comunic.client.data.utils.StringsUtils;
 import org.communiquons.android.comunic.client.ui.arrays.CallPeersConnectionsList;
 import org.communiquons.android.comunic.client.ui.asynctasks.GetCallInformationTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.HangUpCallTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.RespondToCallTask;
 import org.communiquons.android.comunic.client.ui.models.CallPeerConnection;
 import org.communiquons.android.comunic.client.ui.receivers.PendingCallsBroadcastReceiver;
+import org.communiquons.android.comunic.client.ui.utils.FilesUtils;
 import org.communiquons.android.comunic.client.ui.utils.PermissionsUtils;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.signalexchangerclient.SignalExchangerCallback;
@@ -43,11 +47,16 @@ import org.webrtc.SessionDescription;
 import org.webrtc.StatsReport;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
+import org.webrtc.VideoFileRenderer;
 import org.webrtc.VideoFrame;
 import org.webrtc.VideoSink;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
+import static org.communiquons.android.comunic.client.data.utils.TimeUtils.time;
+import static org.communiquons.android.comunic.client.ui.Constants.EXTERNAL_STORAGE.VIDEO_CALLS_STORAGE_DIRECTORY;
 import static org.webrtc.RendererCommon.ScalingType.SCALE_ASPECT_FILL;
 
 /**
@@ -96,6 +105,13 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     private boolean mIsCameraStopped = false;
     private boolean mIsMicrophoneStopped = false;
 
+
+    /**
+     * Specify whether we are recording video or not
+     */
+    private boolean mIsRecordingVideo = false;
+    private VideoFileRenderer mVideoFileRenderer;
+
     /**
      * Connections list
      */
@@ -119,6 +135,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     private View mButtonsView;
     private ImageButton mStopCameraButton;
     private ImageButton mStopMicrophoneButton;
+    private ImageButton mMoreActionsButton;
 
 
     @Override
@@ -203,6 +220,9 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
 
         mStopMicrophoneButton = findViewById(R.id.stopMicrophoneButton);
         mStopMicrophoneButton.setOnClickListener(v -> toggleStopMicrophone());
+
+        mMoreActionsButton = findViewById(R.id.moreActionsButton);
+        mMoreActionsButton.setOnClickListener(v -> showMoreActions());
     }
 
 
@@ -337,6 +357,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         mList.add(callPeer);
 
         EglBase eglBase = EglBase.create();
+        callPeer.setEglRenderer(eglBase);
 
         //Create peer connection
         PeerConnectionClient peerConnectionClient = new PeerConnectionClient(
@@ -403,6 +424,12 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         callPeer.getRemoteSinks().add(remoteProxyRenderer);
         callPeer.setRemoteProxyRenderer(remoteProxyRenderer);
 
+
+        ProxyVideoSink recordProxyVideoSink = new ProxyVideoSink();
+        callPeer.getRemoteSinks().add(recordProxyVideoSink);
+        callPeer.setRecordProxyRenderer(recordProxyVideoSink);
+
+
         //Start connection
         peerConnectionClient.createPeerConnection(
                 mLocalProxyVideoSink,
@@ -422,6 +449,9 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
 
         mHangUpButton.setVisibility(View.GONE);
         mStopped = true;
+
+        //Stop recording video
+        stopVideoRecord();
 
         if(mRefreshCallInformation != null)
             mRefreshCallInformation.interrupt();
@@ -448,6 +478,11 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         CallPeerConnection callPeer = mList.find(member);
         if(callPeer == null)
             return;
+
+        //Check if it is the first peer, if yes stop recording
+        if(mList.get(0) == callPeer)
+            stopVideoRecord();
+
 
         ((ProxyVideoSink)callPeer.getRemoteProxyRenderer()).setTarget(null);
 
@@ -500,6 +535,87 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         mButtonsView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
+    private void showMoreActions(){
+
+        PopupMenu popupMenu = new PopupMenu(this, mMoreActionsButton);
+        popupMenu.inflate(R.menu.menu_call_more_actions);
+
+        popupMenu.getMenu().findItem(
+            mIsRecordingVideo ? R.id.action_record_video : R.id.action_stop_record_video
+        ).setVisible(false);
+
+        popupMenu.setOnMenuItemClickListener(this::onChooseAction);
+        popupMenu.show();
+    }
+
+    private boolean onChooseAction(MenuItem item){
+
+        if(item.getItemId() == R.id.action_record_video){
+            startVideoRecord();
+            return true;
+        }
+
+        if(item.getItemId() == R.id.action_stop_record_video){
+            stopVideoRecord();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Start to record video
+     *
+     * Warning ! There is currently a technical limitation : only the first connection will
+     * be recorded ! And as soon as a connection is closed, the record is stopped
+     */
+    private void startVideoRecord(){
+
+        if(mList.size() == 0){
+            Toast.makeText(this, R.string.err_call_no_peer_connected, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        CallPeerConnection callPeer = mList.get(0);
+
+        //Create target file
+        String filename = StringsUtils.FormatDateTime(time()).replace(":", "-") + ".mp4";
+        File file = FilesUtils.GetExternalStorageFile(VIDEO_CALLS_STORAGE_DIRECTORY, filename);
+
+        if(file == null || file.exists()){
+            Toast.makeText(this, R.string.err_can_not_create_record_file, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Create video file renderer
+        try {
+            mVideoFileRenderer = new VideoFileRenderer(file.getAbsolutePath(),
+                    640, 480,
+                    callPeer.getEglRenderer().getEglBaseContext());
+
+
+            ((ProxyVideoSink)callPeer.getRecordProxyRenderer()).
+                    setTarget(mVideoFileRenderer);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, R.string.err_initialize_video_call_recording, Toast.LENGTH_SHORT).show();
+        }
+
+        mIsRecordingVideo = true;
+    }
+
+    private void stopVideoRecord(){
+
+        if(!mIsRecordingVideo)
+            return;
+
+        ProxyVideoSink recordVideoSink =
+                (ProxyVideoSink) mList.get(0).getRecordProxyRenderer();
+        mIsRecordingVideo = false;
+        recordVideoSink.setTarget(null);
+        mVideoFileRenderer.release();
+    }
 
     //Based on https://github.com/vivek1794/webrtc-android-codelab
     @Nullable

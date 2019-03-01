@@ -137,4 +137,21 @@ public final class Constants {
         public static final String PREFERENCE_ACCELERATE_NOTIFICATIONS_REFRESH
                 = "accelerate_notifications_refresh";
     }
+
+
+    /**
+     * External storage directory
+     */
+    public final class EXTERNAL_STORAGE {
+
+        /**
+         * Main storage directory
+         */
+        public static final String MAIN_DIRECTORY_NAME = "Comunic";
+
+        /**
+         * Video calls directory
+         */
+        public static final String VIDEO_CALLS_STORAGE_DIRECTORY = "VideoCalls";
+    }
 }

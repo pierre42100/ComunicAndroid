@@ -57,13 +57,25 @@ public class StringsUtils {
     }
 
     /**
-     * Format timestamp to string
+     * Format timestamp to string (date only)
      *
      * @param time The time to format
      * @return Generated string
      */
     public static String FormatDate(int time){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd",
+                Locale.getDefault());
+        return simpleDateFormat.format((long)1000*time);
+    }
+
+    /**
+     * Format timestamp to string (date + time)
+     *
+     * @param time The time to format
+     * @return Generated string
+     */
+    public static String FormatDateTime(int time){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
                 Locale.getDefault());
         return simpleDateFormat.format((long)1000*time);
     }

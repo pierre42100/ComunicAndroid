@@ -2,6 +2,7 @@ package org.communiquons.android.comunic.client.ui.models;
 
 import org.appspot.apprtc.PeerConnectionClient;
 import org.communiquons.android.comunic.client.data.models.CallMember;
+import org.webrtc.EglBase;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoSink;
 
@@ -19,7 +20,9 @@ public class CallPeerConnection {
     private PeerConnectionClient peerConnectionClient;
     private boolean connected = false;
     private VideoSink remoteProxyRenderer;
+    private VideoSink recordProxyRenderer;
     private ArrayList<VideoSink> remoteSinks = new ArrayList<>();
+    private EglBase eglRenderer;
 
     //Views
     private SurfaceViewRenderer mRemoteViewView;
@@ -74,5 +77,21 @@ public class CallPeerConnection {
 
     public void setRemoteProxyRenderer(VideoSink remoteProxyRenderer) {
         this.remoteProxyRenderer = remoteProxyRenderer;
+    }
+
+    public EglBase getEglRenderer() {
+        return eglRenderer;
+    }
+
+    public void setEglRenderer(EglBase eglRenderer) {
+        this.eglRenderer = eglRenderer;
+    }
+
+    public VideoSink getRecordProxyRenderer() {
+        return recordProxyRenderer;
+    }
+
+    public void setRecordProxyRenderer(VideoSink recordProxyRenderer) {
+        this.recordProxyRenderer = recordProxyRenderer;
     }
 }

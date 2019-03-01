@@ -338,4 +338,9 @@
     <string name="err_save_image_in_gallery">Could not save the image in the gallery!</string>
     <string name="success_save_image_in_gallery">Successfully saved the image into the gallery!</string>
     <string name="err_missing_call_config">Missing call configuration!</string>
+    <string name="action_record_video">Record video</string>
+    <string name="action_stop_record_video">Stop video record</string>
+    <string name="err_call_no_peer_connected">This call is not connected to any peer!</string>
+    <string name="err_can_not_create_record_file">Can not create record file!</string>
+    <string name="err_initialize_video_call_recording">Could not initialize video call recording!</string>
 </resources>
