@@ -168,14 +168,11 @@ public class UpdateConversationFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Get database helper instance
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
-
         //Get User helper
         usersHelper = new GetUsersHelper(Objects.requireNonNull(getActivity()));
 
         //Get conversation list helper
-        convListHelper = new ConversationsListHelper(getActivity(), dbHelper);
+        convListHelper = new ConversationsListHelper(getActivity());
 
         //Get conversation opener
         try {

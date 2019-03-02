@@ -175,7 +175,7 @@ public class MainActivity extends BaseActivity implements
         dbHelper = DatabaseHelper.getInstance(this);
 
         //Initialize conversation list helper
-        conversationsListHelper = new ConversationsListHelper(this, dbHelper);
+        conversationsListHelper = new ConversationsListHelper(this);
 
         //Use navigation bar
         getSupportActionBar().hide();

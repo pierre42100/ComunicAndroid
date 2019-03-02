@@ -39,30 +39,13 @@ public class ConversationsListHelper extends BaseHelper {
     private ConversationsListDbHelper convDBHelper;
 
     /**
-     * Database helper
-     */
-    private DatabaseHelper dbHelper;
-
-    /**
-     * The constructor of the class
-     *
-     * @param context The context of execution of the application
-     * @param dbHelper Database helper
-     */
-    public ConversationsListHelper(Context context, DatabaseHelper dbHelper){
-        super(context);
-        
-        convDBHelper = new ConversationsListDbHelper(dbHelper);
-        this.dbHelper = dbHelper;
-    }
-
-    /**
      * The constructor of the class
      *
      * @param context The context of execution of the application
      */
     public ConversationsListHelper(Context context){
-        this(context, DatabaseHelper.getInstance(context));
+        super(context);
+        convDBHelper = new ConversationsListDbHelper(context);
     }
 
     /**

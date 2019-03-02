@@ -208,14 +208,11 @@ public class ConversationFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Database helper
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
-
         //Set conversation message helper
         convMessHelper = new ConversationMessagesHelper(getActivity());
 
         //Set conversation list helper
-        convListHelper = new ConversationsListHelper(getActivity(), dbHelper);
+        convListHelper = new ConversationsListHelper(getActivity());
 
         //Get the conversation ID
         assert getArguments() != null;

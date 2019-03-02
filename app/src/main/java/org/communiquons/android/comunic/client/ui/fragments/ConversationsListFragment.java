@@ -108,14 +108,11 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Database helper
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
-
         //Instantiate the user information helper
         userHelper = new GetUsersHelper(Objects.requireNonNull(getActivity()));
 
         //Create the conversation list helper
-        conversationsListHelper = new ConversationsListHelper(getActivity(), dbHelper);
+        conversationsListHelper = new ConversationsListHelper(getActivity());
 
         //Get the conversation target list view
         conversationsListView = view.findViewById(R.id.fragment_conversationslist_list);

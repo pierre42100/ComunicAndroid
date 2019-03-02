@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
@@ -51,10 +52,10 @@ class ConversationsListDbHelper {
     /**
      * Create the conversation database helper
      *
-     * @param databaseHelper Object pointing on database helper
+     * @param context Application context
      */
-    ConversationsListDbHelper(@NonNull DatabaseHelper databaseHelper){
-        this.databaseHelper = databaseHelper;
+    ConversationsListDbHelper(@NonNull Context context){
+        this.databaseHelper = DatabaseHelper.getInstance(context);
     }
 
 
