@@ -23,12 +23,12 @@ import java.util.ArrayList;
  * Created by pierre on 12/16/17.
  */
 
-public class ConversationMessagesHelper {
+public class ConversationMessagesHelper extends BaseHelper {
 
     /**
      * Debug tag
      */
-    private static final String TAG = "ConversationMessagesHel";
+    private static final String TAG = ConversationMessagesHelper.class.getSimpleName();
 
     /**
      * Conversations messages database helper
@@ -36,29 +36,15 @@ public class ConversationMessagesHelper {
     private ConversationMessagesDbHelper mDbHelper;
 
     /**
-     * Context of execution of the application
-     */
-    private Context mContext;
-
-    /**
      * Constructor of the helper
      *
      * @param context The context of the application
      */
     public ConversationMessagesHelper(Context context){
-        this(context.getApplicationContext(), DatabaseHelper.getInstance(context));
+        super(context);
+        mDbHelper = new ConversationMessagesDbHelper(context);
     }
-
-    /**
-     * Public constructor of the helper
-     *
-     * @param context The context of execution of the application
-     * @param dbHelper Database helper associated with the context
-     */
-    public ConversationMessagesHelper(Context context, DatabaseHelper dbHelper){
-        mContext = context;
-        mDbHelper = new ConversationMessagesDbHelper(dbHelper);
-    }
+    
 
     /**
      * Get the latest messages of a conversation
@@ -98,7 +84,7 @@ public class ConversationMessagesHelper {
     public boolean sendMessage(NewConversationMessage message){
 
         //Make an API request
-        APIFileRequest params = new APIFileRequest(mContext,
+        APIFileRequest params = new APIFileRequest(getContext(),
                 "conversations/sendMessage");
         params.addInt("conversationID", message.getConversationID());
         params.addString("message", message.getMessage());
@@ -209,7 +195,7 @@ public class ConversationMessagesHelper {
     private ArrayList<ConversationMessage> downloadNew(int conversationID, int last_message_id){
 
         //Prepare a request on the API
-        APIRequest params = new APIRequest(mContext,
+        APIRequest params = new APIRequest(getContext(),
                 "conversations/refresh_single");
         params.addString("conversationID", ""+conversationID);
         params.addString("last_message_id", ""+last_message_id);
@@ -254,7 +240,7 @@ public class ConversationMessagesHelper {
         ArrayList<ConversationMessage> list = new ArrayList<>();
 
         //Prepare a request over the server
-        APIRequest req = new APIRequest(mContext, "conversations/get_older_messages");
+        APIRequest req = new APIRequest(getContext(), "conversations/get_older_messages");
         req.addInt("conversationID", conversationID);
         req.addInt("oldest_message_id", oldestMessageID);
         req.addInt("limit", limit);
@@ -291,7 +277,7 @@ public class ConversationMessagesHelper {
     public boolean updateMessage(ConversationMessage message){
 
         //Perform the request over the API
-        APIRequest request = new APIRequest(mContext, "conversations/updateMessage");
+        APIRequest request = new APIRequest(getContext(), "conversations/updateMessage");
         request.addInt("messageID", message.getId());
 
         if(message.hasContent())
@@ -317,7 +303,7 @@ public class ConversationMessagesHelper {
     public boolean deleteMessage(int messageID){
 
         //Make a request on the server
-        APIRequest request = new APIRequest(mContext, "conversations/deleteMessage");
+        APIRequest request = new APIRequest(getContext(), "conversations/deleteMessage");
         request.addInt("messageID", messageID);
 
         try {

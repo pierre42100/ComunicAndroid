@@ -212,7 +212,7 @@ public class ConversationFragment extends Fragment
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
 
         //Set conversation message helper
-        convMessHelper = new ConversationMessagesHelper(getActivity(), dbHelper);
+        convMessHelper = new ConversationMessagesHelper(getActivity());
 
         //Set conversation list helper
         convListHelper = new ConversationsListHelper(getActivity(), dbHelper);
@@ -270,19 +270,11 @@ public class ConversationFragment extends Fragment
         userID = AccountUtils.getID(getActivity());
 
         //Initialize toolbar
-        mAppBar.addBackButton(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.goBackward(getActivity());
-            }
-        });
+        mAppBar.addBackButton(v -> MainActivity.goBackward(Objects.requireNonNull(getActivity())));
 
-        mAppBar.addButton(R.drawable.ic_settings, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity)getActivity()).updateConversation(conversation_id);
-            }
-        });
+        mAppBar.addButton(R.drawable.ic_settings,
+                v -> ((MainActivity)Objects.requireNonNull(getActivity()))
+                        .updateConversation(conversation_id));
 
 
         //Create the adapter
@@ -304,41 +296,25 @@ public class ConversationFragment extends Fragment
         new_message_progress_bar = view.findViewById(R.id.fragment_conversation_newmessage_loading);
 
         //Make send button lives
-        send_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                send_message();
-            }
-        });
+        send_button.setOnClickListener(v -> send_message());
 
         //Make message input act like send button on enter key press
-        new_message_content.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
+        new_message_content.setOnKeyListener((v, keyCode, event) -> {
 
-                if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                    send_message();
-                    return false;
-                }
-
-
+            if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                send_message();
                 return false;
             }
+
+
+            return false;
         });
 
         //Make pick image button lives
-        pick_image_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pick_image();
-            }
-        });
-        pick_image_button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                confirm_remove_picked_image();
-                return true;
-            }
+        pick_image_button.setOnClickListener(v -> pick_image());
+        pick_image_button.setOnLongClickListener(v -> {
+            confirm_remove_picked_image();
+            return true;
         });
 
         //Hide new message sending wheel
@@ -360,7 +336,8 @@ public class ConversationFragment extends Fragment
         new Thread(refreshRunnable).start();
 
         //Update conversation title
-        setTitle(UiUtils.getString(getActivity(), R.string.fragment_conversation_title));
+        setTitle(UiUtils.getString(Objects
+                .requireNonNull(getActivity()), R.string.fragment_conversation_title));
         MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_conversations);
 
 
@@ -533,13 +510,9 @@ public class ConversationFragment extends Fragment
 
             mHasCallButton = true;
 
-            mAppBar.addButton(R.drawable.ic_call, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((OnOpenCallListener)Objects.requireNonNull(getActivity()))
-                            .createCallForConversation(conversation_id);
-                }
-            });
+            mAppBar.addButton(R.drawable.ic_call,
+                    v -> ((OnOpenCallListener)Objects.requireNonNull(getActivity()))
+                        .createCallForConversation(conversation_id));
         }
 
     }
@@ -563,13 +536,7 @@ public class ConversationFragment extends Fragment
 
                 .setNegativeButton(R.string.conversation_message_remove_image_popup_cancel, null)
 
-                .setPositiveButton(R.string.conversation_message_remove_image_popup_confirm,
-                        new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        remove_picked_image();
-                    }
-                })
+                .setPositiveButton(R.string.conversation_message_remove_image_popup_confirm, (dialog, which) -> remove_picked_image())
 
                 .show();
     }
@@ -586,7 +553,8 @@ public class ConversationFragment extends Fragment
             try {
 
                 //Get new message bitmap
-                new_message_bitmap = BitmapUtils.IntentResultToBitmap(getActivity(), data);
+                new_message_bitmap = BitmapUtils.IntentResultToBitmap(
+                        Objects.requireNonNull(getActivity()), data);
 
                 //Check for errors
                 if(new_message_bitmap == null){
@@ -617,8 +585,8 @@ public class ConversationFragment extends Fragment
 
         //Reset image button
         pick_image_button.setImageBitmap(null);
-        pick_image_button.setImageDrawable(UiUtils.getDrawable(getActivity(),
-                android.R.drawable.ic_menu_gallery));
+        pick_image_button.setImageDrawable(UiUtils.getDrawable(
+                Objects.requireNonNull(getActivity()), android.R.drawable.ic_menu_gallery));
     }
 
     /**
@@ -651,12 +619,7 @@ public class ConversationFragment extends Fragment
         //Send the message
         unsetSendMessageTask();
         mSendConversationMessageTask = new SendConversationMessageTask(getActivity());
-        mSendConversationMessageTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
-            @Override
-            public void OnPostExecute(Boolean success) {
-                send_callback(success);
-            }
-        });
+        mSendConversationMessageTask.setOnPostExecuteListener(this::send_callback);
         mSendConversationMessageTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, newMessage);
     }
 
@@ -845,13 +808,7 @@ public class ConversationFragment extends Fragment
                 .setMessage(R.string.dialog_delete_conversation_message_message)
                 .setNegativeButton(R.string.dialog_delete_conversation_message_cancel, null)
 
-                .setPositiveButton(R.string.dialog_delete_conversation_message_confirm,
-                        new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteConversationMessage(pos);
-                    }
-                })
+                .setPositiveButton(R.string.dialog_delete_conversation_message_confirm, (dialog, which) -> deleteConversationMessage(pos))
 
                 .show();
     }
@@ -868,12 +825,9 @@ public class ConversationFragment extends Fragment
                 .setTitle(R.string.dialog_edit_conversation_message_content_title)
                 .setView(view)
                 .setNegativeButton(R.string.dialog_edit_conversation_message_content_cancel, null)
-                .setPositiveButton(R.string.dialog_edit_conversation_message_content_update, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        update_conversation_message(pos, ""+input.getText());
-                    }
-                }).show();
+                .setPositiveButton(R.string.dialog_edit_conversation_message_content_update,
+                        (dialog, which) ->
+                                update_conversation_message(pos, ""+input.getText())).show();
 
     }
 
@@ -888,12 +842,8 @@ public class ConversationFragment extends Fragment
         unsetPendingDeleteTasksCallback();
 
         mDeleteMessageAsyncTask = new DeleteConversationMessageTask(getActivity());
-        mDeleteMessageAsyncTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
-            @Override
-            public void OnPostExecute(Boolean result) {
-                deleteConversationMessagesCallback(pos, result);
-            }
-        });
+        mDeleteMessageAsyncTask.setOnPostExecuteListener(
+                result -> deleteConversationMessagesCallback(pos, result));
 
 
         mDeleteMessageAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
@@ -950,12 +900,9 @@ public class ConversationFragment extends Fragment
         message.setContent(content);
 
         mUpdateConversationMessageContentTask = new UpdateConversationMessageContentTask(getActivity());
-        mUpdateConversationMessageContentTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<Boolean>() {
-            @Override
-            public void OnPostExecute(Boolean aBoolean) {
-                if(getActivity() != null)
-                    updateConversationMessageCallback(aBoolean);
-            }
+        mUpdateConversationMessageContentTask.setOnPostExecuteListener(success -> {
+            if(getActivity() != null)
+                updateConversationMessageCallback(success);
         });
         mUpdateConversationMessageContentTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, message);
     }

@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
@@ -23,7 +24,7 @@ class ConversationMessagesDbHelper {
     /**
      * Debug tag
      */
-    private static final String TAG = "ConversationMessagesDbH";
+    private static final String TAG = ConversationMessagesDbHelper.class.getSimpleName();
 
     /**
      * Database helper object
@@ -50,10 +51,10 @@ class ConversationMessagesDbHelper {
     /**
      * Class constructor
      *
-     * @param dbHelper Database helper
+     * @param context Application context
      */
-    ConversationMessagesDbHelper(@NonNull DatabaseHelper dbHelper){
-        this.dbHelper = dbHelper;
+    ConversationMessagesDbHelper(@NonNull Context context){
+        this.dbHelper = DatabaseHelper.getInstance(context);
     }
 
 
