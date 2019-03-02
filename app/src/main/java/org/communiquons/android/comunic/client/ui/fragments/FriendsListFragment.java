@@ -55,11 +55,6 @@ public class FriendsListFragment extends AbstractFragment implements OnFriendLis
     private Context mContext;
 
     /**
-     * Get user helper
-     */
-    private GetUsersHelper mUsersHelper;
-
-    /**
      * The current list of friends
      */
     private FriendsList mList;
@@ -113,9 +108,6 @@ public class FriendsListFragment extends AbstractFragment implements OnFriendLis
 
         //Create friend list helper object
         mFriendsHelper = new FriendsListHelper(DatabaseHelper.getInstance(getActivity()), mContext);
-
-        //Create get user helper
-        mUsersHelper = new GetUsersHelper(mContext);
 
         //Cast activity to mConvOpener
         try {
