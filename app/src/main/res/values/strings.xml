@@ -343,4 +343,5 @@
     <string name="err_call_no_peer_connected">This call is not connected to any peer!</string>
     <string name="err_can_not_create_record_file">Can not create record file!</string>
     <string name="err_initialize_video_call_recording">Could not initialize video call recording!</string>
+    <string name="youtube_movie">YouTube Movie</string>
 </resources>

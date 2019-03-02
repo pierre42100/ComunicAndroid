@@ -436,6 +436,11 @@ public class PostsHelper {
         post.setNumberLike(json.getInt("likes"));
         post.setLiking(json.getBoolean("userlike"));
 
+
+        //Get file path (if any)
+        if(json.getString("file_path") != null)
+            post.setFilePath(json.getString("file_path"));
+
         //Get file path url (if any)
         if(json.getString("file_path_url") != null){
             post.setFile_path_url(json.getString("file_path_url"));
@@ -523,6 +528,9 @@ public class PostsHelper {
 
             case "survey":
                 return PostTypes.SURVEY;
+
+            case "youtube":
+                return PostTypes.YOUTUBE;
 
             default:
                 return PostTypes.UNKNOWN;

@@ -7,6 +7,13 @@ package org.communiquons.android.comunic.client.ui;
  */
 public final class Constants {
 
+
+    /**
+     * YouTube videos prefix
+     */
+    public static final String YOUTUBE_VIDEOS_URL_PREFIX = "https://youtube.com/watch?v=";
+
+
     /**
      * Intents request codes
      */

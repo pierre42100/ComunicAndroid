@@ -344,4 +344,5 @@
     <string name="err_call_no_peer_connected">Cet appel n\'est relié à aucun pair !</string>
     <string name="err_can_not_create_record_file">Impossible de créer le fichier d\'enregistrement !</string>
     <string name="err_initialize_video_call_recording">Une erreur a survenue lors de l\'initialisation de l\'enregistrement vidéo !</string>
+    <string name="youtube_movie">Vidéo YouTube</string>
 </resources>

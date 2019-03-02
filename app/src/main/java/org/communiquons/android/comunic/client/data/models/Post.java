@@ -41,6 +41,7 @@ public class Post {
     private ArrayList<Comment> comments_list;
 
     //Files specific
+    private String file_path;
     private String file_path_url;
 
     //Movie
@@ -196,6 +197,15 @@ public class Post {
      */
     public boolean canUpdate(){
         return  getUser_access_level() == PostUserAccess.FULL_ACCESS;
+    }
+
+    //Get and set file path
+    public String getFilePath() {
+        return file_path;
+    }
+
+    public void setFilePath(String file_path) {
+        this.file_path = file_path;
     }
 
     //Set and get file path url

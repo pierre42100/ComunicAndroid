@@ -45,6 +45,11 @@ public enum PostTypes {
     SURVEY,
 
     /**
+     * YouTube video
+     */
+    YOUTUBE,
+
+    /**
      * Unknown type
      */
     UNKNOWN

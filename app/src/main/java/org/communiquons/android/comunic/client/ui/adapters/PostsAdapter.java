@@ -34,6 +34,7 @@ import org.communiquons.android.comunic.client.ui.views.PDFLinkButtonView;
 import org.communiquons.android.comunic.client.ui.views.SurveyView;
 import org.communiquons.android.comunic.client.ui.views.WebLinkView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
+import org.communiquons.android.comunic.client.ui.views.YouTubeVideoView;
 
 import java.util.ArrayList;
 
@@ -61,6 +62,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
     private static final int VIEW_TYPE_POST_WEBLINK = 4;
     private static final int VIEW_TYPE_POST_COUNTDOWN = 5;
     private static final int VIEW_TYPE_POST_SURVEY = 6;
+    private static final int VIEW_TYPE_POST_YOUTUBE = 7;
 
     /**
      * Posts list
@@ -129,6 +131,9 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             case SURVEY:
                 return VIEW_TYPE_POST_SURVEY;
 
+            case YOUTUBE:
+                return VIEW_TYPE_POST_YOUTUBE;
+
             case TEXT:
             default:
                 return VIEW_TYPE_POST_TEXT;
@@ -157,6 +162,9 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
             case VIEW_TYPE_POST_COUNTDOWN:
                 return new CountdownPostHolder(view);
+
+            case VIEW_TYPE_POST_YOUTUBE:
+                return new YouTubePostHolder(view);
 
             case VIEW_TYPE_POST_SURVEY:
                 return new SurveyPostHolder(view);
@@ -307,12 +315,8 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             mPostVisibility.setImageDrawable(drawable);
 
             //Set post actions
-            mPostActions.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.showPostActions(v, position, getPost(position));
-                }
-            });
+            mPostActions.setOnClickListener(
+                    v -> mListener.showPostActions(v, position, getPost(position)));
 
 
             //Set post content
@@ -326,12 +330,8 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             //Post likes
             mLikeButton.setNumberLikes(post.getNumberLike());
             mLikeButton.setIsLiking(post.isLiking());
-            mLikeButton.setUpdateListener(new LikeButtonView.OnLikeUpdateListener() {
-                @Override
-                public void OnLikeUpdate(boolean isLiking) {
-                    mListener.onPostLikeUpdate(getPost(position), isLiking);
-                }
-            });
+            mLikeButton.setUpdateListener(
+                    isLiking -> mListener.onPostLikeUpdate(getPost(position), isLiking));
 
 
             //Post comments
@@ -371,24 +371,16 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
                     mEditCommentContentView.setPostID(post.getId());
                     mEditCommentContentView.setText("");
 
-                    mSendCommentButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            sendComment();
-                        }
-                    });
+                    mSendCommentButton.setOnClickListener(v -> sendComment());
 
                 }
 
-                mEditCommentContentView.setOnKeyListener(new View.OnKeyListener() {
-                    @Override
-                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-                        if(event.getAction() == KeyEvent.ACTION_DOWN
-                                && keyCode == KeyEvent.KEYCODE_ENTER)
-                            sendComment();
+                mEditCommentContentView.setOnKeyListener((v, keyCode, event) -> {
+                    if(event.getAction() == KeyEvent.ACTION_DOWN
+                            && keyCode == KeyEvent.KEYCODE_ENTER)
+                        sendComment();
 
-                        return false;
-                    }
+                    return false;
                 });
             }
         }
@@ -547,6 +539,31 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             super.bind(position);
 
             mSurveyView.setSurvey(getPost(position).getSurvey());
+        }
+    }
+
+    /**
+     * YouTube video post holder
+     */
+    private class YouTubePostHolder extends TextPostHolder {
+
+        private YouTubeVideoView mYouTubeVideoView;
+
+        YouTubePostHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mYouTubeVideoView = new YouTubeVideoView(getContext(), null, R.style.PostYouTubeView);
+            getAdditionalViewsLayout().addView(mYouTubeVideoView,
+                    new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+
+        @Override
+        void bind(int position) {
+            super.bind(position);
+
+            mYouTubeVideoView.setVideoID(getPost(position).getFilePath());
         }
     }
 }
