@@ -1,7 +1,6 @@
 package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -29,7 +28,6 @@ import org.communiquons.android.comunic.client.data.arrays.ConversationMessagesL
 import org.communiquons.android.comunic.client.data.helpers.CallsHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
-import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
 import org.communiquons.android.comunic.client.data.models.ConversationInfo;
@@ -40,10 +38,10 @@ import org.communiquons.android.comunic.client.data.utils.AccountUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.ConversationMessageAdapter;
 import org.communiquons.android.comunic.client.ui.asynctasks.DeleteConversationMessageTask;
-import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SendConversationMessageTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.UpdateConversationMessageContentTask;
 import org.communiquons.android.comunic.client.ui.listeners.OnConversationMessageActionsListener;
+import org.communiquons.android.comunic.client.ui.listeners.OnMessagesChangeListener;
 import org.communiquons.android.comunic.client.ui.listeners.OnOpenCallListener;
 import org.communiquons.android.comunic.client.ui.listeners.OnScrollChangeDetectListener;
 import org.communiquons.android.comunic.client.ui.utils.BitmapUtils;
@@ -68,7 +66,7 @@ import static org.communiquons.android.comunic.client.ui.Constants.IntentRequest
  */
 
 public class ConversationFragment extends Fragment
-        implements ConversationRefreshRunnable.onMessagesChangeListener,
+        implements OnMessagesChangeListener,
         OnScrollChangeDetectListener, OnConversationMessageActionsListener,
         PopupMenu.OnMenuItemClickListener {
 
@@ -387,19 +385,15 @@ public class ConversationFragment extends Fragment
     @Override
     public void onNoMessage() {
 
-        //Hide main progress bar
-        display_main_progress_bar(false);
-
         //Display no message notice
         display_not_msg_notice(true);
 
     }
 
     @Override
-    public void onAddMessage(int lastID, @NonNull ArrayList<ConversationMessage> newMessages) {
+    public void onAddMessages(int lastID, @NonNull ArrayList<ConversationMessage> newMessages) {
 
         //Remove main progress bar and no message notice
-        display_main_progress_bar(false);
         display_not_msg_notice(false);
 
         //Add the messages to the the main list of messages
@@ -424,6 +418,11 @@ public class ConversationFragment extends Fragment
         //Display a toast
         Toast.makeText(getActivity(), R.string.fragment_conversation_err_load_message,
                 Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onGotMessageFromServer() {
+        display_main_progress_bar(false);
     }
 
     /**

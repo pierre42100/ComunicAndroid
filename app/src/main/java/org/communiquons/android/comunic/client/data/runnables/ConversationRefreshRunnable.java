@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.communiquons.android.comunic.client.data.helpers.ConversationMessagesHelper;
 import org.communiquons.android.comunic.client.data.models.ConversationMessage;
+import org.communiquons.android.comunic.client.ui.listeners.OnMessagesChangeListener;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class ConversationRefreshRunnable implements Runnable {
     /**
      * Debug tag
      */
-    private String TAG = "ConversationRefreshRunn";
+    private static final String TAG = ConversationRefreshRunnable.class.getSimpleName();
 
     /**
      * The ID of the conversation
@@ -36,7 +37,7 @@ public class ConversationRefreshRunnable implements Runnable {
     /**
      * Conversation message helper
      */
-    private ConversationMessagesHelper convMessHelper;
+    private ConversationMessagesHelper conversationMessagesHelper;
 
     /**
      * The activity executing the application
@@ -46,7 +47,7 @@ public class ConversationRefreshRunnable implements Runnable {
     /**
      * Messages change listener
      */
-    private onMessagesChangeListener listener;
+    private OnMessagesChangeListener listener;
 
     /**
      * Set to true to make the thread exit
@@ -73,45 +74,12 @@ public class ConversationRefreshRunnable implements Runnable {
                                        int last_message_id,
                                        @NonNull ConversationMessagesHelper conversationMessagesHelper,
                                        Activity activity,
-                                       onMessagesChangeListener listener){
+                                       OnMessagesChangeListener listener){
         this.conversation_id = conversation_id;
         this.last_message_id = last_message_id;
-        this.convMessHelper = conversationMessagesHelper;
+        this.conversationMessagesHelper = conversationMessagesHelper;
         this.mActivity = activity;
         this.listener = listener;
-    }
-
-    /**
-     * onMessagesChangeListener
-     *
-     * This interface is used to perform callback actions on the UI Thread to add messages
-     * to a list for example
-     *
-     * This method also changes in the conversations
-     */
-    public interface onMessagesChangeListener {
-
-        /**
-         * Add new messages to a previous list of messages
-         *
-         * @param lastID The ID of the latest message downloaded from server
-         * @param messages The new messagess
-         */
-        void onAddMessage(int lastID, @NonNull ArrayList<ConversationMessage> messages);
-
-        /**
-         * This method is called when there is not any message in the conversation
-         *
-         * Warning ! This method may be called several time
-         */
-        void onNoMessage();
-
-        /**
-         * This method is called when an error occur on a request on the database and / or on the
-         * remote server
-         */
-        void onLoadError();
-
     }
 
     @Override
@@ -121,77 +89,25 @@ public class ConversationRefreshRunnable implements Runnable {
 
         synchronized (object) {
 
+            //Get first messages in the database
+            checkForMessagesInDatabase();
+
             //Loop that execute indefinitely until the fragment is stopped
             while (!quit) {
 
                 //Refresh the list of messages from the server
-                if(!convMessHelper.refresh_conversation(conversation_id)){
+                if(!conversationMessagesHelper.refresh_conversation(conversation_id)){
                     //Callback : an error occurred
                     Log.e(TAG, "Couldn't get the list of new messages !");
 
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            listener.onLoadError();
-                        }
-                    });
-
-                    continue;
+                    mActivity.runOnUiThread(() -> listener.onLoadError());
                 }
 
-                //Get the ID of the last message available in the local database
-                final int lastMessageInDb = convMessHelper.getLastIDFromDb(conversation_id);
+                else
+                    mActivity.runOnUiThread(() -> listener.onGotMessageFromServer());
 
-                //If the last message in the database is newer than the last message already read
-                if (lastMessageInDb > last_message_id) {
-
-                    //Fetch all the messages available in the database since the last request
-                    final ArrayList<ConversationMessage> newMessages = convMessHelper.getInDb(
-                            conversation_id,
-                            last_message_id + 1,
-                            lastMessageInDb
-                    );
-
-                    //Check for errors
-                    if(newMessages == null){
-
-                        //Callback : an error occurred.
-                        Log.e(TAG, "Couldn't get the list of new messages from local database !");
-
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                listener.onLoadError();
-                            }
-                        });
-                    }
-                    else {
-
-                        //Use the callback to send the messages to the UI thread
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                listener.onAddMessage(lastMessageInDb, newMessages);
-                            }
-
-
-                        });
-
-                        //Update the ID of the last message fetched
-                        last_message_id = lastMessageInDb;
-                    }
-
-                }
-
-                //Check if there isn't any message
-                if(last_message_id == 0){
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            listener.onNoMessage();
-                        }
-                    });
-                }
+                //Checkout the database to send any available new message to the client
+                checkForMessagesInDatabase();
 
                 //Make a small break (1 sec 200)
                 try {
@@ -204,6 +120,51 @@ public class ConversationRefreshRunnable implements Runnable {
         }
 
         Log.v(TAG, "Stopped conversation refresh runnable.");
+    }
+
+    /**
+     * Check if the database contains messages that have not already been sent to the client
+     */
+    private void checkForMessagesInDatabase(){
+
+        //Get the ID of the last message available in the local database
+        final int lastMessageInDb = conversationMessagesHelper.getLastIDFromDb(conversation_id);
+
+        //If the last message in the database is newer than the last message already read
+        if (lastMessageInDb > last_message_id) {
+
+            //Fetch all the messages available in the database since the last request
+            final ArrayList<ConversationMessage> newMessages = conversationMessagesHelper.getInDb(
+                    conversation_id,
+                    last_message_id + 1,
+                    lastMessageInDb
+            );
+
+            //Check for errors
+            if(newMessages == null){
+
+                //Callback : an error occurred.
+                Log.e(TAG, "Couldn't get the list of new messages from local database !");
+
+                mActivity.runOnUiThread(() -> listener.onLoadError());
+            }
+            else {
+
+                //Use the callback to send the messages to the UI thread
+                mActivity.runOnUiThread(() ->
+                        listener.onAddMessages(lastMessageInDb, newMessages));
+
+                //Update the ID of the last message fetched
+                last_message_id = lastMessageInDb;
+            }
+
+        }
+
+        //Check if there isn't any message
+        if(last_message_id == 0){
+            mActivity.runOnUiThread(() -> listener.onNoMessage());
+        }
+
     }
 
     /**
