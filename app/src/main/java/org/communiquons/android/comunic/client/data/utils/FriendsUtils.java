@@ -2,9 +2,8 @@ package org.communiquons.android.comunic.client.data.utils;
 
 import android.util.ArrayMap;
 
-import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.models.Friend;
-import org.communiquons.android.comunic.client.data.models.FriendUser;
+import org.communiquons.android.comunic.client.data.models.UserInfo;
 
 import java.util.ArrayList;
 
@@ -33,31 +32,18 @@ public class FriendsUtils {
     }
 
     /**
-     * Merge a friends user list with a user info list, return the result by a FriendUser list
+     * Merge a user information list with a friend list
      *
      * @param friendsList The list of friend of the user
-     * @param userInfos Informations about the user
-     * @return The result of the operation
+     * @param userInfo Information about the friends
      */
-    public static ArrayList<FriendUser> merge_friends_user_infos_list(ArrayList<Friend> friendsList,
-                                                                      ArrayMap<Integer, UserInfo> userInfos){
-
-        ArrayList<FriendUser> list = new ArrayList<>();
+    public static void MergeFriendsListWithUserInfo(ArrayList<Friend> friendsList,
+                                                    ArrayMap<Integer, UserInfo> userInfo){
 
         //Process the list
         for(Friend friend : friendsList){
-
-            UserInfo userInfo;
-
-            if((userInfo = userInfos.get(friend.getId())) != null){
-                FriendUser item = new FriendUser(friend);
-                item.setUserInfo(userInfo);
-                list.add(item);
-            }
-
+                friend.setUserInfo(userInfo.get(friend.getId()));
         }
-
-        return list;
 
     }
 }

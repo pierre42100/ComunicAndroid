@@ -1,5 +1,7 @@
 package org.communiquons.android.comunic.client.data.models;
 
+import android.support.annotation.Nullable;
+
 import org.communiquons.android.comunic.client.data.utils.TimeUtils;
 
 /**
@@ -35,6 +37,11 @@ public class Friend {
      * The last activity timestamp of the friend
      */
     private int last_activity;
+
+    /**
+     * Related user information
+     */
+    private UserInfo userInfo;
 
     /**
      * Public constructor
@@ -120,5 +127,14 @@ public class Friend {
      */
     public boolean signed_in(){
         return (TimeUtils.time()-USER_INACTIVE_AFTER) < last_activity;
+    }
+
+    @Nullable
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }

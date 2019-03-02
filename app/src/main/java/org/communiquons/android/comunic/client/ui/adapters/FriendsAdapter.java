@@ -3,6 +3,7 @@ package org.communiquons.android.comunic.client.ui.adapters;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
 import org.communiquons.android.comunic.client.data.models.Friend;
-import org.communiquons.android.comunic.client.data.models.FriendUser;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.ui.listeners.OnFriendListActionListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
@@ -39,7 +39,7 @@ public class FriendsAdapter extends BaseRecyclerViewAdapter {
     /**
      * The list of friends, with their information
      */
-    private ArrayList<FriendUser> mList;
+    private ArrayList<Friend> mList;
 
     /**
      * Actions listener
@@ -51,14 +51,23 @@ public class FriendsAdapter extends BaseRecyclerViewAdapter {
      *
      * @param context The context of execution of the application
      * @param friendsList The list of friends to display (with user information)
-     * @param listener Actions on friendlist listener
+     * @param listener Actions on friends listener
      */
-    public FriendsAdapter(Context context, ArrayList<FriendUser> friendsList,
+    public FriendsAdapter(Context context, ArrayList<Friend> friendsList,
                           OnFriendListActionListener listener){
         super(context);
 
         mList = friendsList;
         mListener = listener;
+    }
+
+    private Friend getFriend(int pos){
+        return mList.get(pos);
+    }
+
+    @Nullable
+    private UserInfo getUserInfo(int pos){
+        return mList.get(pos).getUserInfo();
     }
 
     @Override
@@ -68,7 +77,7 @@ public class FriendsAdapter extends BaseRecyclerViewAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return mList.get(position).getFriend().isAccepted() ? VIEW_TYPE_ACCEPTED_FRIEND :
+        return mList.get(position).isAccepted() ? VIEW_TYPE_ACCEPTED_FRIEND :
                 VIEW_TYPE_PENDING_FRIEND;
     }
 
@@ -115,24 +124,19 @@ public class FriendsAdapter extends BaseRecyclerViewAdapter {
             mUserStatus = itemView.findViewById(R.id.user_status);
         }
 
-        Friend getFriend(int pos){
-            return mList.get(pos).getFriend();
-        }
-
-        UserInfo getUserInfo(int pos){
-            return mList.get(pos).getUserInfo();
-        }
-
         int getCurrentUserID(){
-            return getUserInfo(getLayoutPosition()).getId();
+            return getFriend(getLayoutPosition()).getId();
         }
 
         @CallSuper
         void bind(int pos){
 
             //Update user information
-            mUserAccountImage.setUser(getUserInfo(pos));
-            mUserName.setText(getUserInfo(pos).getDisplayFullName());
+            UserInfo user = getUserInfo(pos);
+            mUserAccountImage.removeUser();
+            if(user != null)
+                mUserAccountImage.setUser(user);
+            mUserName.setText(user == null ? "" : user.getDisplayFullName());
 
             //Update user status
             boolean signed_in = getFriend(pos).signed_in();
@@ -143,12 +147,7 @@ public class FriendsAdapter extends BaseRecyclerViewAdapter {
 
 
             //Open user page on click
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.onOpenUserPage(getCurrentUserID());
-                }
-            });
+            itemView.setOnClickListener(v -> mListener.onOpenUserPage(getCurrentUserID()));
         }
     }
 

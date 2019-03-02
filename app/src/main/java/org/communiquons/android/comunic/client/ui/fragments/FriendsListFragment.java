@@ -2,7 +2,6 @@ package org.communiquons.android.comunic.client.ui.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,22 +20,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.FriendsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.models.Friend;
-import org.communiquons.android.comunic.client.data.models.FriendUser;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.data.utils.FriendsUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.FriendsAdapter;
+import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.listeners.OnFriendListActionListener;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 import org.communiquons.android.comunic.client.ui.views.ScrollRecyclerView;
 
 import java.util.ArrayList;
+import java.util.Objects;
+
+import static org.communiquons.android.comunic.client.data.utils.FriendsUtils.MergeFriendsListWithUserInfo;
 
 /**
  * Friends list fragment
@@ -51,17 +52,12 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
     /**
      * Debug tag
      */
-    private static final String TAG = "FriendsListFragment";
+    private static final String TAG = FriendsListFragment.class.getSimpleName();
 
     /**
      * Application context
      */
     private Context mContext;
-
-    /**
-     * Database helper
-     */
-    private DatabaseHelper mDbHelper;
 
     /**
      * Get user helper
@@ -71,7 +67,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
     /**
      * The current list of friends
      */
-    private ArrayList<FriendUser> mList;
+    private ArrayList<Friend> mList;
 
     /**
      * Friend list operations object
@@ -118,13 +114,10 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
         super.onCreate(savedInstanceState);
 
         //Save application context
-        mContext = getActivity().getApplicationContext();
-
-        //Create database helper
-        mDbHelper = DatabaseHelper.getInstance(mContext);
+        mContext = Objects.requireNonNull(getActivity()).getApplicationContext();
 
         //Create friend list helper object
-        mFriendsHelper = new FriendsListHelper(mDbHelper, mContext);
+        mFriendsHelper = new FriendsListHelper(DatabaseHelper.getInstance(getActivity()), mContext);
 
         //Create get user helper
         mUsersHelper = new GetUsersHelper(mContext);
@@ -173,7 +166,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
         super.onResume();
 
         //Update the title of the application
-        getActivity().setTitle(R.string.fragment_friendslist_title);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.fragment_friendslist_title);
         MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_friendslist);
 
         //Refresh the friends list
@@ -188,10 +181,10 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
         //Display loading bar
         display_progress_bar(true);
 
-        new AsyncTask<Void, Void, ArrayList<FriendUser>>() {
+        new AsyncTask<Void, Void, ArrayList<Friend>>() {
 
             @Override
-            protected ArrayList<FriendUser> doInBackground(Void... params) {
+            protected ArrayList<Friend> doInBackground(Void... params) {
 
                 //Fetch the list of friends
                 ArrayList<Friend> friendsList = mFriendsHelper.get();
@@ -209,12 +202,13 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
                     return null;
 
                 //Merge friend and user and return result
-                return FriendsUtils.merge_friends_user_infos_list(friendsList, userInfo);
+                MergeFriendsListWithUserInfo(friendsList, userInfo);
+                return friendsList;
 
             }
 
             @Override
-            protected void onPostExecute(ArrayList<FriendUser> friendUsers) {
+            protected void onPostExecute(ArrayList<Friend> friendUsers) {
 
                 //Check the activity still exists
                 if (getActivity() == null)
@@ -230,7 +224,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
      *
      * @param friendsList The friends list to apply
      */
-    private void apply_friends_list(@Nullable ArrayList<FriendUser> friendsList) {
+    private void apply_friends_list(@Nullable ArrayList<Friend> friendsList) {
 
         //Remove progress bar
         display_progress_bar(false);
@@ -271,29 +265,26 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
         builder.setTitle(R.string.popup_deletefriend_title)
                 .setMessage(R.string.popup_deletefriend_message);
 
-        builder.setPositiveButton(R.string.popup_deletefriend_button_confirm, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton(R.string.popup_deletefriend_button_confirm, (dialog, which) -> {
 
-                //Get the friend to delete
-                final Friend toDelete = mList.get(pos).getFriend();
+            //Get the friend to delete
+            final Friend toDelete = mList.get(pos);
 
-                //Apply new list version
-                mList.remove(pos);
-                mAdapter.notifyDataSetChanged();
+            //Apply new list version
+            mList.remove(pos);
+            mAdapter.notifyDataSetChanged();
 
-                //Remove the friend list on a parallel thread
-                new AsyncTask<Integer, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Integer[] params) {
+            //Remove the friend list on a parallel thread
+            new AsyncTask<Integer, Void, Void>() {
+                @Override
+                protected Void doInBackground(Integer[] params) {
 
-                        //Delete the friend from the list
-                        mFriendsHelper.remove(toDelete);
+                    //Delete the friend from the list
+                    mFriendsHelper.remove(toDelete);
 
-                        return null;
-                    }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, pos);
-            }
+                    return null;
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, pos);
         });
         builder.setNegativeButton(R.string.popup_deletefriend_button_cancel, null);
         builder.show();
@@ -311,7 +302,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
     public void onRespondFrienshipRequest(int pos, final boolean response) {
 
         //Get the Friend object
-        Friend targetFriend = mList.get(pos).getFriend();
+        Friend targetFriend = mList.get(pos);
 
         if (response)
             //Mark the friend as accepted
@@ -347,7 +338,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
 
 
         //Update following checkbox
-        menu.getMenu().findItem(R.id.action_follow).setChecked(mList.get(pos).getFriend()
+        menu.getMenu().findItem(R.id.action_follow).setChecked(mList.get(pos)
                 .isFollowing());
 
         menu.show();
@@ -360,7 +351,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
 
             //To open a private conversation with the friend
             case R.id.action_private_conversation:
-                mConvOpener.openPrivateConversation(mList.get(mPosInContextMenu).getFriend().getId());
+                mConvOpener.openPrivateConversation(mList.get(mPosInContextMenu).getId());
                 return true;
 
             //To delete the friend
@@ -370,7 +361,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
 
             case R.id.action_follow:
                 onSetFollowing(mPosInContextMenu,
-                        !mList.get(mPosInContextMenu).getFriend().isFollowing());
+                        !mList.get(mPosInContextMenu).isFollowing());
                 return true;
         }
 
@@ -381,7 +372,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
     @Override
     public void onSetFollowing(int pos, boolean following) {
 
-        Friend friend = mList.get(pos).getFriend();
+        Friend friend = mList.get(pos);
         friend.setFollowing(following);
 
         mAdapter.notifyDataSetChanged();
