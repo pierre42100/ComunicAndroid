@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -83,12 +84,9 @@ public class PendingCallsBroadcastReceiver extends BroadcastReceiver {
 
         //Get next pending notification
         GetNextPendingCallTask task = new GetNextPendingCallTask(context);
-        task.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<NextPendingCallInformation>() {
-            @Override
-            public void OnPostExecute(NextPendingCallInformation nextPendingCallInformation) {
-                locked = false;
-                onGotCall(context, nextPendingCallInformation);
-            }
+        task.setOnPostExecuteListener(nextPendingCallInformation -> {
+            locked = false;
+            onGotCall(context, nextPendingCallInformation);
         });
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -129,6 +127,8 @@ public class PendingCallsBroadcastReceiver extends BroadcastReceiver {
                         .setContentText(UiUtils.getString(context, R.string.notification_call_content, info.getCallName()))
                         //.setContentIntent(pendingAcceptIntent)
                         .setFullScreenIntent(pendingFullScreenRequestIntent, true)
+                        .setSound(RingtoneManager.getActualDefaultRingtoneUri(context,
+                                RingtoneManager.TYPE_RINGTONE))
                         .setPriority(PRIORITY_HIGH);
 
 

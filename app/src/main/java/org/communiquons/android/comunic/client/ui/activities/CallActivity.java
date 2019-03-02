@@ -179,6 +179,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
         //Make sure we have access to user camera and microphone
         askForPermissions();
 
+        //Make the screen keeps on during the call
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
@@ -186,6 +187,7 @@ public class CallActivity extends BaseActivity implements SignalExchangerCallbac
     protected void onPause() {
         super.onPause();
 
+        //Allow screen lock
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
