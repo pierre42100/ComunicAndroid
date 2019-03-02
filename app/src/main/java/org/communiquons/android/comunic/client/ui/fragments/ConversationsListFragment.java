@@ -124,9 +124,6 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
         mNoConversationNotice = view.findViewById(R.id.no_conversation_notice);
         mNoConversationNotice.setVisibility(View.GONE);
 
-        //Refresh conversations list
-        refresh_conversations_list(false);
-
         //Set the open and update conversation listener
         try {
             openConvListener = (openConversationListener) getActivity();
@@ -148,6 +145,9 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
         //Update activity title
         Objects.requireNonNull(getActivity()).setTitle(R.string.fragment_conversationslist_title);
         MainActivity.SetNavbarSelectedOption(getActivity(), R.id.action_conversations);
+
+        //Refresh conversations list
+        refresh_conversations_list(false);
     }
 
     /**
@@ -156,6 +156,7 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
     private void refresh_conversations_list(boolean online){
 
         //Display loading wheel
+        mGotFirstList = online;
         mProgressBar.setVisibility(View.VISIBLE);
 
         //Get the list of conversations
