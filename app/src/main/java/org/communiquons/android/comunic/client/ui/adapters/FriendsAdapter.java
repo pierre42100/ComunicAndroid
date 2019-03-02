@@ -13,13 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.arrays.FriendsList;
 import org.communiquons.android.comunic.client.data.models.Friend;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.ui.listeners.OnFriendListActionListener;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
-
-import java.util.ArrayList;
 
 /**
  * Adapter that render the list of friend on the friends list fragment
@@ -39,7 +38,7 @@ public class FriendsAdapter extends BaseRecyclerViewAdapter {
     /**
      * The list of friends, with their information
      */
-    private ArrayList<Friend> mList;
+    private FriendsList mList;
 
     /**
      * Actions listener
@@ -53,7 +52,7 @@ public class FriendsAdapter extends BaseRecyclerViewAdapter {
      * @param friendsList The list of friends to display (with user information)
      * @param listener Actions on friends listener
      */
-    public FriendsAdapter(Context context, ArrayList<Friend> friendsList,
+    public FriendsAdapter(Context context, FriendsList friendsList,
                           OnFriendListActionListener listener){
         super(context);
 

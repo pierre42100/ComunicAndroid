@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.communiquons.android.comunic.client.data.DatabaseContract.FriendsListSchema;
+import org.communiquons.android.comunic.client.data.arrays.FriendsList;
 import org.communiquons.android.comunic.client.data.models.Friend;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class FriendsListDbHelper {
      * @return The list of friends of the user or null in case of failure
      */
     @Nullable
-    ArrayList<Friend> get_list(){
+    FriendsList get_list(){
 
         //Get read access to the database
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -68,7 +69,7 @@ public class FriendsListDbHelper {
         if(c == null)
             return null; //An error occurred
 
-        ArrayList<Friend> friendsList = new ArrayList<>();
+        FriendsList friendsList = new FriendsList();
 
         //Process the list of responses
         c.moveToFirst();
@@ -166,7 +167,7 @@ public class FriendsListDbHelper {
      *
      * @return The number of affected rows
      */
-    public int remove_all(){
+    int remove_all(){
 
         //Get writable database access
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -176,12 +177,7 @@ public class FriendsListDbHelper {
         String whereClause = FriendsListSchema._ID + " > 0";
         String[] whereArgs = new String[0];
 
-        int result = db.delete(table_name, whereClause, whereArgs);
-
-        //Close the database
-        //db.close();
-
-        return result;
+        return db.delete(table_name, whereClause, whereArgs);
     }
 
     /**

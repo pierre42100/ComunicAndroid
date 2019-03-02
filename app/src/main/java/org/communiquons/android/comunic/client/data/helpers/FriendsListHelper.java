@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.communiquons.android.comunic.client.data.arrays.FriendsList;
 import org.communiquons.android.comunic.client.data.models.APIRequest;
 import org.communiquons.android.comunic.client.data.models.APIResponse;
 import org.communiquons.android.comunic.client.data.models.Friend;
@@ -62,18 +63,14 @@ public class FriendsListHelper {
      *
      * @return The list of friends
      */
-    public ArrayList<Friend> get() {
+    public FriendsList get() {
 
         //Acquire friends list lock
         FriendsListHelper.ListAccessLock.lock();
 
         //Fetch the list
-        ArrayList<Friend> list;
-        try {
-            list = mDbHelper.get_list();
-        } finally {
-            FriendsListHelper.ListAccessLock.unlock();
-        }
+        FriendsList list = mDbHelper.get_list();
+        FriendsListHelper.ListAccessLock.unlock();
 
         return list;
     }

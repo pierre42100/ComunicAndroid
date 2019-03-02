@@ -20,12 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.R;
+import org.communiquons.android.comunic.client.data.arrays.FriendsList;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.FriendsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.models.Friend;
 import org.communiquons.android.comunic.client.data.models.UserInfo;
-import org.communiquons.android.comunic.client.data.utils.FriendsUtils;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.FriendsAdapter;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
@@ -34,10 +34,7 @@ import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListe
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 import org.communiquons.android.comunic.client.ui.views.ScrollRecyclerView;
 
-import java.util.ArrayList;
 import java.util.Objects;
-
-import static org.communiquons.android.comunic.client.data.utils.FriendsUtils.MergeFriendsListWithUserInfo;
 
 /**
  * Friends list fragment
@@ -67,7 +64,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
     /**
      * The current list of friends
      */
-    private ArrayList<Friend> mList;
+    private FriendsList mList;
 
     /**
      * Friend list operations object
@@ -181,13 +178,13 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
         //Display loading bar
         display_progress_bar(true);
 
-        new AsyncTask<Void, Void, ArrayList<Friend>>() {
+        new AsyncTask<Void, Void, FriendsList>() {
 
             @Override
-            protected ArrayList<Friend> doInBackground(Void... params) {
+            protected FriendsList doInBackground(Void... params) {
 
                 //Fetch the list of friends
-                ArrayList<Friend> friendsList = mFriendsHelper.get();
+                FriendsList friendsList = mFriendsHelper.get();
 
                 //Check for errors
                 if (friendsList == null)
@@ -195,20 +192,20 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
 
                 //Get user info
                 ArrayMap<Integer, UserInfo> userInfo = mUsersHelper.getMultiple(
-                        FriendsUtils.getFriendsIDs(friendsList));
+                        friendsList.getFriendsIDs());
 
                 //Check for errors
                 if (userInfo == null)
                     return null;
 
                 //Merge friend and user and return result
-                MergeFriendsListWithUserInfo(friendsList, userInfo);
+                friendsList.mergeFriendsListWithUserInfo(userInfo);
                 return friendsList;
 
             }
 
             @Override
-            protected void onPostExecute(ArrayList<Friend> friendUsers) {
+            protected void onPostExecute(FriendsList friendUsers) {
 
                 //Check the activity still exists
                 if (getActivity() == null)
@@ -224,7 +221,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
      *
      * @param friendsList The friends list to apply
      */
-    private void apply_friends_list(@Nullable ArrayList<Friend> friendsList) {
+    private void apply_friends_list(@Nullable FriendsList friendsList) {
 
         //Remove progress bar
         display_progress_bar(false);
