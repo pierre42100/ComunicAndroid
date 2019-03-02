@@ -1,6 +1,7 @@
 package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -35,11 +36,14 @@ class UsersInfoDbHelper {
     /**
      * Class constructor
      *
-     * @param dbHelper Database helper object
+     * @param context Application context
      */
-    UsersInfoDbHelper(DatabaseHelper dbHelper){
-        this.dbHelper = dbHelper;
-        clean();
+    UsersInfoDbHelper(Context context){
+        this.dbHelper = DatabaseHelper.getInstance(context);
+
+        //Clean user information if we are connected to the Internet
+        if(APIRequestHelper.isAPIavailable(context))
+            clean();
     }
 
     /**

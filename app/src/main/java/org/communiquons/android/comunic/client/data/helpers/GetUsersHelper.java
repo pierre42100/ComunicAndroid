@@ -23,17 +23,12 @@ import java.util.ArrayList;
  * Created by pierre on 12/10/17.
  */
 
-public class GetUsersHelper {
+public class GetUsersHelper extends BaseHelper {
 
     /**
      * Debug tag
      */
-    private final String TAG = "GetUsersHelper";
-
-    /**
-     * The context of the application
-     */
-    private Context mContext;
+    private final String TAG = GetUsersHelper.class.getSimpleName();
 
     /**
      * User information database helper
@@ -46,30 +41,11 @@ public class GetUsersHelper {
      * @param context The context of the application
      */
     public GetUsersHelper(@NonNull Context context){
-        this(context, DatabaseHelper.getInstance(context));
+        super(context);
+
+        this.udbHelper = new UsersInfoDbHelper(context);
     }
 
-    /**
-     * Public constructor of the class
-     *
-     * @param context The context of execution of the application
-     * @param udbHelper User database helper
-     */
-    public GetUsersHelper(@NonNull Context context, @NonNull UsersInfoDbHelper udbHelper){
-        mContext = context.getApplicationContext();
-        this.udbHelper = udbHelper;
-    }
-
-    /**
-     * Public constructor of the class
-     *
-     * @param context The context of execution of the application
-     * @param dbHelper DatabaseHelper
-     */
-    public GetUsersHelper(@NonNull Context context, @NonNull DatabaseHelper dbHelper){
-        mContext = context;
-        this.udbHelper = new UsersInfoDbHelper(dbHelper);
-    }
 
     /**
      * Get information about a single user from the server
@@ -127,7 +103,7 @@ public class GetUsersHelper {
     public AdvancedUserInfo get_advanced_infos(int userID){
 
         //Perform an API request
-        APIRequest params = new APIRequest(mContext,
+        APIRequest params = new APIRequest(getContext(),
                 "user/getAdvancedUserInfos");
         params.setTryContinueOnError(true);
         params.addInt("userID", userID);
@@ -263,7 +239,7 @@ public class GetUsersHelper {
     private ArrayList<Integer> search_users_online(String query, int limit){
 
         //Make an API request
-        APIRequest params = new APIRequest(mContext, "search/user");
+        APIRequest params = new APIRequest(getContext(), "search/user");
         params.addString("query", query);
         params.addString("searchLimit", ""+limit);
 
@@ -299,7 +275,7 @@ public class GetUsersHelper {
 
         //Perform a request on the API server
         //Setup the request
-        APIRequest requestParameters = new APIRequest(mContext,
+        APIRequest requestParameters = new APIRequest(getContext(),
                 "user/getInfosMultiple");
 
 

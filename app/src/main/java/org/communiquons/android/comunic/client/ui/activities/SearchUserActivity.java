@@ -63,7 +63,7 @@ public class SearchUserActivity extends AppCompatActivity
         setContentView(R.layout.activity_search_user);
 
         //Create a get user helper object
-        getUsersHelper = new GetUsersHelper(this, DatabaseHelper.getInstance(this));
+        getUsersHelper = new GetUsersHelper(this);
 
         //Get view
         searchField = findViewById(R.id.activity_search_user_field);

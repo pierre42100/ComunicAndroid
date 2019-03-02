@@ -222,7 +222,7 @@ public class ConversationFragment extends Fragment
         conversation_id = getArguments().getInt(ARG_CONVERSATION_ID);
 
         //Get user helper
-        getUsersHelper = new GetUsersHelper(getActivity(), dbHelper);
+        getUsersHelper = new GetUsersHelper(Objects.requireNonNull(getActivity()));
 
         if(conversation_id < 1){
             throw new RuntimeException(TAG + " requires a valid conversation ID when created !");

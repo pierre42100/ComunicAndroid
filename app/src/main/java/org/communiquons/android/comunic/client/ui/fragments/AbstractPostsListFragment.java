@@ -186,7 +186,7 @@ public abstract class AbstractPostsListFragment extends AbstractFragment
         mCommentsHelper = new CommentsHelper(getActivity());
 
         //Create user helper
-        mUserHelper = new GetUsersHelper(getActivity(), DatabaseHelper.getInstance(getActivity()));
+        mUserHelper = new GetUsersHelper(getActivity());
 
         //Create likes helper
         mLikesHelper = new LikesHelper(getActivity());

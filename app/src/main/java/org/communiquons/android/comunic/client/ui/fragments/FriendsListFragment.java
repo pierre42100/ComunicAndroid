@@ -127,7 +127,7 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
         mFriendsHelper = new FriendsListHelper(mDbHelper, mContext);
 
         //Create get user helper
-        mUsersHelper = new GetUsersHelper(mContext, mDbHelper);
+        mUsersHelper = new GetUsersHelper(mContext);
 
         //Cast activity to mConvOpener
         try {

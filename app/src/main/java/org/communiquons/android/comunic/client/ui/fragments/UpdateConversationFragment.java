@@ -36,6 +36,7 @@ import org.communiquons.android.comunic.client.ui.listeners.openConversationList
 import org.communiquons.android.comunic.client.ui.views.AppBarLayout;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static org.communiquons.android.comunic.client.ui.Constants.IntentRequestCode.CONVERSATION_UPDATE_FIND_USER_ID_INTENT;
 
@@ -171,7 +172,7 @@ public class UpdateConversationFragment extends Fragment {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
 
         //Get User helper
-        usersHelper = new GetUsersHelper(getActivity(), dbHelper);
+        usersHelper = new GetUsersHelper(Objects.requireNonNull(getActivity()));
 
         //Get conversation list helper
         convListHelper = new ConversationsListHelper(getActivity(), dbHelper);

@@ -112,7 +112,7 @@ public class ConversationsListFragment extends AbstractFragment implements Adapt
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
 
         //Instantiate the user information helper
-        userHelper = new GetUsersHelper(Objects.requireNonNull(getActivity()), dbHelper);
+        userHelper = new GetUsersHelper(Objects.requireNonNull(getActivity()));
 
         //Create the conversation list helper
         conversationsListHelper = new ConversationsListHelper(getActivity(), dbHelper);

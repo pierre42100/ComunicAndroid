@@ -91,7 +91,7 @@ public class UserPageFragment extends Fragment {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
 
         //Create getUserHelper instance
-        getUsersHelper = new GetUsersHelper(getActivity(), dbHelper);
+        getUsersHelper = new GetUsersHelper(getActivity());
 
         //Get the open user page listener
         mOpenUsersPageListener = (onOpenUsersPageListener) getActivity();
