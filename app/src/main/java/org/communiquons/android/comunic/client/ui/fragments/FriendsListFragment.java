@@ -6,10 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,9 +23,9 @@ import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.FriendsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.GetUsersHelper;
 import org.communiquons.android.comunic.client.data.models.Friend;
-import org.communiquons.android.comunic.client.data.models.UserInfo;
 import org.communiquons.android.comunic.client.ui.activities.MainActivity;
 import org.communiquons.android.comunic.client.ui.adapters.FriendsAdapter;
+import org.communiquons.android.comunic.client.ui.asynctasks.GetFriendsListTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.listeners.OnFriendListActionListener;
 import org.communiquons.android.comunic.client.ui.listeners.onOpenUsersPageListener;
@@ -43,7 +41,7 @@ import java.util.Objects;
  * Created by pierre on 11/11/17.
  */
 
-public class FriendsListFragment extends Fragment implements OnFriendListActionListener,
+public class FriendsListFragment extends AbstractFragment implements OnFriendListActionListener,
         PopupMenu.OnMenuItemClickListener {
 
     /**
@@ -178,42 +176,10 @@ public class FriendsListFragment extends Fragment implements OnFriendListActionL
         //Display loading bar
         display_progress_bar(true);
 
-        new AsyncTask<Void, Void, FriendsList>() {
-
-            @Override
-            protected FriendsList doInBackground(Void... params) {
-
-                //Fetch the list of friends
-                FriendsList friendsList = mFriendsHelper.get();
-
-                //Check for errors
-                if (friendsList == null)
-                    return null;
-
-                //Get user info
-                ArrayMap<Integer, UserInfo> userInfo = mUsersHelper.getMultiple(
-                        friendsList.getFriendsIDs());
-
-                //Check for errors
-                if (userInfo == null)
-                    return null;
-
-                //Merge friend and user and return result
-                friendsList.mergeFriendsListWithUserInfo(userInfo);
-                return friendsList;
-
-            }
-
-            @Override
-            protected void onPostExecute(FriendsList friendUsers) {
-
-                //Check the activity still exists
-                if (getActivity() == null)
-                    return;
-
-                apply_friends_list(friendUsers);
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        GetFriendsListTask getFriendsListTask = new GetFriendsListTask(getActivity());
+        getFriendsListTask.setOnPostExecuteListener(this::apply_friends_list);
+        getFriendsListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        getTasksManager().addTask(getFriendsListTask);
     }
 
     /**
