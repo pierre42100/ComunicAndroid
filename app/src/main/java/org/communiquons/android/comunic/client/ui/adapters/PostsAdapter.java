@@ -35,8 +35,10 @@ import org.communiquons.android.comunic.client.ui.views.SurveyView;
 import org.communiquons.android.comunic.client.ui.views.WebLinkView;
 import org.communiquons.android.comunic.client.ui.views.WebUserAccountImage;
 import org.communiquons.android.comunic.client.ui.views.YouTubeVideoView;
+import org.communiquons.bbcodeparser.BBCodeParser;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Posts adapter
@@ -265,8 +267,8 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             else if(post.getPage_type() == PageType.USER_PAGE
                     && mList.getUsersInfo().containsKey(post.getPage_id())){
 
-                mTargetPageName.setText(mList.getUsersInfo().get(post.getPage_id())
-                        .getDisplayFullName());
+                mTargetPageName.setText(Objects.requireNonNull(
+                        mList.getUsersInfo().get(post.getPage_id())).getDisplayFullName());
 
             }
 
@@ -274,8 +276,8 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
             else if(post.getPage_type() == PageType.GROUP_PAGE
                     && mList.getGroupsInfo().containsKey(post.getPage_id())){
 
-                mTargetPageName.setText(mList.getGroupsInfo().get(post.getPage_id())
-                        .getDisplayName());
+                mTargetPageName.setText(Objects.requireNonNull(
+                        mList.getGroupsInfo().get(post.getPage_id())).getDisplayName());
 
             }
 
@@ -320,11 +322,7 @@ public class PostsAdapter extends BaseRecyclerViewAdapter {
 
 
             //Set post content
-            mPostContent.setParsedText(
-                    StringsUtils.RemoveBBCode(
-                            UiUtils.prepareStringTextView(post.getContent())
-                    )
-            );
+            mPostContent.setParsedText(new BBCodeParser().parse(post.getContent()));
 
 
             //Post likes

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -63,17 +64,22 @@ public class ContentTextView extends android.support.v7.widget.AppCompatTextView
     }
 
     /**
-     * Set na new text, with links parsed
+     * Set a new text, with links parsed
      *
      * @param text The text to parse
      */
     public void setParsedText(String text) {
-        super.setText(text);
+        this.setParsedText(new SpannableStringBuilder(text));
+    }
 
-        //Parse text
-        SpannableStringBuilder ssb = new SpannableStringBuilder(text);
+    /**
+     * Set a new text, with links parsed
+     *
+     * @param ssb Builder to use
+     */
+    public void setParsedText(SpannableStringBuilder ssb){
 
-        String[] parts = text.split("\\s+");
+        String[] parts = ssb.toString().split("\\s+");
         int pos = 0;
         for (String part : parts) {
 
@@ -106,7 +112,7 @@ public class ContentTextView extends android.support.v7.widget.AppCompatTextView
     private abstract class BaseClickableSpan extends ClickableSpan {
 
         @Override
-        public void updateDrawState(TextPaint ds) {
+        public void updateDrawState(@NonNull TextPaint ds) {
             super.updateDrawState(ds);
             ds.setUnderlineText(false);
             ds.setColor(mLinksColor);
@@ -126,7 +132,7 @@ public class ContentTextView extends android.support.v7.widget.AppCompatTextView
         }
 
         @Override
-        public void onClick(View widget) {
+        public void onClick(@NonNull View widget) {
             getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mURL)));
         }
     }
@@ -143,7 +149,7 @@ public class ContentTextView extends android.support.v7.widget.AppCompatTextView
         }
 
         @Override
-        public void onClick(View widget) {
+        public void onClick(@NonNull View widget) {
             MainActivity.FollowTag(getActivity(), mTag);
         }
     }
