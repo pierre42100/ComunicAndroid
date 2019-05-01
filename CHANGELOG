@@ -1,5 +1,8 @@
 CHANGELOG
 
+V1.8:
+* Separate video call system from the rest of the application
+
 V 1.7:
 * Fix an issue that prevented to create post on user pages
 * Cached conversations are accessible even if not connected to the internet
