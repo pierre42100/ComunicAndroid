@@ -1,5 +1,15 @@
 CHANGELOG
 
+V 1.7:
+* Fix an issue that prevented to create post on user pages
+* Cached conversations are accessible even if not connected to the internet
+* Parse BBcode in posts
+* Added support for YouTube video
+* Reorganized some code
+* Ready for video calls
+* Can save image to the gallery
+* Improved the appearance of conversations list screen
+
 V.1.6 :
 * Display groups posts
 * Display the list of the groups of the users
