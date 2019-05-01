@@ -1,7 +1,6 @@
 package org.communiquons.android.comunic.client.data.helpers;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 
 import org.communiquons.android.comunic.client.data.models.ConversationInfo;
 
@@ -14,34 +13,8 @@ import org.communiquons.android.comunic.client.data.models.ConversationInfo;
  */
 public class CallsHelper extends BaseHelper {
 
-    /**
-     * Debug tag
-     */
-    private static final String TAG = CallsHelper.class.getSimpleName();
-
-
     public CallsHelper(Context context) {
         super(context);
-    }
-
-    /**
-     * Get call configuration if required
-     */
-    public void getCallConfigurationIfRequired(){
-        // Do nothing
-    }
-
-    /**
-     * Get Calls configuration, if available
-     *
-     * Note if IsCallSystemAvailable returned TRUE, it is guaranteed that this method WILL NOT
-     * return null
-     *
-     * @return Calls configuration
-     */
-    @Nullable
-    public static Object GetCallsConfiguration(){
-        return null;
     }
 
 
@@ -55,10 +28,10 @@ public class CallsHelper extends BaseHelper {
     /**
      * No call for no conversation
      *
-     * @param conversation Target conversation
+     * @param c Target conversation
      * @return false
      */
-    public static boolean IsCallSystemAvailableForConversation(ConversationInfo conversation){
+    public static boolean IsCallSystemAvailableForConversation(ConversationInfo c){
         return false;
     }
 }
