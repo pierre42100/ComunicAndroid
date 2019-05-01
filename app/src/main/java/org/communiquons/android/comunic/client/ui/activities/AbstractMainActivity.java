@@ -3,10 +3,8 @@ package org.communiquons.android.comunic.client.ui.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
@@ -26,24 +24,18 @@ import android.widget.Toast;
 
 import org.communiquons.android.comunic.client.BuildConfig;
 import org.communiquons.android.comunic.client.R;
-import org.communiquons.android.comunic.client.ui.utils.PermissionsUtils;
-import org.communiquons.crashreporter.CrashReporter;
 import org.communiquons.android.comunic.client.data.enums.VirtualDirectoryType;
 import org.communiquons.android.comunic.client.data.helpers.APIRequestHelper;
 import org.communiquons.android.comunic.client.data.helpers.AccountHelper;
 import org.communiquons.android.comunic.client.data.helpers.ConversationsListHelper;
 import org.communiquons.android.comunic.client.data.helpers.DatabaseHelper;
 import org.communiquons.android.comunic.client.data.helpers.DebugHelper;
-import org.communiquons.android.comunic.client.data.models.CallInformation;
 import org.communiquons.android.comunic.client.data.models.NotificationsCount;
 import org.communiquons.android.comunic.client.data.models.VirtualDirectory;
 import org.communiquons.android.comunic.client.data.runnables.FriendRefreshLoopRunnable;
 import org.communiquons.android.comunic.client.data.services.NotificationsService;
 import org.communiquons.android.comunic.client.data.utils.PreferencesUtils;
-import org.communiquons.android.comunic.client.ui.asynctasks.CreateCallForConversationTask;
 import org.communiquons.android.comunic.client.ui.asynctasks.FindVirtualDirectoryTask;
-import org.communiquons.android.comunic.client.ui.asynctasks.GetCallConfigurationTask;
-import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationFragment;
 import org.communiquons.android.comunic.client.ui.fragments.ConversationsListFragment;
 import org.communiquons.android.comunic.client.ui.fragments.FriendsListFragment;
@@ -56,13 +48,14 @@ import org.communiquons.android.comunic.client.ui.fragments.groups.GroupPageMain
 import org.communiquons.android.comunic.client.ui.fragments.groups.UserGroupsFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserAccessDeniedFragment;
 import org.communiquons.android.comunic.client.ui.fragments.userpage.UserPageFragment;
-import org.communiquons.android.comunic.client.ui.listeners.OnOpenCallListener;
 import org.communiquons.android.comunic.client.ui.listeners.OnOpenPageListener;
 import org.communiquons.android.comunic.client.ui.listeners.onPostOpenListener;
 import org.communiquons.android.comunic.client.ui.listeners.openConversationListener;
 import org.communiquons.android.comunic.client.ui.listeners.updateConversationListener;
+import org.communiquons.android.comunic.client.ui.utils.PermissionsUtils;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 import org.communiquons.android.comunic.client.ui.views.NavigationBar;
+import org.communiquons.crashreporter.CrashReporter;
 
 import java.util.Objects;
 
@@ -77,9 +70,9 @@ import static org.communiquons.android.comunic.client.ui.Constants.PreferencesKe
  *
  * @author Pierre HUBERT
  */
-public class MainActivity extends BaseActivity implements
+public abstract class AbstractMainActivity extends BaseActivity implements
         openConversationListener, updateConversationListener, OnOpenPageListener,
-        onPostOpenListener, NavigationBar.OnNavigationItemSelectedListener, OnOpenCallListener {
+        onPostOpenListener, NavigationBar.OnNavigationItemSelectedListener {
 
     /**
      * Debug tag
@@ -190,11 +183,6 @@ public class MainActivity extends BaseActivity implements
         //Receive broadcasts
         IntentFilter intentFilter = new IntentFilter(NotificationsService.BROADCAST_ACTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, intentFilter);
-
-        //Get calls configuration
-        GetCallConfigurationTask callConfigurationTask = new GetCallConfigurationTask(this);
-        callConfigurationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        getTasksManager().addTask(callConfigurationTask);
 
         //Request a few permissions
         PermissionsUtils.RequestPermissions(this,
@@ -369,12 +357,7 @@ public class MainActivity extends BaseActivity implements
             PopupMenu popupMenu = new PopupMenu(this,
                     mNavBar.getItemIdentifierView(R.id.action_more));
             onCreateOptionsMenu(popupMenu.getMenu());
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    return onOptionsItemSelected(item);
-                }
-            });
+            popupMenu.setOnMenuItemClickListener(this::onOptionsItemSelected);
             popupMenu.show();
             return false;
         }
@@ -397,7 +380,7 @@ public class MainActivity extends BaseActivity implements
         if(!(activity instanceof MainActivity))
             throw new RuntimeException("Specified activity is not an instance of activity!");
 
-        ((MainActivity)activity).mNavBar.setIdentifierSelected(id);
+        ((AbstractMainActivity)activity).mNavBar.setIdentifierSelected(id);
 
     }
 
@@ -469,23 +452,17 @@ public class MainActivity extends BaseActivity implements
                 .setMessage(R.string.popup_signout_message)
                 .setCancelable(true)
                 .setPositiveButton(R.string.popup_signout_confirm_button,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                        (dialog, which) -> {
 
-                                //Sign out user
-                                accountHelper.sign_out();
+                            //Sign out user
+                            accountHelper.sign_out();
 
-                                //Redirect to login activity
-                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            //Redirect to login activity
+                            startActivity(new Intent(AbstractMainActivity.this, LoginActivity.class));
 
-                            }
                         })
-                .setNegativeButton(R.string.popup_signout_cancel_button, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //Nothing now
-                    }
+                .setNegativeButton(R.string.popup_signout_cancel_button, (dialog, which) -> {
+                    //Nothing now
                 })
 
                 //Show popup
@@ -537,12 +514,9 @@ public class MainActivity extends BaseActivity implements
 
         unsetFindVirtualDirectoryTask();
         mFindVirtualDirectoryTask = new FindVirtualDirectoryTask(this);
-        mFindVirtualDirectoryTask.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<VirtualDirectory>() {
-            @Override
-            public void OnPostExecute(VirtualDirectory virtualDirectory) {
-                dialog.dismiss();
-                openDirectory(virtualDirectory);
-            }
+        mFindVirtualDirectoryTask.setOnPostExecuteListener(virtualDirectory -> {
+            dialog.dismiss();
+            openDirectory(virtualDirectory);
         });
         mFindVirtualDirectoryTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tag);
 
@@ -724,7 +698,7 @@ public class MainActivity extends BaseActivity implements
                 if (integer != null)
                     openConversation(integer);
                 else
-                    Toast.makeText(MainActivity.this, R.string.err_get_private_conversation,
+                    Toast.makeText(AbstractMainActivity.this, R.string.err_get_private_conversation,
                             Toast.LENGTH_SHORT).show();
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, userID);
@@ -875,40 +849,5 @@ public class MainActivity extends BaseActivity implements
         transaction.commit();
     }
 
-    @Override
-    public void createCallForConversation(int convID) {
-        final Dialog dialog = UiUtils.create_loading_dialog(this);
 
-        //Create the call for the conversation
-        CreateCallForConversationTask task = new CreateCallForConversationTask(this);
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, convID);
-        getTasksManager().addTask(task, true);
-        task.setOnPostExecuteListener(new SafeAsyncTask.OnPostExecuteListener<CallInformation>() {
-            @Override
-            public void OnPostExecute(@Nullable CallInformation callInformation) {
-
-                dialog.dismiss();
-
-                //Check for errors
-                if(callInformation == null)
-                    Toast.makeText(
-                            MainActivity.this,
-                            R.string.err_create_call_for_conversation,
-                            Toast.LENGTH_SHORT).show();
-
-                else
-                    //Open call
-                    openCall(callInformation.getId());
-            }
-        });
-    }
-
-    @Override
-    public void openCall(int callID) {
-
-        Intent intent = new Intent(this, CallActivity.class);
-        intent.putExtra(CallActivity.ARGUMENT_CALL_ID, callID);
-        startActivity(intent);
-
-    }
 }

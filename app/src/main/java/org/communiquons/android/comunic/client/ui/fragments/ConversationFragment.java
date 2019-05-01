@@ -500,9 +500,7 @@ public class ConversationFragment extends Fragment
 
 
         //Add call button (if possible)
-        if(CallsHelper.IsCallSystemAvailable() && info.getMembers().size() > 1 && info.getMembers().size() <=
-                Objects.requireNonNull(CallsHelper.GetCallsConfiguration()).getMaximumNumberMembers() &&
-                !mHasCallButton) {
+        if(CallsHelper.IsCallSystemAvailableForConversation(info) && !mHasCallButton) {
 
             mHasCallButton = true;
 

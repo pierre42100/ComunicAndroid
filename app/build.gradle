@@ -55,6 +55,17 @@ android {
             buildConfigField "String", "pdf_view_url", "\"https://pdfviewer.communiquons.org/?file=\""
         }
     }
+
+    flavorDimensions "versions"
+    productFlavors {
+
+        // "Normal" version of the application
+        normal { }
+
+        // Version with video calls features
+        videoCalls {}
+
+    }
 }
 
 dependencies {
@@ -64,8 +75,12 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:preference-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
-    implementation 'org.whispersystems:webrtc-android:M71'
+
+    // Library required to make video calls
+    videoCallsImplementation 'com.squareup.okhttp3:okhttp:3.12.1'
+    videoCallsImplementation 'org.whispersystems:webrtc-android:M71'
+
+    //Test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

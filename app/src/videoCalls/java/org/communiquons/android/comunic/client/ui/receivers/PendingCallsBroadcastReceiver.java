@@ -23,7 +23,6 @@ import org.communiquons.android.comunic.client.ui.activities.BaseActivity;
 import org.communiquons.android.comunic.client.ui.activities.CallActivity;
 import org.communiquons.android.comunic.client.ui.activities.IncomingCallActivity;
 import org.communiquons.android.comunic.client.ui.asynctasks.GetNextPendingCallTask;
-import org.communiquons.android.comunic.client.ui.asynctasks.SafeAsyncTask;
 import org.communiquons.android.comunic.client.ui.utils.UiUtils;
 
 import java.util.Objects;

@@ -11,6 +11,7 @@ import org.communiquons.android.comunic.client.data.models.CallInformation;
 import org.communiquons.android.comunic.client.data.models.CallMember;
 import org.communiquons.android.comunic.client.data.models.CallResponse;
 import org.communiquons.android.comunic.client.data.models.CallsConfiguration;
+import org.communiquons.android.comunic.client.data.models.ConversationInfo;
 import org.communiquons.android.comunic.client.data.models.NextPendingCallInformation;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 import org.webrtc.PeerConnection;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Calls helper
@@ -91,6 +93,16 @@ public class CallsHelper extends BaseHelper {
      */
     public static boolean IsCallSystemAvailable(){
         return mCallsConfiguration != null && mCallsConfiguration.isEnabled();
+    }
+
+    /**
+     * Check out whether call system is available for a given conversation or not
+     */
+    public static boolean IsCallSystemAvailableForConversation(ConversationInfo conversation){
+        return CallsHelper.IsCallSystemAvailable() &&
+                conversation.getMembers().size() > 1 &&
+                conversation.getMembers().size() <= Objects.requireNonNull(
+                        CallsHelper.GetCallsConfiguration()).getMaximumNumberMembers();
     }
 
     /**
